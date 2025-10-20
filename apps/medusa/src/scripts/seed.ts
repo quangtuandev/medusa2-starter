@@ -197,13 +197,17 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       collections: [
         {
-          title: 'Thirsty',
-          handle: 'thirsty',
+          title: 'Light Roasts',
+          handle: 'light-roasts',
         },
         {
-          title: 'Icy',
-          handle: 'icy',
-        }
+          title: 'Medium Roasts',
+          handle: 'medium-roasts',
+        },
+        {
+          title: 'Dark Roasts',
+          handle: 'dark-roasts',
+        },
       ],
     },
   });

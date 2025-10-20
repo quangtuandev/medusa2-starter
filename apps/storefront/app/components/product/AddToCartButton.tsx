@@ -76,7 +76,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
       <i className="w-4">
         <PlusIcon className="size-1" />
       </i>
-      <span className="text-nowrap"> Add to cart</span>
+      <span className="text-nowrap btn-add"> Add to cart</span>
     </button>
   );
 };

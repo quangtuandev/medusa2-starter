@@ -14,9 +14,9 @@
   ],
   "scripts": {
     "nukedb": "docker compose down -v && docker compose up -d",
-    "build": "medusa build",
+    "build": "medusa build && ln -s .medusa/server/public/ public",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "medusa start",
+    "start": "NODE_ENV=production medusa start",
     "dev": "medusa develop",
     "sync": "medusa db:sync-links",
     "migrate:prod": "medusa db:migrate",
