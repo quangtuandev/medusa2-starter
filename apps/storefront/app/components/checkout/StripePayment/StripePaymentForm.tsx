@@ -84,7 +84,8 @@ export const StripePaymentForm: FC<StripePaymentFormProps> = ({ isActiveStep, pa
         elements,
         confirmParams: {
           // return_url: siteURL(redirectPath),
-          return_url: 'http://localhost:3000/checkout/success',
+          // return_url: 'http://localhost:3000/checkout/success',
+          return_url: `${window.location.origin}/checkout/success`,
 
           // We need to add the billing details manually because we are disabling
           // the billing address fields on the `PaymentElement`
