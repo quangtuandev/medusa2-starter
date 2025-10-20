@@ -1,0 +1,130 @@
+{
+  "common": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "products": "Sản phẩm",
+    "contact": "Liên hệ",
+    "cart": "Giỏ hàng",
+    "checkout": "Thanh toán",
+    "search": "Tìm kiếm",
+    "menu": "Menu",
+    "close": "Đóng",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "add": "Thêm",
+    "remove": "Xóa",
+    "quantity": "Số lượng",
+    "price": "Giá",
+    "total": "Tổng cộng",
+    "subtotal": "Tạm tính",
+    "shipping": "Phí vận chuyển",
+    "tax": "Thuế",
+    "discount": "Giảm giá",
+    "free": "Miễn phí",
+    "outOfStock": "Hết hàng",
+    "inStock": "Còn hàng",
+    "addToCart": "Thêm vào giỏ",
+    "viewCart": "Xem giỏ hàng",
+    "continueShopping": "Tiếp tục mua sắm",
+    "proceedToCheckout": "Tiến hành thanh toán",
+    "backToProducts": "Quay lại sản phẩm",
+    "newsletter": "Bản tin",
+    "subscribe": "Đăng ký",
+    "email": "Email",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "phone": "Điện thoại",
+    "address": "Địa chỉ",
+    "city": "Thành phố",
+    "state": "Tỉnh/Thành",
+    "zipCode": "Mã bưu điện",
+    "country": "Quốc gia",
+    "language": "Ngôn ngữ",
+    "currency": "Tiền tệ",
+    "region": "Khu vực"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "categories": "Danh mục",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "account": "Tài khoản",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký"
+  },
+  "hero": {
+    "title": "BARRIO",
+    "subtitle": "CÀ PHÊ & CỘNG ĐỒNG",
+    "description": "Khám phá cà phê rang thủ công của chúng tôi, được chế tác tỉ mỉ và giao tận nơi. Tại Barrio, chúng tôi không chỉ là một cơ sở rang cà phê—chúng tôi là một cộng đồng."
+  },
+  "footer": {
+    "company": "Công ty",
+    "support": "Hỗ trợ",
+    "legal": "Pháp lý",
+    "followUs": "Theo dõi chúng tôi",
+    "newsletter": "Đăng ký nhận bản tin",
+    "newsletterDescription": "Nhận thông tin cập nhật mới nhất về sản phẩm và khuyến mãi",
+    "allRightsReserved": "Bảo lưu mọi quyền"
+  },
+  "product": {
+    "details": "Chi tiết sản phẩm",
+    "description": "Mô tả",
+    "specifications": "Thông số kỹ thuật",
+    "reviews": "Đánh giá",
+    "relatedProducts": "Sản phẩm liên quan",
+    "addToWishlist": "Thêm vào yêu thích",
+    "share": "Chia sẻ",
+    "availability": "Tình trạng",
+    "sku": "Mã sản phẩm",
+    "category": "Danh mục",
+    "tags": "Thẻ"
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "empty": "Giỏ hàng của bạn đang trống",
+    "item": "Sản phẩm",
+    "items": "Sản phẩm",
+    "update": "Cập nhật giỏ hàng",
+    "clear": "Xóa giỏ hàng",
+    "estimatedTotal": "Tổng ước tính",
+    "shippingCalculated": "Phí vận chuyển được tính khi thanh toán"
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "shippingAddress": "Địa chỉ giao hàng",
+    "billingAddress": "Địa chỉ thanh toán",
+    "shippingMethod": "Phương thức vận chuyển",
+    "paymentMethod": "Phương thức thanh toán",
+    "orderSummary": "Tóm tắt đơn hàng",
+    "placeOrder": "Đặt hàng",
+    "processing": "Đang xử lý...",
+    "orderConfirmation": "Xác nhận đơn hàng",
+    "thankYou": "Cảm ơn bạn đã đặt hàng!",
+    "orderNumber": "Số đơn hàng"
+  },
+  "shop": "Cửa hàng nước hoa",
+  "home": {
+    "default": {
+      "description": "Kira ra đời như một hương thơm vui tươi rực rỡ, nắm bắt được bản chất của ánh nắng và tiếng cười trong mỗi lần xịt tinh tế. Như một cơn gió vui đùa trong ngày ấm áp, hương thơm của chúng tôi dễ dàng làm sống lại tinh thần, lan tỏa không khí với cảm giác nhẹ nhàng và thanh lịch. Hương thơm của chúng tôi làm sống lại tinh thần và tôn vinh những khoảnh khắc sôi động của cuộc sống."
+    },
+    "a": {
+      "description": "Mỗi chai là một cánh cổng đến một thế giới nơi hạnh phúc không chỉ là một cảm xúc thoáng qua, mà là một hương thơm bám lấy bạn như một giấc mơ thì thầm, một bản giao hưởng vô hình bạn mang theo qua mỗi bước đi, mỗi hơi thở."
+    },
+    "i": {
+      "description": "Mỗi hương thơm của Kira mời bạn tưởng tượng về những khoảnh khắc sôi động nhất của cuộc sống—những bùng nổ vui vẻ tự phát nhắc nhở chúng ta hãy trân trọng hiện tại."
+    },
+    "k": {
+      "description": "Sản phẩm của Kira không thử nghiệm trên động vật, cả sản phẩm hoàn chỉnh và thành phần của nó chưa bao giờ được thử nghiệm trên động vật."
+    },
+    "r": {
+      "description": "Kira là một vụ nổ ánh sáng lấp lánh, một phép thuật của ánh nắng và tiếng cười, dệt vào mỗi lần xịt tinh tế—một điệu nhảy tinh thần của niềm vui tồn tại như một kỷ niệm về cái ôm ấm áp của mặt trời."
+    }
+  }
+}

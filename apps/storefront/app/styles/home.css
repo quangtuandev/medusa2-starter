@@ -1,0 +1,230 @@
+@keyframes rotate-bounce {
+    0% {
+        transform: rotate(0deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    25% {
+        transform: rotate(40deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    50% {
+        transform: rotate(35deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    75% {
+        transform: rotate(40deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    100% {
+        transform: rotate(0deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+
+@keyframes rotate-bounce-reverse {
+    0% {
+        transform: rotate(0deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    25% {
+        transform: rotate(35deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    50% {
+        transform: rotate(35deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    75% {
+        transform: rotate(40deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    100% {
+        transform: rotate(5deg);
+        animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+
+.rotate-bounce {
+    animation: rotate-bounce 0.6s ease-in-out;
+}
+
+.animate-rotate-bounce {
+    animation: rotate-bounce 1.6s infinite;
+}
+
+.animate-rotate-bounce-reverse {
+    animation: rotate-bounce-reverse 1.6s infinite;
+}
+
+
+.blobs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: white;
+    margin: auto;
+    filter: blur(20px) contrast(2);
+    animation: demonstration 10s linear infinite;
+    overflow: hidden;
+}
+
+
+.blob {
+    background: #A2D4FD;
+    position: absolute;
+    left: 75%;
+    top: 50%;
+    margin-top: -100px;
+    margin-left: -100px;
+    border-radius: 100%;
+}
+
+
+@keyframes blob-anim-1 {
+    0% {
+        transform: translate(5vw, -7vw);
+    }
+
+    50% {
+        transform: translate(6vw, 2vw);
+    }
+
+    100% {
+        transform: translate(-3vw, 5vw);
+    }
+}
+
+.blob:nth-child(2) {
+    animation: blob-anim-2 ease-in-out 2s infinite alternate;
+    width: 10vw;
+    height: 8vw;
+}
+
+@keyframes blob-anim-2 {
+    0% {
+        transform: translate(3vw, 7vw);
+    }
+
+    50% {
+        transform: translate(-6vw, 4vw);
+    }
+
+    100% {
+        transform: translate(3vw, -5vw);
+    }
+}
+
+.blob:nth-child(2) {
+    animation: blob-anim-2 ease-in-out 2s infinite alternate;
+    width: 15vw;
+    height: 11vw;
+}
+
+@keyframes blob-anim-3 {
+    0% {
+        transform: translate(-15vw, -10vw);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(5vw, -3vw);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-7vw, 6vw);
+        opacity: 0.8;
+    }
+}
+
+.blob:nth-child(3) {
+    animation: blob-anim-3 ease-in-out 2s infinite alternate;
+    background: #B8C2FF;
+    width: 23vw;
+    height: 22vw;
+}
+
+@keyframes blob-anim-4 {
+    0% {
+        transform: translateX(5vw);
+        width: 25vw;
+        height: 28vw;
+    }
+
+    100% {
+        transform: translatey(5vw);
+    }
+}
+
+.blob:nth-child(4) {
+    animation: blob-anim-4 ease-in-out 2s infinite alternate;
+    background: #B8C2FF;
+    width: 24vw;
+    height: 18vw;
+}
+
+@keyframes blob-anim-5 {
+    0% {
+        transform: translate(18vw, 4vw);
+    }
+
+    25% {
+        transform: translate(11vw, -4vw);
+    }
+
+    50% {
+        transform: translate(2vw, 1vw);
+    }
+
+    100% {
+        transform: translate(-5vw, 4vw);
+    }
+}
+
+.blob:nth-child(5) {
+    animation: blob-anim-5 ease-in-out 6s infinite alternate;
+    width: 35vw;
+    height: 25vw;
+}
+
+@keyframes blob-anim-6 {
+    0% {
+        transform: translate(27vw, 11vw);
+        width: 50vw;
+        height: 40vw;
+    }
+
+    25% {
+        transform: translate(7vw, -12vw);
+    }
+
+    50% {
+        transform: translate(9vw, 7vw);
+    }
+
+    100% {
+        transform: translate(-4vw, 11vw);
+    }
+}
+
+.blob:nth-child(6) {
+    animation: blob-anim-6 ease-in-out 8s infinite alternate;
+    width: 35vw;
+    height: 25vw;
+}
+
+.k-hover>.title>span:not(:nth-child(1)) {
+    filter: blur(5px);
+    opacity: 0.3;
+    transition: filter 0.3s ease-in-out;
+}

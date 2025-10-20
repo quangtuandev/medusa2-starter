@@ -1,0 +1,130 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "products": "Products",
+    "contact": "Contact",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "free": "Free",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "addToCart": "Add to Cart",
+    "viewCart": "View Cart",
+    "continueShopping": "Continue Shopping",
+    "proceedToCheckout": "Proceed to Checkout",
+    "backToProducts": "Back to Products",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zipCode": "Zip Code",
+    "country": "Country",
+    "language": "Language",
+    "currency": "Currency",
+    "region": "Region"
+  },
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "about": "About Us",
+    "contact": "Contact",
+    "account": "Account",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register"
+  },
+  "hero": {
+    "title": "BARRIO",
+    "subtitle": "COFFEE & COMMUNITY",
+    "description": "Discover our artisan-roasted coffee, crafted with care and delivered to your door. At Barrio, we're more than a coffee roastery—we're a neighborhood."
+  },
+  "footer": {
+    "company": "Company",
+    "support": "Support",
+    "legal": "Legal",
+    "followUs": "Follow Us",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletterDescription": "Get the latest updates on new products and upcoming sales",
+    "allRightsReserved": "All rights reserved"
+  },
+  "product": {
+    "details": "Product Details",
+    "description": "Description",
+    "specifications": "Specifications",
+    "reviews": "Reviews",
+    "relatedProducts": "Related Products",
+    "addToWishlist": "Add to Wishlist",
+    "share": "Share",
+    "availability": "Availability",
+    "sku": "SKU",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "item": "Item",
+    "items": "Items",
+    "update": "Update Cart",
+    "clear": "Clear Cart",
+    "estimatedTotal": "Estimated Total",
+    "shippingCalculated": "Shipping calculated at checkout"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shippingAddress": "Shipping Address",
+    "billingAddress": "Billing Address",
+    "shippingMethod": "Shipping Method",
+    "paymentMethod": "Payment Method",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "orderConfirmation": "Order Confirmation",
+    "thankYou": "Thank you for your order!",
+    "orderNumber": "Order Number"
+  },
+  "shop": "EAU DE PARFUM",
+  "home": {
+    "default": {
+      "description": "Kira was born as a joyful sparkling fragrance, capturing the very essence of sunshine and laughter in every delicate spritz. Like a playful breeze on a warm day, our scents effortlessly invigorate the spirit, infusing the air with a sense of lightness and elegance. Our scents invigorate the spirit and celebrate life's vibrant moments."
+    },
+    "a": {
+      "description": "Each bottle is a portal to a realm where happiness is not just a fleeting emotion, but a scent that clings to you like a whispered dream, an invisible symphony you carry with you through every step, every breath."
+    },
+    "i": {
+      "description": "Each of Kira's fragrances invites you to imagine life's most vibrant moments—spontaneous bursts of joy that remind us to embrace the present."
+    },
+    "k": {
+      "description": "Kira's products are cruelty free, neither the completed product nor its ingredients have ever been tested on animals."
+    },
+    "r": {
+      "description": "Kira is a shimmering burst of light, an alchemy of sunshine and laughter, woven into each delicate spritz—an ethereal dance of joy that lingers like a memory of the sun's warm embrace."
+    }
+  }
+}
