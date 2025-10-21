@@ -6,37 +6,50 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './locales/en.json';
 import vi from './locales/vi.json';
 
-export const defaultNS = 'common';
+// Use a single namespace 'translation' to map the entire JSON content
+export const defaultNS = 'translation';
 export const resources = {
   en: {
-    common: en,
+    translation: en,
   },
   vi: {
-    common: vi,
+    translation: vi,
   },
 } as const;
 
 export const supportedLanguages = ['en', 'vi'] as const;
 export type SupportedLanguage = typeof supportedLanguages[number];
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    debug: process.env.NODE_ENV === 'development',
-    fallbackLng: 'en',
-    defaultNS,
-    ns: ['common'],
-    resources,
-    supportedLngs: supportedLanguages,
-    interpolation: {
-      escapeValue: false, // React already escapes values
-    },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'i18nextLng',
-    },
-  });
+// Initialize i18n; guard browser-only language detection to be SSR-safe
+const isBrowser = typeof window !== 'undefined';
+
+if (isBrowser) {
+  i18n.use(LanguageDetector);
+}
+
+// Initialize i18n synchronously first
+i18n.init({
+  debug: process.env.NODE_ENV === 'development',
+  fallbackLng: 'en',
+  defaultNS,
+  ns: [defaultNS],
+  resources,
+  supportedLngs: supportedLanguages,
+  lng: 'en', // Set default language explicitly
+  interpolation: {
+    escapeValue: false,
+  },
+  // Only provide detection config on the client
+  detection: isBrowser
+    ? {
+        order: ['localStorage', 'navigator', 'htmlTag'],
+        caches: ['localStorage'],
+        lookupLocalStorage: 'i18nextLng',
+      }
+    : undefined,
+});
+
+// Then use initReactI18next
+i18n.use(initReactI18next);
 
 export default i18n;

@@ -3,8 +3,8 @@ module.exports = {
     {
       name: 'medusa-backend',
       cwd: './apps/medusa',
-      script: 'npm',
-      args: 'run dev',
+      script: 'yarn',
+      args: 'start',
       env: {
         NODE_ENV: 'development',
         PORT: 7901
@@ -25,8 +25,8 @@ module.exports = {
     {
       name: 'storefront',
       cwd: './apps/storefront',
-      script: 'npm',
-      args: 'run dev',
+      script: 'yarn',
+      args: 'start',
       env: {
         NODE_ENV: 'development',
         PORT: 7109

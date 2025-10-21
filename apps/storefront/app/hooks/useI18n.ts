@@ -15,5 +15,6 @@ export const useI18n = () => {
     changeLanguage,
     currentLanguage,
     isReady: i18n.isInitialized,
+    i18n, // Expose i18n instance for debugging
   };
 };
