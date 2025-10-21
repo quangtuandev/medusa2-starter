@@ -41,3 +41,5 @@ yarn-error.log*
 
 .yarn/install-state.gz
 *-values.yaml
+# Ignore all log files
+/**/*.log

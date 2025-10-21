@@ -1,16 +1,11 @@
 import { useEffect, useRef } from "react";
 import { animate, spring } from 'animejs';
-
-
-import { Logo } from "@app/components/home/Logo";
-import { Description } from "@app/components/home/Description";
 import MorphingShape from "@app/components/generativeart/MorphingShape";
 import { useI18n } from "@app/hooks/useI18n";
 import clsx from "clsx";
 import { LogoProps } from "@libs/types";
 
-export const I = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoProps) => {
-    const { t } = useI18n();
+export const I = () => {
 
     const particles = [
         {
@@ -22,7 +17,7 @@ export const I = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
         {
             id: 'imagineative',
             className: 'w-[895px]',
-            position: { x: '-547px', y: '-563px' },
+            position: { x: '-547px', y: '-663px' },
             src: "assets/images/art/i/imagineative.webp",
         },
         {
@@ -81,11 +76,6 @@ export const I = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
     }, []);
     return (
         <>
-            <div className="flex relative flex-col items-center gap-4 ">
-                <div className="z-10 h-[80px]" />
-                <Logo className="z-10 i-hover" fill="#321D14" activeLetter="I" onLetterClick={onLetterClick} onMouseEnterLetter={onMouseEnterLetter} onMouseLeaveLogo={onMouseLeaveLogo} />
-                <Description className="z-10 mt-16 max-w-3xl" description={t('home.i.description')} />
-            </div>
             {particles.map((i, index) => (
                 <div key={i.id}>
                     {i.id.includes('morphingshape') ? (

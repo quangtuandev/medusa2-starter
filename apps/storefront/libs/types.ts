@@ -120,6 +120,7 @@ export type CreditCardBrand = 'visa' | 'mastercard' | 'amex' | 'discover' | 'jcb
 
 export type LogoLetter = 'K' | 'I' | 'R' | 'A';
 export interface LogoProps {
+  children?: React.ReactNode;
   onLetterClick?: (letter: LogoLetter) => void;
   onMouseEnterLetter?: (letter: LogoLetter) => void;
   onMouseLeaveLogo?: () => void;

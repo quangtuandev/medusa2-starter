@@ -1,13 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { animate, spring } from 'animejs';
 import clsx from "clsx";
-import { Logo } from "@app/components/home/Logo";
-import { Description } from "@app/components/home/Description";
-import { useI18n } from "@app/hooks/useI18n";
-import { LogoProps } from "@libs/types";
 
-export const R = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoProps) => {
-    const { t } = useI18n();
+export const R = () => {
 
     const mirrors = [
         {
@@ -50,7 +45,7 @@ export const R = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
         {
             id: 'radiant',
             className: 'w-[696px]',
-            position: { x: '-216px', y: '-614px' },
+            position: { x: '-216px', y: '-714px' },
             src: "assets/images/art/r/radiant.webp",
         },
         {
@@ -85,12 +80,6 @@ export const R = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
     }, []);
     return (
         <>
-            <div className="flex relative flex-col items-center gap-4 ">
-                <div className="z-10 h-[80px]" />
-                <Logo className="z-10 i-hover" fill="#321D14" activeLetter="R" onLetterClick={onLetterClick} onMouseEnterLetter={onMouseEnterLetter} onMouseLeaveLogo={onMouseLeaveLogo} />
-                <Description className="z-10 mt-16 max-w-[590px]" description={t('home.r.description')} />
-            </div>
-
             {particles.map((i, index) => (
                 <div key={i.id}>
                     <img

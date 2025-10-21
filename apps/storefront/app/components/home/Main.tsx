@@ -1,23 +1,9 @@
 
-import { ShopLink } from "@app/components/home/ShopLink";
 import MorphingShape from "@app/components/generativeart/MorphingShape";
-import { Logo } from "@app/components/home/Logo";
-import { Description } from "@app/components/home/Description";
-import { LogoProps } from "@libs/types";
 
-export const Main = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoProps) => {
+export const Main = () => {
     return (
         <>
-            <div className="flex relative flex-col items-center gap-4">
-                <ShopLink className="z-10" />
-                <Logo
-                    className="z-10 mix-blend-exclusion"
-                    onLetterClick={onLetterClick}
-                    onMouseEnterLetter={onMouseEnterLetter}
-                    onMouseLeaveLogo={onMouseLeaveLogo}
-                />
-                <Description className="z-10 mt-16" />
-            </div>
             <div>
                 <MorphingShape blur={20} zoom={0.6} id="1"
                     classNameWrapper="items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[70%] -rotate-[62deg]" />

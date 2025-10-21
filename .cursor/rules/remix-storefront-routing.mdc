@@ -142,7 +142,7 @@ export async function action({ request }: ActionFunctionArgs) {
 import { Medusa } from "@medusajs/js-sdk"
 
 export const medusa = new Medusa({
-  baseUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+  baseUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:7901",
   debug: process.env.NODE_ENV === "development",
 })
 

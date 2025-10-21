@@ -1,17 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { animate, spring } from 'animejs';
 import clsx from "clsx";
-import { Logo } from "@app/components/home/Logo";
-import { Description } from "@app/components/home/Description";
 import MorphingShape from "@app/components/generativeart/MorphingShape";
-import { useI18n } from "@app/hooks/useI18n";
-import { LogoProps } from "@libs/types";
 
-
-
-export const K = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoProps) => {
-    const { t } = useI18n();
-
+export const K = () => {
     const particles = [
         {
             id: 'free',
@@ -40,7 +32,7 @@ export const K = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
         {
             id: 'kind',
             className: 'w-[520px]',
-            position: { x: '-100%', y: '-50vh' },
+            position: { x: '-100%', y: '-612px' },
             src: "assets/images/art/k/kind.webp",
         },
         {
@@ -99,11 +91,6 @@ export const K = ({ onLetterClick, onMouseEnterLetter, onMouseLeaveLogo }: LogoP
     }, []);
     return (
         <>
-            <div className="flex relative flex-col items-center gap-4 ">
-                <div className="z-10 h-[80px]" />
-                <Logo className="z-10 k-hover" fill="#321D14" activeLetter="K" onLetterClick={onLetterClick} onMouseEnterLetter={onMouseEnterLetter} onMouseLeaveLogo={onMouseLeaveLogo} />
-                <Description className="z-10 mt-16 max-w-3xl" description={t('home.k.description')} />
-            </div>
             {particles.map((i, index) => (
                 <div key={i.id}>
                     {i.id.includes('morphingshape') ? (

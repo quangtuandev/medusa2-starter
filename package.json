@@ -10,7 +10,13 @@
     "medusa:init": "turbo run medusa:init --filter=medusa",
     "format": "turbo run format",
     "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}'",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop all",
+    "pm2:restart": "pm2 restart all",
+    "pm2:delete": "pm2 delete all",
+    "pm2:logs": "pm2 logs",
+    "pm2:status": "pm2 status"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
