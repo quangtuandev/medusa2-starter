@@ -58,6 +58,7 @@ export const Logo: FC<LogoProps> = memo(({
                     onMouseLeave={handleMouseLeave}
                 >
                     <svg
+                        pointerEvents="none"
                         width="109"
                         height="108"
                         viewBox="0 0 109 108"
@@ -66,6 +67,8 @@ export const Logo: FC<LogoProps> = memo(({
                         className="character-k"
                     >
                         <path
+                            pointerEvents="none"
+
                             d="M106.819 0H71.8792L31.1762 43.5259V0H0V108H31.1762V80.8966L41.8452 69.4914L72.3205 108H109L62.4823 47.8707L106.819 0Z"
                             fill={fill}
                             className="character-k"
@@ -79,6 +82,7 @@ export const Logo: FC<LogoProps> = memo(({
                     onMouseLeave={handleMouseLeave}
                 >
                     <svg
+                        pointerEvents="none"
                         width="31"
                         height="108"
                         viewBox="0 0 31 108"
@@ -87,6 +91,7 @@ export const Logo: FC<LogoProps> = memo(({
                         className="character-i"
                     >
                         <path
+                            pointerEvents="none"
                             d="M31 0H0V108H31V0Z"
                             fill={fill}
                             className="character-i"
@@ -123,6 +128,7 @@ export const Logo: FC<LogoProps> = memo(({
                     onMouseLeave={handleMouseLeave}
                 >
                     <svg
+                        pointerEvents="none"
                         width="107"
                         height="108"
                         viewBox="0 0 107 108"
@@ -131,6 +137,7 @@ export const Logo: FC<LogoProps> = memo(({
                         className="character-a"
                     >
                         <path
+                            pointerEvents="none"
                             d="M107 108L68.0698 22.6034L78.0929 0H47.6359L0.361661 107.224L0.103332 107.793L1.49831 104.612L0 108H0.103332H0.258329H1.49831H32.0587L37.9227 93.3879L49.7801 63.8276L52.6475 57.3621L74.3472 108H107Z"
                             fill={fill}
                             className="character-a"

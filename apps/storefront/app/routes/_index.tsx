@@ -56,6 +56,7 @@ function useClickOutside<T extends HTMLElement = HTMLDivElement>(
 }
 export default function IndexRoute() {
   const [isOpen, setIsOpen] = useState(false);
+  const [hoverActiveClass, setHoverActiveClass] = useState('');
   const [activeComponent, setActiveComponent] = useState<'main' | 'K' | 'I' | 'R' | 'A'>('main');
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -75,12 +76,14 @@ export default function IndexRoute() {
   }
   const handleLetterClick = useCallback((letter: 'K' | 'I' | 'R' | 'A') => {
     setActiveComponent(letter);
+    setHoverActiveClass(`${letter.toLowerCase()}-hover`);
   }, []);
 
   const handleMouseEnterLetter = useCallback((letter: 'K' | 'I' | 'R' | 'A') => {
     const debouncedFunction = debounce(() => {
       if (letter !== activeComponent) {
         setActiveComponent(letter);
+        setHoverActiveClass(`${letter.toLowerCase()}-hover`);
       }
     }, 500);
     debouncedFunction();
@@ -89,6 +92,7 @@ export default function IndexRoute() {
   const handleMouseLeaveLogo = useCallback(() => {
     const debouncedFunction = debounce(() => {
       setActiveComponent('main');
+      setHoverActiveClass('');
     }, 500);
     debouncedFunction();
   }, []);
@@ -104,6 +108,7 @@ export default function IndexRoute() {
     }
     if (activeComponent !== 'main') {
       setActiveComponent('main');
+      setHoverActiveClass('');
     }
   }, [isOpen, activeComponent]);
 
@@ -159,7 +164,7 @@ export default function IndexRoute() {
         {activeComponent === 'main' && <ShopLink className="z-10" />}
 
         <Logo
-          className="z-[999] mix-blend-exclusion"
+          className={clsx("z-[999] mix-blend-exclusion", hoverActiveClass)}
           onLetterClick={handleLetterClick}
           onMouseEnterLetter={handleMouseEnterLetter}
           onMouseLeaveLogo={handleMouseLeaveLogo}
