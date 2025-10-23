@@ -94,6 +94,7 @@ module.exports = {
       screens: {
         xs: '400px',
         '2xl': '1440px',
+        'h-sm': { 'raw': '(max-height: 790px)' },
       },
       fontSize: {
         '2xs': '.65rem',
