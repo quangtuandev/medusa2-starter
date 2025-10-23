@@ -37,8 +37,8 @@ export const AllCollection = ({ className, isActive }: { className?: string, isA
             opacity: [0, 1],
             skewX: '-4deg',
             rotate: '-138deg',
-            x: '-200px',
-            y: '300px',
+            x: '-38%',
+            y: '-300px',
             ease: spring({
                 bounce: 0.65,
                 duration: 400
@@ -116,7 +116,7 @@ export const AllCollection = ({ className, isActive }: { className?: string, isA
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
-            className={clsx("flex all-collection  overflow-hidden rounded-[30px] shadow-[1px_4px_10px_0px_rgba(83,39,39,0.39)] shadow-[3px_18px_18px_0px_rgba(83,39,39,0.34)] shadow-[6px_40px_24px_0px_rgba(83,39,39,0.20)] shadow-[12px_70px_28px_0px_rgba(83,39,39,0.06)] shadow-[18px_110px_31px_0px_rgba(83,39,39,0.01)] border-8 border-white ", className)} to="/collections">
+            className={clsx("flex all-collection cursor-pointer overflow-hidden rounded-[30px] shadow-[1px_4px_10px_0px_rgba(83,39,39,0.39)] shadow-[3px_18px_18px_0px_rgba(83,39,39,0.34)] shadow-[6px_40px_24px_0px_rgba(83,39,39,0.20)] shadow-[12px_70px_28px_0px_rgba(83,39,39,0.06)] shadow-[18px_110px_31px_0px_rgba(83,39,39,0.01)] border-8 border-white ", className)} to="/collections">
             <img src="/assets/images/home/all-collection.gif" className="scale-110 object-cover all-main-image" alt="All Collection" />
             <img src="/assets/images/home/all-collection.webp" className="scale-110 object-cover all-second-image opacity-0" alt="All Collection Text" />
             <div>
