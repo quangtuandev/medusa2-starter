@@ -28,7 +28,7 @@ export const I = () => {
         },
         {
             id: 'camera',
-            className: 'w-[686px] bottom-0',
+            className: 'w-[686px] bottom-0 h-sm:w-[556px]',
             position: { x: '-343px' },
             src: "assets/images/art/i/camera.webp",
         },

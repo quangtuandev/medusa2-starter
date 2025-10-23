@@ -56,7 +56,7 @@ export const R = () => {
         },
         {
             id: 'sun',
-            className: 'w-[636px] bottom-0',
+            className: 'w-[636px] bottom-0 h-sm:w-[516px]',
             position: { x: '-318px' },
             src: "assets/images/art/r/sun.webp",
         }

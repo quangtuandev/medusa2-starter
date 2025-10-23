@@ -37,7 +37,7 @@ export const K = () => {
         },
         {
             id: 'rabbit-head',
-            className: 'w-[642px] bottom-0',
+            className: 'w-[642px] bottom-0 h-sm:w-[542px]',
             position: { x: '-321px' },
             src: "assets/images/art/k/rabbit-head.webp",
         },

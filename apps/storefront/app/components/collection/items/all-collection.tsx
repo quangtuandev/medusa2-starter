@@ -37,8 +37,8 @@ export const AllCollection = ({ className, isActive }: { className?: string, isA
             opacity: [0, 1],
             skewX: '-4deg',
             rotate: '-138deg',
-            x: '-38%',
-            y: '-300px',
+            x: '-200px',
+            y: '300px',
             ease: spring({
                 bounce: 0.65,
                 duration: 400

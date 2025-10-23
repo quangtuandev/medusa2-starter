@@ -43,7 +43,7 @@ export default function HalfFanSlider() {
     collectionCardItem.forEach((item: any) => {
       if (item.classList.contains('collection-card-active')) {
         item.style.opacity = '1';
-        item.style.scale = '1.2';
+        item.style.scale = '1.05';
       } else {
         item.style.opacity = '0.3';
       }
