@@ -89,7 +89,7 @@ export const I = () => {
                             src={i.src}
                             id={`particle-${i.id}`}
                             alt={`icon ${i.id}`}
-                            className={clsx(`particle opacity-0 absolute z-10`, i.className)}
+                            className={clsx(`particle opacity-0 absolute z-0`, i.className)}
                         />
                     )}
                 </div>

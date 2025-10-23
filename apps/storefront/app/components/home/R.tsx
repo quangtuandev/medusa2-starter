@@ -86,12 +86,12 @@ export const R = () => {
                         src={i.src}
                         id={`particle-${i.id}`}
                         alt={`icon ${i.id}`}
-                        className={clsx(`particle opacity-0 absolute z-10`, i.className)}
+                        className={clsx(`particle opacity-0 absolute z-0`, i.className)}
                     />
                 </div>
             ))}
             {mirrors.map((mirror, index) => (
-                <div className={clsx(`absolute z-10`, mirror.className)} key={`mirror-${index}`}>
+                <div className={clsx(`absolute z-0`, mirror.className)} key={`mirror-${index}`}>
                     <img src={mirror.src} />
                 </div>
             ))}

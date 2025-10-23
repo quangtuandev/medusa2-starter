@@ -49,14 +49,14 @@ export const A = () => {
         },
         {
             id: 'cheat',
-            className: 'w-[376px]',
-            position: { x: '-576px', y: '-154px' },
+            className: 'w-[316px] z-10',
+            position: { x: '-710px', y: '-270px' },
             src: "assets/images/art/a/cheat.webp",
         },
         {
             id: 'noise',
             className: 'w-[376px]',
-            position: { x: '-576px', y: '-154px' },
+            position: { x: '-696px', y: '-300px' },
             src: "assets/images/art/a/noise.webp",
         },
 
@@ -86,7 +86,7 @@ export const A = () => {
                         src={i.src}
                         id={`particle-${i.id}`}
                         alt={`icon ${i.id}`}
-                        className={clsx(`particle opacity-0 absolute z-10`, i.className)}
+                        className={clsx(`particle opacity-0 absolute z-0`, i.className)}
                     />
                 </div>
             ))}

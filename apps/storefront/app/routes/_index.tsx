@@ -131,7 +131,7 @@ export default function IndexRoute() {
         setDescriptionText(t('home.r.description'));
         break;
       case 'A':
-        setDescriptionClassName('max-w-[590px]');
+        setDescriptionClassName('max-w-3xl');
         setDescriptionText(t('home.a.description'));
         break;
       default:
@@ -159,7 +159,7 @@ export default function IndexRoute() {
         }
       </div>
 
-      <div ref={logoRef} className="flex relative flex-col items-center gap-4">
+      <div ref={logoRef} className="flex relative flex-col items-center gap-3">
         {activeComponent !== 'main' && <div className="z-10 h-[80px]" />}
         {activeComponent === 'main' && <ShopLink className="z-10" />}
 
@@ -169,7 +169,7 @@ export default function IndexRoute() {
           onMouseEnterLetter={handleMouseEnterLetter}
           onMouseLeaveLogo={handleMouseLeaveLogo}
         />
-        <Description className={clsx("z-10 mt-16", descriptionClassName)} description={descriptionText} />
+        <Description className={clsx("z-10 mt-8", descriptionClassName)} description={descriptionText} />
       </div>
       {activeComponent === 'main' && <Main />}
       {activeComponent === 'K' && <K />}

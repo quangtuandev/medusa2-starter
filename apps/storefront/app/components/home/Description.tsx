@@ -10,8 +10,8 @@ export const Description: FC<DescriptionProps> = ({ className, description }) =>
     const { t } = useI18n();
 
     return (
-        <div className={className}><div className="z-[12] min-h-[180px]">
-            <p className="max-w-4xl text-center font-body font-normal text-[#000] text-lg">
+        <div className={className}><div className="z-[99] min-h-[180px]">
+            <p className="max-w-4xl text-center font-body font-normal text-[#000] text-lg text-shadow-[0px_4px_4px_0px_#00000040]">
                 {description || t('home.default.description')}
             </p>
         </div>
