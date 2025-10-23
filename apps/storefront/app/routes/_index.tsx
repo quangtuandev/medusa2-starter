@@ -147,8 +147,8 @@ export default function IndexRoute() {
     >
       <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-11 pt-8">
         <p className="font-title font-bold text-8xl uppercase">
-          This <br />
-          is
+          <span>This</span> <br />
+          <span className="ml-[14px]">is</span>
         </p>
         {activeComponent === 'main' &&
           <div ref={menuRef} className="flex flex-col gap-6">
