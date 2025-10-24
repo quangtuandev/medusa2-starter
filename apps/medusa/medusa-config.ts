@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from '@medusajs/framework/utils';
+import { defineConfig, loadEnv, Module } from '@medusajs/framework/utils';
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
@@ -42,7 +42,6 @@ module.exports = defineConfig({
       ssl: false,
     },
     redisUrl: REDIS_URL,
-
     redisPrefix: process.env.REDIS_PREFIX,
     http: {
       storeCors: process.env.STORE_CORS || '',
@@ -59,6 +58,21 @@ module.exports = defineConfig({
     },
   ],
   modules: [
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              backend_url: process.env.ADMIN_BACKEND_URL + '/static' || "http://localhost:7901/static",
+            },
+          },
+        ],
+      },
+    },
+
     {
       resolve: '@medusajs/medusa/payment',
       options: {

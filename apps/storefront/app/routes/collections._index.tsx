@@ -44,9 +44,9 @@ export default function ProductCollectionRoute() {
       </h1>
 
       {collectionsWithProducts.length > 1 && (
-        <div className="flex flex-col w-full items-center gap-16 collections-index">
+        <div className="flex flex-col w-full items-center gap-32 collections-index">
           {collectionsWithProducts.map((collection) => (
-            <div className="flex flex-col gap-[34px] w-full collections-index_item">
+            <div className="flex flex-col gap-[34px] w-full collections-index_item" key={collection.id}>
               <div className="min-h-[54px] flex items-center">
                 <NavLink
                   to={`/collections/${collection.handle}`}

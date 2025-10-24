@@ -125,8 +125,24 @@ export default function HalfFanSlider() {
                   </svg>
                 </div>
               )}
+              <div className="flex items-center justify-center">
+                <h2 className="mb-2 font-centuryBook italic text-[125px] leading-[114px] text-center" dangerouslySetInnerHTML={{ __html: activeCard.title }} />
+                {(activeCard.id !== 1 && activeCard.id !== 4) && (
+                  <div className="relative h-20 w-20">
+                    <img
+                      className="animate-rotate-bounce absolute top-0 left-0"
+                      src="/assets/images/home/cup.svg"
+                      alt="Cup"
+                    />
+                    <img
+                      className="animate-rotate-bounce-reverse absolute top-0 left-0"
+                      src="/assets/images/home/cup-bg.svg"
+                      alt="Cup"
+                    />
+                  </div>
+                )}
+              </div>
 
-              <h2 className="mb-2 font-centuryBook italic text-[125px] leading-[114px] text-center" dangerouslySetInnerHTML={{ __html: activeCard.title }} />
               {activeCard.id !== 4 && (
                 <p className={clsx("font-title font-medium text-[75.37px] leading-[95.47px] text-center", {
                   "text-[#FFE977]": activeCard.id === 1,
