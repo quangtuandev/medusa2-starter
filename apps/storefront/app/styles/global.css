@@ -36,7 +36,7 @@
     --color-highlight-700: 224 237 205;
     --color-highlight-800: 220 235 199;
     --color-highlight-900: 243 234 209;
-    --color-highlight-DEFAULT: 243 234 209;
+    --color-highlight-DEFAULT: 255 255 0;
     --font-display: 'Montserrat', ui-serif, Georgia, Cambria, 'Times New Roman', Times,
       serif;
     --font-body: 'Montserrat', ui-sans-serif, system-ui, -apple-system,
@@ -172,6 +172,16 @@
   .position-right-bottom {
     @apply left-full right-auto bottom-0 top-auto ml-2 origin-bottom-right;
   }
+}
+
+/* Scrollbar utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 .mkt-section {

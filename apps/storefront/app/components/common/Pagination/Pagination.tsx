@@ -47,8 +47,8 @@ export interface PaginationItemProps extends PaginationButtonProps {
 }
 
 const PaginationItem: FC<PaginationItemProps> = ({ className, currentPage, page, ...props }) => {
-  const currentClasses = 'z-10 bg-primary-50 border-primary-500 text-primary-600';
-  const defaultClasses = 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50';
+  const currentClasses = 'z-10 text-primary';
+  const defaultClasses = 'text-gray-500 hover:bg-gray-50';
   const isCurrent = page === currentPage;
 
   return (
@@ -56,7 +56,7 @@ const PaginationItem: FC<PaginationItemProps> = ({ className, currentPage, page,
       viewTransition
       className={clsx(
         className,
-        'relative inline-flex items-center border px-4 py-2 text-sm font-bold',
+        'relative inline-flex items-center px-4 py-2 text-sm font-bold',
         isCurrent ? currentClasses : defaultClasses,
       )}
       aria-current={isCurrent ? 'page' : 'false'}
@@ -85,7 +85,7 @@ const PaginationButton: FC<PaginationArrowButtonProps> = ({
   const className = clsx(
     _className,
     { 'pointer-events-none cursor-not-allowed opacity-50': isDisabled },
-    'relative inline-flex items-center border border-gray-300 bg-white px-2 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 sm:px-4',
+    'relative inline-flex items-center bg-white px-2 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 sm:px-4',
   );
 
   if (isDisabled)
@@ -134,19 +134,19 @@ export const Pagination: FC<PaginationProps> = ({
   const endPage = totalPages <= 5 ? totalPages : Math.min(totalPages, currentPage + 1);
 
   return (
-    <div className="mt-16 flex items-center justify-between border-t border-gray-200 py-3">
+    <div className="flex items-center justify-between">
       <div className="flex flex-1 flex-col-reverse flex-wrap items-center justify-between gap-4 sm:flex-row">
-        <div>
+        {/* <div>
           <p className="mb-4 text-sm text-gray-700 sm:mb-0">
             Showing <span className="font-bold">{startIndex + 1}</span> to{' '}
             <span className="font-bold">{endIndex + 1}</span> of{' '}
             <span className="font-bold">{paginationConfig.count}</span> results
           </p>
-        </div>
+        </div> */}
         <div>
-          <nav className="relative z-0 inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+          <nav className="relative z-0 inline-flex" aria-label="Pagination">
             <PaginationButton
-              className="rounded-l-md"
+              className={clsx(currentPage === 1 && 'hidden')}
               currentPage={currentPage}
               isDisabled={currentPage === 1}
               {...getPreviousProps({ currentPage })}
@@ -158,7 +158,7 @@ export const Pagination: FC<PaginationProps> = ({
             {startPage > 2 && (
               <>
                 <PaginationItem page={1} currentPage={currentPage} {...getPaginationItemProps({ page: 1 })} />
-                <span className="relative inline-flex items-center border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-700 sm:px-4">
+                <span className="relative inline-flex items-center bg-white px-3 py-2 text-sm font-bold text-gray-700 sm:px-4">
                   ...
                 </span>
               </>
@@ -170,7 +170,7 @@ export const Pagination: FC<PaginationProps> = ({
 
             {endPage < totalPages - 1 && (
               <>
-                <span className="relative inline-flex items-center border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-700 sm:px-4">
+                <span className="relative inline-flex items-center bg-white px-3 py-2 text-sm font-bold text-gray-700 sm:px-4">
                   ...
                 </span>
                 <PaginationItem

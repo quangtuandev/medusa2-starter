@@ -7,6 +7,8 @@ import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
 import { StoreProduct } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC, memo, useState } from 'react';
+import MorphingShape from '../generativeart/MorphingShape';
+import { randomAssetMorphingShape } from '@libs/util/random';
 
 export interface ProductGalleryImage {
   id: string;
@@ -26,26 +28,33 @@ const GalleryImagesRow: FC<{ galleryImages: ProductGalleryImage[] }> = memo(({ g
         <Tab
           key={image.id}
           className={
-            'relative mb-0 mr-2 inline-block h-16 w-16  snap-start whitespace-nowrap rounded-md bg-white text-sm font-bold uppercase text-gray-900 last:mb-0 last:mr-0 hover:bg-gray-50 focus:outline-none focus:ring-0 lg:mb-2 lg:mr-0 lg:whitespace-normal'
+            'relative mb-0 mr-0 inline-block h-16 w-16 flex-none snap-start whitespace-nowrap rounded-lg overflow-hidden bg-white text-sm font-medium uppercase text-gray-900 last:mb-0 hover:bg-gray-50 focus:outline-none focus:ring-0 transition-all duration-200 lg:mb-3 lg:h-20 lg:w-20'
           }
         >
           {({ selected }) => (
             <>
               <span className="sr-only">{image.name}</span>
-              <span className="absolute inset-0 overflow-hidden rounded-md">
+              <span className="absolute inset-0 overflow-hidden rounded-lg">
                 <Image
                   key={image.id}
                   src={image.url}
                   alt={image.alt || 'tab for image gallery'}
-                  className={'h-full w-full object-cover object-center'}
+                  className={'h-full w-full object-cover object-center transition-transform duration-200 hover:scale-105'}
                 />
               </span>
               <span
-                className={clsx('pointer-events-none absolute inset-0 rounded-md border border-gray-200', {
-                  '!border-primary-500 border-2': selected,
-                })}
+                className={clsx(
+                  'pointer-events-none absolute inset-0 rounded-lg border-2 transition-all duration-200',
+                  {
+                    'border-blue-500 shadow-lg': selected,
+                    'border-gray-200': !selected,
+                  }
+                )}
                 aria-hidden="true"
               />
+              {selected && (
+                <span className="absolute inset-0 rounded-lg bg-blue-500/10" aria-hidden="true" />
+              )}
             </>
           )}
         </Tab>
@@ -77,42 +86,29 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
       : (images as ProductGalleryImage[]);
 
   return (
-    <TabGroup as="div" className="flex flex-col-reverse gap-4 lg:flex-row">
+    <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6">
       <h2 className="sr-only">Images</h2>
-      {gallery.length > 1 && (
-        <div className="flex-grow-1 relative mx-auto mb-12 block h-8 w-full lg:mb-0 lg:h-auto lg:max-w-[68px]">
+      {/* {gallery.length > 1 && (
+        <div className="flex-row lg:flex-col">
           <TabList
             ref={scrollableDivRef}
-            className="absolute bottom-0 left-0 right-0 top-0 h-20 snap-both snap-proximity overflow-x-auto whitespace-nowrap pb-3 lg:-right-4 lg:bottom-0 lg:h-auto lg:overflow-y-auto lg:overflow-x-hidden lg:whitespace-normal lg:px-0 lg:py-0"
+            className="flex flex-row gap-2 overflow-x-auto scrollbar-hide lg:flex-col lg:gap-3 lg:max-h-[600px] lg:overflow-y-auto lg:px-0 lg:py-0"
           >
             <GalleryImagesRow galleryImages={gallery} />
           </TabList>
-
-          <ScrollArrowButtons
-            className="hidden lg:-ml-[18px] lg:flex"
-            orientation="vertical"
-            showStartArrow={showStartArrow}
-            showEndArrow={showEndArrow}
-            handleArrowClick={handleArrowClick}
-          />
-          <ScrollArrowButtons
-            className="flex lg:-ml-4 lg:hidden"
-            showStartArrow={showStartArrow}
-            showEndArrow={showEndArrow}
-            handleArrowClick={handleArrowClick}
-          />
         </div>
-      )}
+      )} */}
 
-      <TabPanels className="flex-grow-1 w-full">
-        <div className="aspect-1 relative">
+      <TabPanels className="flex-1">
+        <div className="relative aspect-square rounded-2xl overflow-hidden">
           {gallery.length > 0 ? (
             gallery.map((image, imageIndex) => (
               <TabPanel
                 key={image.id}
-                className="group relative h-full w-full  overflow-hidden sm:rounded-md"
+                className="group relative h-full w-full overflow-hidden cursor-pointer"
                 onClick={() => setLightboxIndex(imageIndex)}
               >
+                <MorphingShape {...randomAssetMorphingShape()} zoom={0.75} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
                 <Image
                   key={image.id}
                   style={{
@@ -120,18 +116,20 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
                   }}
                   src={image.url}
                   alt={image.alt || 'selected image for product'}
-                  className="absolute h-full w-full border-b border-b-gray-200 object-contain object-center sm:rounded-md sm:border sm:border-gray-200"
+                  className="h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-105 -rotate-[14deg]"
                 />
-                <div className="absolute right-2 top-2 flex items-center justify-center rounded-xl bg-gray-800 p-2 opacity-0 transition-all hover:!opacity-75 active:!opacity-95 group-hover:opacity-50">
-                  <MagnifyingGlassPlusIcon className="h-6 w-6 text-white" />
+                {/* <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
+                <div className="absolute right-4 top-4 flex items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm p-2.5 opacity-0 transition-all duration-300 shadow-lg group-hover:opacity-100 hover:scale-110">
+                  <MagnifyingGlassPlusIcon className="h-5 w-5 text-gray-700" />
                 </div>
               </TabPanel>
             ))
           ) : (
-            <div className="absolute flex h-full w-full items-center justify-center border-b border-b-gray-200 object-cover object-center sm:rounded-md sm:border sm:border-gray-200">
-              No Image
+            <div className="flex h-full w-full items-center justify-center bg-gray-100 rounded-2xl">
+              <span className="text-gray-400">No Image</span>
             </div>
           )}
+
         </div>
       </TabPanels>
       <LightboxGallery

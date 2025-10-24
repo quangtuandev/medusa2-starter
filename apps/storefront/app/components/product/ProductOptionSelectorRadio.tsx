@@ -50,7 +50,7 @@ export const ProductOptionSelectorRadio: FC<ProductOptionSelectorProps> = ({
       value={value}
       onChange={(changedValue) => handleChange(option.id, changedValue)}
     >
-      <div className="grid grid-cols-1 gap-2">
+      <div className="flex gap-2">
         {sortedValues.map((optionValue, valueIndex) => {
           // Format the price display
           let priceDisplay = '';
@@ -82,8 +82,8 @@ export const ProductOptionSelectorRadio: FC<ProductOptionSelectorProps> = ({
               className={({ checked, disabled }) =>
                 clsx(
                   'group',
-                  checked ? 'ring-primary-300 ring-1 bg-highlight' : 'bg-white border-primary-300',
-                  'active:ring-primary-300 relative col-span-1 flex h-full  flex-col justify-between rounded-lg border px-3 py-2 font-bold shadow-sm hover:bg-highlight/40 focus:outline-none',
+                  checked ? 'ring-highlight ring-1 bg-highlight' : 'bg-white border-black',
+                  'active:ring-highlight relative col-span-1 flex h-full  flex-col justify-between rounded-full border px-12 py-1 font-bold shadow-sm hover:bg-highlight/40 focus:outline-none',
                   disabled ? 'opacity-50' : '',
                 )
               }
@@ -99,7 +99,7 @@ export const ProductOptionSelectorRadio: FC<ProductOptionSelectorProps> = ({
                   </div>
 
                   {/* Price information and check icon on the right */}
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     {priceDisplay && (
                       <div className="text-right">
                         <span className="text-sm font-normal text-gray-500">{priceDisplay}</span>
@@ -109,7 +109,7 @@ export const ProductOptionSelectorRadio: FC<ProductOptionSelectorProps> = ({
                       </div>
                     )}
                     {checked && <CheckCircleIcon className="text-primary-600 h-5 w-5 ml-2" aria-hidden="true" />}
-                  </div>
+                  </div> */}
                 </Label>
               )}
             </Radio>

@@ -76,7 +76,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
       <i className="w-4">
         <PlusIcon className="size-1" />
       </i>
-      <span className="text-nowrap btn-add"> Add to cart</span>
+      <span className="text-nowrap btn-add opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto"> Add to cart</span>
     </button>
   );
 };

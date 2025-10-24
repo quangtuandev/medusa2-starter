@@ -4,7 +4,7 @@ import { ButtonBase, type ButtonBaseProps, ButtonRef } from './ButtonBase';
 
 export interface ButtonProps extends ButtonBaseProps {
   variant?: 'default' | 'primary' | 'link' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'image';
 }
 
 const selectStructureClassNames = (variant: ButtonProps['variant']) => {
@@ -25,6 +25,8 @@ const selectSizeClassNames = (variant: ButtonProps['variant'], size: ButtonProps
         return 'text-sm';
       case 'lg':
         return 'text-lg';
+      case 'image':
+        return '';
       default:
         return 'text-base';
     }
@@ -35,6 +37,8 @@ const selectSizeClassNames = (variant: ButtonProps['variant'], size: ButtonProps
       return 'text-sm py-[9px] px-4';
     case 'lg':
       return 'text-lg py-[13px] px-6';
+    case 'image':
+      return '';
     default:
       return 'text-base py-[11px] px-5';
   }
@@ -44,7 +48,6 @@ const selectVariantClassNames = (variant: ButtonProps['variant']) => {
   switch (variant) {
     case 'primary':
       return 'button--primary text-white bg-primary hover:bg-primary-800 focus:border-primary-500';
-
     case 'link':
       return 'button--link text-primary-600 hover:text-primary-500';
     case 'ghost':

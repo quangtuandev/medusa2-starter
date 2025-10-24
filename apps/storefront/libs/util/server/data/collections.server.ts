@@ -28,7 +28,7 @@ export const _fetchCollections = async function (
   limit: number = 100,
 ): Promise<{ collections: HttpTypes.StoreCollection[]; count: number }> {
   return sdk.store.collection
-    .list({ limit, offset })
+    .list({ limit, offset, fields: 'id,handle,title,metadata' })
     .then(({ collections }) => ({ collections, count: collections.length }));
 };
 

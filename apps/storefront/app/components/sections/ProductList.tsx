@@ -116,7 +116,11 @@ export const ProductList: FC<ProductListProps> = memo(({ className, heading, tex
     <section className={clsx(`mkt-section relative overflow-x-hidden`, className)} {...props}>
       <div className="mkt-section__inner relative z-[2]">
         <Container>
-          <ProductListHeader heading={heading} text={text} actions={actions} />
+          {/* <ProductListHeader heading={heading} text={text} actions={actions} /> */}
+          <p className='text-center mb-12'>
+            <span className='text-5xl font-title font-extrabold text-64px leading-48px uppercase'>Something</span>
+            <span className='text-6xl font-centuryBook italic text-64px leading-48px pl-2'>New?</span>
+          </p>
           <ProductListBase {...props} />
         </Container>
       </div>

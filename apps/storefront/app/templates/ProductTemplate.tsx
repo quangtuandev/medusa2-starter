@@ -11,8 +11,11 @@ import { ProductOptionSelectorRadio } from '@app/components/product/ProductOptio
 import { ProductOptionSelectorSelect } from '@app/components/product/ProductOptionSelectorSelect';
 import { ProductPrice } from '@app/components/product/ProductPrice';
 import { ProductPriceRange } from '@app/components/product/ProductPriceRange';
+import { ProductReviewSection } from '@app/components/reviews/ProductReviewSection';
 import { ProductReviewStars } from '@app/components/reviews/ProductReviewStars';
 import { Share } from '@app/components/share';
+import { animate } from "animejs"
+
 import { useCart } from '@app/hooks/useCart';
 import { useProductInventory } from '@app/hooks/useProductInventory';
 import { useRegion } from '@app/hooks/useRegion';
@@ -27,8 +30,8 @@ import {
   selectVariantFromMatrixBySelectedOptions,
   selectVariantMatrix,
 } from '@libs/util/products';
+import { getCustomizationTitles } from '@libs/util/random';
 import { StoreProduct, StoreProductOptionValue, StoreProductVariant } from '@medusajs/types';
-import truncate from 'lodash/truncate';
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
@@ -135,9 +138,10 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     },
   });
 
-  const breadcrumbs = getBreadcrumbs(product);
   const currencyCode = region.currency_code;
   const [controlledOptions, setControlledOptions] = useState<Record<string, string>>(defaultValues.options);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [customizationTitles, setCustomizationTitles] = useState<string[]>([]);
   const selectedOptions = useMemo(
     () => product.options?.map(({ id }) => controlledOptions[id]),
     [product, controlledOptions],
@@ -300,9 +304,56 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
     toggleCartDrawer(true);
   }, [toggleCartDrawer]);
 
+  // Handle Buy Now functionality
+  const handleBuyNow = useCallback(async () => {
+    if (isBuyingNow) return;
+
+    setIsBuyingNow(true);
+
+    // Create a new form data submission
+    const formData = new FormData();
+    formData.append('productId', product.id!);
+    formData.append('quantity', form.getValues('quantity'));
+
+    // Add selected options to form data
+    const options = form.getValues('options');
+    Object.entries(options).forEach(([key, value]) => {
+      formData.append(`options.${key}`, value as string);
+    });
+
+    try {
+      // Submit to add to cart endpoint
+      const response = await fetch('/api/cart/line-items/create', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Redirect to checkout on success
+        window.location.href = '/checkout';
+      } else {
+        // Handle error
+        console.error('Failed to add item to cart');
+        setIsBuyingNow(false);
+      }
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      setIsBuyingNow(false);
+    }
+  }, [product.id, form, isBuyingNow]);
+
+  useEffect(() => {
+    const titles = getCustomizationTitles(product.title);
+    if (titles.length > 1) {
+      setCustomizationTitles(titles);
+    } else {
+      setCustomizationTitles([product.title]);
+    }
+  }, [product.title]);
+
   return (
     <>
-      <section className="pb-12 pt-12 xl:pt-24 min-h-screen">
+      <section className="pb-12 pt-12 min-h-screen">
         <RemixFormProvider {...form}>
           <addToCartFetcher.Form
             id="addToCartForm"
@@ -314,40 +365,67 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
             <input type="hidden" name="productId" value={product.id} />
 
             <Container className="px-0 sm:px-6 md:px-8">
-              <Grid>
-                <GridColumn>
-                  <div className="md:py-6">
-                    <Grid className="!gap-0">
-                      <GridColumn className="mb-8 md:col-span-6 lg:col-span-7 xl:pr-16 xl:pl-9">
-                        <ProductImageGallery key={product.id} product={product} />
-                      </GridColumn>
+              <Grid className="!gap-0 overflow-visible">
+                <GridColumn className="mb-8 md:col-span-6 sticky top-[144px] [height:min-content]">
+                  <h2 className="xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
+                    {customizationTitles[0]}
+                  </h2>
+                  <ProductImageGallery key={product.id} product={product} />
+                  <div className='flex gap-4 items-end justify-between'>
+                    <div className='flex flex-col gap-2'>
+                      {customizationTitles[1] && (
+                        <h2 className="xl:text-[100px] font-bold text-gray-900">
+                          {customizationTitles[1]}
+                        </h2>
+                      )}
+                      <p className="text-gray-900 font-bold flex gap-3">
+                        <span className="text-5xl">
+                          {selectedVariant ? (
+                            <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
+                          ) : (
+                            <ProductPriceRange product={product} currencyCode={currencyCode} />
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-6">
+                      {!soldOut && <QuantitySelector variant={selectedVariant} />}
+                      <div className="flex-1">
+                        {!soldOut ? (
+                          <SubmitButton
+                            variant="ghost"
+                            size='image'
+                            disabled={isAddingToCart || isBuyingNow}
+                            className="disabled:opacity-50 disabled:cursor-not-allowed">
+                            <img src="/assets/images/add-to-cart.svg" alt="Add to cart" className="w-auto h-[108px]" />
+                          </SubmitButton>
+                        ) : (
+                          <SubmitButton
+                            disabled
+                            className="pointer-events-none !h-12 w-full !text-base !font-bold opacity-50"
+                          >
+                            Sold out
+                          </SubmitButton>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </GridColumn>
 
-                      <GridColumn className="flex flex-col md:col-span-6 lg:col-span-5">
-                        <div className="px-0 sm:px-6 md:p-10 md:pt-0">
-                          <div>
-                            <Breadcrumbs className="mb-6 text-primary" breadcrumbs={breadcrumbs} />
+                <GridColumn className="flex flex-col md:col-span-6">
+                  <div className="h-fit">
+                    <div className="px-0 sm:px-6 md:p-10 md:pt-0">
+                      {/* <div>
+                        <header className="flex gap-4 mb-2">
+                          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight">
+                            {product.title}
+                          </h1>
+                        </header>
+                      </div> */}
 
-                            <header className="flex gap-4 mb-2">
-                              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight">
-                                {product.title}
-                              </h1>
-                              <div className="flex-1" />
-                              <Share
-                                itemType="product"
-                                shareData={{
-                                  title: product.title,
-                                  text: truncate(product.description || 'Check out this product', {
-                                    length: 200,
-                                    separator: ' ',
-                                  }),
-                                }}
-                              />
-                            </header>
-                          </div>
+                      {/* <ProductReviewStars reviewsCount={reviewsCount} reviewStats={reviewStats} /> */}
 
-                          <ProductReviewStars reviewsCount={reviewsCount} reviewStats={reviewStats} />
-
-                          <section aria-labelledby="product-information" className="mt-4">
+                      {/* <section aria-labelledby="product-information" className="mt-4">
                             <h2 id="product-information" className="sr-only">
                               Product information
                             </h2>
@@ -359,76 +437,78 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                                 <ProductPriceRange product={product} currencyCode={currencyCode} />
                               )}
                             </p>
-                          </section>
+                          </section> */}
 
-                          {productSelectOptions && productSelectOptions.length > 5 && (
-                            <section aria-labelledby="product-options" className="product-options">
-                              <h2 id="product-options" className="sr-only">
-                                Product options
-                              </h2>
-
-                              <div className="space-y-4">
-                                {productSelectOptions.map((option, optionIndex) => (
-                                  <ProductOptionSelectorSelect
-                                    key={optionIndex}
-                                    option={option}
-                                    value={controlledOptions[option.id]}
-                                    onChange={handleOptionChangeBySelect}
-                                    currencyCode={currencyCode}
-                                  />
-                                ))}
-                              </div>
-                            </section>
+                      <div className="flex items-center gap-4 py-2">
+                        <div className="flex-1">
+                          {!soldOut ? (
+                            <Button
+                              variant="primary"
+                              onClick={handleBuyNow}
+                              disabled={isAddingToCart || isBuyingNow}
+                              className="!h-12 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {isBuyingNow ? 'Processing...' : 'Buy Now'}
+                            </Button>
+                          ) : (
+                            <Button
+                              disabled
+                              className="pointer-events-none !h-12 !text-base !font-bold opacity-50 bg-gray-300 text-gray-500"
+                            >
+                              Sold out
+                            </Button>
                           )}
+                        </div>
+                      </div>
 
-                          {productSelectOptions && productSelectOptions.length <= 5 && (
-                            <section aria-labelledby="product-options" className="product-options my-6 grid gap-4">
-                              <h2 id="product-options" className="sr-only">
-                                Product options
-                              </h2>
-                              {productSelectOptions.map((option, optionIndex) => (
-                                <div key={optionIndex}>
-                                  <FieldLabel className="mb-2">{option.title}</FieldLabel>
-                                  <ProductOptionSelectorRadio
-                                    option={option}
-                                    value={controlledOptions[option.id]}
-                                    onChange={handleOptionChangeByRadio}
-                                    currencyCode={currencyCode}
-                                  />
-                                </div>
-                              ))}
-                            </section>
-                          )}
+                      {productSelectOptions && productSelectOptions.length > 5 && (
+                        <section aria-labelledby="product-options" className="product-options">
+                          <h2 id="product-options" className="sr-only">
+                            Product options
+                          </h2>
 
-                          <div className="my-2 flex flex-col gap-2">
-                            <div className="flex items-center gap-4 py-2">
-                              {!soldOut && <QuantitySelector variant={selectedVariant} />}
-                              <div className="flex-1">
-                                {!soldOut ? (
-                                  <SubmitButton className="!h-12 w-full whitespace-nowrap !text-base !font-bold">
-                                    {isAddingToCart ? 'Adding...' : 'Add to cart'}
-                                  </SubmitButton>
-                                ) : (
-                                  <SubmitButton
-                                    disabled
-                                    className="pointer-events-none !h-12 w-full !text-base !font-bold opacity-50"
-                                  >
-                                    Sold out
-                                  </SubmitButton>
-                                )}
-                              </div>
+                          <div className="space-y-4">
+                            {productSelectOptions.map((option, optionIndex) => (
+                              <ProductOptionSelectorSelect
+                                key={optionIndex}
+                                option={option}
+                                value={controlledOptions[option.id]}
+                                onChange={handleOptionChangeBySelect}
+                                currencyCode={currencyCode}
+                              />
+                            ))}
+                          </div>
+                        </section>
+                      )}
+
+                      {productSelectOptions && productSelectOptions.length <= 5 && (
+                        <section aria-labelledby="product-options" className="product-options my-6 grid gap-4">
+                          <h2 id="product-options" className="sr-only">
+                            Product options
+                          </h2>
+                          {productSelectOptions.map((option, optionIndex) => (
+                            <div key={optionIndex}>
+                              <ProductOptionSelectorRadio
+                                option={option}
+                                value={controlledOptions[option.id]}
+                                onChange={handleOptionChangeByRadio}
+                                currencyCode={currencyCode}
+                              />
                             </div>
+                          ))}
+                        </section>
+                      )}
 
-                            {!!product.description && (
-                              <div className="mt-4">
-                                <h3 className="mb-2">Description</h3>
-                                <div className="whitespace-pre-wrap text-base text-primary-800">
-                                  {product.description}
-                                </div>
-                              </div>
-                            )}
+                      <div className="my-2 flex flex-col gap-2">
+                        {!!product.description && (
+                          <div className="mt-4">
+                            <div className="whitespace-pre-wrap text-base text-primary-800">
+                              {product.description}
+                            </div>
+                          </div>
+                        )}
 
-                            {product.categories && product.categories.length > 0 && (
+                        {/* {product.categories && product.categories.length > 0 && (
                               <nav aria-label="Categories" className="mt-4">
                                 <h3 className="mb-2">Categories</h3>
 
@@ -463,14 +543,14 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                                   ))}
                                 </ol>
                               </nav>
-                            )}
-                          </div>
-                        </div>
-                      </GridColumn>
-                    </Grid>
+                            )} */}
+                      </div>
+                    </div>
+                    {reviewsCount > 0 && <ProductReviewSection />}
                   </div>
                 </GridColumn>
               </Grid>
+
             </Container>
           </addToCartFetcher.Form>
         </RemixFormProvider>

@@ -2,6 +2,8 @@ import { Image } from '@app/components/common/images/Image';
 import { StoreProduct } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC, HTMLAttributes } from 'react';
+import MorphingShape from '../generativeart/MorphingShape';
+import { randomAssetMorphingShape } from '@libs/util/random';
 
 export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
   product: StoreProduct;
@@ -16,7 +18,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
     <figure
       className={clsx(
         'product-thumbnail',
-        'aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg border border-black border-opacity-5',
+        'aspect-w-1 aspect-h-1 w-full overflow-hidden',
         className,
       )}
       style={{
@@ -24,21 +26,13 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       }}
       {...props}
     >
-      {hoverImage && (
-        <Image
-          loading="lazy"
-          src={hoverImage}
-          alt={product.title}
-          className="h-full w-full object-cover object-center opacity-0 transition-all duration-300 group-hover/product-card:scale-105 group-hover/product-card:opacity-100"
-        />
-      )}
+      <MorphingShape {...randomAssetMorphingShape()} />
       {thumbnailImage ? (
         <Image
           loading="lazy"
           src={thumbnailImage}
           alt={product.title}
-          className={clsx('h-full w-full object-cover object-center transition-all duration-300', {
-            'group-hover/product-card:opacity-0': hoverImage,
+          className={clsx('h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
             'group-hover/product-card:opacity-75': !hoverImage,
           })}
         />

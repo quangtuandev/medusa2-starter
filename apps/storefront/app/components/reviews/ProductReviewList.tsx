@@ -23,7 +23,7 @@ export const ProductReviewList: FC<ProductReviewListProps> = ({ productReviews }
   return (
     <div>
       {productReviews && productReviews.length > 0 && (
-        <div className="-my-12 divide-y divide-gray-200">
+        <div className=" divide-y divide-gray-200">
           {productReviews.map((review, reviewIndex) => {
             const galleryImages = (review.images || []).map((image) => ({
               url: image.url,

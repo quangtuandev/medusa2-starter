@@ -1,3 +1,4 @@
+import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { StoreProductVariant } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC } from 'react';
@@ -25,39 +26,67 @@ export const QuantitySelector: FC<QuantitySelectorProps> = ({ className, variant
   const variantInventory =
     variant?.manage_inventory && !variant.allow_backorder ? variant.inventory_quantity || 0 : maxInventory;
 
-  const optionsArray = [...Array(Math.min(variantInventory, maxInventory))].map((_, index) => ({
-    label: `${index + 1}`,
-    value: index + 1,
-  }));
+  const handleDecrement = (currentValue: number, onChange: (value: number) => void) => {
+    const newValue = Math.max(1, currentValue - 1);
+    onChange(newValue);
+    onChange?.(newValue);
+  };
+
+  const handleIncrement = (currentValue: number, onChange: (value: number) => void) => {
+    const newValue = Math.min(variantInventory, currentValue + 1);
+    onChange(newValue);
+    onChange?.(newValue);
+  };
+
+  const handleInputChange = (value: string, onChange: (value: number) => void) => {
+    const numValue = parseInt(value, 10) || 1;
+    const clampedValue = Math.max(1, Math.min(variantInventory, numValue));
+    onChange(clampedValue);
+    onChange?.(clampedValue);
+  };
 
   return (
     <Controller
       name="quantity"
       control={control}
       render={({ field }) => (
-        <div className={clsx('w-28 flex-grow-0', className)}>
+        <div className={clsx('flex items-center border border-gray-300 rounded-full px-2', className)}>
           <label htmlFor="quantity" className="sr-only">
             Quantity
           </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">Qty</span>
-            <select
-              {...field}
-              className="focus:border-primary-500 focus:ring-primary-500 !h-12 !w-full rounded-md border-gray-300 pl-12 pr-4"
-              value={field.value || '1'}
-              onChange={(e) => {
-                const value = parseInt(e.target.value, 10);
-                field.onChange(value);
-                onChange?.(value);
-              }}
-            >
-              {optionsArray.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+
+          {/* Minus Button */}
+          <button
+            type="button"
+            className="bg-highlight flex items-center justify-center p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200 rounded-full"
+            onClick={() => handleDecrement(field.value || 1, field.onChange)}
+            disabled={(field.value || 1) <= 1}
+          >
+            <MinusIcon className="h-4 w-4" />
+          </button>
+
+          {/* Quantity Input */}
+          <input
+            {...field}
+            type="text"
+            inputMode="numeric"
+            id="quantity"
+            className="w-12 text-center border-0 focus:ring-0 focus:outline-none text-base font-medium px-1 py-2"
+            value={field.value || '1'}
+            onChange={(e) => handleInputChange(e.target.value, field.onChange)}
+            min={1}
+            max={variantInventory}
+          />
+
+          {/* Plus Button */}
+          <button
+            type="button"
+            className="bg-highlight flex items-center justify-center p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200 rounded-full"
+            onClick={() => handleIncrement(field.value || 1, field.onChange)}
+            disabled={(field.value || 1) >= variantInventory}
+          >
+            <PlusIcon className="h-4 w-4" />
+          </button>
         </div>
       )}
     />
