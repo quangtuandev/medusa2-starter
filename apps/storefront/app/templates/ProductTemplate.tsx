@@ -570,7 +570,6 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                     <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
                       <hr className='col-span-8 border-t-[1px] border-primary' />
                     </div>
-                    {reviewsCount > 0 && <ProductReviewSection />}
                   </div>
                 </GridColumn>
               </Grid>
@@ -579,6 +578,9 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
           </addToCartFetcher.Form>
         </RemixFormProvider>
       </section>
+      <Container>
+        {reviewsCount > 0 && <ProductReviewSection />}
+      </Container>
     </>
   );
 };

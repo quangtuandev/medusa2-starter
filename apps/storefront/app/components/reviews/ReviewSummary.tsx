@@ -47,8 +47,6 @@ export const ProductReviewSummary: FC<ProductReviewSummaryProps> = ({ stats, cou
     <div className={className}>
       {stats && (
         <>
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customer Reviews</h2>
-
           <div className="mt-3 flex items-center">
             <div>
               <div className="flex items-center">

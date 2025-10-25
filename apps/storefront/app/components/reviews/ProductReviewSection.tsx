@@ -14,27 +14,31 @@ export const ProductReviewSection: FC = () => {
   if (!productReviews.count || productReviewStats.count < 1) return null;
 
   return (
-    <section id="reviews" className="container mx-auto my-12 grid grid-cols-12 px-8">
-      {/* <ProductReviewSummary
-        className="col-span-12 lg:col-span-4"
-        stats={productReviewStats?.product_review_stats[0]}
-        count={productReviews.count}
-      /> */}
-      <p>
+    <>
+      <p className='text-center'>
         <span className='text-5xl font-title font-extrabold text-64px leading-48px uppercase'>Customer</span>
         <span className='text-6xl font-centuryBook italic text-64px leading-48px pl-2'>Review</span>
       </p>
+      <section id="reviews" className="container mx-auto my-12 grid grid-cols-12 px-8">
 
-      <ProductReviewListWithPagination
-        className="col-span-12"
-        productReviews={productReviews.product_reviews}
-        context={`products/${product.handle}`}
-        paginationConfig={{
-          limit: productReviews.limit,
-          offset: productReviews.offset,
-          count: productReviews.count,
-        }}
-      />
-    </section>
+
+        <ProductReviewSummary
+          className="col-span-12 lg:col-span-4"
+          stats={productReviewStats?.product_review_stats[0]}
+          count={productReviews.count}
+        />
+
+        <ProductReviewListWithPagination
+          className="col-span-12 my-16 lg:col-span-8 lg:col-start-6 lg:mt-0"
+          productReviews={productReviews.product_reviews}
+          context={`products/${product.handle}`}
+          paginationConfig={{
+            limit: productReviews.limit,
+            offset: productReviews.offset,
+            count: productReviews.count,
+          }}
+        />
+      </section>
+    </>
   );
 };
