@@ -35,7 +35,7 @@ export default function ProductCollectionRoute() {
   const { collectionsWithProducts } = data;
 
   return (
-    <Container className="pb-16">
+    <Container className="pb-32">
       <h1 className="relative text-center text-[100px] text-[#321D14] mt-24 after:content-[''] after:block after:w-full after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
         <span className="inline-block justify-center bg-white z-10 relative px-16 text-center">
           <span className=" font-centuryBook block leading-6">All</span>
