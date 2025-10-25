@@ -95,12 +95,12 @@ const Cursor = () => {
             const cursor = computedStyle.cursor;
 
             const shouldBeHovering = cursor === 'pointer' ||
-                                   target.tagName === 'A' ||
-                                   target.tagName === 'BUTTON' ||
-                                   typeof target.onclick === 'function' ||
-                                   target.getAttribute('role') === 'button' ||
-                                   target.closest('a') !== null ||
-                                   target.closest('button') !== null;
+                target.tagName === 'A' ||
+                target.tagName === 'BUTTON' ||
+                typeof target.onclick === 'function' ||
+                target.getAttribute('role') === 'button' ||
+                target.closest('a') !== null ||
+                target.closest('button') !== null;
 
             if (shouldBeHovering !== isHovering.current) {
                 isHovering.current = shouldBeHovering;
@@ -166,11 +166,11 @@ const Cursor = () => {
     }, [animateCursor, animateHover, isMobile]);
 
     // Don't render custom cursor on mobile devices
-  if (isMobile) {
-    return null;
-  }
+    if (isMobile) {
+        return null;
+    }
 
-  return (
+    return (
         <>
             {/* Shadow */}
             <div
@@ -184,7 +184,7 @@ const Cursor = () => {
                     height: 32,
                     transform: 'translate3d(-100px, -100px, 0) scale(1)',
                     willChange: 'transform, opacity, filter',
-                    zIndex: 9999,
+                    zIndex: 99999,
                     opacity: 0.8,
                     filter: 'blur(8px)',
                     transition: 'opacity 0.3s cubic-bezier(.25,.46,.45,.94), filter 0.2s ease-out',
@@ -216,7 +216,7 @@ const Cursor = () => {
                     height: 32,
                     transform: 'translate3d(-100px, -100px, 0) scale(1)',
                     willChange: 'transform, filter',
-                    zIndex: 10000,
+                    zIndex: 100000,
                     transition: 'filter 0.2s ease-out',
                 }}
             >
@@ -244,7 +244,7 @@ const Cursor = () => {
                     pointerEvents: 'none',
                     width: 0,
                     height: 0,
-                    zIndex: 9998,
+                    zIndex: 99999,
                 }}
                 className="cursor-ripple"
             ></div>

@@ -14,6 +14,7 @@ import { K } from "@app/components/home/K";
 import { I } from "@app/components/home/I";
 import { R } from "@app/components/home/R";
 import { A } from "@app/components/home/A";
+import { MainMenu } from "@app/components/common/menu/Main";
 
 export const loader = async (_args: LoaderFunctionArgs) => {
   return {};
@@ -152,12 +153,14 @@ export default function IndexRoute() {
         </p>
         {activeComponent === 'main' &&
           <div ref={menuRef} className="flex flex-col gap-6">
-            <MenuToggle isOpen={isOpen} onClick={handleMenuToggle} className="shadow-[0px_4px_10px_0px_#00000040]"
+            <MenuToggle isOpen={isOpen} onClick={handleMenuToggle} className="shadow-[0px_4px_10px_0px_#00000040] z-[10000]"
             />
             <LanguageSwitcher />
           </div>
         }
       </div>
+
+      {activeComponent === 'main' && isOpen && <MainMenu />}
 
       <div ref={logoRef} className="flex relative flex-col items-center gap-3">
         {activeComponent !== 'main' && <div className="z-10 h-[80px]" />}
