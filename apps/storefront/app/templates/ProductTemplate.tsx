@@ -35,6 +35,7 @@ import { StoreProduct, StoreProductOptionValue, StoreProductVariant } from '@med
 import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
+import Collasape from '@app/components/common/collasape/Collasape';
 
 /**
  * Generates breadcrumbs for a product page
@@ -545,6 +546,29 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                               </nav>
                             )} */}
                       </div>
+                    </div>
+                    <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
+                      <hr className='col-span-8 border-t-[1px] border-primary' />
+                    </div>
+                    <div className="container mx-auto my-12 grid grid-cols-12 px-8 p-4 gap-[20px]">
+                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="INGREDIENTS" initiallyOpen={false}>
+                        <div>
+                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                        </div>
+                      </Collasape>
+                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="PRECAUTIONS OF USE" initiallyOpen={false}>
+                        <div>
+                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                        </div>
+                      </Collasape>
+                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="APPLICATION TIPS" initiallyOpen={false}>
+                        <div>
+                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
+                        </div>
+                      </Collasape>
+                    </div>
+                    <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
+                      <hr className='col-span-8 border-t-[1px] border-primary' />
                     </div>
                     {reviewsCount > 0 && <ProductReviewSection />}
                   </div>
