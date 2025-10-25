@@ -3,7 +3,7 @@ import { Image } from '@app/components/common/images/Image';
 import { LightboxGallery } from '@app/components/common/images/LightboxGallery';
 import { useScrollArrows } from '@app/hooks/useScrollArrows';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
-import { MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
 import { StoreProduct } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC, memo, useState } from 'react';
@@ -67,6 +67,7 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
   const { images: productImages = [], thumbnail } = product;
   const images = productImages ?? [];
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { scrollableDivRef, showStartArrow, showEndArrow, handleArrowClick } = useScrollArrows({
     buffer: 50,
@@ -85,19 +86,55 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
       ]
       : (images as ProductGalleryImage[]);
 
+  const nextTab = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedIndex((prev) => (prev + 1) % gallery.length);
+  };
+
+  const prevTab = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
+  };
+
   return (
-    <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6">
+    <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6" selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <h2 className="sr-only">Images</h2>
-      {/* {gallery.length > 1 && (
-        <div className="flex-row lg:flex-col">
+      {gallery.length > 1 && (
+        <div className="absolute -bottom-8 flex justify-center w-full gap-4">
           <TabList
             ref={scrollableDivRef}
-            className="flex flex-row gap-2 overflow-x-auto scrollbar-hide lg:flex-col lg:gap-3 lg:max-h-[600px] lg:overflow-y-auto lg:px-0 lg:py-0"
+            className="flex flex-row gap-2 p-3 bg-[#D1D1D1] rounded-full"
           >
-            <GalleryImagesRow galleryImages={gallery} />
+            {gallery.map((image, index) => (
+              <Tab key={image.id} className="relative flex w-2 h-2 items-center justify-center cursor-pointer rounded-lg transition-all duration-200 focus:outline-none aria-selected:border-blue-500">
+                {({ selected }) => (
+                  <>
+                    <span
+                      className={clsx(`absolute h-2 w-2 rounded-full transition-colors duration-300 bg-white`, {
+                        'opacity-40': !selected,
+                      })}
+                    />
+                  </>
+                )}
+              </Tab>
+            ))}
           </TabList>
+          <div className="flex justify-between gap-2">
+            <button
+              onClick={prevTab}
+              className="w-8 h-8 py-1 bg-[#D1D1D1] rounded-full flex items-center justify-center focus:outline-none focus:ring-0 hover:bg-gray-300"
+            >
+              <ChevronLeftIcon className="h-5 w-5 text-white" />
+            </button>
+            <button
+              onClick={nextTab}
+              className="w-8 h-8 py-1 bg-[#D1D1D1] rounded-full flex items-center justify-center focus:outline-none focus:ring-0 hover:bg-gray-300"
+            >
+              <ChevronRightIcon className="h-5 w-5 text-white" />
+            </button>
+          </div>
         </div>
-      )} */}
+      )}
 
       <TabPanels className="flex-1">
         <div className="relative aspect-square rounded-2xl overflow-hidden">
