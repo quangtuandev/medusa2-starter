@@ -69,7 +69,7 @@ export default function Stories() {
       classNameWrapper: "items-end",
       text: 'One special aspect of Kira is that the packaging is entirely made of paper and sugarcane bagasse, implementing an extremely eco-friendly approach to recycling and resource conservation to protect the environment. Specifically, the packaging for the perfume bottles in the first collection will be a paper cup used for daily coffee, which you might typically toss away right after use. However, at Kira, this paper cup will preserve memories and lasting joy for the user, without the feeling of being wasteful.',
       classNameText: "font-montserrat font-medium text-[17.65px] leading-[28.24px] text-center w-[830px] text-white px-5 py-2 rotate-[-5deg]",
-      classNameTextWrapper: "right-[5%] top-[30vh]",
+      classNameTextWrapper: "right-[12vh] top-[40vh]",
       items: [
         { src: '/assets/images/stories/items/pack-1.webp', className: 'top-[60vh] left-[-10%] h-[20vh] object-contain' },
         { src: '/assets/images/stories/items/pack-2.webp', className: 'top-[68vh] left-[3%] h-[22vh] object-contain' },
