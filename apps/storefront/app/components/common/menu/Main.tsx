@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { animate, spring } from "animejs";
 import debounce from "lodash/debounce"
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
@@ -128,14 +129,13 @@ export const MainMenu = () => {
         setIsHovering(false);
     }
 
-
     return (
         <div className="absolute inset-0 z-[9999] bg-white ">
             <div className="h-full w-full">
                 <div className="absolute flex w-[1840px] h-[max(calc(100vh-300px),400px)] left-1/2 -translate-x-1/2 items-center">
                     <div className="absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[-1] opacity-0 menu-background" />
                     {categoryItems.map((item) => (
-                        <div className={clsx('aspect-square absolute', item.className)} key={item.id}
+                        <Link to={item.url} className={clsx('aspect-square absolute', item.className)} key={item.id}
                             id={item.id}
                             onMouseEnter={() => {
                                 handleMouseEnter(item);
@@ -148,7 +148,7 @@ export const MainMenu = () => {
                                 <img id={`menu-image-${item.id}`} src={item.image} alt={item.label} className="w-full h-full object-contain menu-image z-[-2]" />
                                 <FancyText id={`fancy-text-${item.id}`} className="text-center absolute text-white z-[9]" text={item.label} />
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
                 <div className="absolute bottom-0 left-0 w-full bg-[url('/assets/images/menu/background.webp')] bg-contain bg-repeat-x bg-bottom bg-center">

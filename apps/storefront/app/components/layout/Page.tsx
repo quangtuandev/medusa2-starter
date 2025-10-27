@@ -11,10 +11,12 @@ export interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ className, children }) => {
+  const hiddenHeaderFooterPaths = ["/", "/pick-a-card", "/stories"];
+  const hiddenFooterPaths = ["/", "/pick-a-card", "/", "/stories", "/products"];
   const matches = useMatches();
   const currentMatch = matches[matches.length - 1];
-  const isHiddenHeaderFooter = currentMatch?.pathname === "/" || currentMatch?.pathname === "/pick-a-card";
-  const isHiddenFooter = currentMatch?.pathname === "/" || currentMatch?.pathname === "/pick-a-card" || currentMatch?.pathname === "/products";
+  const isHiddenHeaderFooter = hiddenHeaderFooterPaths.includes(currentMatch?.pathname || "");
+  const isHiddenFooter = hiddenFooterPaths.includes(currentMatch?.pathname || "");
 
   return (
     <div

@@ -121,8 +121,19 @@ module.exports = {
         15: '15',
         16: '16',
       },
+      backgroundImage: {
+        'item-story': "url('/assets/images/stories/background-story.webp')",
+        'item-mission': "url('/assets/images/stories/background-mission.webp')",
+        'item-packaging': "url('/assets/images/stories/background-packaging.webp')",
+      },
     },
   },
+  safelist: [
+    'bg-item-story',
+    'bg-item-mission',
+    'bg-item-packaging'
+  ],
+
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
