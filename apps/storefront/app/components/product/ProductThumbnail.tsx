@@ -26,7 +26,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       }}
       {...props}
     >
-      <MorphingShape {...randomAssetMorphingShape()} />
+      <MorphingShape {...randomAssetMorphingShape(product.subtitle)} />
       {thumbnailImage ? (
         <Image
           loading="lazy"

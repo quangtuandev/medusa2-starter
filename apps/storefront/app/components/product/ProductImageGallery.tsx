@@ -145,7 +145,7 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
                 className="group relative h-full w-full overflow-hidden cursor-pointer"
                 onClick={() => setLightboxIndex(imageIndex)}
               >
-                <MorphingShape {...randomAssetMorphingShape()} zoom={0.75} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
+                <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.75} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
                 <Image
                   key={image.id}
                   style={{
