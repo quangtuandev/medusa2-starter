@@ -33,7 +33,7 @@ export const MainMenu = () => {
             id: 'product',
             label: 'Product',
             image: '/assets/images/menu/product.webp',
-            url: '/products',
+            url: '/pick-a-card',
             className: 'max-w-[648px] left-[366px]',
             imagePosition: { x: '4%' },
             position: {
