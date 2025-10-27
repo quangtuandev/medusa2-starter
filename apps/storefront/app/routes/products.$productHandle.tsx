@@ -11,7 +11,7 @@ import { useLoaderData } from 'react-router';
 export const loader = async (args: LoaderFunctionArgs) => {
   const { limit: reviewsLimit, offset: reviewsOffset } = withPaginationParams({
     request: args.request,
-    defaultPageSize: 5,
+    defaultPageSize: 2,
   });
 
   const { products } = await fetchProducts(args.request, {
