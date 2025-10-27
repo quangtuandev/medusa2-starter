@@ -135,7 +135,7 @@ export const Pagination: FC<PaginationProps> = ({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-1 flex-col-reverse flex-wrap items-center justify-between gap-4 sm:flex-row">
+      <div className="flex flex-1 flex-col-reverse flex-wrap items-center justify-center gap-4 sm:flex-row">
         {/* <div>
           <p className="mb-4 text-sm text-gray-700 sm:mb-0">
             Showing <span className="font-bold">{startIndex + 1}</span> to{' '}

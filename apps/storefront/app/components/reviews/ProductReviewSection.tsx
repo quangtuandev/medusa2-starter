@@ -20,16 +20,14 @@ export const ProductReviewSection: FC = () => {
         <span className='text-6xl font-centuryBook italic text-64px leading-48px pl-2'>Review</span>
       </p>
       <section id="reviews" className="container mx-auto my-12 grid grid-cols-12 px-8">
-
-
-        <ProductReviewSummary
+        {/* <ProductReviewSummary
           className="col-span-12 lg:col-span-4"
           stats={productReviewStats?.product_review_stats[0]}
           count={productReviews.count}
-        />
+        /> */}
 
         <ProductReviewListWithPagination
-          className="col-span-12 my-16 lg:col-span-8 lg:col-start-6 lg:mt-0"
+          className="col-span-12"
           productReviews={productReviews.product_reviews}
           context={`products/${product.handle}`}
           paginationConfig={{
