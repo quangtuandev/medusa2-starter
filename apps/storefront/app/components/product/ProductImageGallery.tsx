@@ -6,7 +6,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
 import { StoreProduct } from '@medusajs/types';
 import clsx from 'clsx';
-import { FC, memo, useState } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import MorphingShape from '../generativeart/MorphingShape';
 import { randomAssetMorphingShape } from '@libs/util/random';
 
@@ -19,6 +19,7 @@ export interface ProductGalleryImage {
 
 export interface ProductImageGalleryProps {
   product: StoreProduct;
+  [key: string]: any;
 }
 
 const GalleryImagesRow: FC<{ galleryImages: ProductGalleryImage[] }> = memo(({ galleryImages }) => {
@@ -63,11 +64,11 @@ const GalleryImagesRow: FC<{ galleryImages: ProductGalleryImage[] }> = memo(({ g
   );
 });
 
-export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) => {
+export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, indexGallery }) => {
   const { images: productImages = [], thumbnail } = product;
   const images = productImages ?? [];
   const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(indexGallery || 0);
 
   const { scrollableDivRef, showStartArrow, showEndArrow, handleArrowClick } = useScrollArrows({
     buffer: 50,
@@ -95,6 +96,10 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product }) =
     e.preventDefault();
     setSelectedIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
   };
+
+  useEffect(() => {
+    setSelectedIndex(indexGallery || 0);
+  }, [indexGallery]);
 
   return (
     <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6" selectedIndex={selectedIndex} onChange={setSelectedIndex}>

@@ -14,7 +14,13 @@ export function formatPrice(amount: number | null, options: FormatPriceOptions) 
     quantity: 1,
   };
   const { currency, quantity } = merge({}, defaultOptions, options);
-
+  if (currency === 'vnd') {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'vnd',
+      currencyDisplay: 'code',
+    }).format((amount || 0) * quantity);
+  }
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
