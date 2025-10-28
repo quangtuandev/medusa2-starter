@@ -77,10 +77,12 @@
     "yalc": "^1.0.0-pre.53"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@epic-web/cachified": "^5.2.0",
     "@googlemaps/addressvalidation": "^1.0.2",
     "@headlessui/react": "^2.1.9",
     "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^5.2.2",
     "@lambdacurry/forms": "^0.15.0",
     "@lambdacurry/medusa-plugins-sdk": "0.0.5",
     "@loadable/component": "^5.15.3",
@@ -120,6 +122,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-drag-drop-files": "2.3.10",
+    "react-hook-form": "^7.65.0",
     "react-i18next": "^15.6.1",
     "react-photo-album": "^2.3.0",
     "react-player": "^2.12.0",
@@ -134,6 +137,7 @@
     "use-debounce": "^8.0.1",
     "yet-another-react-lightbox": "^3.14.0",
     "yup": "^1.4.0",
+    "zod": "^4.1.12",
     "zustand": "^4.4.7"
   }
 }
