@@ -9,31 +9,31 @@ const IS_TEST = process.env.NODE_ENV === 'test';
 const cacheModule = IS_TEST
   ? { resolve: '@medusajs/medusa/cache-inmemory' }
   : {
-      resolve: '@medusajs/medusa/cache-redis',
-      options: {
-        redisUrl: REDIS_URL,
-      },
-    };
+    resolve: '@medusajs/medusa/cache-redis',
+    options: {
+      redisUrl: REDIS_URL,
+    },
+  };
 
 const eventBusModule = IS_TEST
   ? { resolve: '@medusajs/medusa/event-bus-local' }
   : {
-      resolve: '@medusajs/medusa/event-bus-redis',
-      options: {
-        redisUrl: REDIS_URL,
-      },
-    };
+    resolve: '@medusajs/medusa/event-bus-redis',
+    options: {
+      redisUrl: REDIS_URL,
+    },
+  };
 
 const workflowEngineModule = IS_TEST
   ? { resolve: '@medusajs/medusa/workflow-engine-inmemory' }
   : {
-      resolve: '@medusajs/medusa/workflow-engine-redis',
-      options: {
-        redis: {
-          url: REDIS_URL,
-        },
+    resolve: '@medusajs/medusa/workflow-engine-redis',
+    options: {
+      redis: {
+        url: REDIS_URL,
       },
-    };
+    },
+  };
 
 module.exports = defineConfig({
   projectConfig: {

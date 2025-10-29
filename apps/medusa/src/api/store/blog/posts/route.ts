@@ -8,16 +8,14 @@ export async function GET(
   const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
 
   const filters = {
-    status: req.query.status as string || 'published',
-    category_id: req.query.category_id as string,
-    search: req.query.search as string,
-  };
-
-  const pagination = {
+    published: req.query.published ? req.query.published === 'true' : true,
     limit: parseInt(req.query.limit as string) || 20,
     offset: parseInt(req.query.offset as string) || 0,
   };
 
-  const result = await blogModuleService.getPosts(filters, pagination);
+  const result = await blogModuleService.getPublishedPosts({
+    limit: filters.limit,
+    offset: filters.offset
+  });
   res.json(result);
 }

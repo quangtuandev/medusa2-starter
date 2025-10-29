@@ -1,45 +1,43 @@
-import { MedusaRequest, MedusaResponse } from '@medusajs/framework';
-const BLOG_MODULE = 'blogModuleService';
-import { z } from 'zod';
+import {
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
+import {
+  createPostWorkflow,
+} from "../../../../workflows/create-post"
+import { z } from "zod"
+import { PostAdminCreatePost } from "./validators"
+type PostAdminCreatePostType = z.infer<typeof PostAdminCreatePost>
 
-const createPostSchema = z.object({
-  title: z.string(),
-  content: z.string(),
-  excerpt: z.string().optional(),
-  featured_image: z.string().optional(),
-  status: z.enum(['draft', 'published', 'archived']).optional(),
-});
-
-const updatePostSchema = createPostSchema.partial();
-
-export async function GET(
-  req: MedusaRequest,
+export const POST = async (
+  req: MedusaRequest<PostAdminCreatePostType>,
   res: MedusaResponse
-): Promise<void> {
-  const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
+) => {
+  const { result } = await createPostWorkflow(req.scope)
+    .run({
+      input: req.validatedBody,
+    })
 
-  const filters = {
-    status: req.query.status as string,
-    category_id: req.query.category_id as string,
-    search: req.query.search as string,
-  };
-
-  const pagination = {
-    limit: parseInt(req.query.limit as string) || 20,
-    offset: parseInt(req.query.offset as string) || 0,
-  };
-
-  const result = await blogModuleService.getPosts(filters, pagination);
-  res.json(result);
+  res.json({ post: result })
 }
-
-export async function POST(
+export const GET = async (
   req: MedusaRequest,
   res: MedusaResponse
-): Promise<void> {
-  const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
+) => {
+  const query = req.scope.resolve("query")
 
-  const validatedData = createPostSchema.parse(req.body);
-  const post = await blogModuleService.createPost(validatedData);
-  res.status(201).json(post);
+  const {
+    data: posts,
+    metadata: { count, take, skip } = {},
+  } = await query.graph({
+    entity: "post",
+    ...req.queryConfig,
+  })
+
+  res.json({
+    posts,
+    count,
+    limit: take,
+    offset: skip,
+  })
 }

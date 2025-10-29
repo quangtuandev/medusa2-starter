@@ -77,10 +77,10 @@ export const Header: FC<HeaderProps> = () => {
                   "h-[var(--mkt-header-height)] flex sm:h-[var(--mkt-header-height-desktop)] flex-nowrap items-center justify-between gap-2 py-2 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
                 )}
               >
-                <LogoStoreName className="xs:h-14 h-8" primary />
-                <div className="flex flex-wrap-reverse items-center gap-x-6 sm:justify-end">
+                <div className="flex flex-wrap-reverse justify-between w-full">
+                  <LogoStoreName className="xs:h-14 h-8" primary />
                   {headerNavigationItems && (
-                    <div className="hidden h-full gap-6 md:flex">
+                    <>
                       {headerNavigationItems
                         .slice(0, 6)
                         .map(({ id, new_tab, ...navItemProps }, index) => (
@@ -90,7 +90,7 @@ export const Header: FC<HeaderProps> = () => {
                             newTab={new_tab}
                             className={({ isActive }) =>
                               clsx(
-                                "my-4 flex items-center whitespace-nowrap text-base font-normal"
+                                "my-4 flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
                               )
                             }
                             prefetch="viewport"
@@ -98,7 +98,7 @@ export const Header: FC<HeaderProps> = () => {
                             {navItemProps.label}
                           </URLAwareNavLink>
                         ))}
-                    </div>
+                    </>
                   )}
 
                   <div className="flex items-center justify-end">

@@ -15,6 +15,6 @@ export const IconButton: FC<IconButtonProps> = ({ icon: Icon, className, iconPro
     )}
     {...props}
   >
-    <Icon {...iconProps} className={clsx(iconProps?.className, 'h-6 w-6 text-current')} />
+    <Icon {...iconProps} className={clsx(iconProps?.className, 'h-6 w-6 text-primary')} />
   </ButtonBase>
 );
