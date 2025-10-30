@@ -5,5 +5,7 @@ export const PostAdminCreatePost = z.object({
     content: z.string(),
     slug: z.string(),
     thumbnail: z.string(),
+    description: z.string(),
+    sub_title: z.string(),
     published: z.boolean(),
 })

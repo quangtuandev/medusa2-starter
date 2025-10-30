@@ -1,17 +1,21 @@
 /// <reference types="react" />
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { BookOpen } from "@medusajs/icons"
+import { BookOpen, Plus, Pencil, X } from "@medusajs/icons"
 import {
     Heading,
     Container,
     Button,
     Skeleton,
     Table,
+    toast,
 } from "@medusajs/ui"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMemo, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { sdk } from "../../lib/sdk"
 import { ColumnDef, createColumnHelper, PaginationState, useReactTable, getCoreRowModel } from "@tanstack/react-table"
+
+// Define the Post type
 type Post = {
     id: string
     title: string
@@ -20,25 +24,16 @@ type Post = {
     thumbnail: string
     published: boolean
 }
+
+// Define the response type
 type PostsResponse = {
     posts: Post[]
     count: number
     limit: number
     offset: number
 }
-const columnHelper = createColumnHelper<Post>()
 
-const columns = [
-    columnHelper.accessor("title", {
-        header: "Name",
-    }),
-    columnHelper.accessor("slug", {
-        header: "Slug",
-    }),
-    columnHelper.accessor("published", {
-        header: "Published",
-    }),
-]
+const columnHelper = createColumnHelper<Post>()
 
 const PostsPage = () => {
     const limit = 15
@@ -46,6 +41,9 @@ const PostsPage = () => {
         pageSize: limit,
         pageIndex: 0,
     })
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
     const offset = useMemo(() => {
         return pagination.pageIndex * limit
     }, [pagination])
@@ -57,8 +55,45 @@ const PostsPage = () => {
                 offset,
             },
         }),
-        queryKey: [["brands", limit, offset]],
+        queryKey: [["blog", "posts", limit, offset]],
     })
+
+    const columns = [
+        columnHelper.accessor("title", {
+            header: "Name",
+        }),
+        columnHelper.accessor("slug", {
+            header: "Slug",
+        }),
+        columnHelper.accessor("published", {
+            header: "Published",
+        }),
+        columnHelper.display({
+            id: "actions",
+            header: "Actions",
+            cell: ({ row }) => {
+                const post = row.original
+                return (
+                    <div className="flex items-center space-x-2">
+                        <Button
+                            size="small"
+                            variant="transparent"
+                            onClick={() => handleEditPost(post)}
+                        >
+                            <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="transparent"
+                            onClick={() => handleDeletePost(post.id)}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
+                )
+            },
+        }),
+    ]
 
     const table = useReactTable({
         columns: columns as ColumnDef<Post>[],
@@ -73,9 +108,31 @@ const PostsPage = () => {
         onPaginationChange: setPagination,
     })
 
+    const handleCreatePost = () => {
+        navigate("/app/posts/create")
+    }
+
+    const handleEditPost = (post: Post) => {
+        navigate(`/app/posts/edit/${post.id}`)
+    }
+
+    const handleDeletePost = (id: string) => {
+        if (confirm(`Are you sure you want to delete this post? This action cannot be undone.`)) {
+            // Implement delete functionality if needed
+            console.log("Delete post:", id)
+        }
+    }
 
     return (
         <Container className="divide-y p-0">
+            <div className="flex justify-between items-center p-6 border-b">
+                <Heading level="h1">Posts</Heading>
+                <Button onClick={handleCreatePost}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Post
+                </Button>
+            </div>
+
             {isLoading ? (
                 <Skeleton className="p-8 text-center">Loading...</Skeleton>
             ) : (
@@ -135,7 +192,6 @@ const PostsPage = () => {
                     </div>
                 </Container>
             )}
-
         </Container>
     )
 }

@@ -6,5 +6,8 @@ export const Post = model.define("post", {
   content: model.text(),
   slug: model.text(),
   thumbnail: model.text().nullable(),
+  description: model.text().nullable(),
+  sub_title: model.text().nullable(),
   published: model.boolean().default(false),
+  createdAt: model.dateTime(),
 })

@@ -1940,7 +1940,10 @@ export type Post = {
   content: Scalars['String']['output'];
   slug: Scalars['String']['output'];
   thumbnail: Maybe<Scalars['String']['output']>;
+  description: Maybe<Scalars['String']['output']>;
+  sub_title: Maybe<Scalars['String']['output']>;
   published: Scalars['Boolean']['output'];
+  createdAt: Scalars['DateTime']['output'];
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;

@@ -9,6 +9,8 @@ export class InitialMigration extends Migration {
         "slug" VARCHAR(255) NOT NULL,
         "content" TEXT NOT NULL,
         "thumbnail" VARCHAR(255) NULL,
+        "description" TEXT NULL,
+        "sub_title" TEXT NULL,
         "published" BOOLEAN DEFAULT false NOT NULL,
         "created_at" TIMESTAMPTZ(6) DEFAULT now() NOT NULL,
         "updated_at" TIMESTAMPTZ(6) DEFAULT now() NOT NULL,

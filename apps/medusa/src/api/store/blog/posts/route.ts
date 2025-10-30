@@ -1,21 +1,18 @@
-import { MedusaRequest, MedusaResponse } from '@medusajs/framework';
-const BLOG_MODULE = 'blogModuleService';
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 
-export async function GET(
-  req: MedusaRequest,
-  res: MedusaResponse
-): Promise<void> {
-  const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
-
-  const filters = {
-    published: req.query.published ? req.query.published === 'true' : true,
-    limit: parseInt(req.query.limit as string) || 20,
-    offset: parseInt(req.query.offset as string) || 0,
-  };
-
-  const result = await blogModuleService.getPublishedPosts({
-    limit: filters.limit,
-    offset: filters.offset
-  });
-  res.json(result);
+export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+  const query = req.scope.resolve("query")
+  const { data: posts } = await query.graph({
+    entity: "post",
+    fields: ["id", "title", "description", "slug", "sub_title", "content", "thumbnail", "created_at", "updated_at"],
+    filters: {
+      published: true,
+    },
+    pagination: {
+      order: {
+        created_at: "DESC",
+      }
+    },
+  })
+  res.json(posts)
 }
