@@ -9,5 +9,4 @@ export const Post = model.define("post", {
   description: model.text().nullable(),
   sub_title: model.text().nullable(),
   published: model.boolean().default(false),
-  createdAt: model.dateTime(),
 })
