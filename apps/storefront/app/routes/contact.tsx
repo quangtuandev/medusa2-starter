@@ -8,7 +8,7 @@ export default function Contact() {
 
     return (
         <>
-            {success ? <ContactSuccess /> : <ContactForm />}
+            {success ? <ContactSuccess /> : <ContactForm onSubmitSuccess={() => setSuccess(true)} />}
         </>
     );
 }

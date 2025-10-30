@@ -1,27 +1,16 @@
 import React from "react";
+import ProductList from '@app/components/sections/ProductList';
 
 export default function ContactSuccess() {
     return (
-        <div className="contact-success-message" style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <svg
-                width="60"
-                height="60"
-                fill="none"
-                viewBox="0 0 60 60"
-                style={{ display: 'block', margin: '0 auto 1rem auto' }}
-            >
-                <circle cx="30" cy="30" r="30" fill="#d1fae5" />
-                <path
-                    d="M20 32l7 7 13-13"
-                    stroke="#059669"
-                    strokeWidth="3"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-            </svg>
-            <h2 style={{ color: '#059669', marginBottom: '.5rem' }}>Message Sent!</h2>
-            <p>Thank you for contacting us. We have received your message and will get back to you soon.</p>
-        </div>
+        <>
+            <div className="contact-success-message text-center mt-8">
+                <p className="text-[150px] font-centuryBook italic text-64px leading-48px pl-2">Okay!!!</p>
+                <p className="text-[110px] font-title font-bold text-64px leading-48px pl-2">WE GOT U ;3</p>
+                <p className="text-[30px] font-title font-light text-30px leading-30px pl-2">we’ll be replying to u sooooon!!!</p>
+                <p className="text-[30px] font-title font-light text-30px leading-30px pl-2">in the meantime....... </p>
+            </div>
+            <ProductList className="!py-[100px] xl:px-9" heading="You may also like" />
+        </>
     );
 }

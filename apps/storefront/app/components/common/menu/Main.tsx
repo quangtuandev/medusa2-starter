@@ -21,7 +21,7 @@ export const MainMenu = () => {
             id: 'blog',
             label: 'Blog',
             image: '/assets/images/menu/blog.webp',
-            url: '/blog',
+            url: '/blogs',
             className: 'max-w-[494px] left-0',
             imagePosition: { x: '5%' },
             position: {

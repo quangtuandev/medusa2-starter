@@ -8,13 +8,12 @@ import { Container } from "../common/container/Container";
 const contactSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email"),
-    subject: z.string().min(5, "Subject must be at least 5 characters"),
     message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-export default function ContactForm() {
+export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () => void }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -43,8 +42,8 @@ export default function ContactForm() {
                 },
                 "PxWigR7xt2Jg86A-K"
             );
-
             reset();
+            onSubmitSuccess();
         } catch (error) {
             console.error("EmailJS error:", error);
             setError("Failed to send message. Please try again later.");
@@ -57,9 +56,6 @@ export default function ContactForm() {
         <section className="relative min-h-[1146px] overflow-hidden flex flex-col justify-center">
             <div className="w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2">
                 <img src="/assets/images/contact.webp" alt="Contact" className="absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" />
-
-                {/* <p className="text-[110px] font-bold tracking-normal rotate-[-23deg] inline-block top-[10%] left-1/2 -translate-x-1/ absolute">THIS IS OUR</p>
-                <p className="text-2xl font-bold text-center mb-6">Contact</p> */}
             </div>
             <Container>
                 <div className="contact-form-container relative">
