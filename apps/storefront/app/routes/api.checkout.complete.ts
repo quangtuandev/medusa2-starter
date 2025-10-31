@@ -75,8 +75,15 @@ export async function action(actionArgs: ActionFunctionArgs) {
     });
   }
 
-  const cartResponse = await placeOrder(actionArgs.request);
+  if (!isNewPaymentMethod && data.providerId === 'pp_paypal_paypal') {
+    await initiatePaymentSession(actionArgs.request, cart, {
+      provider_id: data.providerId,
+      data: { payment_method: data.paymentMethodId },
+    });
+  }
 
+  const cartResponse = await placeOrder(actionArgs.request);
+  console.log(cartResponse);
   if (cartResponse.type === 'cart' || !cartResponse) {
     return remixData(
       { errors: { root: { message: 'Cart could not be completed. Please try again.' } } },

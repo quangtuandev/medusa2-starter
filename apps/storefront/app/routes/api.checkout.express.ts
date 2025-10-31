@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { addressToMedusaAddress } from '@libs/util/addresses';
 import { removeCartId } from '@libs/util/server/cookies.server';
 import {
+  ensurePaypalPaymentSession,
   ensureStripePaymentSession,
   placeOrder,
   retrieveCart,
@@ -84,10 +85,13 @@ export async function action(actionArgs: ActionFunctionArgs) {
 
     cart = await ensureStripePaymentSession(actionArgs.request, cart!);
   }
+  cart = await ensurePaypalPaymentSession(actionArgs.request, cart!);
+
+  console.log(data, 'data');
 
   if (data.complete) {
     const cartResponse = await placeOrder(actionArgs.request);
-
+    console.log(cartResponse, 'cartResponse');
     if (cartResponse.type === 'cart' || !cartResponse) {
       return Response.json(
         { errors: { root: { message: 'Cart could not be completed. Please try again.' } } },

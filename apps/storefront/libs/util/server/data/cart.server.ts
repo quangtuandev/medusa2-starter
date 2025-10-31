@@ -109,6 +109,22 @@ export const ensureStripePaymentSession = async (request: Request, cart: StoreCa
   return cart;
 };
 
+export const ensurePaypalPaymentSession = async (request: Request, cart: StoreCart): Promise<StoreCart> => {
+  if (!cart) throw new Error('Cart was not provided.');
+
+  let activeSession = cart.payment_collection?.payment_sessions?.find((session) => session.status === 'pending');
+
+  if (!activeSession) {
+    await initiatePaymentSession(request, cart, {
+      provider_id: 'pp_paypal_paypal',
+    });
+
+    return (await retrieveCart(request))!;
+  }
+
+  return cart;
+};
+
 export const updateLineItem = withAuthHeaders(
   async (
     request,

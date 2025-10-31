@@ -6,7 +6,7 @@ import { CheckoutAccountDetails } from './CheckoutAccountDetails';
 import { CheckoutDeliveryMethod } from './CheckoutDeliveryMethod';
 import { CheckoutPayment } from './CheckoutPayment';
 import { StripeExpressCheckout } from './StripePayment/StripeExpressPayment';
-
+import PaypalExpressCheckout from './StripePayment/PaypalExpressCheckout';
 export const CheckoutFlow: FC = () => {
   const { customer } = useCustomer();
   const { goToNextStep, cart } = useCheckout();
@@ -31,7 +31,9 @@ export const CheckoutFlow: FC = () => {
           </Alert>
         )}
 
-        <StripeExpressCheckout cart={cart} />
+        <PaypalExpressCheckout cart={cart} />
+
+        {/* <StripeExpressCheckout cart={cart} /> */}
 
         <CheckoutAccountDetails />
 

@@ -89,6 +89,7 @@
     "@medusajs/js-sdk": "2.7.0",
     "@mjackson/file-storage": "^0.6.1",
     "@mjackson/form-data-parser": "^0.7.0",
+    "@paypal/react-paypal-js": "^8.9.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",

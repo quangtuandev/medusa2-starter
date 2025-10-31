@@ -122,7 +122,6 @@ export const loader = async ({
 
 export default function CheckoutIndexRoute() {
   const { shippingOptions, paymentProviders, activePaymentSession, cart } = useLoaderData<typeof loader>();
-
   if (!cart || !cart.items?.length)
     return (
       <Empty

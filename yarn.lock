@@ -12,6 +12,172 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@alphabite/medusa-paypal@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@alphabite/medusa-paypal@npm:0.2.4"
+  dependencies:
+    "@paypal/paypal-server-sdk": "npm:1.0.0"
+    libphonenumber-js: "npm:^1.12.9"
+  peerDependencies:
+    "@medusajs/admin-sdk": 2.8.3
+    "@medusajs/cli": 2.8.3
+    "@medusajs/framework": 2.8.3
+    "@medusajs/icons": 2.8.3
+    "@medusajs/medusa": 2.8.3
+    "@medusajs/test-utils": 2.8.3
+    "@medusajs/ui": 4.0.3
+    "@mikro-orm/cli": 6.4.3
+    "@mikro-orm/core": 6.4.3
+    "@mikro-orm/knex": 6.4.3
+    "@mikro-orm/migrations": 6.4.3
+    "@mikro-orm/postgresql": 6.4.3
+    awilix: ^8.0.1
+    pg: ^8.13.0
+  checksum: 10c0/158afe5d6134457605b2b286d872e02b86b4fe1f904a2ba13e3439ccebc9cd653fc1d43bea7358e80fa5074ba63071255c325de7c456e966b9f0a9b064cfb81d
+  languageName: node
+  linkType: hard
+
+"@apimatic/authentication-adapters@npm:^0.5.4":
+  version: 0.5.13
+  resolution: "@apimatic/authentication-adapters@npm:0.5.13"
+  dependencies:
+    "@apimatic/core-interfaces": "npm:^0.2.13"
+    "@apimatic/http-headers": "npm:^0.3.8"
+    "@apimatic/http-query": "npm:^0.3.8"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/bae734abc7550f7fd63d297d29c7f10ab6daeacaa1f282bf54d37f88ee7ec671b0b76fcef463356b42f70906d0bc168fe007cf9a38fbf7fbe5941a623bc0f9e6
+  languageName: node
+  linkType: hard
+
+"@apimatic/axios-client-adapter@npm:^0.3.7":
+  version: 0.3.19
+  resolution: "@apimatic/axios-client-adapter@npm:0.3.19"
+  dependencies:
+    "@apimatic/convert-to-stream": "npm:^0.1.8"
+    "@apimatic/core-interfaces": "npm:^0.2.13"
+    "@apimatic/file-wrapper": "npm:^0.3.8"
+    "@apimatic/http-headers": "npm:^0.3.8"
+    "@apimatic/http-query": "npm:^0.3.8"
+    "@apimatic/json-bigint": "npm:^1.2.0"
+    "@apimatic/proxy": "npm:^0.1.3"
+    axios: "npm:^1.8.4"
+    detect-browser: "npm:^5.3.0"
+    detect-node: "npm:^2.1.0"
+    form-data: "npm:^4.0.1"
+    lodash.flatmap: "npm:^4.5.0"
+    tiny-warning: "npm:^1.0.3"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/c9e9d8f90fa94193748b98c85c1a1db548932927df08670b9ea71accb3c5258f7b79272b1a1decdd9167245b23aa1580f8dbece716974e25ceacc7a3a20567cc
+  languageName: node
+  linkType: hard
+
+"@apimatic/convert-to-stream@npm:^0.1.8":
+  version: 0.1.8
+  resolution: "@apimatic/convert-to-stream@npm:0.1.8"
+  dependencies:
+    tslib: "npm:2.8.1"
+  checksum: 10c0/229aee97409dad9eea2934146002fde91fb2fa090bcd40de6bdbd36db69ad594755f0164db9cc1796956d523acac0536bee522ba4553886144b7500b8dc17559
+  languageName: node
+  linkType: hard
+
+"@apimatic/core-interfaces@npm:^0.2.13":
+  version: 0.2.13
+  resolution: "@apimatic/core-interfaces@npm:0.2.13"
+  dependencies:
+    "@apimatic/file-wrapper": "npm:^0.3.8"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/1baaab9c3dc21c100024e8be42b056a7fa06615ad1d8aadbf77c648d098fda4bbfb357414cd1255c41cdebcabcfdf66691951afa926c0f6120bdf58d50050d16
+  languageName: node
+  linkType: hard
+
+"@apimatic/core@npm:^0.10.16":
+  version: 0.10.27
+  resolution: "@apimatic/core@npm:0.10.27"
+  dependencies:
+    "@apimatic/convert-to-stream": "npm:^0.1.8"
+    "@apimatic/core-interfaces": "npm:^0.2.13"
+    "@apimatic/file-wrapper": "npm:^0.3.8"
+    "@apimatic/http-headers": "npm:^0.3.8"
+    "@apimatic/http-query": "npm:^0.3.8"
+    "@apimatic/json-bigint": "npm:^1.2.0"
+    "@apimatic/schema": "npm:^0.7.21"
+    detect-browser: "npm:^5.3.0"
+    detect-node: "npm:^2.1.0"
+    form-data: "npm:^4.0.1"
+    lodash.defaultsdeep: "npm:^4.6.1"
+    lodash.flatmap: "npm:^4.5.0"
+    tiny-warning: "npm:^1.0.3"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/dfa4457ae288247b968de4414da98e613163b1b3f37444b95137bb587cff713a124ba1a48800622da1c17ddb659c39afe6a4f929ab2ffa3d568d3f8080a3257b
+  languageName: node
+  linkType: hard
+
+"@apimatic/file-wrapper@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "@apimatic/file-wrapper@npm:0.3.8"
+  dependencies:
+    tslib: "npm:2.8.1"
+  checksum: 10c0/10d983fc9bbe1d6f2c0af747bbc11d2404913e485e667418b8d2f8a7d7917bedaf53c3650385e031d5e37fc5e2ed180ed66a93e261f3c63826ca2dcbf5a88539
+  languageName: node
+  linkType: hard
+
+"@apimatic/http-headers@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "@apimatic/http-headers@npm:0.3.8"
+  dependencies:
+    tslib: "npm:2.8.1"
+  checksum: 10c0/2edd7a08eee35978a1748f75a8f17a3c071e212b240138bf234d359f9e6d2d5c896bf839bbbccb558ab2c7e23cee29a796a3ed9cb216cbaa040981a224528e7e
+  languageName: node
+  linkType: hard
+
+"@apimatic/http-query@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "@apimatic/http-query@npm:0.3.8"
+  dependencies:
+    "@apimatic/file-wrapper": "npm:^0.3.8"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/3e5d663491804b09e9a6f081d34df91397066551ed20285584b3adf8cd8ef016abd82a7e491fe3d6a0e03c6d02c13415b3b7182609edff841d6511a7ff8775b3
+  languageName: node
+  linkType: hard
+
+"@apimatic/json-bigint@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@apimatic/json-bigint@npm:1.2.0"
+  checksum: 10c0/2e4b30a426eb912ac237242f16d277071360e1b7cd9ce1dd590da626dce10dd22a64513624223ea736df331bd1290bf696b2d24d7e9b9dc1fcd061af6f9be657
+  languageName: node
+  linkType: hard
+
+"@apimatic/oauth-adapters@npm:^0.4.8":
+  version: 0.4.17
+  resolution: "@apimatic/oauth-adapters@npm:0.4.17"
+  dependencies:
+    "@apimatic/core-interfaces": "npm:^0.2.13"
+    "@apimatic/file-wrapper": "npm:^0.3.8"
+    "@apimatic/http-headers": "npm:^0.3.8"
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/c5f859580403c97a3d3e2d0ea60c5bd85ee535e8ed5bf6e5e05f2c0014410197c8cf045eadf6548027c7dfb114f93a67393d77af192960b4e2559c35cbae39c7
+  languageName: node
+  linkType: hard
+
+"@apimatic/proxy@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@apimatic/proxy@npm:0.1.3"
+  dependencies:
+    http-proxy-agent: "npm:^7.0.2"
+    https-proxy-agent: "npm:^7.0.6"
+  checksum: 10c0/04e84c83c1725b729e21ca2050bc872bed4ebbd1cf983b6246f63c93fc89cd1e9c91822a545b2dd237fc000dd95674e6870675e758cec2632b09fd9a6a4c8e4d
+  languageName: node
+  linkType: hard
+
+"@apimatic/schema@npm:^0.7.14, @apimatic/schema@npm:^0.7.21":
+  version: 0.7.21
+  resolution: "@apimatic/schema@npm:0.7.21"
+  dependencies:
+    tslib: "npm:^2.8.1"
+  checksum: 10c0/64c0544295a75a4b56e1aca81dc8aa6c92a48c8c0ea917dcbd8769ba0037b27f251e14575e8e300010e9a0f68445a78760bf8e1e273ceb08de47723fd5a856e7
+  languageName: node
+  linkType: hard
+
 "@ardatan/relay-compiler@npm:^12.0.3":
   version: 12.0.3
   resolution: "@ardatan/relay-compiler@npm:12.0.3"
@@ -5622,6 +5788,50 @@ __metadata:
   version: 11.11.0
   resolution: "@oxc-resolver/binding-win32-x64-msvc@npm:11.11.0"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@paypal/paypal-js@npm:^9.0.0":
+  version: 9.0.1
+  resolution: "@paypal/paypal-js@npm:9.0.1"
+  dependencies:
+    promise-polyfill: "npm:^8.3.0"
+  checksum: 10c0/8b6701a24354ba5845fc33335812e1a718f99b590eef466ce52f68d727c367f30dbf3dd5ae5214a0d69599f83deeea92dddee18dac1c638d5d72cebade5a9cf1
+  languageName: node
+  linkType: hard
+
+"@paypal/paypal-server-sdk@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@paypal/paypal-server-sdk@npm:1.0.0"
+  dependencies:
+    "@apimatic/authentication-adapters": "npm:^0.5.4"
+    "@apimatic/axios-client-adapter": "npm:^0.3.7"
+    "@apimatic/core": "npm:^0.10.16"
+    "@apimatic/oauth-adapters": "npm:^0.4.8"
+    "@apimatic/schema": "npm:^0.7.14"
+  checksum: 10c0/c8d4f31848f4370d417d289d48b77f7f87168b345c35a4310247e3cb330908e79322dcb9aec80348541b4aa13a2fc7a23c10da7b06c0a12e9bfef88c34ffb74b
+  languageName: node
+  linkType: hard
+
+"@paypal/react-paypal-js@npm:^8.9.2":
+  version: 8.9.2
+  resolution: "@paypal/react-paypal-js@npm:8.9.2"
+  dependencies:
+    "@paypal/paypal-js": "npm:^9.0.0"
+    "@paypal/sdk-constants": "npm:^1.0.122"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+    react-dom: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/7bfbfa062252968dc5cb35c8dc90f8934f8e5b696855d3f7374abe98db1e115d93e1a1fe34b3cbbe1daa9cbde2f79ee709efe522ad0a50c602805de7e5b35692
+  languageName: node
+  linkType: hard
+
+"@paypal/sdk-constants@npm:^1.0.122":
+  version: 1.0.157
+  resolution: "@paypal/sdk-constants@npm:1.0.157"
+  dependencies:
+    hi-base32: "npm:^0.5.0"
+  checksum: 10c0/a7a8a15ec7ef0f08d08ad09bf4df8765b178cdc6e7f32e48ceee0bbf9faa98f627e134ea03e6d6b10b3f3412809b93ee52434c18d75e5520283a6faacee7eb79
   languageName: node
   linkType: hard
 
@@ -14426,6 +14636,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.8.4":
+  version: 1.13.1
+  resolution: "axios@npm:1.13.1"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.4"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10c0/de9c3c6de43d3ee1146d3afe78645f19450cac6a5d7235bef8b8e8eeb705c2e47e2d231dea99cecaec4dae1897c521118ca9413b9d474063c719c4d94c5b9adc
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -16371,6 +16592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-browser@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "detect-browser@npm:5.3.0"
+  checksum: 10c0/88d49b70ce3836e7971345b2ebdd486ad0d457d1e4f066540d0c12f9210c8f731ccbed955fcc9af2f048f5d4629702a8e46bedf5bcad42ad49a3a0927bfd5a76
+  languageName: node
+  linkType: hard
+
 "detect-indent@npm:^6.0.0":
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0"
@@ -16396,6 +16624,13 @@ __metadata:
   version: 1.1.0
   resolution: "detect-node-es@npm:1.1.0"
   checksum: 10c0/e562f00de23f10c27d7119e1af0e7388407eb4b06596a25f6d79a360094a109ff285de317f02b090faae093d314cf6e73ac3214f8a5bb3a0def5bece94557fbe
+  languageName: node
+  linkType: hard
+
+"detect-node@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "detect-node@npm:2.1.0"
+  checksum: 10c0/f039f601790f2e9d4654e499913259a798b1f5246ae24f86ab5e8bd4aaf3bce50484234c494f11fb00aecb0c6e2733aa7b1cf3f530865640b65fbbd65b2c4e09
   languageName: node
   linkType: hard
 
@@ -18030,7 +18265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0, form-data@npm:^4.0.2, form-data@npm:^4.0.4":
+"form-data@npm:^4.0.0, form-data@npm:^4.0.1, form-data@npm:^4.0.2, form-data@npm:^4.0.4":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
   dependencies:
@@ -18687,6 +18922,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hi-base32@npm:^0.5.0":
+  version: 0.5.1
+  resolution: "hi-base32@npm:0.5.1"
+  checksum: 10c0/45adb99249b04108fd689cb344f4b625b49d0518327117c34c403dbaf4723aaefb2a1bde6d7a0288ff0f835970d0f844a3ae103534dc237c99b8552a0e689177
+  languageName: node
+  linkType: hard
+
 "hoist-non-react-statics@npm:^3.0.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
@@ -18781,7 +19023,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-proxy-agent@npm:^7.0.0":
+"http-proxy-agent@npm:^7.0.0, http-proxy-agent@npm:^7.0.2":
   version: 7.0.2
   resolution: "http-proxy-agent@npm:7.0.2"
   dependencies:
@@ -18811,7 +19053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"https-proxy-agent@npm:^7.0.1":
+"https-proxy-agent@npm:^7.0.1, https-proxy-agent@npm:^7.0.6":
   version: 7.0.6
   resolution: "https-proxy-agent@npm:7.0.6"
   dependencies:
@@ -21123,6 +21365,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libphonenumber-js@npm:^1.12.9":
+  version: 1.12.25
+  resolution: "libphonenumber-js@npm:1.12.25"
+  checksum: 10c0/071c942e34e32d7883fb08a3c6f53003eca7067d06d19511c8ba7312fefe5420b998479afd078a5be6958bac163481072ba2560b4ccb5c680b7c6aa67b6810c2
+  languageName: node
+  linkType: hard
+
 "lilconfig@npm:^2.1.0":
   version: 2.1.0
   resolution: "lilconfig@npm:2.1.0"
@@ -21203,6 +21452,20 @@ __metadata:
   version: 4.2.0
   resolution: "lodash.defaults@npm:4.2.0"
   checksum: 10c0/d5b77aeb702caa69b17be1358faece33a84497bcca814897383c58b28a2f8dfc381b1d9edbec239f8b425126a3bbe4916223da2a576bb0411c2cefd67df80707
+  languageName: node
+  linkType: hard
+
+"lodash.defaultsdeep@npm:^4.6.1":
+  version: 4.6.1
+  resolution: "lodash.defaultsdeep@npm:4.6.1"
+  checksum: 10c0/0031ca3055d5482fc2e9b55d0ee174a3e956039996fac52dbe94ca67eb50bb72ffc75d0eb86bcc782fefc597ebbc1798df941f27382bec23138e53180427700b
+  languageName: node
+  linkType: hard
+
+"lodash.flatmap@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.flatmap@npm:4.5.0"
+  checksum: 10c0/11627ae4ca8332f7bbc9b0c99948127504a17b19720d85979de0184a6992fe706633acd673ce797197c3fb185318a65ad6590a3beae5428a9c8d5d6391f3db80
   languageName: node
   linkType: hard
 
@@ -21607,6 +21870,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa@workspace:apps/medusa"
   dependencies:
+    "@alphabite/medusa-paypal": "npm:^0.2.4"
     "@lambdacurry/medusa-product-reviews": "npm:1.2.0"
     "@medusajs/admin-sdk": "npm:2.7.0"
     "@medusajs/cli": "npm:2.7.0"
@@ -23540,6 +23804,13 @@ __metadata:
   version: 1.0.1
   resolution: "promise-inflight@npm:1.0.1"
   checksum: 10c0/d179d148d98fbff3d815752fa9a08a87d3190551d1420f17c4467f628214db12235ae068d98cd001f024453676d8985af8f28f002345646c4ece4600a79620bc
+  languageName: node
+  linkType: hard
+
+"promise-polyfill@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "promise-polyfill@npm:8.3.0"
+  checksum: 10c0/97141f07a31a6be135ec9ed53700a3423a771cabec0ba5e08fcb2bf8cfda855479ff70e444fceb938f560be42b450cd032c14f4a940ed2ad1e5b4dcb78368dce
   languageName: node
   linkType: hard
 
@@ -25775,6 +26046,7 @@ __metadata:
     "@medusajs/types": "npm:2.7.0"
     "@mjackson/file-storage": "npm:^0.6.1"
     "@mjackson/form-data-parser": "npm:^0.7.0"
+    "@paypal/react-paypal-js": "npm:^8.9.2"
     "@radix-ui/react-slot": "npm:^1.0.2"
     "@react-router/dev": "npm:^7.5.3"
     "@react-router/fs-routes": "npm:^7.5.3"
@@ -26408,6 +26680,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-warning@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "tiny-warning@npm:1.0.3"
+  checksum: 10c0/ef8531f581b30342f29670cb41ca248001c6fd7975ce22122bd59b8d62b4fc84ad4207ee7faa95cde982fa3357cd8f4be650142abc22805538c3b1392d7084fa
+  languageName: node
+  linkType: hard
+
 "tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.14, tinyglobby@npm:^0.2.15":
   version: 0.2.15
   resolution: "tinyglobby@npm:0.2.15"
@@ -26694,17 +26973,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^1, tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: 10c0/69ae09c49eea644bc5ebe1bca4fa4cc2c82b7b3e02f43b84bd891504edf66dbc6b2ec0eef31a957042de2269139e4acff911e6d186a258fb14069cd7f6febce2
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
-  version: 2.8.1
-  resolution: "tslib@npm:2.8.1"
-  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 

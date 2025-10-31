@@ -3,7 +3,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 
-import plugin0 from "@lambdacurry/medusa-product-reviews/admin"
+import plugin0 from "@alphabite/medusa-paypal/admin"
+import plugin1 from "@lambdacurry/medusa-product-reviews/admin"
 
 let root = null
 
@@ -14,7 +15,7 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <App plugins={[plugin0]} />
+    <App plugins={[plugin0, plugin1]} />
   </React.StrictMode>
 )
 
