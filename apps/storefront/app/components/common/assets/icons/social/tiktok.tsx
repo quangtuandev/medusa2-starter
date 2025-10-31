@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'react';
 
-export default ({ color = 'currentColor', ...props }: HTMLAttributes<HTMLOrSVGElement>) => (
+export default ({ color = '#FFFFFF80', ...props }: HTMLAttributes<HTMLOrSVGElement>) => (
   <svg role="img" viewBox="0 0 24 24" {...props} xmlns="http://www.w3.org/2000/svg">
     <title>TikTok</title>
     <path

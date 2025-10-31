@@ -27,13 +27,13 @@ export const SocialIcons: FC<{ siteSettings?: SiteSettings }> = ({ siteSettings 
   if (socialLinks.length === 0) return null;
 
   return (
-    <div className="xs:grid-cols-8 grid grid-cols-4 gap-2">
+    <div className="">
       {socialLinks.map(({ icon, url }) => (
         <IconButton
           key={url}
           as={(props) => <a href={url} rel="noopener noreferrer" target="_blank" {...props} />}
           className="text-white hover:text-black"
-          iconProps={{ fill: 'currentColor', width: '24' }}
+          iconProps={{ fill: '#FFFFFF80', width: '24' }}
           icon={icon}
         />
       ))}
