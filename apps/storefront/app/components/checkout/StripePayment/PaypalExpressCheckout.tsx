@@ -123,7 +123,7 @@ export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
           {errorState.description}
         </Alert>
       ) : null}
-      <div className="py-4">
+      <div className="py-4 relative z-0">
         <PayPalScriptProvider options={initialOptions}>
           <PayPalButtons
             style={styles}
