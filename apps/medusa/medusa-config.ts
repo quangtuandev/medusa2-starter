@@ -69,6 +69,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/blog",
     },
     {
+      resolve: "./src/modules/product-reviews",
+    },
+    {
       resolve: "@medusajs/medusa/file",
       options: {
         providers: [
