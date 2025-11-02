@@ -40,19 +40,14 @@ export type ReviewStatusEnum =
 export type Review = {
   __typename?: 'Review';
   id: Scalars['ID']['output'];
-  title: Maybe<Scalars['String']['output']>;
-  content: Maybe<Scalars['String']['output']>;
-  rating: Scalars['Int']['output'];
-  status: ReviewStatusEnum;
   product_id: Scalars['String']['output'];
-  customer_id: Scalars['String']['output'];
-  image_urls: Array<Maybe<Scalars['String']['output']>>;
-  is_verified_purchase: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  content: Scalars['String']['output'];
+  stars: Scalars['Int']['output'];
+  status: ReviewStatusEnum;
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
-  customer: Maybe<Customer>;
-  product: Maybe<Product>;
 };
 
 export type SalesChannel = {
@@ -1480,38 +1475,6 @@ export type Currency = {
   deleted_at: Maybe<Scalars['DateTime']['output']>;
 };
 
-export type Region = {
-  __typename?: 'Region';
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  currency_code: Scalars['String']['output'];
-  automatic_taxes: Scalars['Boolean']['output'];
-  countries: Array<Maybe<Country>>;
-  metadata: Maybe<Scalars['JSON']['output']>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-  carts: Maybe<Array<Maybe<Cart>>>;
-  orders: Maybe<Array<Maybe<Order>>>;
-  payment_provider_link: Maybe<Array<Maybe<LinkRegionPaymentProvider>>>;
-  payment_providers: Maybe<Array<Maybe<PaymentProvider>>>;
-};
-
-export type Country = {
-  __typename?: 'Country';
-  iso_2: Scalars['ID']['output'];
-  iso_3: Scalars['String']['output'];
-  num_code: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  display_name: Scalars['String']['output'];
-  region_id: Maybe<Scalars['String']['output']>;
-  region: Maybe<Region>;
-  metadata: Maybe<Scalars['JSON']['output']>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
 export type WorkflowExecutionStateEnum =
   | 'not_started'
   | 'invoking'
@@ -1531,6 +1494,66 @@ export type WorkflowExecution = {
   context: Maybe<Scalars['JSON']['output']>;
   state: WorkflowExecutionStateEnum;
   retention_time: Maybe<Scalars['Int']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TaxRate = {
+  __typename?: 'TaxRate';
+  id: Scalars['ID']['output'];
+  rate: Maybe<Scalars['Float']['output']>;
+  code: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  is_default: Scalars['Boolean']['output'];
+  is_combinable: Scalars['Boolean']['output'];
+  tax_region_id: Scalars['String']['output'];
+  tax_region: TaxRegion;
+  rules: Array<Maybe<TaxRateRule>>;
+  metadata: Maybe<Scalars['JSON']['output']>;
+  created_by: Maybe<Scalars['String']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TaxRegion = {
+  __typename?: 'TaxRegion';
+  id: Scalars['ID']['output'];
+  country_code: Scalars['String']['output'];
+  province_code: Maybe<Scalars['String']['output']>;
+  metadata: Maybe<Scalars['JSON']['output']>;
+  created_by: Maybe<Scalars['String']['output']>;
+  provider_id: Maybe<Scalars['String']['output']>;
+  provider: Maybe<TaxProvider>;
+  parent_id: Maybe<Scalars['String']['output']>;
+  parent: Maybe<TaxRegion>;
+  children: Array<Maybe<TaxRegion>>;
+  tax_rates: Array<Maybe<TaxRate>>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TaxRateRule = {
+  __typename?: 'TaxRateRule';
+  id: Scalars['ID']['output'];
+  metadata: Maybe<Scalars['JSON']['output']>;
+  created_by: Maybe<Scalars['String']['output']>;
+  tax_rate_id: Scalars['String']['output'];
+  tax_rate: TaxRate;
+  reference: Scalars['String']['output'];
+  reference_id: Scalars['String']['output'];
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type TaxProvider = {
+  __typename?: 'TaxProvider';
+  id: Scalars['ID']['output'];
+  is_enabled: Scalars['Boolean']['output'];
+  regions: Array<Maybe<TaxRegion>>;
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
@@ -1717,6 +1740,38 @@ export type ShippingProfile = {
   products_link: Maybe<Array<Maybe<LinkProductShippingProfile>>>;
 };
 
+export type Region = {
+  __typename?: 'Region';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  currency_code: Scalars['String']['output'];
+  automatic_taxes: Scalars['Boolean']['output'];
+  countries: Array<Maybe<Country>>;
+  metadata: Maybe<Scalars['JSON']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+  carts: Maybe<Array<Maybe<Cart>>>;
+  orders: Maybe<Array<Maybe<Order>>>;
+  payment_provider_link: Maybe<Array<Maybe<LinkRegionPaymentProvider>>>;
+  payment_providers: Maybe<Array<Maybe<PaymentProvider>>>;
+};
+
+export type Country = {
+  __typename?: 'Country';
+  iso_2: Scalars['ID']['output'];
+  iso_3: Scalars['String']['output'];
+  num_code: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  display_name: Scalars['String']['output'];
+  region_id: Maybe<Scalars['String']['output']>;
+  region: Maybe<Region>;
+  metadata: Maybe<Scalars['JSON']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type AccountHolder = {
   __typename?: 'AccountHolder';
   id: Scalars['ID']['output'];
@@ -1896,66 +1951,6 @@ export type Notification = {
   external_id: Maybe<Scalars['String']['output']>;
   status: NotificationStatusEnum;
   provider_id: Maybe<Scalars['String']['output']>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type TaxRate = {
-  __typename?: 'TaxRate';
-  id: Scalars['ID']['output'];
-  rate: Maybe<Scalars['Float']['output']>;
-  code: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  is_default: Scalars['Boolean']['output'];
-  is_combinable: Scalars['Boolean']['output'];
-  tax_region_id: Scalars['String']['output'];
-  tax_region: TaxRegion;
-  rules: Array<Maybe<TaxRateRule>>;
-  metadata: Maybe<Scalars['JSON']['output']>;
-  created_by: Maybe<Scalars['String']['output']>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type TaxRegion = {
-  __typename?: 'TaxRegion';
-  id: Scalars['ID']['output'];
-  country_code: Scalars['String']['output'];
-  province_code: Maybe<Scalars['String']['output']>;
-  metadata: Maybe<Scalars['JSON']['output']>;
-  created_by: Maybe<Scalars['String']['output']>;
-  provider_id: Maybe<Scalars['String']['output']>;
-  provider: Maybe<TaxProvider>;
-  parent_id: Maybe<Scalars['String']['output']>;
-  parent: Maybe<TaxRegion>;
-  children: Array<Maybe<TaxRegion>>;
-  tax_rates: Array<Maybe<TaxRate>>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type TaxRateRule = {
-  __typename?: 'TaxRateRule';
-  id: Scalars['ID']['output'];
-  metadata: Maybe<Scalars['JSON']['output']>;
-  created_by: Maybe<Scalars['String']['output']>;
-  tax_rate_id: Scalars['String']['output'];
-  tax_rate: TaxRate;
-  reference: Scalars['String']['output'];
-  reference_id: Scalars['String']['output'];
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type TaxProvider = {
-  __typename?: 'TaxProvider';
-  id: Scalars['ID']['output'];
-  is_enabled: Scalars['Boolean']['output'];
-  regions: Array<Maybe<TaxRegion>>;
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
@@ -2285,12 +2280,16 @@ declare module '@medusajs/framework/types' {
     return_reasons: any
     currency: Currency
     currencies: Currency
-    region: Region
-    regions: Region
-    country: Country
-    countries: Country
     workflow_execution: WorkflowExecution
     workflow_executions: WorkflowExecution
+    tax_rate: TaxRate
+    tax_rates: TaxRate
+    tax_region: TaxRegion
+    tax_regions: TaxRegion
+    tax_rate_rule: TaxRateRule
+    tax_rate_rules: TaxRateRule
+    tax_provider: TaxProvider
+    tax_providers: TaxProvider
     fulfillment_address: any
     fulfillment_addresses: any
     fulfillment_item: FulfillmentItem
@@ -2315,6 +2314,10 @@ declare module '@medusajs/framework/types' {
     shipping_options: ShippingOption
     shipping_profile: ShippingProfile
     shipping_profiles: ShippingProfile
+    region: Region
+    regions: Region
+    country: Country
+    countries: Country
     payment_method: any
     payment_methods: any
     account_holder: AccountHolder
@@ -2335,14 +2338,6 @@ declare module '@medusajs/framework/types' {
     refunds: Refund
     notification: Notification
     notifications: Notification
-    tax_rate: TaxRate
-    tax_rates: TaxRate
-    tax_region: TaxRegion
-    tax_regions: TaxRegion
-    tax_rate_rule: TaxRateRule
-    tax_rate_rules: TaxRateRule
-    tax_provider: TaxProvider
-    tax_providers: TaxProvider
     cart_payment_collection: LinkCartPaymentCollection
     cart_payment_collections: LinkCartPaymentCollection
     cart_promotion: LinkCartPromotion

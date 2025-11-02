@@ -1,5 +1,3 @@
-import { createProductReviewResponsesWorkflow } from '@lambdacurry/medusa-product-reviews/workflows/create-product-review-responses';
-import { createProductReviewsWorkflow } from '@lambdacurry/medusa-product-reviews/workflows/create-product-reviews';
 import {
   createApiKeysWorkflow,
   createOrderWorkflow,
@@ -105,11 +103,11 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   logger.info('Seeding tax regions...');
 
-  await createTaxRegionsWorkflow(container).run({
-    input: allCountries.map((country_code) => ({
-      country_code,
-    })),
-  });
+  // await createTaxRegionsWorkflow(container).run({
+  //   input: allCountries.map((country_code) => ({
+  //     country_code,
+  //   })),
+  // });
 
   logger.info('Finished seeding tax regions.');
 
@@ -443,40 +441,6 @@ export default async function seedDemoData({ container }: ExecArgs) {
       orders.push(order);
     }
 
-    // Create product reviews for each order
-    const productReviews = [];
-    for (let i = 0; i < orders.length; i++) {
-      const order = orders[i];
-      const customer = selectedCustomers[i];
-      const review = selectedReviews[i];
-
-      productReviews.push({
-        product_id: product.id,
-        order_id: order.id,
-        order_line_item_id: order.items?.[0]?.id,
-        rating: review.rating,
-        content: review.content,
-        first_name: customer.first_name,
-        name: `${customer.first_name} ${customer.last_name}`,
-        email: customer.email,
-        images: review.images,
-      });
-    }
-
-    const { result: productReviewsResult } = await createProductReviewsWorkflow(container).run({
-      input: {
-        productReviews: productReviews,
-      },
-    });
-
-    await createProductReviewResponsesWorkflow(container).run({
-      input: {
-        responses: productReviewsResult.map((review) => ({
-          product_review_id: review.id,
-          content: generateReviewResponse(review),
-        })),
-      },
-    });
   }
 
   logger.info('Finished seeding product data.');
