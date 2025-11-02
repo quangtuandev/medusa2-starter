@@ -13,11 +13,11 @@ export interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ className, children }) => {
-  const hiddenHeaderFooterPaths = ["/", "/pick-a-card", "/stories"];
+  const hiddenHeaderPaths = ["/", "/pick-a-card", "/stories"];
   const hiddenFooterPaths = ["/", "/pick-a-card", "/", "/stories", "/products"];
   const matches = useMatches();
   const currentMatch = matches[matches.length - 1];
-  const isHiddenHeaderFooter = hiddenHeaderFooterPaths.includes(currentMatch?.pathname || "");
+  const isHiddenHeader = hiddenHeaderPaths.includes(currentMatch?.pathname || "");
   const isHiddenFooter = hiddenFooterPaths.includes(currentMatch?.pathname || "");
   const { toggleCartDrawer } = useCart();
 
@@ -30,24 +30,28 @@ export const Page: FC<PageProps> = ({ className, children }) => {
     >
       <Cursor />
       <CartDrawer />
-      {!isHiddenHeaderFooter && <Header />}
+      {!isHiddenHeader && <Header />}
       <main className="flex-auto">
         <div className="w-full">{children}</div>
       </main>
       {!isHiddenFooter && <Footer />}
-      <LiveChatIcon
-        config={{
-          facebook: 'https://m.me/@kiraparfum',
-          zalo: 'https://zalo.me/your-phone-number'
-        }}
-      />
-      <div className="fixed bottom-6 right-6 z-50">
-        <button onClick={() => toggleCartDrawer(true)} className="transition-all duration-300 transform hover:scale-110 flex items-center justify-center">
-          <span>
-            <img src="/assets/images/cart.svg" alt="Chat" className="w-24 h-24" />
-          </span>
-        </button>
-      </div>
+      {!isHiddenHeader && (
+        <>
+          <LiveChatIcon
+            config={{
+              facebook: 'https://m.me/@kiraparfum',
+              zalo: 'https://zalo.me/your-phone-number'
+            }}
+          />
+          <div className="fixed bottom-6 right-6 z-50">
+            <button onClick={() => toggleCartDrawer(true)} className="transition-all duration-300 transform hover:scale-110 flex items-center justify-center">
+              <span>
+                <img src="/assets/images/cart.svg" alt="Chat" className="w-24 h-24" />
+              </span>
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
