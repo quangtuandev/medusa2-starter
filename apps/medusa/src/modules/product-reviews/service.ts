@@ -33,24 +33,22 @@ class ProductReviewsModuleService extends MedusaService({
       throw new Error("Review not found")
     }
 
-    return await this.updateReviews(id, {
-      status: "approved",
-    })
+    return await this.updateReviews([{ id, status: "approved" }])
   }
 
-  /**
-   * Reject a review
-   */
-  async rejectReview(id: string) {
-    const review = await this.retrieveReview(id)
-    if (!review) {
-      throw new Error("Review not found")
-    }
+  // /**
+  //  * Reject a review
+  //  */
+  // async rejectReview(id: string) {
+  //   const review = await this.retrieveReview(id)
+  //   if (!review) {
+  //     throw new Error("Review not found")
+  //   }
 
-    return await this.updateReviews(id, {
-      status: "rejected",
-    })
-  }
+  //   return await this.updateReviews(id, {
+  //     status: "rejected",
+  //   })
+  // }
 
   /**
    * Delete a review

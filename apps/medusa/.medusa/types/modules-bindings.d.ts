@@ -24,7 +24,6 @@ import type { IWorkflowEngineService } from '@medusajs/framework/types'
 import type { ILockingModule } from '@medusajs/framework/types'
 import type { IFileModuleService } from '@medusajs/framework/types'
 import type Blog from '../../src/modules/blog'
-import type ProductReviewsModuleService from '../../src/modules/product-reviews'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
@@ -53,7 +52,6 @@ declare module '@medusajs/framework/types' {
     'workflows': IWorkflowEngineService,
     'locking': ILockingModule,
     'file': IFileModuleService,
-    'blog': InstanceType<(typeof Blog)['service']>,
-    'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>
+    'blog': InstanceType<(typeof Blog)['service']>
   }
 }

@@ -18,9 +18,8 @@ export const POST = async (
   try {
     // Validate request body
     const validatedData = CreateReviewSchema.parse(req.body)
-    console.log(validatedData, 'validatedData');
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
-    console.log(productReviewsModuleService, 'productReviewsModuleService');
+    // @ts-ignore
     const review = await productReviewsModuleService.createReview(validatedData)
 
     res.status(201).json({

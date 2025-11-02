@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import plugin0 from "@medusajs/draft-order/admin"
-import plugin1 from "@rsc-labs/medusa-paypal-payment/admin"
+import plugin1 from "@alphabite/medusa-paypal/admin"
 
 let root = null
 

@@ -10,6 +10,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     const { id } = req.params
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
 
+    // @ts-ignore
     const review = await productReviewsModuleService.retrieveReview(id)
 
     if (!review) {
@@ -36,7 +37,8 @@ export const PUT = async (
     const validatedData = AdminUpdateReview.parse(req.body)
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
 
-    const review = await productReviewsModuleService.updateReviews(id, validatedData)
+    // @ts-ignore
+    const review = await productReviewsModuleService.updateReviews([{ id, ...validatedData }])
 
     res.json({ review })
   } catch (error: any) {
@@ -52,6 +54,7 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
     const { id } = req.params
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
 
+    // @ts-ignore
     await productReviewsModuleService.deleteReview(id)
 
     res.status(204).send()

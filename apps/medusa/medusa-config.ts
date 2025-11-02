@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv, Module } from '@medusajs/framework/utils';
-import { AlphabiteReviewsPluginOptions } from "@alphabite/medusa-reviews";
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
@@ -63,12 +62,6 @@ module.exports = defineConfig({
         includeShippingData: false,
         includeCustomerData: false,
       },
-    },
-    {
-      resolve: "@alphabite/medusa-reviews",
-      options: {
-        // Add any specific options for the reviews plugin here if available
-      } satisfies AlphabiteReviewsPluginOptions,
     },
   ],
   modules: [

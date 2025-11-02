@@ -6,6 +6,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     const { id } = req.params
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
 
+    // @ts-ignore
     const review = await productReviewsModuleService.approveReview(id)
 
     res.json({

@@ -51,6 +51,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import ArrowLeftIcon from "@heroicons/react/24/solid/ArrowLeftIcon";
 import debounce from "lodash/debounce.js";
 import { Controller, useForm } from "react-hook-form";
+import { useFetcher as useFetcher$1, useNavigate as useNavigate$1, Link as Link$1 } from "react-router-dom";
 import CheckIcon from "@heroicons/react/24/solid/CheckIcon";
 import { Elements, AddressElement, useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -59,7 +60,6 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import ShoppingCartIcon$1 from "@heroicons/react/24/outline/ShoppingCartIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useNavigate as useNavigate$1, Link as Link$1 } from "react-router-dom";
 import { send } from "@emailjs/browser";
 import { motion as motion$1 } from "motion/react";
 if (process.env.SENTRY_DSN)
@@ -256,6 +256,7 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   ENVIRONMENT: process.env.ENVIRONMENT,
   STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+  PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
   PUBLIC_MEDUSA_API_URL: process.env.PUBLIC_MEDUSA_API_URL,
   STOREFRONT_URL: process.env.STOREFRONT_URL,
   SENTRY_DSN: process.env.SENTRY_DSN,
@@ -345,7 +346,7 @@ function medusaError(error) {
     throw new Error("Error setting up the request: " + error.message);
   }
 }
-var __awaiter$J = function(thisArg, _arguments, P, generator) {
+var __awaiter$M = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -426,7 +427,7 @@ class ApiKey {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys`, {
         query: queryParams,
         headers
@@ -452,7 +453,7 @@ class ApiKey {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys`, {
         method: "POST",
         headers,
@@ -476,7 +477,7 @@ class ApiKey {
    * })
    */
   revoke(id, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys/${id}/revoke`, {
         method: "POST",
         headers
@@ -498,7 +499,7 @@ class ApiKey {
    * })
    */
   retrieve(id, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys/${id}`, {
         headers
       });
@@ -523,7 +524,7 @@ class ApiKey {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys/${id}`, {
         method: "POST",
         headers,
@@ -547,7 +548,7 @@ class ApiKey {
    * })
    */
   delete(id, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys/${id}`, {
         method: "DELETE",
         headers
@@ -574,7 +575,7 @@ class ApiKey {
    * })
    */
   batchSalesChannels(id, body, headers) {
-    return __awaiter$J(this, void 0, void 0, function* () {
+    return __awaiter$M(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/api-keys/${id}/sales-channels`, {
         method: "POST",
         headers,
@@ -583,7 +584,7 @@ class ApiKey {
     });
   }
 }
-var __awaiter$I = function(thisArg, _arguments, P, generator) {
+var __awaiter$L = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -650,7 +651,7 @@ class Campaign {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns/${id}`, {
         headers,
         query
@@ -704,7 +705,7 @@ class Campaign {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns`, {
         headers,
         query
@@ -728,7 +729,7 @@ class Campaign {
    * })
    */
   create(payload, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns`, {
         method: "POST",
         headers,
@@ -754,7 +755,7 @@ class Campaign {
    * })
    */
   update(id, payload, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns/${id}`, {
         method: "POST",
         headers,
@@ -777,7 +778,7 @@ class Campaign {
    * })
    */
   delete(id, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns/${id}`, {
         method: "DELETE",
         headers
@@ -804,7 +805,7 @@ class Campaign {
    * })
    */
   batchPromotions(id, payload, headers) {
-    return __awaiter$I(this, void 0, void 0, function* () {
+    return __awaiter$L(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/campaigns/${id}/promotions`, {
         method: "POST",
         headers,
@@ -813,7 +814,7 @@ class Campaign {
     });
   }
 }
-var __awaiter$H = function(thisArg, _arguments, P, generator) {
+var __awaiter$K = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -894,7 +895,7 @@ class Claim {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims`, {
         query,
         headers
@@ -934,7 +935,7 @@ class Claim {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}`, {
         query,
         headers
@@ -960,7 +961,7 @@ class Claim {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims`, {
         method: "POST",
         headers,
@@ -985,7 +986,7 @@ class Claim {
    * })
    */
   cancel(id, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/cancel`, {
         method: "POST",
         headers,
@@ -1017,7 +1018,7 @@ class Claim {
    * })
    */
   addItems(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/claim-items`, {
         method: "POST",
         headers,
@@ -1053,7 +1054,7 @@ class Claim {
    * })
    */
   updateItem(id, actionId, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/claim-items/${actionId}`, {
         method: "POST",
         headers,
@@ -1086,7 +1087,7 @@ class Claim {
    * })
    */
   removeItem(id, actionId, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/claim-items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -1123,7 +1124,7 @@ class Claim {
    * })
    */
   addInboundItems(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/items`, {
         method: "POST",
         headers,
@@ -1160,7 +1161,7 @@ class Claim {
    * })
    */
   updateInboundItem(id, actionId, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/items/${actionId}`, {
         method: "POST",
         headers,
@@ -1193,7 +1194,7 @@ class Claim {
    * })
    */
   removeInboundItem(id, actionId, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -1227,7 +1228,7 @@ class Claim {
    * })
    */
   addInboundShipping(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/shipping-method`, {
         method: "POST",
         headers,
@@ -1264,7 +1265,7 @@ class Claim {
    * })
    */
   updateInboundShipping(id, actionId, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/shipping-method/${actionId}`, {
         method: "POST",
         headers,
@@ -1297,7 +1298,7 @@ class Claim {
    * })
    */
   deleteInboundShipping(id, actionId, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/inbound/shipping-method/${actionId}`, {
         method: "DELETE",
         headers,
@@ -1331,7 +1332,7 @@ class Claim {
    * })
    */
   addOutboundItems(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/items`, {
         method: "POST",
         headers,
@@ -1368,7 +1369,7 @@ class Claim {
    * })
    */
   updateOutboundItem(id, actionId, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/items/${actionId}`, {
         method: "POST",
         headers,
@@ -1401,7 +1402,7 @@ class Claim {
    * })
    */
   removeOutboundItem(id, actionId, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -1424,7 +1425,7 @@ class Claim {
    * @returns The details of the claim, with a preview of the order when the claim is applied.
    *
    * @example
-   *    * sdk.admin.claim.addOutboundShipping(
+   * sdk.admin.claim.addOutboundShipping(
    *   "claim_123",
    *   {
    *     shipping_option_id: "so_123",
@@ -1436,7 +1437,7 @@ class Claim {
    * })
    */
   addOutboundShipping(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/shipping-method`, {
         method: "POST",
         headers,
@@ -1473,7 +1474,7 @@ class Claim {
    * })
    */
   updateOutboundShipping(id, actionId, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/shipping-method/${actionId}`, {
         method: "POST",
         headers,
@@ -1504,7 +1505,7 @@ class Claim {
    * })
    */
   deleteOutboundShipping(id, actionId, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/outbound/shipping-method/${actionId}`, {
         method: "DELETE",
         headers,
@@ -1533,7 +1534,7 @@ class Claim {
    * })
    */
   request(id, body, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/request`, {
         method: "POST",
         headers,
@@ -1561,7 +1562,7 @@ class Claim {
    * })
    */
   cancelRequest(id, query, headers) {
-    return __awaiter$H(this, void 0, void 0, function* () {
+    return __awaiter$K(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/claims/${id}/request`, {
         method: "DELETE",
         headers,
@@ -1570,7 +1571,7 @@ class Claim {
     });
   }
 }
-var __awaiter$G = function(thisArg, _arguments, P, generator) {
+var __awaiter$J = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -1652,7 +1653,7 @@ class Currency {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$G(this, void 0, void 0, function* () {
+    return __awaiter$J(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/currencies`, {
         headers,
         query
@@ -1692,7 +1693,7 @@ class Currency {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(code, query, headers) {
-    return __awaiter$G(this, void 0, void 0, function* () {
+    return __awaiter$J(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/currencies/${code}`, {
         headers,
         query
@@ -1700,7 +1701,7 @@ class Currency {
     });
   }
 }
-var __awaiter$F = function(thisArg, _arguments, P, generator) {
+var __awaiter$I = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -1752,7 +1753,7 @@ class Customer {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/customers`, {
         method: "POST",
         headers,
@@ -1780,7 +1781,7 @@ class Customer {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/customers/${id}`, {
         method: "POST",
         headers,
@@ -1837,7 +1838,7 @@ class Customer {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/customers`, {
         headers,
         query: queryParams
@@ -1878,7 +1879,7 @@ class Customer {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/customers/${id}`, {
         query,
         headers
@@ -1901,7 +1902,7 @@ class Customer {
    * })
    */
   delete(id, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/customers/${id}`, {
         method: "DELETE",
         headers
@@ -1928,7 +1929,7 @@ class Customer {
    * })
    */
   batchCustomerGroups(id, body, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/customer-groups`, {
         method: "POST",
         headers,
@@ -1958,7 +1959,7 @@ class Customer {
    * })
    */
   createAddress(id, body, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/addresses`, {
         method: "POST",
         headers,
@@ -1989,7 +1990,7 @@ class Customer {
    * })
    */
   updateAddress(id, addressId, body, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/addresses/${addressId}`, {
         method: "POST",
         headers,
@@ -2014,7 +2015,7 @@ class Customer {
    * })
    */
   deleteAddress(id, addressId, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/addresses/${addressId}`, {
         method: "DELETE",
         headers
@@ -2038,7 +2039,7 @@ class Customer {
    * })
    */
   retrieveAddress(id, addressId, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/addresses/${addressId}`, {
         headers
       });
@@ -2060,14 +2061,14 @@ class Customer {
    * })
    */
   listAddresses(id, headers) {
-    return __awaiter$F(this, void 0, void 0, function* () {
+    return __awaiter$I(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customers/${id}/addresses`, {
         headers
       });
     });
   }
 }
-var __awaiter$E = function(thisArg, _arguments, P, generator) {
+var __awaiter$H = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -2134,7 +2135,7 @@ class CustomerGroup {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups/${id}`, {
         method: "GET",
         query,
@@ -2190,7 +2191,7 @@ class CustomerGroup {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups`, {
         method: "GET",
         headers,
@@ -2217,7 +2218,7 @@ class CustomerGroup {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups`, {
         method: "POST",
         headers,
@@ -2246,7 +2247,7 @@ class CustomerGroup {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups/${id}`, {
         method: "POST",
         headers,
@@ -2271,7 +2272,7 @@ class CustomerGroup {
    * })
    */
   delete(id, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups/${id}`, {
         method: "DELETE",
         headers
@@ -2298,7 +2299,7 @@ class CustomerGroup {
    * })
    */
   batchCustomers(id, body, headers) {
-    return __awaiter$E(this, void 0, void 0, function* () {
+    return __awaiter$H(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/customer-groups/${id}/customers`, {
         method: "POST",
         headers,
@@ -2307,7 +2308,7 @@ class CustomerGroup {
     });
   }
 }
-var __awaiter$D = function(thisArg, _arguments, P, generator) {
+var __awaiter$G = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -2375,7 +2376,7 @@ class DraftOrder {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}`, {
         query,
         headers
@@ -2429,7 +2430,7 @@ class DraftOrder {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders`, {
         query: queryParams,
         headers
@@ -2443,11 +2444,9 @@ class DraftOrder {
    * @param body - The data to create the draft order.
    * @param query - Configure the fields to retrieve in the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order's details.
    *
    * @example
-   * To create a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.create({
    *   email: "test@test.com",
    *   items: [
@@ -2462,14 +2461,34 @@ class DraftOrder {
    * .then(({ draft_order }) => {
    *   console.log(draft_order)
    * })
-   * ```
    */
   create(body, query, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders`, {
         method: "POST",
         body,
         query,
+        headers
+      });
+    });
+  }
+  /**
+   * This method deletes a draft order. It sends a request to the
+   * [Delete Draft Order](https://docs.medusajs.com/api/admin#draft-orders_deleteordereditsid) API route.
+   *
+   * @param id - The draft order's ID.
+   * @param headers - Headers to pass in the request.
+   *
+   * @example
+   * sdk.admin.draftOrder.delete("order_123")
+   * .then(({ id, object, deleted }) => {
+   *   console.log(id, object, deleted)
+   * })
+   */
+  delete(id, headers) {
+    return __awaiter$G(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/draft-orders/${id}`, {
+        method: "DELETE",
         headers
       });
     });
@@ -2482,21 +2501,18 @@ class DraftOrder {
    * @param body - The data to update the draft order.
    * @param query - Configure the fields to retrieve in the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order's details.
    *
    * @example
-   * To update a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.update("order_123", {
    *   email: "test@test.com",
    * })
    * .then(({ draft_order }) => {
    *   console.log(draft_order)
    * })
-   * ```
    */
   update(id, body, query, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}`, {
         method: "POST",
         body,
@@ -2507,23 +2523,21 @@ class DraftOrder {
   }
   /**
    * This method converts a draft order to an order. It sends a request to the
-   * [Convert Draft Order to Order](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidconvert-to-order) API route.
+   * [Convert Draft Order to Order](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidconverttoorder) API route.
    *
    * @param id - The draft order's ID.
    * @param query - Configure the fields to retrieve in the order.
    * @param headers - Headers to pass in the request.
+   * @returns The order's details.
    *
    * @example
-   * To convert a draft order to an order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.convertToOrder("order_123")
    * .then(({ order }) => {
    *   console.log(order)
    * })
    */
   convertToOrder(id, query, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/convert-to-order`, {
         method: "POST",
         query,
@@ -2533,16 +2547,14 @@ class DraftOrder {
   }
   /**
    * This method adds items to a draft order. It sends a request to the
-   * [Add Draft Order Items](https://docs.medusajs.com/api/admin#draft-orders_postordereditsiditems) API route.
+   * [Add Draft Order Items](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidedititems) API route.
    *
    * @param id - The draft order's ID.
    * @param body - The data to add the items to the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To add items to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.addItems("order_123", {
    *   items: [
    *     {
@@ -2554,10 +2566,9 @@ class DraftOrder {
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   addItems(id, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/items`, {
         method: "POST",
         body,
@@ -2567,27 +2578,24 @@ class DraftOrder {
   }
   /**
    * This method updates an item that is part of an action in a draft order. It sends a request to the
-   * [Update Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_postordereditsiditemsaction_id) API route.
+   * [Update Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidedititemsaction_id) API route.
    *
    * @param id - The draft order's ID.
    * @param actionId - The action ID.
    * @param body - The data to update the item.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To update an item that is part of an action in a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.updateActionItem("order_123", "action_123", {
    *   quantity: 2,
    * })
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   updateActionItem(id, actionId, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/items/${actionId}`, {
         method: "POST",
         body,
@@ -2597,24 +2605,21 @@ class DraftOrder {
   }
   /**
    * This method removes an item that is part of an action in a draft order. It sends a request to the
-   * [Remove Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_deleteordereditsiditemsaction_id) API route.
+   * [Remove Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_deletedraftordersidedititemsaction_id) API route.
    *
    * @param id - The draft order's ID.
    * @param actionId - The action ID.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To remove an item that is part of an action in a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.removeActionItem("order_123", "action_123")
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   removeActionItem(id, actionId, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/items/${actionId}`, {
         method: "DELETE",
         headers
@@ -2623,27 +2628,24 @@ class DraftOrder {
   }
   /**
    * This method updates an item in a draft order. It sends a request to the
-   * [Update Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_postordereditsiditemsitem_id) API route.
+   * [Update Draft Order Item](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidedititemsitemitem_id) API route.
    *
    * @param id - The draft order's ID.
    * @param itemId - The item ID.
    * @param body - The data to update the item.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To update an item in a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.updateItem("order_123", "item_123", {
    *   quantity: 2,
    * })
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   updateItem(id, itemId, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/items/item/${itemId}`, {
         method: "POST",
         body,
@@ -2653,26 +2655,23 @@ class DraftOrder {
   }
   /**
    * This method adds promotions to a draft order. It sends a request to the
-   * [Add Draft Order Promotions](https://docs.medusajs.com/api/admin#draft-orders_postordereditsidpromotions) API route.
+   * [Add Draft Order Promotions](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditpromotions) API route.
    *
    * @param id - The draft order's ID.
    * @param body - The data to add the promotions to the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To add promotions to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.addPromotions("order_123", {
    *   promo_codes: ["PROMO_CODE_1", "PROMO_CODE_2"],
    * })
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   addPromotions(id, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/promotions`, {
         method: "POST",
         body,
@@ -2682,23 +2681,20 @@ class DraftOrder {
   }
   /**
    * This method removes promotions from a draft order. It sends a request to the
-   * [Remove Draft Order Promotions](https://docs.medusajs.com/api/admin#draft-orders_deleteordereditsidpromotions) API route.
+   * [Remove Draft Order Promotions](https://docs.medusajs.com/api/admin#draft-orders_deletedraftordersideditpromotions) API route.
    *
    * @param id - The draft order's ID.
    * @param body - The data to remove the promotions from the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To remove promotions from a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.removePromotions("order_123", {
    *   promo_codes: ["PROMO_CODE_1", "PROMO_CODE_2"],
    * })
-   * ```
    */
   removePromotions(id, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/promotions`, {
         method: "DELETE",
         body,
@@ -2708,26 +2704,23 @@ class DraftOrder {
   }
   /**
    * This method adds a shipping method to a draft order. It sends a request to the
-   * [Add Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_postordereditsidshipping-methods) API route.
+   * [Add Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditshippingmethods) API route.
    *
    * @param id - The draft order's ID.
    * @param body - The data to add the shipping method to the draft order.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To add a shipping method to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.addShippingMethod("order_123", {
    *   shipping_option_id: "shipping_option_123",
    * })
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   addShippingMethod(id, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/shipping-methods`, {
         method: "POST",
         body,
@@ -2737,27 +2730,24 @@ class DraftOrder {
   }
   /**
    * This method updates a shipping method in a draft order. It sends a request to the
-   * [Update Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_postordereditsidshipping-methodsaction_id) API route.
+   * [Update Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditshippingmethodsaction_id) API route.
    *
    * @param id - The draft order's ID.
    * @param actionId - The action ID.
    * @param body - The data to update the shipping method.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To update a shipping method in a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.updateShippingMethod("order_123", "action_123", {
    *   shipping_option_id: "shipping_option_123",
    * })
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   updateActionShippingMethod(id, actionId, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/shipping-methods/${actionId}`, {
         method: "POST",
         body,
@@ -2767,32 +2757,73 @@ class DraftOrder {
   }
   /**
    * This method removes a shipping method from a draft order. It sends a request to the
-   * [Remove Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_deleteordereditsidshipping-methodsaction_id) API route.
+   * [Remove Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_deletedraftordersideditshippingmethodsaction_id) API route.
    *
    * @param id - The draft order's ID.
    * @param actionId - The action ID.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To remove a shipping method from a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.removeShippingMethod("order_123", "action_123")
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   removeActionShippingMethod(id, actionId, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/shipping-methods/${actionId}`, {
         method: "DELETE",
         headers
       });
     });
   }
+  /**
+   * This method removes a shipping method from an edited draft order. It sends a request to the
+   * [Remove Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_deletedraftordersideditshippingmethodsmethodmethod_id) API route.
+   *
+   * @param id - The draft order's ID.
+   * @param shippingMethodId - The shipping method's ID.
+   * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
+   *
+   * @example
+   * sdk.admin.draftOrder.removeShippingMethod(
+   *   "order_123",
+   *   "shipping_method_123"
+   * )
+   * .then(({ draft_order_preview }) => {
+   *   console.log(draft_order_preview)
+   * })
+   */
+  removeShippingMethod(id, shippingMethodId, headers) {
+    return __awaiter$G(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/draft-orders/${id}/edit/shipping-methods/method/${shippingMethodId}`, {
+        method: "DELETE",
+        headers
+      });
+    });
+  }
+  /**
+   * This method updates a shipping method in a draft order. It sends a request to the
+   * [Update Draft Order Shipping Method](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditshippingmethodsmethodmethod_id) API route.
+   *
+   * @param id - The draft order's ID.
+   * @param methodId - The shipping method's ID.
+   * @param body - The data to update the shipping method.
+   * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
+   *
+   * @example
+   * sdk.admin.draftOrder.updateShippingMethod("order_123", "sm_123", {
+   *  shipping_option_id: "so_123",
+   * })
+   * .then(({ draft_order_preview }) => {
+   *   console.log(draft_order_preview)
+   * })
+   */
   updateShippingMethod(id, methodId, body, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/shipping-methods/method/${methodId}`, {
         method: "POST",
         body,
@@ -2802,23 +2833,19 @@ class DraftOrder {
   }
   /**
    * This method begins an edit to a draft order. It sends a request to the
-   * [Begin Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postordereditsid) API route.
+   * [Begin Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersidedit) API route.
    *
    * @param id - The draft order's ID.
    * @param headers - Headers to pass in the request.
    *
    * @example
-   * To begin an edit to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.beginEdit("order_123")
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   beginEdit(id, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit`, {
         method: "POST",
         headers
@@ -2827,23 +2854,20 @@ class DraftOrder {
   }
   /**
    * This method cancels an edit to a draft order. It sends a request to the
-   * [Cancel Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_deleteordereditsid) API route.
+   * [Cancel Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_deletedraftordersidedit) API route.
    *
    * @param id - The draft order's ID.
    * @param headers - Headers to pass in the request.
+   * @returns The cancelation's details.
    *
    * @example
-   * To cancel an edit to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.cancelEdit("order_123")
    * .then(({ id, object, deleted }) => {
    *   console.log(id, object, deleted)
    * })
-   * ```
    */
   cancelEdit(id, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit`, {
         method: "DELETE",
         headers
@@ -2852,23 +2876,20 @@ class DraftOrder {
   }
   /**
    * This method requests an edit to a draft order. It sends a request to the
-   * [Request Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postordereditsidrequest) API route.
+   * [Request Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditrequest) API route.
    *
    * @param id - The draft order's ID.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To request an edit to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.requestEdit("order_123")
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   requestEdit(id, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/request`, {
         method: "POST",
         headers
@@ -2877,23 +2898,20 @@ class DraftOrder {
   }
   /**
    * This method confirms an edit to a draft order. It sends a request to the
-   * [Confirm Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postordereditsidconfirm) API route.
+   * [Confirm Draft Order Edit](https://docs.medusajs.com/api/admin#draft-orders_postdraftordersideditconfirm) API route.
    *
    * @param id - The draft order's ID.
    * @param headers - Headers to pass in the request.
+   * @returns The draft order preview's details.
    *
    * @example
-   * To confirm an edit to a draft order:
-   *
-   * ```ts
    * sdk.admin.draftOrder.confirmEdit("order_123")
    * .then(({ draft_order_preview }) => {
    *   console.log(draft_order_preview)
    * })
-   * ```
    */
   confirmEdit(id, headers) {
-    return __awaiter$D(this, void 0, void 0, function* () {
+    return __awaiter$G(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/draft-orders/${id}/edit/confirm`, {
         method: "POST",
         headers
@@ -2901,7 +2919,7 @@ class DraftOrder {
     });
   }
 }
-var __awaiter$C = function(thisArg, _arguments, P, generator) {
+var __awaiter$F = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -2983,7 +3001,7 @@ class Exchange {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges`, {
         query,
         headers
@@ -3024,7 +3042,7 @@ class Exchange {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}`, {
         query,
         headers
@@ -3049,7 +3067,7 @@ class Exchange {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges`, {
         method: "POST",
         headers,
@@ -3074,7 +3092,7 @@ class Exchange {
    * })
    */
   cancel(id, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/cancel`, {
         method: "POST",
         headers,
@@ -3107,7 +3125,7 @@ class Exchange {
    * })
    */
   addInboundItems(id, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/items`, {
         method: "POST",
         headers,
@@ -3146,7 +3164,7 @@ class Exchange {
    * })
    */
   updateInboundItem(id, actionId, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/items/${actionId}`, {
         method: "POST",
         headers,
@@ -3181,7 +3199,7 @@ class Exchange {
    * })
    */
   removeInboundItem(id, actionId, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -3214,7 +3232,7 @@ class Exchange {
    * })
    */
   addInboundShipping(id, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/shipping-method`, {
         method: "POST",
         headers,
@@ -3253,7 +3271,7 @@ class Exchange {
    * })
    */
   updateInboundShipping(id, actionId, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/shipping-method/${actionId}`, {
         method: "POST",
         headers,
@@ -3288,7 +3306,7 @@ class Exchange {
    * })
    */
   deleteInboundShipping(id, actionId, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/inbound/shipping-method/${actionId}`, {
         method: "DELETE",
         headers,
@@ -3321,7 +3339,7 @@ class Exchange {
    * })
    */
   addOutboundItems(id, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/items`, {
         method: "POST",
         headers,
@@ -3360,7 +3378,7 @@ class Exchange {
    * })
    */
   updateOutboundItem(id, actionId, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/items/${actionId}`, {
         method: "POST",
         headers,
@@ -3395,7 +3413,7 @@ class Exchange {
    * })
    */
   removeOutboundItem(id, actionId, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -3425,7 +3443,7 @@ class Exchange {
    * })
    */
   addOutboundShipping(id, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/shipping-method`, {
         method: "POST",
         headers,
@@ -3464,7 +3482,7 @@ class Exchange {
    * })
    */
   updateOutboundShipping(id, actionId, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/shipping-method/${actionId}`, {
         method: "POST",
         headers,
@@ -3499,7 +3517,7 @@ class Exchange {
    * })
    */
   deleteOutboundShipping(id, actionId, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/outbound/shipping-method/${actionId}`, {
         method: "DELETE",
         headers,
@@ -3526,7 +3544,7 @@ class Exchange {
    * })
    */
   request(id, body, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/request`, {
         method: "POST",
         headers,
@@ -3552,7 +3570,7 @@ class Exchange {
    * })
    */
   cancelRequest(id, query, headers) {
-    return __awaiter$C(this, void 0, void 0, function* () {
+    return __awaiter$F(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/exchanges/${id}/request`, {
         method: "DELETE",
         headers,
@@ -3561,7 +3579,7 @@ class Exchange {
     });
   }
 }
-var __awaiter$B = function(thisArg, _arguments, P, generator) {
+var __awaiter$E = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -3629,7 +3647,7 @@ class Fulfillment {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$B(this, void 0, void 0, function* () {
+    return __awaiter$E(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillments`, {
         method: "POST",
         headers,
@@ -3655,7 +3673,7 @@ class Fulfillment {
    * })
    */
   cancel(id, query, headers) {
-    return __awaiter$B(this, void 0, void 0, function* () {
+    return __awaiter$E(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillments/${id}/cancel`, {
         method: "POST",
         body: {},
@@ -3690,7 +3708,7 @@ class Fulfillment {
    * })
    */
   createShipment(id, body, query, headers) {
-    return __awaiter$B(this, void 0, void 0, function* () {
+    return __awaiter$E(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillments/${id}/shipment`, {
         method: "POST",
         headers,
@@ -3700,7 +3718,7 @@ class Fulfillment {
     });
   }
 }
-var __awaiter$A = function(thisArg, _arguments, P, generator) {
+var __awaiter$D = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -3782,7 +3800,7 @@ class FulfillmentProvider {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$A(this, void 0, void 0, function* () {
+    return __awaiter$D(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-providers`, {
         method: "GET",
         headers,
@@ -3806,7 +3824,7 @@ class FulfillmentProvider {
    * })
    */
   listFulfillmentOptions(id, headers) {
-    return __awaiter$A(this, void 0, void 0, function* () {
+    return __awaiter$D(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-providers/${id}/options`, {
         method: "GET",
         headers
@@ -3814,7 +3832,7 @@ class FulfillmentProvider {
     });
   }
 }
-var __awaiter$z = function(thisArg, _arguments, P, generator) {
+var __awaiter$C = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -3864,7 +3882,7 @@ class FulfillmentSet {
    * })
    */
   delete(id, headers) {
-    return __awaiter$z(this, void 0, void 0, function* () {
+    return __awaiter$C(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-sets/${id}`, {
         method: "DELETE",
         headers
@@ -3895,7 +3913,7 @@ class FulfillmentSet {
    * })
    */
   createServiceZone(id, body, query, headers) {
-    return __awaiter$z(this, void 0, void 0, function* () {
+    return __awaiter$C(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-sets/${id}/service-zones`, {
         method: "POST",
         headers,
@@ -3946,7 +3964,7 @@ class FulfillmentSet {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieveServiceZone(fulfillmentSetId, serviceZoneId, query, headers) {
-    return __awaiter$z(this, void 0, void 0, function* () {
+    return __awaiter$C(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`, {
         method: "GET",
         headers,
@@ -3979,7 +3997,7 @@ class FulfillmentSet {
    * })
    */
   updateServiceZone(fulfillmentSetId, serviceZoneId, body, query, headers) {
-    return __awaiter$z(this, void 0, void 0, function* () {
+    return __awaiter$C(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`, {
         method: "POST",
         headers,
@@ -4008,7 +4026,7 @@ class FulfillmentSet {
    * })
    */
   deleteServiceZone(fulfillmentSetId, serviceZoneId, headers) {
-    return __awaiter$z(this, void 0, void 0, function* () {
+    return __awaiter$C(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`, {
         method: "DELETE",
         headers
@@ -4016,7 +4034,7 @@ class FulfillmentSet {
     });
   }
 }
-var __awaiter$y = function(thisArg, _arguments, P, generator) {
+var __awaiter$B = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -4069,7 +4087,7 @@ class InventoryItem {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items`, {
         method: "POST",
         headers,
@@ -4098,7 +4116,7 @@ class InventoryItem {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}`, {
         method: "POST",
         headers,
@@ -4155,7 +4173,7 @@ class InventoryItem {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items`, {
         query,
         headers
@@ -4195,7 +4213,7 @@ class InventoryItem {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}`, {
         query,
         headers
@@ -4218,7 +4236,7 @@ class InventoryItem {
    * })
    */
   delete(id, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}`, {
         method: "DELETE",
         headers
@@ -4274,7 +4292,7 @@ class InventoryItem {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   listLevels(id, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}/location-levels`, {
         query,
         headers
@@ -4309,7 +4327,7 @@ class InventoryItem {
    * })
    */
   updateLevel(id, locationId, body, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}/location-levels/${locationId}`, {
         method: "POST",
         headers,
@@ -4341,7 +4359,7 @@ class InventoryItem {
    * })
    */
   deleteLevel(id, locationId, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}/location-levels/${locationId}`, {
         method: "DELETE",
         headers
@@ -4374,7 +4392,7 @@ class InventoryItem {
    * })
    */
   batchUpdateLevels(id, body, query, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}/location-levels/batch`, {
         method: "POST",
         headers,
@@ -4406,7 +4424,7 @@ class InventoryItem {
    * })
    */
   batchInventoryItemLocationLevels(id, body, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/${id}/location-levels/batch`, {
         method: "POST",
         headers,
@@ -4435,7 +4453,7 @@ class InventoryItem {
    * })
    */
   batchInventoryItemsLocationLevels(body, headers) {
-    return __awaiter$y(this, void 0, void 0, function* () {
+    return __awaiter$B(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/inventory-items/location-levels/batch`, {
         method: "POST",
         headers,
@@ -4444,7 +4462,7 @@ class InventoryItem {
     });
   }
 }
-var __awaiter$x = function(thisArg, _arguments, P, generator) {
+var __awaiter$A = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -4503,28 +4521,23 @@ class Invite {
    * @returns The user's details.
    *
    * @example
-   * const token = await sdk.auth.register("user", "emailpass", {
+   * await sdk.auth.register("user", "emailpass", {
    *   email: "user@gmail.com",
    *   password: "supersecret"
    * })
    *
-   * sdk.admin.invite.accept(
+   * // all subsequent requests will use the token in the header
+   * const { user } = await sdk.admin.invite.accept(
    *   {
    *     email: "user@gmail.com",
    *     first_name: "John",
    *     last_name: "Smith",
    *     invite_token: "12345..."
    *   },
-   *   {
-   *     Authorization: `Bearer ${token}`
-   *   }
    * )
-   * .then(({ user }) => {
-   *   console.log(user)
-   * })
    */
   accept(input, query, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       const { invite_token } = input, rest = __rest(input, ["invite_token"]);
       return yield this.client.fetch(`/admin/invites/accept?token=${input.invite_token}`, {
         method: "POST",
@@ -4553,7 +4566,7 @@ class Invite {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/invites`, {
         method: "POST",
         headers,
@@ -4596,7 +4609,7 @@ class Invite {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/invites/${id}`, {
         headers,
         query
@@ -4651,7 +4664,7 @@ class Invite {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/invites`, {
         headers,
         query: queryParams
@@ -4674,7 +4687,7 @@ class Invite {
    * })
    */
   resend(id, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/invites/${id}/resend`, {
         method: "POST",
         headers
@@ -4697,7 +4710,7 @@ class Invite {
    * })
    */
   delete(id, headers) {
-    return __awaiter$x(this, void 0, void 0, function* () {
+    return __awaiter$A(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/invites/${id}`, {
         method: "DELETE",
         headers
@@ -4705,7 +4718,7 @@ class Invite {
     });
   }
 }
-var __awaiter$w = function(thisArg, _arguments, P, generator) {
+var __awaiter$z = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -4773,7 +4786,7 @@ class Notification {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$w(this, void 0, void 0, function* () {
+    return __awaiter$z(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/notifications/${id}`, {
         method: "GET",
         headers,
@@ -4829,7 +4842,7 @@ class Notification {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$w(this, void 0, void 0, function* () {
+    return __awaiter$z(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/notifications`, {
         method: "GET",
         headers,
@@ -4838,7 +4851,7 @@ class Notification {
     });
   }
 }
-var __awaiter$v = function(thisArg, _arguments, P, generator) {
+var __awaiter$y = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -4906,7 +4919,7 @@ class Order {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}`, {
         query,
         headers
@@ -4940,7 +4953,7 @@ class Order {
    * })
    */
   update(id, body, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}`, {
         method: "POST",
         headers,
@@ -4964,7 +4977,7 @@ class Order {
    * })
    */
   retrievePreview(id, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/preview`, {
         query,
         headers
@@ -5018,8 +5031,33 @@ class Order {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders`, {
+        query: queryParams,
+        headers
+      });
+    });
+  }
+  /**
+   * This method archives an order. It sends a request to the
+   * [Archive Order](https://docs.medusajs.com/api/admin#orders_postordersidarchive)
+   * API route.
+   *
+   * @param id - The order's ID.
+   * @param queryParams - Configure the fields to retrieve in the order.
+   * @param headers - Headers to pass in the request
+   * @returns The order's details.
+   *
+   * @example
+   * sdk.admin.order.archive("order_123")
+   * .then(({ order }) => {
+   *   console.log(order)
+   * })
+   */
+  archive(id, queryParams, headers) {
+    return __awaiter$y(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/orders/${id}/archive`, {
+        method: "POST",
         query: queryParams,
         headers
       });
@@ -5041,9 +5079,34 @@ class Order {
    * })
    */
   cancel(id, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/cancel`, {
         method: "POST",
+        headers
+      });
+    });
+  }
+  /**
+   * This method completes an order. It sends a request to the
+   * [Complete Order](https://docs.medusajs.com/api/admin#orders_postordersidcomplete)
+   * API route.
+   *
+   * @param id - The order's ID.
+   * @param headers - Headers to pass in the request.
+   * @returns The order's details.
+   *
+   * @example
+   * sdk.admin.order.complete("order_123")
+   * .then(({ order }) => {
+   *   console.log(order)
+   * })
+   */
+  complete(id, body, queryParams, headers) {
+    return __awaiter$y(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/orders/${id}/complete`, {
+        method: "POST",
+        body,
+        query: queryParams,
         headers
       });
     });
@@ -5068,7 +5131,7 @@ class Order {
    * })
    */
   requestTransfer(id, body, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/transfer`, {
         method: "POST",
         headers,
@@ -5092,7 +5155,7 @@ class Order {
    * })
    */
   cancelTransfer(id, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/transfer/cancel`, {
         method: "POST",
         headers
@@ -5124,7 +5187,7 @@ class Order {
    * })
    */
   createFulfillment(id, body, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/fulfillments`, {
         method: "POST",
         headers,
@@ -5157,7 +5220,7 @@ class Order {
    * })
    */
   cancelFulfillment(id, fulfillmentId, body, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/fulfillments/${fulfillmentId}/cancel`, {
         method: "POST",
         headers,
@@ -5195,7 +5258,7 @@ class Order {
    * })
    */
   createShipment(id, fulfillmentId, body, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/fulfillments/${fulfillmentId}/shipments`, {
         method: "POST",
         headers,
@@ -5225,11 +5288,36 @@ class Order {
    * })
    */
   markAsDelivered(id, fulfillmentId, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/fulfillments/${fulfillmentId}/mark-as-delivered`, {
         method: "POST",
         headers,
         query
+      });
+    });
+  }
+  /**
+   * This method retrieves a list of shipping options for an order based on the order's shipping address.
+   *
+   * This method sends a request to the [List Shipping Options](https://docs.medusajs.com/api/admin#orders_getordersidshipping-options)
+   * API route.
+   *
+   * @param id - The order's ID.
+   * @param queryParams - Configure the fields to retrieve in each shipping option.
+   * @param headers - Headers to pass in the request
+   * @returns The list of shipping options.
+   *
+   * @example
+   * sdk.admin.order.listShippingOptions("order_123")
+   * .then(({ shipping_options }) => {
+   *   console.log(shipping_options)
+   * })
+   */
+  listShippingOptions(id, queryParams, headers) {
+    return __awaiter$y(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/orders/${id}/shipping-options`, {
+        query: queryParams,
+        headers
       });
     });
   }
@@ -5251,7 +5339,7 @@ class Order {
    * })
    */
   listChanges(id, queryParams, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/changes`, {
         query: queryParams,
         headers
@@ -5275,15 +5363,38 @@ class Order {
    * })
    */
   listLineItems(id, queryParams, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${id}/line-items`, {
         query: queryParams,
         headers
       });
     });
   }
+  /**
+   * This method creates a credit line for an order. It sends a request to the
+   * [Create Credit Line](https://docs.medusajs.com/api/admin#orders_postordersidcredit-lines) API route.
+   *
+   * @param orderId - The order's ID.
+   * @param body - The credit line's details.
+   * @param query - Configure the fields to retrieve in the order.
+   * @param headers - Headers to pass in the request
+   * @returns The order's details.
+   *
+   * @example
+   * sdk.admin.order.createCreditLine(
+   *   "order_123",
+   *   {
+   *     amount: 100,
+   *     reference: "order",
+   *     reference_id: "order_123",
+   *   }
+   * )
+   * .then(({ order }) => {
+   *   console.log(order)
+   * })
+   */
   createCreditLine(orderId, body, query, headers) {
-    return __awaiter$v(this, void 0, void 0, function* () {
+    return __awaiter$y(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/orders/${orderId}/credit-lines`, {
         method: "POST",
         headers,
@@ -5293,7 +5404,7 @@ class Order {
     });
   }
 }
-var __awaiter$u = function(thisArg, _arguments, P, generator) {
+var __awaiter$x = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -5346,7 +5457,7 @@ class OrderEdit {
    * })
    */
   initiateRequest(body, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits`, {
         method: "POST",
         headers,
@@ -5372,7 +5483,7 @@ class OrderEdit {
    * })
    */
   request(id, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/request`, {
         method: "POST",
         headers,
@@ -5397,7 +5508,7 @@ class OrderEdit {
    * })
    */
   confirm(id, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/confirm`, {
         method: "POST",
         headers,
@@ -5422,7 +5533,7 @@ class OrderEdit {
    * })
    */
   cancelRequest(id, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}`, {
         method: "DELETE",
         headers,
@@ -5456,7 +5567,7 @@ class OrderEdit {
    * })
    */
   addItems(id, body, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/items`, {
         method: "POST",
         headers,
@@ -5469,6 +5580,8 @@ class OrderEdit {
    * This method updates the quantity and other details of an item in an order. It sends a request to the
    * [Update Item Quantity](https://docs.medusajs.com/api/admin#order-edits_postordereditsiditemsitemitem_id)
    * API route.
+   *
+   * You can also use this method to remove an item from an order by setting the `quantity` to `0`.
    *
    * @param id - The order edit's ID.
    * @param itemId - The item's ID in the order.
@@ -5490,7 +5603,7 @@ class OrderEdit {
    * })
    */
   updateOriginalItem(id, itemId, body, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/items/item/${itemId}`, {
         method: "POST",
         headers,
@@ -5529,7 +5642,7 @@ class OrderEdit {
    * })
    */
   updateAddedItem(id, actionId, body, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/items/${actionId}`, {
         method: "POST",
         headers,
@@ -5560,7 +5673,7 @@ class OrderEdit {
    * })
    */
   removeAddedItem(id, actionId, query, headers) {
-    return __awaiter$u(this, void 0, void 0, function* () {
+    return __awaiter$x(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/order-edits/${id}/items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -5569,7 +5682,7 @@ class OrderEdit {
     });
   }
 }
-var __awaiter$t = function(thisArg, _arguments, P, generator) {
+var __awaiter$w = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -5650,7 +5763,7 @@ class Payment {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$t(this, void 0, void 0, function* () {
+    return __awaiter$w(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payments`, {
         query,
         headers
@@ -5704,7 +5817,7 @@ class Payment {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   listPaymentProviders(query, headers) {
-    return __awaiter$t(this, void 0, void 0, function* () {
+    return __awaiter$w(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payments/payment-providers`, {
         query,
         headers
@@ -5745,7 +5858,7 @@ class Payment {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$t(this, void 0, void 0, function* () {
+    return __awaiter$w(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payments/${id}`, {
         query,
         headers
@@ -5771,7 +5884,7 @@ class Payment {
    * })
    */
   capture(id, body, query, headers) {
-    return __awaiter$t(this, void 0, void 0, function* () {
+    return __awaiter$w(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payments/${id}/capture`, {
         method: "POST",
         headers,
@@ -5799,7 +5912,7 @@ class Payment {
    * })
    */
   refund(id, body, query, headers) {
-    return __awaiter$t(this, void 0, void 0, function* () {
+    return __awaiter$w(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payments/${id}/refund`, {
         method: "POST",
         headers,
@@ -5809,7 +5922,7 @@ class Payment {
     });
   }
 }
-var __awaiter$s = function(thisArg, _arguments, P, generator) {
+var __awaiter$v = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -5862,7 +5975,7 @@ class PaymentCollection {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$s(this, void 0, void 0, function* () {
+    return __awaiter$v(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payment-collections`, {
         method: "POST",
         headers,
@@ -5887,7 +6000,7 @@ class PaymentCollection {
    * })
    */
   delete(id, headers) {
-    return __awaiter$s(this, void 0, void 0, function* () {
+    return __awaiter$v(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payment-collections/${id}`, {
         method: "DELETE",
         headers
@@ -5917,7 +6030,7 @@ class PaymentCollection {
    * })
    */
   markAsPaid(id, body, query, headers) {
-    return __awaiter$s(this, void 0, void 0, function* () {
+    return __awaiter$v(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/payment-collections/${id}/mark-as-paid`, {
         method: "POST",
         headers,
@@ -5927,7 +6040,7 @@ class PaymentCollection {
     });
   }
 }
-var __awaiter$r = function(thisArg, _arguments, P, generator) {
+var __awaiter$u = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -5974,7 +6087,7 @@ class Plugin {
    * })
    */
   list(headers) {
-    return __awaiter$r(this, void 0, void 0, function* () {
+    return __awaiter$u(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/plugins`, {
         headers,
         query: {}
@@ -5982,7 +6095,7 @@ class Plugin {
     });
   }
 }
-var __awaiter$q = function(thisArg, _arguments, P, generator) {
+var __awaiter$t = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -6050,7 +6163,7 @@ class PriceList {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/v2/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists/${id}`, {
         method: "GET",
         headers,
@@ -6105,7 +6218,7 @@ class PriceList {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/v2/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists`, {
         method: "GET",
         headers,
@@ -6144,7 +6257,7 @@ class PriceList {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists`, {
         method: "POST",
         headers,
@@ -6173,7 +6286,7 @@ class PriceList {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists/${id}`, {
         method: "POST",
         headers,
@@ -6198,7 +6311,7 @@ class PriceList {
    * })
    */
   delete(id, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists/${id}`, {
         method: "DELETE",
         headers
@@ -6238,7 +6351,7 @@ class PriceList {
    * })
    */
   batchPrices(id, body, query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists/${id}/prices/batch`, {
         method: "POST",
         headers,
@@ -6267,7 +6380,7 @@ class PriceList {
    * })
    */
   linkProducts(id, body, query, headers) {
-    return __awaiter$q(this, void 0, void 0, function* () {
+    return __awaiter$t(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-lists/${id}/products`, {
         method: "POST",
         headers,
@@ -6277,7 +6390,7 @@ class PriceList {
     });
   }
 }
-var __awaiter$p = function(thisArg, _arguments, P, generator) {
+var __awaiter$s = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -6345,7 +6458,7 @@ class PricePreference {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$p(this, void 0, void 0, function* () {
+    return __awaiter$s(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-preferences/${id}`, {
         method: "GET",
         headers,
@@ -6400,7 +6513,7 @@ class PricePreference {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$p(this, void 0, void 0, function* () {
+    return __awaiter$s(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-preferences`, {
         method: "GET",
         headers,
@@ -6429,7 +6542,7 @@ class PricePreference {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$p(this, void 0, void 0, function* () {
+    return __awaiter$s(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-preferences`, {
         method: "POST",
         headers,
@@ -6458,7 +6571,7 @@ class PricePreference {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$p(this, void 0, void 0, function* () {
+    return __awaiter$s(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-preferences/${id}`, {
         method: "POST",
         headers,
@@ -6483,7 +6596,7 @@ class PricePreference {
    * })
    */
   delete(id, headers) {
-    return __awaiter$p(this, void 0, void 0, function* () {
+    return __awaiter$s(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/price-preferences/${id}`, {
         method: "DELETE",
         headers
@@ -6491,7 +6604,297 @@ class PricePreference {
     });
   }
 }
-var __awaiter$o = function(thisArg, _arguments, P, generator) {
+var __awaiter$r = function(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function(resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function(resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+const PUBLISHABLE_KEY_HEADER = "x-publishable-api-key";
+const getBaseUrl = (passedBaseUrl) => {
+  if (typeof window === "undefined") {
+    return passedBaseUrl;
+  }
+  if (passedBaseUrl === "" || passedBaseUrl === "/") {
+    return window.location.origin;
+  }
+  return passedBaseUrl;
+};
+const hasStorage = (storage) => {
+  if (typeof window !== "undefined") {
+    return storage in window;
+  }
+  return false;
+};
+const toBase64 = (str) => {
+  if (typeof window !== "undefined") {
+    return window.btoa(str);
+  }
+  return Buffer.from(str).toString("base64");
+};
+const sanitizeHeaders = (headers) => {
+  return Object.assign(Object.assign({}, Object.fromEntries(headers.entries())), { authorization: "<REDACTED>" });
+};
+const normalizeRequest = (init, headers, config2) => {
+  var _a, _b, _c;
+  let body = init === null || init === void 0 ? void 0 : init.body;
+  if (body && ((_a = headers.get("content-type")) === null || _a === void 0 ? void 0 : _a.includes("application/json"))) {
+    body = JSON.stringify(body);
+  }
+  const isFetchCredentialsSupported = "credentials" in Request.prototype;
+  const credentials = ((_b = config2.auth) === null || _b === void 0 ? void 0 : _b.type) === "session" ? ((_c = config2.auth) === null || _c === void 0 ? void 0 : _c.fetchCredentials) || "include" : "omit";
+  return Object.assign(Object.assign(Object.assign({}, init), { headers, credentials: isFetchCredentialsSupported ? credentials : void 0 }), body ? { body } : {});
+};
+const normalizeResponse = (resp, reqHeaders) => __awaiter$r(void 0, void 0, void 0, function* () {
+  var _a, _b;
+  if (resp.status >= 300) {
+    const jsonError = yield resp.json().catch(() => ({}));
+    throw new FetchError((_a = jsonError.message) !== null && _a !== void 0 ? _a : resp.statusText, resp.statusText, resp.status);
+  }
+  const isJsonRequest = (_b = reqHeaders.get("accept")) === null || _b === void 0 ? void 0 : _b.includes("application/json");
+  return isJsonRequest ? yield resp.json() : resp;
+});
+class FetchError extends Error {
+  constructor(message, statusText, status) {
+    super(message);
+    this.statusText = statusText;
+    this.status = status;
+  }
+}
+class Client {
+  constructor(config2) {
+    this.DEFAULT_JWT_STORAGE_KEY = "medusa_auth_token";
+    this.token = "";
+    this.getApiKeyHeader_ = () => {
+      return this.config.apiKey ? { Authorization: "Basic " + toBase64(this.config.apiKey + ":") } : {};
+    };
+    this.getPublishableKeyHeader_ = () => {
+      return this.config.publishableKey ? { [PUBLISHABLE_KEY_HEADER]: this.config.publishableKey } : {};
+    };
+    this.getTokenStorageInfo_ = () => {
+      var _a, _b, _c;
+      const hasLocal = hasStorage("localStorage");
+      const hasSession = hasStorage("sessionStorage");
+      const hasCustom = Boolean((_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage);
+      const storageMethod = ((_b = this.config.auth) === null || _b === void 0 ? void 0 : _b.jwtTokenStorageMethod) || (hasLocal ? "local" : "nostore");
+      const storageKey = ((_c = this.config.auth) === null || _c === void 0 ? void 0 : _c.jwtTokenStorageKey) || this.DEFAULT_JWT_STORAGE_KEY;
+      if (!hasLocal && storageMethod === "local") {
+        this.throwError_("Local JWT storage is only available in the browser");
+      }
+      if (!hasSession && storageMethod === "session") {
+        this.throwError_("Session JWT storage is only available in the browser");
+      }
+      if (!hasCustom && storageMethod === "custom") {
+        this.throwError_("Custom storage was not provided in the config");
+      }
+      return {
+        storageMethod,
+        storageKey
+      };
+    };
+    this.config = Object.assign(Object.assign({}, config2), { baseUrl: getBaseUrl(config2.baseUrl) });
+    const logger = config2.logger || {
+      error: console.error,
+      warn: console.warn,
+      info: console.info,
+      debug: console.debug
+    };
+    this.logger = Object.assign(Object.assign({}, logger), { debug: config2.debug ? logger.debug : () => {
+    } });
+    this.fetch_ = this.initClient();
+  }
+  /**
+   * `fetch` closely follows (and uses under the hood) the native `fetch` API. There are, however, few key differences:
+   * - Non 2xx statuses throw a `FetchError` with the status code as the `status` property, rather than resolving the promise
+   * - You can pass `body` and `query` as objects, and they will be encoded and stringified.
+   * - The response gets parsed as JSON if the `accept` header is set to `application/json`, otherwise the raw Response object is returned
+   *
+   * Since the response is dynamically determined, we cannot know if it is JSON or not. Therefore, it is important to pass `Response` as the return type
+   *
+   * @param input: FetchInput
+   * @param init: FetchArgs
+   * @returns Promise<T>
+   */
+  fetch(input, init) {
+    return this.fetch_(input, init);
+  }
+  /**
+   * `fetchStream` is a helper method to deal with server-sent events. It returns an object with a stream and an abort function.
+   * It follows a very similar interface to `fetch`, with the return value being an async generator.
+   * The stream is an async generator that yields `ServerSentEventMessage` objects, which contains the event name, stringified data, and few other properties.
+   * The caller is responsible for handling `disconnect` events and aborting the stream. The caller is also responsible for parsing the data field.
+   *
+   * @param input: FetchInput
+   * @param init: FetchArgs
+   * @returns FetchStreamResponse
+   */
+  fetchStream(input, init) {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      const abortController = new AbortController();
+      const abortFunc = abortController.abort.bind(abortController);
+      let res = yield this.fetch_(input, Object.assign(Object.assign({}, init), { signal: abortController.signal, headers: Object.assign(Object.assign({}, init === null || init === void 0 ? void 0 : init.headers), { accept: "text/event-stream" }) }));
+      if (res.ok) {
+        return { stream: events(res, abortController.signal), abort: abortFunc };
+      }
+      return { stream: null, abort: abortFunc };
+    });
+  }
+  setToken(token) {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      yield this.setToken_(token);
+    });
+  }
+  getToken() {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      return yield this.getToken_();
+    });
+  }
+  clearToken() {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      yield this.clearToken_();
+    });
+  }
+  clearToken_() {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      var _a, _b;
+      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
+      switch (storageMethod) {
+        case "local": {
+          window.localStorage.removeItem(storageKey);
+          break;
+        }
+        case "session": {
+          window.sessionStorage.removeItem(storageKey);
+          break;
+        }
+        case "custom": {
+          yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.removeItem(storageKey);
+          break;
+        }
+        case "memory": {
+          this.token = "";
+          break;
+        }
+      }
+    });
+  }
+  initClient() {
+    const defaultHeaders = new Headers(Object.assign(Object.assign({ "content-type": "application/json", accept: "application/json" }, this.getApiKeyHeader_()), this.getPublishableKeyHeader_()));
+    this.logger.debug("Initiating Medusa client with default headers:\n", `${JSON.stringify(sanitizeHeaders(defaultHeaders), null, 2)}
+`);
+    return (input, init) => __awaiter$r(this, void 0, void 0, function* () {
+      const headers = new Headers(defaultHeaders);
+      const customHeaders = Object.assign(Object.assign(Object.assign({}, this.config.globalHeaders), yield this.getJwtHeader_()), init === null || init === void 0 ? void 0 : init.headers);
+      Object.entries(customHeaders).forEach(([key, value]) => {
+        if (value === null) {
+          headers.delete(key);
+        } else {
+          headers.set(key, value);
+        }
+      });
+      let normalizedInput = input;
+      if (input instanceof URL || typeof input === "string") {
+        const baseUrl = new URL(this.config.baseUrl);
+        const fullPath = `${baseUrl.pathname.replace(/\/$/, "")}/${input.toString().replace(/^\//, "")}`;
+        normalizedInput = new URL(fullPath, baseUrl.origin);
+        if (init === null || init === void 0 ? void 0 : init.query) {
+          const params = Object.fromEntries(normalizedInput.searchParams.entries());
+          const stringifiedQuery = stringify(Object.assign(Object.assign({}, params), init.query), { skipNulls: true });
+          normalizedInput.search = stringifiedQuery;
+        }
+      }
+      this.logger.debug("Performing request to:\n", `URL: ${normalizedInput.toString()}
+`, `Headers: ${JSON.stringify(sanitizeHeaders(headers), null, 2)}
+`);
+      return yield fetch(normalizedInput, normalizeRequest(init, headers, this.config)).then((resp) => {
+        this.logger.debug(`Received response with status ${resp.status}
+`);
+        return normalizeResponse(resp, headers);
+      });
+    });
+  }
+  getJwtHeader_() {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      var _a;
+      if (((_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.type) === "session") {
+        return {};
+      }
+      const token = yield this.getToken_();
+      return token ? { Authorization: `Bearer ${token}` } : {};
+    });
+  }
+  setToken_(token) {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      var _a, _b;
+      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
+      switch (storageMethod) {
+        case "local": {
+          window.localStorage.setItem(storageKey, token);
+          break;
+        }
+        case "session": {
+          window.sessionStorage.setItem(storageKey, token);
+          break;
+        }
+        case "custom": {
+          yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.setItem(storageKey, token);
+          break;
+        }
+        case "memory": {
+          this.token = token;
+          break;
+        }
+      }
+    });
+  }
+  getToken_() {
+    return __awaiter$r(this, void 0, void 0, function* () {
+      var _a, _b;
+      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
+      switch (storageMethod) {
+        case "local": {
+          return window.localStorage.getItem(storageKey);
+        }
+        case "session": {
+          return window.sessionStorage.getItem(storageKey);
+        }
+        case "custom": {
+          return yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.getItem(storageKey);
+        }
+        case "memory": {
+          return this.token;
+        }
+      }
+      return null;
+    });
+  }
+  throwError_(message) {
+    this.logger.error(message);
+    throw new Error(message);
+  }
+}
+var __awaiter$q = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -6547,7 +6950,7 @@ class Product {
    * })
    */
   import(body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       const form = new FormData();
       form.append("file", body.file);
       return yield this.client.fetch(`/admin/products/import`, {
@@ -6562,10 +6965,83 @@ class Product {
     });
   }
   /**
+   * This method creates a product import. The products are only imported after
+   * the import is confirmed using the {@link confirmImport} method.
+   *
+   * This method sends a request to the
+   * [Create Product Import](https://docs.medusajs.com/api/admin#products_postproductsimports)
+   * API route.
+   *
+   * @since 2.8.5
+   *
+   * @param body - The import's details.
+   * @param query - Query parameters to pass to the request.
+   * @param headers - Headers to pass in the request.
+   * @returns The import's details.
+   *
+   * @example
+   * sdk.admin.product.createImport({
+   *   file // uploaded File instance
+   * })
+   * .then(({ transaction_id }) => {
+   *   console.log(transaction_id)
+   * })
+   */
+  createImport(body, query, headers) {
+    return __awaiter$q(this, void 0, void 0, function* () {
+      const response = yield this.client.fetch("admin/uploads/presigned-urls", {
+        method: "POST",
+        headers,
+        body: {
+          originalname: body.file.name,
+          mime_type: body.file.type,
+          size: body.file.size
+        },
+        query
+      });
+      if (response.url.startsWith("http://") || response.url.startsWith("https://")) {
+        const uploadResponse = yield fetch(response.url, {
+          method: "PUT",
+          body: body.file
+        });
+        if (uploadResponse.status >= 400) {
+          throw new FetchError(uploadResponse.statusText, uploadResponse.statusText, uploadResponse.status);
+        }
+      } else {
+        const form = new FormData();
+        form.append("files", body.file);
+        const localUploadResponse = yield this.client.fetch("admin/uploads", {
+          method: "POST",
+          headers: Object.assign(Object.assign({}, headers), {
+            // Let the browser determine the content type.
+            "content-type": null
+          }),
+          body: form,
+          query
+        });
+        response.filename = localUploadResponse.files[0].id;
+      }
+      return yield this.client.fetch("/admin/products/imports", {
+        method: "POST",
+        headers: Object.assign({}, headers),
+        body: {
+          file_key: response.filename,
+          originalname: response.originalname,
+          extension: response.extension,
+          size: response.size,
+          mime_type: response.mime_type
+        },
+        query
+      });
+    });
+  }
+  /**
    * This method confirms a product import created using the method {@link import}.
    * It sends a request to the
    * [Confirm Product Import](https://docs.medusajs.com/api/admin#products_postproductsimporttransaction_idconfirm)
    * API route.
+   *
+   * @since 2.8.5
    *
    * @param transactionId - The ID of the transaction of the created product import. This is returned
    * by the API route used to create the product import.
@@ -6579,8 +7055,8 @@ class Product {
    * })
    */
   confirmImport(transactionId, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
-      return yield this.client.fetch(`/admin/products/import/${transactionId}/confirm`, {
+    return __awaiter$q(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/products/imports/${transactionId}/confirm`, {
         method: "POST",
         headers,
         body: {},
@@ -6614,7 +7090,7 @@ class Product {
    * })
    */
   export(body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/export`, {
         method: "POST",
         headers,
@@ -6664,7 +7140,7 @@ class Product {
    * })
    */
   batch(body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/batch`, {
         method: "POST",
         headers,
@@ -6706,7 +7182,7 @@ class Product {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products`, {
         method: "POST",
         headers,
@@ -6735,7 +7211,7 @@ class Product {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${id}`, {
         method: "POST",
         headers,
@@ -6791,7 +7267,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products`, {
         headers,
         query: queryParams
@@ -6832,7 +7308,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${id}`, {
         query,
         headers
@@ -6855,7 +7331,7 @@ class Product {
    * })
    */
   delete(id, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${id}`, {
         method: "DELETE",
         headers
@@ -6897,7 +7373,7 @@ class Product {
    * })
    */
   batchVariants(productId, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants/batch`, {
         method: "POST",
         headers,
@@ -6935,7 +7411,7 @@ class Product {
    * })
    */
   createVariant(productId, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants`, {
         method: "POST",
         headers,
@@ -6969,7 +7445,7 @@ class Product {
    * })
    */
   updateVariant(productId, id, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants/${id}`, {
         method: "POST",
         headers,
@@ -7026,7 +7502,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   listVariants(productId, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants`, {
         headers,
         query
@@ -7075,7 +7551,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieveVariant(productId, id, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants/${id}`, {
         query,
         headers
@@ -7099,7 +7575,7 @@ class Product {
    * })
    */
   deleteVariant(productId, id, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants/${id}`, {
         method: "DELETE",
         headers
@@ -7151,7 +7627,7 @@ class Product {
    * })
    */
   batchVariantInventoryItems(productId, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/variants/inventory-items/batch`, {
         method: "POST",
         headers,
@@ -7184,7 +7660,7 @@ class Product {
    * })
    */
   createOption(productId, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/options`, {
         method: "POST",
         headers,
@@ -7218,7 +7694,7 @@ class Product {
    * })
    */
   updateOption(productId, id, body, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/options/${id}`, {
         method: "POST",
         headers,
@@ -7275,7 +7751,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   listOptions(productId, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/options`, {
         headers,
         query
@@ -7324,7 +7800,7 @@ class Product {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieveOption(productId, id, query, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/options/${id}`, {
         query,
         headers
@@ -7348,15 +7824,73 @@ class Product {
    * })
    */
   deleteOption(productId, id, headers) {
-    return __awaiter$o(this, void 0, void 0, function* () {
+    return __awaiter$q(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/products/${productId}/options/${id}`, {
         method: "DELETE",
         headers
       });
     });
   }
+  /**
+   * This method manages image-variant associations for a specific image. It sends a request to the
+   * [Batch Image Variants](https://docs.medusajs.com/api/admin#products_postproductsidimagesimage_idvariantsbatch)
+   * API route.
+   *
+   * @param productId - The product's ID.
+   * @param imageId - The image's ID.
+   * @param body - The variants to add or remove from the image.
+   * @param headers - Headers to pass in the request
+   * @returns The batch operation details.
+   *
+   * @example
+   * sdk.admin.product.batchImageVariants("prod_123", "img_123", {
+   *   add: ["variant_123", "variant_456"],
+   *   remove: ["variant_789"]
+   * })
+   * .then(({ added, removed }) => {
+   *   console.log(added, removed)
+   * })
+   */
+  batchImageVariants(productId, imageId, body, headers) {
+    return __awaiter$q(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/products/${productId}/images/${imageId}/variants/batch`, {
+        method: "POST",
+        headers,
+        body
+      });
+    });
+  }
+  /**
+   * This method manages variant-image associations for a specific variant. It sends a request to the
+   * [Batch Variant Images](https://docs.medusajs.com/api/admin#products_postproductsidvariantsvariant_idimagesbatch)
+   * API route.
+   *
+   * @param productId - The product's ID.
+   * @param variantId - The variant's ID.
+   * @param body - The images to add or remove from the variant.
+   * @param headers - Headers to pass in the request
+   * @returns The batch operation details.
+   *
+   * @example
+   * sdk.admin.product.batchVariantImages("prod_123", "variant_123", {
+   *   add: ["img_123", "img_456"],
+   *   remove: ["img_789"]
+   * })
+   * .then(({ added, removed }) => {
+   *   console.log(added, removed)
+   * })
+   */
+  batchVariantImages(productId, variantId, body, headers) {
+    return __awaiter$q(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/products/${productId}/variants/${variantId}/images/batch`, {
+        method: "POST",
+        headers,
+        body
+      });
+    });
+  }
 }
-var __awaiter$n = function(thisArg, _arguments, P, generator) {
+var __awaiter$p = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -7409,7 +7943,7 @@ class ProductCategory {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories`, {
         method: "POST",
         headers,
@@ -7438,7 +7972,7 @@ class ProductCategory {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories/${id}`, {
         method: "POST",
         headers,
@@ -7494,7 +8028,7 @@ class ProductCategory {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories`, {
         headers,
         query
@@ -7534,7 +8068,7 @@ class ProductCategory {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories/${id}`, {
         query,
         headers
@@ -7557,7 +8091,7 @@ class ProductCategory {
    * })
    */
   delete(id, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories/${id}`, {
         method: "DELETE",
         headers
@@ -7585,7 +8119,7 @@ class ProductCategory {
    * })
    */
   updateProducts(id, body, query, headers) {
-    return __awaiter$n(this, void 0, void 0, function* () {
+    return __awaiter$p(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-categories/${id}/products`, {
         method: "POST",
         headers,
@@ -7595,7 +8129,7 @@ class ProductCategory {
     });
   }
 }
-var __awaiter$m = function(thisArg, _arguments, P, generator) {
+var __awaiter$o = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -7648,7 +8182,7 @@ class ProductCollection {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections`, {
         method: "POST",
         headers,
@@ -7677,7 +8211,7 @@ class ProductCollection {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections/${id}`, {
         method: "POST",
         headers,
@@ -7733,7 +8267,7 @@ class ProductCollection {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections`, {
         headers,
         query: queryParams
@@ -7773,7 +8307,7 @@ class ProductCollection {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections/${id}`, {
         query,
         headers
@@ -7796,7 +8330,7 @@ class ProductCollection {
    * })
    */
   delete(id, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections/${id}`, {
         method: "DELETE",
         headers
@@ -7823,7 +8357,7 @@ class ProductCollection {
    * })
    */
   updateProducts(id, body, headers) {
-    return __awaiter$m(this, void 0, void 0, function* () {
+    return __awaiter$o(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/collections/${id}/products`, {
         method: "POST",
         headers,
@@ -7832,7 +8366,7 @@ class ProductCollection {
     });
   }
 }
-var __awaiter$l = function(thisArg, _arguments, P, generator) {
+var __awaiter$n = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -7885,7 +8419,7 @@ class ProductTag {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$l(this, void 0, void 0, function* () {
+    return __awaiter$n(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-tags`, {
         method: "POST",
         headers,
@@ -7914,7 +8448,7 @@ class ProductTag {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$l(this, void 0, void 0, function* () {
+    return __awaiter$n(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-tags/${id}`, {
         method: "POST",
         headers,
@@ -7970,7 +8504,7 @@ class ProductTag {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$l(this, void 0, void 0, function* () {
+    return __awaiter$n(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-tags`, {
         headers,
         query
@@ -8010,7 +8544,7 @@ class ProductTag {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$l(this, void 0, void 0, function* () {
+    return __awaiter$n(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-tags/${id}`, {
         query,
         headers
@@ -8033,7 +8567,7 @@ class ProductTag {
    * })
    */
   delete(id, headers) {
-    return __awaiter$l(this, void 0, void 0, function* () {
+    return __awaiter$n(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-tags/${id}`, {
         method: "DELETE",
         headers
@@ -8041,7 +8575,7 @@ class ProductTag {
     });
   }
 }
-var __awaiter$k = function(thisArg, _arguments, P, generator) {
+var __awaiter$m = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -8094,7 +8628,7 @@ class ProductType {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$k(this, void 0, void 0, function* () {
+    return __awaiter$m(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-types`, {
         method: "POST",
         headers,
@@ -8123,7 +8657,7 @@ class ProductType {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$k(this, void 0, void 0, function* () {
+    return __awaiter$m(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-types/${id}`, {
         method: "POST",
         headers,
@@ -8179,7 +8713,7 @@ class ProductType {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$k(this, void 0, void 0, function* () {
+    return __awaiter$m(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-types`, {
         headers,
         query
@@ -8220,7 +8754,7 @@ class ProductType {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$k(this, void 0, void 0, function* () {
+    return __awaiter$m(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-types/${id}`, {
         query,
         headers
@@ -8243,7 +8777,7 @@ class ProductType {
    * })
    */
   delete(id, headers) {
-    return __awaiter$k(this, void 0, void 0, function* () {
+    return __awaiter$m(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/product-types/${id}`, {
         method: "DELETE",
         headers
@@ -8251,7 +8785,7 @@ class ProductType {
     });
   }
 }
-var __awaiter$j = function(thisArg, _arguments, P, generator) {
+var __awaiter$l = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -8333,7 +8867,7 @@ class ProductVariant {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$j(this, void 0, void 0, function* () {
+    return __awaiter$l(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/product-variants`, {
         headers,
         query
@@ -8341,7 +8875,7 @@ class ProductVariant {
     });
   }
 }
-var __awaiter$i = function(thisArg, _arguments, P, generator) {
+var __awaiter$k = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -8409,7 +8943,7 @@ class Promotion {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}`, {
         headers,
         query
@@ -8464,7 +8998,7 @@ class Promotion {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions`, {
         headers,
         query
@@ -8493,7 +9027,7 @@ class Promotion {
    * })
    */
   create(payload, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions`, {
         method: "POST",
         headers,
@@ -8520,7 +9054,7 @@ class Promotion {
    * })
    */
   update(id, payload, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}`, {
         method: "POST",
         headers,
@@ -8544,7 +9078,7 @@ class Promotion {
    * })
    */
   delete(id, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}`, {
         method: "DELETE",
         headers
@@ -8584,7 +9118,7 @@ class Promotion {
    * })
    */
   addRules(id, ruleType, payload, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}/${ruleType}/batch`, {
         method: "POST",
         headers,
@@ -8624,7 +9158,7 @@ class Promotion {
    * })
    */
   updateRules(id, ruleType, payload, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}/${ruleType}/batch`, {
         method: "POST",
         headers,
@@ -8659,7 +9193,7 @@ class Promotion {
    * })
    */
   removeRules(id, ruleType, payload, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}/${ruleType}/batch`, {
         method: "POST",
         headers,
@@ -8688,7 +9222,7 @@ class Promotion {
    * })
    */
   listRules(id, ruleType, query, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/${id}/${ruleType}`, {
         headers,
         query
@@ -8707,6 +9241,7 @@ class Promotion {
    *
    * @param ruleType - The type of rules to retrieve the attributes for. Can be `rules`, `buy-rules`, or `target-rules`.
    * @param promotionType - The type of promotion to retrieve the attributes for. It can be `standard` or `buyget`.
+   * @param applicationMethodTargetType - The type of application method to retrieve the attributes for. It can be `order`, `items` (default) or `shipping_methods`.
    * @param headers - Headers to pass in the request.
    * @returns The list of rule attributes.
    *
@@ -8716,11 +9251,14 @@ class Promotion {
    *   console.log(attributes)
    * })
    */
-  listRuleAttributes(ruleType, promotionType, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+  listRuleAttributes(ruleType, promotionType, applicationMethodTargetType, headers) {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/rule-attribute-options/${ruleType}`, {
         headers,
-        query: { promotion_type: promotionType }
+        query: {
+          promotion_type: promotionType,
+          application_method_target_type: applicationMethodTargetType
+        }
       });
     });
   }
@@ -8745,7 +9283,7 @@ class Promotion {
    * })
    */
   listRuleValues(ruleType, ruleValue, query, headers) {
-    return __awaiter$i(this, void 0, void 0, function* () {
+    return __awaiter$k(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/promotions/rule-value-options/${ruleType}/${ruleValue}`, {
         headers,
         query
@@ -8753,7 +9291,7 @@ class Promotion {
     });
   }
 }
-var __awaiter$h = function(thisArg, _arguments, P, generator) {
+var __awaiter$j = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -8825,7 +9363,7 @@ class RefundReason {
    *
    * ```ts
    * sdk.admin.refundReason.list({
-   *   fields: "id,name"
+   *   fields: "id,label"
    * })
    * .then(({ refund_reasons, count, limit, offset }) => {
    *   console.log(refund_reasons)
@@ -8836,15 +9374,148 @@ class RefundReason {
    *
    */
   list(query, headers) {
-    return __awaiter$h(this, void 0, void 0, function* () {
+    return __awaiter$j(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/refund-reasons`, {
         query,
         headers
       });
     });
   }
+  /**
+   * This method retrieves a refund reason by ID. It sends a request to the
+   * [Get Refund Reason](https://docs.medusajs.com/api/admin#refund-reasons_getrefundreasonsid)
+   * API route.
+   *
+   * @since 2.11.0
+   *
+   * @param id - The refund reason's ID.
+   * @param query - Configure the fields and relations to retrieve in the refund reason.
+   * @param headers - Headers to pass in the request.
+   * @returns The refund reason's details.
+   *
+   * @example
+   * To retrieve a refund reason by its ID:
+   *
+   * ```ts
+   * sdk.admin.refundReason.retrieve("refr_123")
+   * .then(({ refund_reason }) => {
+   *   console.log(refund_reason)
+   * })
+   * ```
+   *
+   * To specify the fields and relations to retrieve:
+   *
+   * ```ts
+   * sdk.admin.refundReason.retrieve("refr_123", {
+   *   fields: "id,code"
+   * })
+   * .then(({ refund_reason }) => {
+   *   console.log(refund_reason)
+   * })
+   * ```
+   *
+   * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
+   */
+  retrieve(id, query, headers) {
+    return __awaiter$j(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/refund-reasons/${id}`, {
+        query,
+        headers
+      });
+    });
+  }
+  /**
+   * This method creates a refund reason. It sends a request to the
+   * [Create Refund Reason](https://docs.medusajs.com/api/admin#refund-reasons_postrefundreasons)
+   * API route.
+   *
+   * @since 2.11.0
+   *
+   * @param body - The details of the refund reason to create.
+   * @param query - Configure the fields and relations to retrieve in the refund reason.
+   * @param headers - Headers to pass in the request.
+   * @returns The refund reason's details.
+   *
+   * @example
+   * sdk.admin.refundReason.create({
+   *   code: "refund",
+   *   label: "Refund",
+   * })
+   * .then(({ refund_reason }) => {
+   *   console.log(refund_reason)
+   * })
+   */
+  create(body, query, headers) {
+    return __awaiter$j(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/refund-reasons`, {
+        method: "POST",
+        headers,
+        body,
+        query
+      });
+    });
+  }
+  /**
+   * This method updates a refund reason. It sends a request to the
+   * [Update Refund Reason](https://docs.medusajs.com/api/admin#refund-reasons_postrefundreasonsid)
+   * API route.
+   *
+   * @since 2.11.0
+   *
+   * @param id - The refund reason's ID.
+   * @param body - The details of the refund reason to update.
+   * @param query - Configure the fields and relations to retrieve in the refund reason.
+   * @param headers - Headers to pass in the request.
+   * @returns The refund reason's details.
+   *
+   * @example
+   * sdk.admin.refundReason.update("ret_123", {
+   *   code: "refund",
+   *   label: "Refund",
+   * })
+   * .then(({ refund_reason }) => {
+   *   console.log(refund_reason)
+   * })
+   */
+  update(id, body, query, headers) {
+    return __awaiter$j(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/refund-reasons/${id}`, {
+        method: "POST",
+        headers,
+        body,
+        query
+      });
+    });
+  }
+  /**
+   * This method deletes a refund reason. It sends a request to the
+   * [Delete Refund Reason](https://docs.medusajs.com/api/admin#refund-reasons_deleterefundreasonsid)
+   * API route.
+   *
+   * @since 2.11.0
+   *
+   * @param id - The refund reason's ID.
+   * @param query - Query parameters to pass to the request.
+   * @param headers - Headers to pass in the request.
+   * @returns The deletion's details.
+   *
+   * @example
+   * sdk.admin.refundReason.delete("ret_123")
+   * .then(({ deleted }) => {
+   *   console.log(deleted)
+   * })
+   */
+  delete(id, query, headers) {
+    return __awaiter$j(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/refund-reasons/${id}`, {
+        method: "DELETE",
+        headers,
+        query
+      });
+    });
+  }
 }
-var __awaiter$g = function(thisArg, _arguments, P, generator) {
+var __awaiter$i = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -8898,7 +9569,7 @@ class Region {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$g(this, void 0, void 0, function* () {
+    return __awaiter$i(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/regions`, {
         method: "POST",
         headers,
@@ -8927,7 +9598,7 @@ class Region {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$g(this, void 0, void 0, function* () {
+    return __awaiter$i(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/regions/${id}`, {
         method: "POST",
         headers,
@@ -8984,7 +9655,7 @@ class Region {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$g(this, void 0, void 0, function* () {
+    return __awaiter$i(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/regions`, {
         query: queryParams,
         headers
@@ -9025,7 +9696,7 @@ class Region {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$g(this, void 0, void 0, function* () {
+    return __awaiter$i(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/regions/${id}`, {
         query,
         headers
@@ -9048,7 +9719,7 @@ class Region {
    * })
    */
   delete(id, headers) {
-    return __awaiter$g(this, void 0, void 0, function* () {
+    return __awaiter$i(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/regions/${id}`, {
         method: "DELETE",
         headers
@@ -9056,7 +9727,7 @@ class Region {
     });
   }
 }
-var __awaiter$f = function(thisArg, _arguments, P, generator) {
+var __awaiter$h = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -9124,7 +9795,7 @@ class Reservation {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$f(this, void 0, void 0, function* () {
+    return __awaiter$h(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/reservations/${id}`, {
         method: "GET",
         headers,
@@ -9180,7 +9851,7 @@ class Reservation {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$f(this, void 0, void 0, function* () {
+    return __awaiter$h(this, void 0, void 0, function* () {
       return yield this.client.fetch("/admin/reservations", {
         method: "GET",
         query,
@@ -9209,7 +9880,7 @@ class Reservation {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$f(this, void 0, void 0, function* () {
+    return __awaiter$h(this, void 0, void 0, function* () {
       return yield this.client.fetch("/admin/reservations", {
         method: "POST",
         body,
@@ -9238,7 +9909,7 @@ class Reservation {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$f(this, void 0, void 0, function* () {
+    return __awaiter$h(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/reservations/${id}`, {
         method: "POST",
         body,
@@ -9263,7 +9934,7 @@ class Reservation {
    * })
    */
   delete(id, headers) {
-    return __awaiter$f(this, void 0, void 0, function* () {
+    return __awaiter$h(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/reservations/${id}`, {
         method: "DELETE",
         headers
@@ -9271,7 +9942,7 @@ class Reservation {
     });
   }
 }
-var __awaiter$e = function(thisArg, _arguments, P, generator) {
+var __awaiter$g = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -9353,7 +10024,7 @@ class Return {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns`, {
         query,
         headers
@@ -9394,7 +10065,7 @@ class Return {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}`, {
         query,
         headers
@@ -9420,7 +10091,7 @@ class Return {
    * })
    */
   initiateRequest(body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns`, {
         method: "POST",
         headers,
@@ -9446,7 +10117,7 @@ class Return {
    * })
    */
   cancel(id, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/cancel`, {
         method: "POST",
         headers,
@@ -9471,7 +10142,7 @@ class Return {
    * })
    */
   cancelRequest(id, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/request`, {
         method: "DELETE",
         headers,
@@ -9500,7 +10171,7 @@ class Return {
    * })
    */
   addReturnItem(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/request-items`, {
         method: "POST",
         headers,
@@ -9535,7 +10206,7 @@ class Return {
    * })
    */
   updateReturnItem(id, actionId, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/request-items/${actionId}`, {
         method: "POST",
         headers,
@@ -9568,7 +10239,7 @@ class Return {
    * })
    */
   removeReturnItem(id, actionId, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/request-items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -9596,7 +10267,7 @@ class Return {
    * })
    */
   addReturnShipping(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/shipping-method`, {
         method: "POST",
         headers,
@@ -9634,7 +10305,7 @@ class Return {
    * })
    */
   updateReturnShipping(id, actionId, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/shipping-method/${actionId}`, {
         method: "POST",
         headers,
@@ -9669,7 +10340,7 @@ class Return {
    * })
    */
   deleteReturnShipping(id, actionId, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/shipping-method/${actionId}`, {
         method: "DELETE",
         headers,
@@ -9697,7 +10368,7 @@ class Return {
    * })
    */
   updateRequest(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}`, {
         method: "POST",
         headers,
@@ -9731,7 +10402,7 @@ class Return {
    * })
    */
   confirmRequest(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/request`, {
         method: "POST",
         headers,
@@ -9760,7 +10431,7 @@ class Return {
    * })
    */
   initiateReceive(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive`, {
         method: "POST",
         headers,
@@ -9793,7 +10464,7 @@ class Return {
    * })
    */
   receiveItems(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive-items`, {
         method: "POST",
         headers,
@@ -9831,7 +10502,7 @@ class Return {
    * })
    */
   updateReceiveItem(id, actionId, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive-items/${actionId}`, {
         method: "POST",
         headers,
@@ -9866,7 +10537,7 @@ class Return {
    * })
    */
   removeReceiveItem(id, actionId, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive-items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -9901,7 +10572,7 @@ class Return {
    * })
    */
   dismissItems(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/dismiss-items`, {
         method: "POST",
         headers,
@@ -9939,7 +10610,7 @@ class Return {
    * })
    */
   updateDismissItem(id, actionId, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/dismiss-items/${actionId}`, {
         method: "POST",
         headers,
@@ -9974,7 +10645,7 @@ class Return {
    * })
    */
   removeDismissItem(id, actionId, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/dismiss-items/${actionId}`, {
         method: "DELETE",
         headers,
@@ -10002,7 +10673,7 @@ class Return {
    * })
    */
   confirmReceive(id, body, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive/confirm`, {
         method: "POST",
         headers,
@@ -10028,7 +10699,7 @@ class Return {
    * })
    */
   cancelReceive(id, query, headers) {
-    return __awaiter$e(this, void 0, void 0, function* () {
+    return __awaiter$g(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/returns/${id}/receive`, {
         method: "DELETE",
         headers,
@@ -10037,7 +10708,7 @@ class Return {
     });
   }
 }
-var __awaiter$d = function(thisArg, _arguments, P, generator) {
+var __awaiter$f = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -10119,7 +10790,7 @@ class ReturnReason {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$d(this, void 0, void 0, function* () {
+    return __awaiter$f(this, void 0, void 0, function* () {
       return yield this.client.fetch("/admin/return-reasons", {
         headers,
         query
@@ -10160,7 +10831,7 @@ class ReturnReason {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$d(this, void 0, void 0, function* () {
+    return __awaiter$f(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/return-reasons/${id}`, {
         query,
         headers
@@ -10187,7 +10858,7 @@ class ReturnReason {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$d(this, void 0, void 0, function* () {
+    return __awaiter$f(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/return-reasons`, {
         method: "POST",
         headers,
@@ -10217,7 +10888,7 @@ class ReturnReason {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$d(this, void 0, void 0, function* () {
+    return __awaiter$f(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/return-reasons/${id}`, {
         method: "POST",
         headers,
@@ -10243,7 +10914,7 @@ class ReturnReason {
    * })
    */
   delete(id, query, headers) {
-    return __awaiter$d(this, void 0, void 0, function* () {
+    return __awaiter$f(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/return-reasons/${id}`, {
         method: "DELETE",
         headers,
@@ -10252,7 +10923,7 @@ class ReturnReason {
     });
   }
 }
-var __awaiter$c = function(thisArg, _arguments, P, generator) {
+var __awaiter$e = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -10305,7 +10976,7 @@ class SalesChannel {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels`, {
         method: "POST",
         headers,
@@ -10337,7 +11008,7 @@ class SalesChannel {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels/${id}`, {
         method: "POST",
         headers,
@@ -10362,7 +11033,7 @@ class SalesChannel {
    * })
    */
   delete(id, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels/${id}`, {
         method: "DELETE",
         headers
@@ -10403,7 +11074,7 @@ class SalesChannel {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels/${id}`, {
         method: "GET",
         headers,
@@ -10459,7 +11130,7 @@ class SalesChannel {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels`, {
         method: "GET",
         headers,
@@ -10489,7 +11160,7 @@ class SalesChannel {
    * @deprecated Use {@link batchProducts} instead
    */
   updateProducts(id, body, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels/${id}/products`, {
         method: "POST",
         headers,
@@ -10517,7 +11188,7 @@ class SalesChannel {
    * })
    */
   batchProducts(id, body, headers) {
-    return __awaiter$c(this, void 0, void 0, function* () {
+    return __awaiter$e(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/sales-channels/${id}/products`, {
         method: "POST",
         headers,
@@ -10526,7 +11197,7 @@ class SalesChannel {
     });
   }
 }
-var __awaiter$b = function(thisArg, _arguments, P, generator) {
+var __awaiter$d = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -10580,7 +11251,7 @@ class ShippingOption {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options`, {
         method: "POST",
         headers,
@@ -10623,7 +11294,7 @@ class ShippingOption {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options/${id}`, {
         method: "GET",
         headers,
@@ -10651,7 +11322,7 @@ class ShippingOption {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options/${id}`, {
         method: "POST",
         headers,
@@ -10676,7 +11347,7 @@ class ShippingOption {
    * })
    */
   delete(id, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options/${id}`, {
         method: "DELETE",
         headers
@@ -10731,7 +11402,7 @@ class ShippingOption {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options`, {
         method: "GET",
         headers,
@@ -10758,7 +11429,7 @@ class ShippingOption {
    * })
    */
   updateRules(id, body, headers) {
-    return __awaiter$b(this, void 0, void 0, function* () {
+    return __awaiter$d(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-options/${id}/rules/batch`, {
         method: "POST",
         headers,
@@ -10767,7 +11438,7 @@ class ShippingOption {
     });
   }
 }
-var __awaiter$a = function(thisArg, _arguments, P, generator) {
+var __awaiter$c = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -10820,7 +11491,7 @@ class ShippingProfile {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$a(this, void 0, void 0, function* () {
+    return __awaiter$c(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-profiles`, {
         method: "POST",
         headers,
@@ -10849,7 +11520,7 @@ class ShippingProfile {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$a(this, void 0, void 0, function* () {
+    return __awaiter$c(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-profiles/${id}`, {
         method: "POST",
         headers,
@@ -10874,7 +11545,7 @@ class ShippingProfile {
    * })
    */
   delete(id, headers) {
-    return __awaiter$a(this, void 0, void 0, function* () {
+    return __awaiter$c(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-profiles/${id}`, {
         method: "DELETE",
         headers
@@ -10929,7 +11600,7 @@ class ShippingProfile {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$a(this, void 0, void 0, function* () {
+    return __awaiter$c(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-profiles`, {
         method: "GET",
         headers,
@@ -10971,7 +11642,7 @@ class ShippingProfile {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$a(this, void 0, void 0, function* () {
+    return __awaiter$c(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/shipping-profiles/${id}`, {
         method: "GET",
         headers,
@@ -10980,7 +11651,7 @@ class ShippingProfile {
     });
   }
 }
-var __awaiter$9 = function(thisArg, _arguments, P, generator) {
+var __awaiter$b = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -11034,7 +11705,7 @@ class StockLocation {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations`, {
         method: "POST",
         headers,
@@ -11063,7 +11734,7 @@ class StockLocation {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}`, {
         method: "POST",
         headers,
@@ -11088,7 +11759,7 @@ class StockLocation {
    * })
    */
   delete(id, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}`, {
         method: "DELETE",
         headers
@@ -11129,7 +11800,7 @@ class StockLocation {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}`, {
         method: "GET",
         headers,
@@ -11185,7 +11856,7 @@ class StockLocation {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations`, {
         method: "GET",
         headers,
@@ -11213,7 +11884,7 @@ class StockLocation {
    * })
    */
   updateSalesChannels(id, body, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}/sales-channels`, {
         method: "POST",
         headers,
@@ -11241,7 +11912,7 @@ class StockLocation {
    * })
    */
   createFulfillmentSet(id, body, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}/fulfillment-sets`, {
         method: "POST",
         headers,
@@ -11269,7 +11940,7 @@ class StockLocation {
    * })
    */
   updateFulfillmentProviders(id, body, headers) {
-    return __awaiter$9(this, void 0, void 0, function* () {
+    return __awaiter$b(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stock-locations/${id}/fulfillment-providers`, {
         method: "POST",
         headers,
@@ -11278,7 +11949,7 @@ class StockLocation {
     });
   }
 }
-var __awaiter$8 = function(thisArg, _arguments, P, generator) {
+var __awaiter$a = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -11346,7 +12017,7 @@ let Store$1 = class Store {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$8(this, void 0, void 0, function* () {
+    return __awaiter$a(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stores/${id}`, {
         method: "GET",
         headers,
@@ -11402,7 +12073,7 @@ let Store$1 = class Store {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$8(this, void 0, void 0, function* () {
+    return __awaiter$a(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stores`, {
         method: "GET",
         headers,
@@ -11430,7 +12101,7 @@ let Store$1 = class Store {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$8(this, void 0, void 0, function* () {
+    return __awaiter$a(this, void 0, void 0, function* () {
       return yield this.client.fetch(`/admin/stores/${id}`, {
         method: "POST",
         headers,
@@ -11440,7 +12111,101 @@ let Store$1 = class Store {
     });
   }
 };
-var __awaiter$7 = function(thisArg, _arguments, P, generator) {
+var __awaiter$9 = function(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function(resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function(resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+const taxProviderUrl = "/admin/tax-providers";
+class TaxProvider {
+  /**
+   * @ignore
+   */
+  constructor(client) {
+    this.client = client;
+  }
+  /**
+   * This method retrieves a list of tax providers. It sends a request to the
+   * [List Tax Providers](https://docs.medusajs.com/api/admin#tax-providers_gettaxproviders)
+   * API route.
+   *
+   * @since 2.8.0
+   *
+   * @param query - Filters and pagination configurations.
+   * @param headers - Headers to pass in the request.
+   * @returns The list of tax providers.
+   *
+   * @example
+   * To retrieve the list of tax providers:
+   *
+   * ```ts
+   * sdk.admin.taxProvider.list()
+   * .then(({ tax_providers, count, limit, offset }) => {
+   *   console.log(tax_providers)
+   * })
+   * ```
+   *
+   * To configure the pagination, pass the `limit` and `offset` query parameters.
+   *
+   * For example, to retrieve only 10 items and skip 10 items:
+   *
+   * ```ts
+   * sdk.admin.taxProvider.list({
+   *   limit: 10,
+   *   offset: 10,
+   * })
+   * .then(({ tax_providers, count, limit, offset }) => {
+   *   console.log(tax_providers)
+   * })
+   * ```
+   *
+   * Using the `fields` query parameter, you can specify the fields and relations to retrieve
+   * in each products:
+   *
+   * ```ts
+   * sdk.admin.taxProvider.list({
+   *   fields: "id,*regions"
+   * })
+   * .then(({ tax_providers, count, limit, offset }) => {
+   *   console.log(tax_providers)
+   * })
+   * ```
+   *
+   * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
+   */
+  list(query, headers) {
+    return __awaiter$9(this, void 0, void 0, function* () {
+      return yield this.client.fetch(taxProviderUrl, {
+        method: "GET",
+        headers,
+        query
+      });
+    });
+  }
+}
+var __awaiter$8 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -11497,7 +12262,7 @@ class TaxRate {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$7(this, void 0, void 0, function* () {
+    return __awaiter$8(this, void 0, void 0, function* () {
       return yield this.client.fetch(taxRateUrl, {
         method: "POST",
         headers,
@@ -11527,7 +12292,7 @@ class TaxRate {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$7(this, void 0, void 0, function* () {
+    return __awaiter$8(this, void 0, void 0, function* () {
       return yield this.client.fetch(`${taxRateUrl}/${id}`, {
         method: "POST",
         headers,
@@ -11552,7 +12317,7 @@ class TaxRate {
    * })
    */
   delete(id, headers) {
-    return __awaiter$7(this, void 0, void 0, function* () {
+    return __awaiter$8(this, void 0, void 0, function* () {
       return yield this.client.fetch(`${taxRateUrl}/${id}`, {
         method: "DELETE",
         headers
@@ -11593,7 +12358,7 @@ class TaxRate {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$7(this, void 0, void 0, function* () {
+    return __awaiter$8(this, void 0, void 0, function* () {
       return yield this.client.fetch(`${taxRateUrl}/${id}`, {
         method: "GET",
         headers,
@@ -11649,7 +12414,7 @@ class TaxRate {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$7(this, void 0, void 0, function* () {
+    return __awaiter$8(this, void 0, void 0, function* () {
       return yield this.client.fetch(taxRateUrl, {
         method: "GET",
         headers,
@@ -11658,7 +12423,7 @@ class TaxRate {
     });
   }
 }
-var __awaiter$6 = function(thisArg, _arguments, P, generator) {
+var __awaiter$7 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -11719,8 +12484,39 @@ class TaxRegion {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$6(this, void 0, void 0, function* () {
+    return __awaiter$7(this, void 0, void 0, function* () {
       return yield this.client.fetch(taxRegionUrl, {
+        method: "POST",
+        headers,
+        body,
+        query
+      });
+    });
+  }
+  /**
+   * This method updates a tax region. It sends a request to the
+   * [Update Tax Region](https://docs.medusajs.com/api/admin#tax-regions_posttaxregionsid)
+   * API route.
+   *
+   * @since 2.8.0
+   *
+   * @param id - The ID of the tax region to update.
+   * @param body - The details of the tax region to update.
+   * @param query - Configure the fields and relations to retrieve in the tax region.
+   * @param headers - Headers to pass in the request.
+   * @returns The tax region's details.
+   *
+   * @example
+   * sdk.admin.taxRegion.update("txreg_123", {
+   *   province_code: "ca",
+   * })
+   * .then(({ tax_region }) => {
+   *   console.log(tax_region)
+   * })
+   */
+  update(id, body, query, headers) {
+    return __awaiter$7(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`${taxRegionUrl}/${id}`, {
         method: "POST",
         headers,
         body,
@@ -11744,7 +12540,7 @@ class TaxRegion {
    * })
    */
   delete(id, headers) {
-    return __awaiter$6(this, void 0, void 0, function* () {
+    return __awaiter$7(this, void 0, void 0, function* () {
       return yield this.client.fetch(`${taxRegionUrl}/${id}`, {
         method: "DELETE",
         headers
@@ -11785,7 +12581,7 @@ class TaxRegion {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$6(this, void 0, void 0, function* () {
+    return __awaiter$7(this, void 0, void 0, function* () {
       return yield this.client.fetch(`${taxRegionUrl}/${id}`, {
         method: "GET",
         headers,
@@ -11841,7 +12637,7 @@ class TaxRegion {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(query, headers) {
-    return __awaiter$6(this, void 0, void 0, function* () {
+    return __awaiter$7(this, void 0, void 0, function* () {
       return yield this.client.fetch(taxRegionUrl, {
         method: "GET",
         headers,
@@ -11850,7 +12646,7 @@ class TaxRegion {
     });
   }
 }
-var __awaiter$5 = function(thisArg, _arguments, P, generator) {
+var __awaiter$6 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -11902,10 +12698,10 @@ class Upload {
    * sdk.admin.upload.create(
    *   {
    *     files: [
-   *        // file uploaded as a base64 string
+   *        // file uploaded as a binary string
    *       {
    *         name: "test.txt",
-   *         content: "test", // Should be the base64 content of the file
+   *         content: "test", // Should be the binary string of the file
    *       },
    *       // file uploaded as a File object
    *       new File(["test"], "test.txt", { type: "text/plain" })
@@ -11917,7 +12713,7 @@ class Upload {
    * })
    */
   create(body, query, headers) {
-    return __awaiter$5(this, void 0, void 0, function* () {
+    return __awaiter$6(this, void 0, void 0, function* () {
       const form = new FormData();
       if (body instanceof FileList) {
         Array.from(body).forEach((file) => {
@@ -11958,7 +12754,7 @@ class Upload {
    * })
    */
   retrieve(id, query, headers) {
-    return __awaiter$5(this, void 0, void 0, function* () {
+    return __awaiter$6(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/uploads/${id}`, {
         query,
         headers
@@ -11981,15 +12777,41 @@ class Upload {
    * })
    */
   delete(id, headers) {
-    return __awaiter$5(this, void 0, void 0, function* () {
+    return __awaiter$6(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/uploads/${id}`, {
         method: "DELETE",
         headers
       });
     });
   }
+  /**
+   * This method creates a presigned URL for a file upload. It sends a request to the
+   * `/admin/uploads/presigned-urls` API route.
+   *
+   * @param body - The details of the file to upload.
+   * @param query - Query parameters to pass in the request.
+   * @param headers - Headers to pass in the request.
+   * @returns The presigned URL for the file upload.
+   *
+   * @example
+   * sdk.admin.upload.presignedUrl({
+   *   name: "test.txt",
+   *   size: 1000,
+   *   type: "text/plain",
+   * }))
+   */
+  presignedUrl(body, query, headers) {
+    return __awaiter$6(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/uploads/presigned-urls`, {
+        method: "POST",
+        headers,
+        body,
+        query
+      });
+    });
+  }
 }
-var __awaiter$4 = function(thisArg, _arguments, P, generator) {
+var __awaiter$5 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
       resolve(value);
@@ -12044,7 +12866,7 @@ class User {
    * })
    */
   update(id, body, query, headers) {
-    return __awaiter$4(this, void 0, void 0, function* () {
+    return __awaiter$5(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/users/${id}`, {
         method: "POST",
         headers,
@@ -12101,7 +12923,7 @@ class User {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   list(queryParams, headers) {
-    return __awaiter$4(this, void 0, void 0, function* () {
+    return __awaiter$5(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/users`, {
         headers,
         query: queryParams
@@ -12142,7 +12964,7 @@ class User {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   retrieve(id, query, headers) {
-    return __awaiter$4(this, void 0, void 0, function* () {
+    return __awaiter$5(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/users/${id}`, {
         query,
         headers
@@ -12165,7 +12987,7 @@ class User {
    * })
    */
   delete(id, headers) {
-    return __awaiter$4(this, void 0, void 0, function* () {
+    return __awaiter$5(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/users/${id}`, {
         method: "DELETE",
         headers
@@ -12205,10 +13027,144 @@ class User {
    * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/admin#select-fields-and-relations).
    */
   me(query, headers) {
-    return __awaiter$4(this, void 0, void 0, function* () {
+    return __awaiter$5(this, void 0, void 0, function* () {
       return this.client.fetch(`/admin/users/me`, {
         query,
         headers
+      });
+    });
+  }
+}
+var __awaiter$4 = function(thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function(resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function(resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+class Views {
+  constructor(client) {
+    this.client = client;
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  columns(entity, query, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/columns`, {
+        method: "GET",
+        headers,
+        query
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  listConfigurations(entity, query, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations`, {
+        method: "GET",
+        headers,
+        query
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  createConfiguration(entity, body, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations`, {
+        method: "POST",
+        headers,
+        body
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  retrieveConfiguration(entity, id, query, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations/${id}`, {
+        method: "GET",
+        headers,
+        query
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  updateConfiguration(entity, id, body, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations/${id}`, {
+        method: "POST",
+        headers,
+        body
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  deleteConfiguration(entity, id, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations/${id}`, {
+        method: "DELETE",
+        headers
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  retrieveActiveConfiguration(entity, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations/active`, {
+        method: "GET",
+        headers
+      });
+    });
+  }
+  /**
+   * @since 2.10.3
+   * @featureFlag view_configurations
+   */
+  setActiveConfiguration(entity, body, headers) {
+    return __awaiter$4(this, void 0, void 0, function* () {
+      return yield this.client.fetch(`/admin/views/${entity}/configurations/active`, {
+        method: "POST",
+        headers,
+        body
       });
     });
   }
@@ -12325,53 +13281,6 @@ class WorkflowExecution {
     });
   }
 }
-class Admin {
-  constructor(client) {
-    this.invite = new Invite(client);
-    this.customer = new Customer(client);
-    this.productCollection = new ProductCollection(client);
-    this.productCategory = new ProductCategory(client);
-    this.priceList = new PriceList(client);
-    this.pricePreference = new PricePreference(client);
-    this.product = new Product(client);
-    this.productType = new ProductType(client);
-    this.upload = new Upload(client);
-    this.region = new Region(client);
-    this.returnReason = new ReturnReason(client);
-    this.stockLocation = new StockLocation(client);
-    this.salesChannel = new SalesChannel(client);
-    this.fulfillmentSet = new FulfillmentSet(client);
-    this.fulfillment = new Fulfillment(client);
-    this.fulfillmentProvider = new FulfillmentProvider(client);
-    this.shippingOption = new ShippingOption(client);
-    this.shippingProfile = new ShippingProfile(client);
-    this.inventoryItem = new InventoryItem(client);
-    this.notification = new Notification(client);
-    this.order = new Order(client);
-    this.draftOrder = new DraftOrder(client);
-    this.orderEdit = new OrderEdit(client);
-    this.return = new Return(client);
-    this.claim = new Claim(client);
-    this.taxRate = new TaxRate(client);
-    this.taxRegion = new TaxRegion(client);
-    this.store = new Store$1(client);
-    this.productTag = new ProductTag(client);
-    this.user = new User(client);
-    this.currency = new Currency(client);
-    this.payment = new Payment(client);
-    this.productVariant = new ProductVariant(client);
-    this.refundReason = new RefundReason(client);
-    this.exchange = new Exchange(client);
-    this.paymentCollection = new PaymentCollection(client);
-    this.apiKey = new ApiKey(client);
-    this.workflowExecution = new WorkflowExecution(client);
-    this.reservation = new Reservation(client);
-    this.customerGroup = new CustomerGroup(client);
-    this.promotion = new Promotion(client);
-    this.campaign = new Campaign(client);
-    this.plugin = new Plugin(client);
-  }
-}
 var __awaiter$2 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function(resolve) {
@@ -12399,79 +13308,239 @@ var __awaiter$2 = function(thisArg, _arguments, P, generator) {
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-class Auth {
-  constructor(client, config2) {
-    this.register = (actor, method, payload) => __awaiter$2(this, void 0, void 0, function* () {
-      const { token } = yield this.client.fetch(`/auth/${actor}/${method}/register`, {
+class ShippingOptionType {
+  /**
+   * @ignore
+   */
+  constructor(client) {
+    this.client = client;
+  }
+  /**
+   * This method creates a shipping option type. It sends a request to the
+   * [Create Shipping Option Type](https://docs.medusajs.com/api/admin#shipping-option-types_postshippingoptiontypes)
+   * API route.
+   *
+   * @param body - The shipping option type's details.
+   * @param query - Configure the fields to retrieve in the shipping option type.
+   * @param headers - Headers to pass in the request
+   * @returns The shipping option type's details.
+   *
+   * @example
+   * sdk.admin.shippingOptionType.create({
+   *   label: "Standard",
+   *   code: "standard",
+   *   description: "Ship in 2-3 days."
+   * })
+   * .then(({ shipping_option_type }) => {
+   *   console.log(shipping_option_type)
+   * })
+   */
+  create(body, query, headers) {
+    return __awaiter$2(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/shipping-option-types`, {
         method: "POST",
-        body: payload
-      });
-      this.client.setToken(token);
-      return token;
-    });
-    this.login = (actor, method, payload) => __awaiter$2(this, void 0, void 0, function* () {
-      const { token, location } = yield this.client.fetch(`/auth/${actor}/${method}`, {
-        method: "POST",
-        body: payload
-      });
-      if (location) {
-        return { location };
-      }
-      yield this.setToken_(token);
-      return token;
-    });
-    this.callback = (actor, method, query) => __awaiter$2(this, void 0, void 0, function* () {
-      const { token } = yield this.client.fetch(`/auth/${actor}/${method}/callback`, {
-        method: "GET",
+        headers,
+        body,
         query
       });
-      yield this.setToken_(token);
-      return token;
     });
-    this.refresh = () => __awaiter$2(this, void 0, void 0, function* () {
-      const { token } = yield this.client.fetch("/auth/token/refresh", {
-        method: "POST"
-      });
-      yield this.setToken_(token);
-      return token;
-    });
-    this.logout = () => __awaiter$2(this, void 0, void 0, function* () {
-      var _a, _b;
-      if (((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.auth) === null || _b === void 0 ? void 0 : _b.type) === "session") {
-        yield this.client.fetch("/auth/session", {
-          method: "DELETE"
-        });
-      }
-      this.client.clearToken();
-    });
-    this.resetPassword = (actor, provider, body) => __awaiter$2(this, void 0, void 0, function* () {
-      yield this.client.fetch(`/auth/${actor}/${provider}/reset-password`, {
+  }
+  /**
+   * This method updates a shipping option type. It sends a request to the
+   * [Update Shipping Option Type](https://docs.medusajs.com/api/admin#shipping-option-types_postshippingoptiontypesid)
+   * API route.
+   *
+   * @param id - The shipping option type's ID.
+   * @param body - The data to update in the shipping option type.
+   * @param query - Configure the fields to retrieve in the shipping option type.
+   * @param headers - Headers to pass in the request
+   * @returns The shipping option type's details.
+   *
+   * @example
+   * sdk.admin.shippingOptionType.update("sotype_123", {
+   *   code: "express"
+   * })
+   * .then(({ shipping_option_type }) => {
+   *   console.log(shipping_option_type)
+   * })
+   */
+  update(id, body, query, headers) {
+    return __awaiter$2(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/shipping-option-types/${id}`, {
         method: "POST",
+        headers,
         body,
-        headers: { accept: "text/plain" }
-        // 201 Created response
+        query
       });
     });
-    this.updateProvider = (actor, provider, body, token) => __awaiter$2(this, void 0, void 0, function* () {
-      yield this.client.fetch(`/auth/${actor}/${provider}/update`, {
-        method: "POST",
-        body,
-        headers: { Authorization: `Bearer ${token}` }
+  }
+  /**
+   * This method retrieves a paginated list of shipping option types. It sends a request to the
+   * [List Shipping Option Types](https://docs.medusajs.com/api/admin#shipping-option-types_getshippingoptiontypes) API route.
+   *
+   * @param query - Filters and pagination configurations.
+   * @param headers - Headers to pass in the request.
+   * @returns The paginated list of shipping option types.
+   *
+   * @example
+   * To retrieve the list of shipping option types:
+   *
+   * ```ts
+   * sdk.admin.shippingOptionType.list()
+   * .then(({ shipping_option_types, count, limit, offset }) => {
+   *   console.log(shipping_option_types)
+   * })
+   * ```
+   *
+   * To configure the pagination, pass the `limit` and `offset` query parameters.
+   *
+   * For example, to retrieve only 10 items and skip 10 items:
+   *
+   * ```ts
+   * sdk.admin.shippingOptionType.list({
+   *   limit: 10,
+   *   offset: 10
+   * })
+   * .then(({ shipping_option_types, count, limit, offset }) => {
+   *   console.log(shipping_option_types)
+   * })
+   * ```
+   *
+   * Using the `fields` query parameter, you can specify the fields and relations to retrieve
+   * in each shipping option type:
+   *
+   * ```ts
+   * sdk.admin.shippingOptionType.list({
+   *   fields: "id,*shippingOptions"
+   * })
+   * .then(({ shipping_option_types, count, limit, offset }) => {
+   *   console.log(shipping_option_types)
+   * })
+   * ```
+   *
+   * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
+   */
+  list(query, headers) {
+    return __awaiter$2(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/shipping-option-types`, {
+        headers,
+        query
       });
     });
-    this.setToken_ = (token) => __awaiter$2(this, void 0, void 0, function* () {
-      var _a, _b;
-      if (((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.auth) === null || _b === void 0 ? void 0 : _b.type) === "session") {
-        yield this.client.fetch("/auth/session", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      } else {
-        this.client.setToken(token);
-      }
+  }
+  /**
+   * This method retrieves a shipping option type by its ID. It sends a request to the
+   * [Get Shipping Option Type](https://docs.medusajs.com/api/admin#shipping-option-types_getshippingoptiontypesid)
+   * API route.
+   *
+   * @param id - The shipping option type's ID.
+   * @param query - Configure the fields to retrieve in the shipping option type.
+   * @param headers - Headers to pass in the request
+   * @returns The shipping option type's details.
+   *
+   * @example
+   * To retrieve a shipping option type by its ID:
+   *
+   * ```ts
+   * sdk.admin.shippingOptionType.retrieve("sotype_123")
+   * .then(({ shipping_option_type }) => {
+   *   console.log(shipping_option_type)
+   * })
+   * ```
+   *
+   * To specify the fields and relations to retrieve:
+   *
+   * ```ts
+   * sdk.admin.shippingOptionType.retrieve("sotype_123", {
+   *   fields: "id,*shippingOptions"
+   * })
+   * .then(({ shipping_option_type }) => {
+   *   console.log(shipping_option_type)
+   * })
+   * ```
+   *
+   * Learn more about the `fields` property in the [API reference](https://docs.medusajs.com/api/store#select-fields-and-relations).
+   */
+  retrieve(id, query, headers) {
+    return __awaiter$2(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/shipping-option-types/${id}`, {
+        query,
+        headers
+      });
     });
-    this.client = client;
-    this.config = config2;
+  }
+  /**
+   * This method deletes a shipping option type. It sends a request to the
+   * [Delete Shipping Option Type](https://docs.medusajs.com/api/admin#shipping-option-types_deleteshippingoptiontypesid)
+   * API route.
+   *
+   * @param id - The shipping option type's ID.
+   * @param headers - Headers to pass in the request
+   * @returns The shipping option type's details.
+   *
+   * @example
+   * sdk.admin.shippingOptionType.delete("sotype_123")
+   * .then(({ deleted }) => {
+   *   console.log(deleted)
+   * })
+   */
+  delete(id, headers) {
+    return __awaiter$2(this, void 0, void 0, function* () {
+      return this.client.fetch(`/admin/shipping-option-types/${id}`, {
+        method: "DELETE",
+        headers
+      });
+    });
+  }
+}
+class Admin {
+  constructor(client) {
+    this.invite = new Invite(client);
+    this.customer = new Customer(client);
+    this.productCollection = new ProductCollection(client);
+    this.productCategory = new ProductCategory(client);
+    this.priceList = new PriceList(client);
+    this.pricePreference = new PricePreference(client);
+    this.product = new Product(client);
+    this.productType = new ProductType(client);
+    this.upload = new Upload(client);
+    this.region = new Region(client);
+    this.returnReason = new ReturnReason(client);
+    this.stockLocation = new StockLocation(client);
+    this.salesChannel = new SalesChannel(client);
+    this.fulfillmentSet = new FulfillmentSet(client);
+    this.fulfillment = new Fulfillment(client);
+    this.fulfillmentProvider = new FulfillmentProvider(client);
+    this.shippingOption = new ShippingOption(client);
+    this.shippingOptionType = new ShippingOptionType(client);
+    this.shippingProfile = new ShippingProfile(client);
+    this.inventoryItem = new InventoryItem(client);
+    this.notification = new Notification(client);
+    this.order = new Order(client);
+    this.draftOrder = new DraftOrder(client);
+    this.orderEdit = new OrderEdit(client);
+    this.return = new Return(client);
+    this.claim = new Claim(client);
+    this.taxRate = new TaxRate(client);
+    this.taxRegion = new TaxRegion(client);
+    this.store = new Store$1(client);
+    this.productTag = new ProductTag(client);
+    this.user = new User(client);
+    this.currency = new Currency(client);
+    this.payment = new Payment(client);
+    this.productVariant = new ProductVariant(client);
+    this.refundReason = new RefundReason(client);
+    this.exchange = new Exchange(client);
+    this.paymentCollection = new PaymentCollection(client);
+    this.apiKey = new ApiKey(client);
+    this.workflowExecution = new WorkflowExecution(client);
+    this.reservation = new Reservation(client);
+    this.customerGroup = new CustomerGroup(client);
+    this.promotion = new Promotion(client);
+    this.campaign = new Campaign(client);
+    this.plugin = new Plugin(client);
+    this.taxProvider = new TaxProvider(client);
+    this.views = new Views(client);
   }
 }
 var __awaiter$1 = function(thisArg, _arguments, P, generator) {
@@ -12501,262 +13570,80 @@ var __awaiter$1 = function(thisArg, _arguments, P, generator) {
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
 };
-const PUBLISHABLE_KEY_HEADER = "x-publishable-api-key";
-const getBaseUrl = (passedBaseUrl) => {
-  if (typeof window === "undefined") {
-    return passedBaseUrl;
-  }
-  if (passedBaseUrl === "" || passedBaseUrl === "/") {
-    return window.location.origin;
-  }
-  return passedBaseUrl;
-};
-const hasStorage = (storage) => {
-  if (typeof window !== "undefined") {
-    return storage in window;
-  }
-  return false;
-};
-const toBase64 = (str) => {
-  if (typeof window !== "undefined") {
-    return window.btoa(str);
-  }
-  return Buffer.from(str).toString("base64");
-};
-const sanitizeHeaders = (headers) => {
-  return Object.assign(Object.assign({}, Object.fromEntries(headers.entries())), { authorization: "<REDACTED>" });
-};
-const normalizeRequest = (init, headers, config2) => {
-  var _a, _b, _c;
-  let body = init === null || init === void 0 ? void 0 : init.body;
-  if (body && ((_a = headers.get("content-type")) === null || _a === void 0 ? void 0 : _a.includes("application/json"))) {
-    body = JSON.stringify(body);
-  }
-  const isFetchCredentialsSupported = "credentials" in Request.prototype;
-  const credentials = ((_b = config2.auth) === null || _b === void 0 ? void 0 : _b.type) === "session" ? ((_c = config2.auth) === null || _c === void 0 ? void 0 : _c.fetchCredentials) || "include" : "omit";
-  return Object.assign(Object.assign(Object.assign({}, init), { headers, credentials: isFetchCredentialsSupported ? credentials : void 0 }), body ? { body } : {});
-};
-const normalizeResponse = (resp, reqHeaders) => __awaiter$1(void 0, void 0, void 0, function* () {
-  var _a, _b;
-  if (resp.status >= 300) {
-    const jsonError = yield resp.json().catch(() => ({}));
-    throw new FetchError((_a = jsonError.message) !== null && _a !== void 0 ? _a : resp.statusText, resp.statusText, resp.status);
-  }
-  const isJsonRequest = (_b = reqHeaders.get("accept")) === null || _b === void 0 ? void 0 : _b.includes("application/json");
-  return isJsonRequest ? yield resp.json() : resp;
-});
-class FetchError extends Error {
-  constructor(message, statusText, status) {
-    super(message);
-    this.statusText = statusText;
-    this.status = status;
-  }
-}
-class Client {
-  constructor(config2) {
-    this.DEFAULT_JWT_STORAGE_KEY = "medusa_auth_token";
-    this.token = "";
-    this.getApiKeyHeader_ = () => {
-      return this.config.apiKey ? { Authorization: "Basic " + toBase64(this.config.apiKey + ":") } : {};
-    };
-    this.getPublishableKeyHeader_ = () => {
-      return this.config.publishableKey ? { [PUBLISHABLE_KEY_HEADER]: this.config.publishableKey } : {};
-    };
-    this.getTokenStorageInfo_ = () => {
-      var _a, _b, _c;
-      const hasLocal = hasStorage("localStorage");
-      const hasSession = hasStorage("sessionStorage");
-      const hasCustom = Boolean((_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage);
-      const storageMethod = ((_b = this.config.auth) === null || _b === void 0 ? void 0 : _b.jwtTokenStorageMethod) || (hasLocal ? "local" : "nostore");
-      const storageKey = ((_c = this.config.auth) === null || _c === void 0 ? void 0 : _c.jwtTokenStorageKey) || this.DEFAULT_JWT_STORAGE_KEY;
-      if (!hasLocal && storageMethod === "local") {
-        this.throwError_("Local JWT storage is only available in the browser");
-      }
-      if (!hasSession && storageMethod === "session") {
-        this.throwError_("Session JWT storage is only available in the browser");
-      }
-      if (!hasCustom && storageMethod === "custom") {
-        this.throwError_("Custom storage was not provided in the config");
-      }
-      return {
-        storageMethod,
-        storageKey
-      };
-    };
-    this.config = Object.assign(Object.assign({}, config2), { baseUrl: getBaseUrl(config2.baseUrl) });
-    const logger = config2.logger || {
-      error: console.error,
-      warn: console.warn,
-      info: console.info,
-      debug: console.debug
-    };
-    this.logger = Object.assign(Object.assign({}, logger), { debug: config2.debug ? logger.debug : () => {
-    } });
-    this.fetch_ = this.initClient();
-  }
-  /**
-   * `fetch` closely follows (and uses under the hood) the native `fetch` API. There are, however, few key differences:
-   * - Non 2xx statuses throw a `FetchError` with the status code as the `status` property, rather than resolving the promise
-   * - You can pass `body` and `query` as objects, and they will be encoded and stringified.
-   * - The response gets parsed as JSON if the `accept` header is set to `application/json`, otherwise the raw Response object is returned
-   *
-   * Since the response is dynamically determined, we cannot know if it is JSON or not. Therefore, it is important to pass `Response` as the return type
-   *
-   * @param input: FetchInput
-   * @param init: FetchArgs
-   * @returns Promise<T>
-   */
-  fetch(input, init) {
-    return this.fetch_(input, init);
-  }
-  /**
-   * `fetchStream` is a helper method to deal with server-sent events. It returns an object with a stream and an abort function.
-   * It follows a very similar interface to `fetch`, with the return value being an async generator.
-   * The stream is an async generator that yields `ServerSentEventMessage` objects, which contains the event name, stringified data, and few other properties.
-   * The caller is responsible for handling `disconnect` events and aborting the stream. The caller is also responsible for parsing the data field.
-   *
-   * @param input: FetchInput
-   * @param init: FetchArgs
-   * @returns FetchStreamResponse
-   */
-  fetchStream(input, init) {
-    return __awaiter$1(this, void 0, void 0, function* () {
-      const abortController = new AbortController();
-      const abortFunc = abortController.abort.bind(abortController);
-      let res = yield this.fetch_(input, Object.assign(Object.assign({}, init), { signal: abortController.signal, headers: Object.assign(Object.assign({}, init === null || init === void 0 ? void 0 : init.headers), { accept: "text/event-stream" }) }));
-      if (res.ok) {
-        return { stream: events(res, abortController.signal), abort: abortFunc };
-      }
-      return { stream: null, abort: abortFunc };
+class Auth {
+  constructor(client, config2) {
+    this.register = (actor, method, payload) => __awaiter$1(this, void 0, void 0, function* () {
+      const { token } = yield this.client.fetch(`/auth/${actor}/${method}/register`, {
+        method: "POST",
+        body: payload
+      });
+      this.client.setToken(token);
+      return token;
     });
-  }
-  setToken(token) {
-    return __awaiter$1(this, void 0, void 0, function* () {
+    this.login = (actor, method, payload) => __awaiter$1(this, void 0, void 0, function* () {
+      const { token, location } = yield this.client.fetch(`/auth/${actor}/${method}`, {
+        method: "POST",
+        body: payload
+      });
+      if (location) {
+        return { location };
+      }
       yield this.setToken_(token);
+      return token;
     });
-  }
-  clearToken() {
-    return __awaiter$1(this, void 0, void 0, function* () {
-      yield this.clearToken_();
-    });
-  }
-  clearToken_() {
-    return __awaiter$1(this, void 0, void 0, function* () {
-      var _a, _b;
-      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
-      switch (storageMethod) {
-        case "local": {
-          window.localStorage.removeItem(storageKey);
-          break;
-        }
-        case "session": {
-          window.sessionStorage.removeItem(storageKey);
-          break;
-        }
-        case "custom": {
-          yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.removeItem(storageKey);
-          break;
-        }
-        case "memory": {
-          this.token = "";
-          break;
-        }
-      }
-    });
-  }
-  initClient() {
-    const defaultHeaders = new Headers(Object.assign(Object.assign({ "content-type": "application/json", accept: "application/json" }, this.getApiKeyHeader_()), this.getPublishableKeyHeader_()));
-    this.logger.debug("Initiating Medusa client with default headers:\n", `${JSON.stringify(sanitizeHeaders(defaultHeaders), null, 2)}
-`);
-    return (input, init) => __awaiter$1(this, void 0, void 0, function* () {
-      const headers = new Headers(defaultHeaders);
-      const customHeaders = Object.assign(Object.assign(Object.assign({}, this.config.globalHeaders), yield this.getJwtHeader_()), init === null || init === void 0 ? void 0 : init.headers);
-      Object.entries(customHeaders).forEach(([key, value]) => {
-        if (value === null) {
-          headers.delete(key);
-        } else {
-          headers.set(key, value);
-        }
+    this.callback = (actor, method, query) => __awaiter$1(this, void 0, void 0, function* () {
+      const { token } = yield this.client.fetch(`/auth/${actor}/${method}/callback`, {
+        method: "GET",
+        query
       });
-      let normalizedInput = input;
-      if (input instanceof URL || typeof input === "string") {
-        const baseUrl = new URL(this.config.baseUrl);
-        const fullPath = `${baseUrl.pathname.replace(/\/$/, "")}/${input.toString().replace(/^\//, "")}`;
-        normalizedInput = new URL(fullPath, baseUrl.origin);
-        if (init === null || init === void 0 ? void 0 : init.query) {
-          const params = Object.fromEntries(normalizedInput.searchParams.entries());
-          const stringifiedQuery = stringify(Object.assign(Object.assign({}, params), init.query));
-          normalizedInput.search = stringifiedQuery;
-        }
+      yield this.setToken_(token);
+      return token;
+    });
+    this.refresh = (headers) => __awaiter$1(this, void 0, void 0, function* () {
+      const { token } = yield this.client.fetch("/auth/token/refresh", {
+        method: "POST",
+        headers
+      });
+      yield this.setToken_(token);
+      return token;
+    });
+    this.logout = () => __awaiter$1(this, void 0, void 0, function* () {
+      var _a, _b;
+      if (((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.auth) === null || _b === void 0 ? void 0 : _b.type) === "session") {
+        yield this.client.fetch("/auth/session", {
+          method: "DELETE"
+        });
       }
-      this.logger.debug("Performing request to:\n", `URL: ${normalizedInput.toString()}
-`, `Headers: ${JSON.stringify(sanitizeHeaders(headers), null, 2)}
-`);
-      return yield fetch(normalizedInput, normalizeRequest(init, headers, this.config)).then((resp) => {
-        this.logger.debug(`Received response with status ${resp.status}
-`);
-        return normalizeResponse(resp, headers);
+      this.client.clearToken();
+    });
+    this.resetPassword = (actor, provider, body) => __awaiter$1(this, void 0, void 0, function* () {
+      yield this.client.fetch(`/auth/${actor}/${provider}/reset-password`, {
+        method: "POST",
+        body,
+        headers: { accept: "text/plain" }
+        // 201 Created response
       });
     });
-  }
-  getJwtHeader_() {
-    return __awaiter$1(this, void 0, void 0, function* () {
-      var _a;
-      if (((_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.type) === "session") {
-        return {};
-      }
-      const token = yield this.getToken_();
-      return token ? { Authorization: `Bearer ${token}` } : {};
+    this.updateProvider = (actor, provider, body, token) => __awaiter$1(this, void 0, void 0, function* () {
+      yield this.client.fetch(`/auth/${actor}/${provider}/update`, {
+        method: "POST",
+        body,
+        headers: { Authorization: `Bearer ${token}` }
+      });
     });
-  }
-  setToken_(token) {
-    return __awaiter$1(this, void 0, void 0, function* () {
+    this.setToken_ = (token) => __awaiter$1(this, void 0, void 0, function* () {
       var _a, _b;
-      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
-      switch (storageMethod) {
-        case "local": {
-          window.localStorage.setItem(storageKey, token);
-          break;
-        }
-        case "session": {
-          window.sessionStorage.setItem(storageKey, token);
-          break;
-        }
-        case "custom": {
-          yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.setItem(storageKey, token);
-          break;
-        }
-        case "memory": {
-          this.token = token;
-          break;
-        }
+      if (((_b = (_a = this.config) === null || _a === void 0 ? void 0 : _a.auth) === null || _b === void 0 ? void 0 : _b.type) === "session") {
+        yield this.client.fetch("/auth/session", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } else {
+        this.client.setToken(token);
       }
     });
-  }
-  getToken_() {
-    return __awaiter$1(this, void 0, void 0, function* () {
-      var _a, _b;
-      const { storageMethod, storageKey } = this.getTokenStorageInfo_();
-      switch (storageMethod) {
-        case "local": {
-          return window.localStorage.getItem(storageKey);
-        }
-        case "session": {
-          return window.sessionStorage.getItem(storageKey);
-        }
-        case "custom": {
-          return yield (_b = (_a = this.config.auth) === null || _a === void 0 ? void 0 : _a.storage) === null || _b === void 0 ? void 0 : _b.getItem(storageKey);
-        }
-        case "memory": {
-          return this.token;
-        }
-      }
-      return null;
-    });
-  }
-  throwError_(message) {
-    this.logger.error(message);
-    throw new Error(message);
+    this.client = client;
+    this.config = config2;
   }
 }
 var __awaiter = function(thisArg, _arguments, P, generator) {
@@ -13350,6 +14237,7 @@ class Store2 {
        *
        * @param cartId - The cart's ID.
        * @param lineItemId - The item's ID.
+       * @param query - Configure the fields to retrieve in the cart.
        * @param headers - Headers to pass in the request.
        * @returns The deletion's details.
        *
@@ -13362,9 +14250,10 @@ class Store2 {
        *   console.log(deleted, cart)
        * })
        */
-      deleteLineItem: (cartId, lineItemId, headers) => __awaiter(this, void 0, void 0, function* () {
+      deleteLineItem: (cartId, lineItemId, query, headers) => __awaiter(this, void 0, void 0, function* () {
         return this.client.fetch(`/store/carts/${cartId}/line-items/${lineItemId}`, {
           method: "DELETE",
+          query,
           headers
         });
       }),
@@ -13439,6 +14328,7 @@ class Store2 {
        * @returns The updated cart.
        *
        * @example
+       * // TODO must be authenticated as the customer to set the cart's customer
        * sdk.store.cart.transferCart("cart_123")
        * .then(({ cart }) => {
        *   console.log(cart)
@@ -13635,6 +14525,7 @@ class Store2 {
        * To retrieve the list of orders:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their orders
        * sdk.store.order.list()
        * .then(({ orders, count, offset, limit }) => {
        *   console.log(orders)
@@ -13646,6 +14537,7 @@ class Store2 {
        * For example, to retrieve only 10 items and skip 10 items:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their orders
        * sdk.store.order.list({
        *   limit: 10,
        *   offset: 10
@@ -13659,6 +14551,7 @@ class Store2 {
        * in each order:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their orders
        * sdk.store.order.list({
        *   fields: "id,*items"
        * })
@@ -13724,6 +14617,7 @@ class Store2 {
        * @returns The order details.
        *
        * @example
+       * // TODO must be authenticated as the customer to request the order transfer
        * sdk.store.order.requestTransfer(
        *   "order_123",
        *   {
@@ -13757,6 +14651,7 @@ class Store2 {
        * @returns The order details.
        *
        * @example
+       * // TODO must be authenticated as the customer to cancel the order transfer
        * sdk.store.order.cancelTransfer(
        *   "order_123",
        *   {},
@@ -13895,6 +14790,7 @@ class Store2 {
        * @returns The customer's details.
        *
        * @example
+       * // TODO must be authenticated as the customer to update their details
        * sdk.store.customer.update({
        *   first_name: "John"
        * })
@@ -13922,6 +14818,7 @@ class Store2 {
        * @returns The customer's details.
        *
        * @example
+       * // TODO must be authenticated as the customer to retrieve their details
        * sdk.store.customer.retrieve()
        * .then(({ customer }) => {
        *   console.log(customer)
@@ -13948,6 +14845,7 @@ class Store2 {
        * @returns The customer's details.
        *
        * @example
+       * // TODO must be authenticated as the customer to create an address
        * sdk.store.customer.createAddress({
        *   country_code: "us"
        * })
@@ -13979,6 +14877,7 @@ class Store2 {
        * @returns The customer's details.
        *
        * @example
+       * // TODO must be authenticated as the customer to update their address
        * sdk.store.customer.updateAddress(
        *   "caddr_123",
        *   {
@@ -14014,6 +14913,7 @@ class Store2 {
        * To retrieve the list of addresses:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their addresses
        * sdk.store.customer.listAddress()
        * .then(({ addresses, count, offset, limit }) => {
        *   console.log(addresses)
@@ -14025,6 +14925,7 @@ class Store2 {
        * For example, to retrieve only 10 items and skip 10 items:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their addresses
        * sdk.store.customer.listAddress({
        *   limit: 10,
        *   offset: 10
@@ -14038,6 +14939,7 @@ class Store2 {
        * in each address:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to list their addresses
        * sdk.store.customer.listAddress({
        *   fields: "id,country_code"
        * })
@@ -14072,6 +14974,7 @@ class Store2 {
        * To retrieve an address by its ID:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to retrieve their address
        * sdk.store.customer.retrieveAddress(
        *   "caddr_123"
        * )
@@ -14083,6 +14986,7 @@ class Store2 {
        * To specify the fields and relations to retrieve:
        *
        * ```ts
+       * // TODO must be authenticated as the customer to retrieve their address
        * sdk.store.customer.retrieveAddress(
        *   "caddr_123",
        *   {
@@ -14116,6 +15020,7 @@ class Store2 {
        * @returns The deletion's details.
        *
        * @example
+       * // TODO must be authenticated as the customer to delete their address
        * sdk.store.customer.deleteAddress("caddr_123")
        * .then(({ deleted, parent: customer }) => {
        *   console.log(customer)
@@ -14366,18 +15271,6 @@ const addToCart = withAuthHeaders(
     return cart2;
   }
 );
-const ensureStripePaymentSession = async (request, cart2) => {
-  var _a, _b;
-  if (!cart2) throw new Error("Cart was not provided.");
-  let activeSession = (_b = (_a = cart2.payment_collection) == null ? void 0 : _a.payment_sessions) == null ? void 0 : _b.find((session) => session.status === "pending");
-  if (!activeSession) {
-    await initiatePaymentSession(request, cart2, {
-      provider_id: "pp_stripe_stripe"
-    });
-    return await retrieveCart(request);
-  }
-  return cart2;
-};
 const ensurePaypalPaymentSession = async (request, cart2) => {
   var _a, _b;
   if (!cart2) throw new Error("Cart was not provided.");
@@ -14511,6 +15404,7 @@ const getRootLoader = async ({ request }) => {
         NODE_ENV: config.NODE_ENV,
         ENVIRONMENT: config.ENVIRONMENT,
         STRIPE_PUBLIC_KEY: config.STRIPE_PUBLIC_KEY,
+        PAYPAL_CLIENT_ID: config.PAYPAL_CLIENT_ID,
         PUBLIC_MEDUSA_API_URL: config.PUBLIC_MEDUSA_API_URL,
         STOREFRONT_URL: config.STOREFRONT_URL,
         SENTRY_DSN: config.SENTRY_DSN,
@@ -17706,104 +18600,53 @@ const route11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   action: action$5,
   discountCodeSchema
 }, Symbol.toStringTag, { value: "Module" }));
-const fetchProductReviews = async (query = {}, cacheOptions = {}) => {
+const fetchProductReviews = async (productId, query = {}, cacheOptions = {}) => {
   return await cachified({
-    key: `product-reviews-${JSON.stringify(query)}`,
+    key: `product-reviews-${productId}-${JSON.stringify(query)}`,
     cache: sdkCache,
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
     forceFresh: cacheOptions.forceFresh,
     async getFreshValue() {
-      return await sdk.store.productReviews.list({
-        ...query,
-        offset: query.offset ?? 0,
-        limit: query.limit ?? 10
+      return await sdk.client.fetch(`/store/reviews/${productId}`, {
+        method: "GET",
+        query: {
+          ...query,
+          offset: query.offset ?? 0,
+          limit: query.limit ?? 10
+        }
       });
     }
   });
 };
-const fetchProductReviewStats = async (query = { offset: 0, limit: 10 }) => {
-  return await cachified({
-    key: `product-review-stats-${JSON.stringify(query)}`,
-    cache: sdkCache,
-    staleWhileRevalidate: MILLIS.ONE_HOUR,
-    ttl: MILLIS.TEN_SECONDS,
-    async getFreshValue() {
-      return await sdk.store.productReviews.listStats(query);
-    }
-  });
-};
-const upsertProductReviews = withAuthHeaders(
-  async (request, authHeaders, data2) => {
-    return await sdk.store.productReviews.upsert(data2, authHeaders);
-  }
-);
-const memoryStorage = new MemoryFileStorage();
-const reviewsFileUploadHandler = async (fileUpload) => {
-  const randomId = Math.random().toString(36).substring(2, 15);
-  if (fileUpload.type.startsWith("image/")) {
-    const storageKey = `${randomId}-${fileUpload.fieldName}`;
-    await memoryStorage.set(storageKey, fileUpload);
-    return memoryStorage.get(storageKey);
-  }
-  return null;
-};
-const schema$1 = z$1.object({
-  id: z$1.string().optional(),
-  order_id: z$1.string().min(1, "Order is required"),
-  order_line_item_id: z$1.string().min(1, "Line item is required"),
-  rating: z$1.number().min(1, "Rating is required"),
-  content: z$1.string().optional().default(""),
-  existing_images: z$1.string().optional(),
-  review_request_id: z$1.string().optional()
-});
-const uploadImages = async (_images) => {
-  if (!_images) return [];
-  if (_images && !Array.isArray(_images)) _images = [_images];
-  if (!Array.isArray(_images)) return [];
-  if (!(_images == null ? void 0 : _images.length)) return [];
-  const images = _images.filter((image) => image.size > 0);
-  if (!images.length) return [];
-  const formData = new FormData();
-  for (const image of images) {
-    const fileBuffer = await image.arrayBuffer();
-    const blob = new Blob([fileBuffer], {
-      type: image.type || "application/octet-stream"
-    });
-    formData.append("files", blob, image.name);
-  }
-  const url = new URL("/store/product-reviews/uploads", baseMedusaConfig.baseUrl);
-  const response = await fetch(url, {
+const createProductReview = async (data2) => {
+  return await sdk.client.fetch(`/store/reviews`, {
     method: "POST",
-    body: formData,
-    headers: {
-      "x-publishable-api-key": baseMedusaConfig.publishableKey ?? ""
+    body: {
+      product_id: data2.product_id,
+      name: data2.name,
+      content: data2.content,
+      stars: data2.stars
     }
   });
-  if (!response.ok) {
-    console.error("Upload failed with status:", response.status);
-    const errorText = await response.text();
-    console.error("Error details:", errorText);
-    return [];
-  }
-  const data2 = await response.json();
-  return data2.files.map((i) => i.url);
 };
+new MemoryFileStorage();
+const schema$1 = z$1.object({
+  product_id: z$1.string().min(1, "Product ID is required"),
+  name: z$1.string().min(1, "Name is required"),
+  stars: z$1.number().min(1, "Rating is required"),
+  content: z$1.string().min(1, "Content is required")
+});
 async function action$4({
   request
 }) {
-  const formData = await parseFormData(request, reviewsFileUploadHandler);
-  const uploads = formData.getAll("images");
-  const restFormData = new FormData();
-  for (const [key, value] of formData.entries()) {
-    if (key !== "images") {
-      restFormData.append(key, value);
-    }
-  }
+  const formData = await parseFormData(request);
+  console.log(formData);
   const {
     errors,
     data: parsedFormData
-  } = await getValidatedFormData(restFormData, zodResolver(schema$1));
+  } = await getValidatedFormData(formData, zodResolver(schema$1));
+  console.log(errors);
   if (errors) {
     return data({
       errors
@@ -17812,25 +18655,9 @@ async function action$4({
     });
   }
   try {
-    const {
-      existing_images,
-      ...upsertPayload
-    } = parsedFormData;
-    const newImageUrls = await uploadImages(uploads);
-    const existingImageUrls = (existing_images == null ? void 0 : existing_images.split(",").map((url) => url.trim())) || [];
-    const allImageUrls = [...newImageUrls, ...existingImageUrls];
-    const {
-      product_reviews
-    } = await upsertProductReviews(request, {
-      reviews: [{
-        ...upsertPayload,
-        images: allImageUrls.map((url) => ({
-          url
-        }))
-      }]
-    });
+    const review = await createProductReview(parsedFormData);
     return data({
-      product_reviews,
+      review,
       success: true
     });
   } catch (error) {
@@ -19211,20 +20038,172 @@ const ProductPriceRange = ({ product: product2, currencyCode }) => {
     ] }) : ""
   ] }) : /* @__PURE__ */ jsx(ProductVariantPrice, { variant: minVariant, currencyCode }) });
 };
-const ProductReviewList = ({ productReviews }) => {
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const [currentGalleryImages, setCurrentGalleryImages] = useState([]);
-  const handleImageClick = (reviewImages, imageIndex) => {
-    setCurrentGalleryImages(reviewImages);
-    setLightboxIndex(imageIndex);
+const SimpleReviewForm = ({
+  productId,
+  onSubmitSuccess,
+  onCancel
+}) => {
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
+  const [stars, setStars] = useState(5);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const fetcher = useFetcher$1();
+  const isSubmitting = fetcher.state !== "idle";
+  useEffect(() => {
+    var _a, _b, _c;
+    if ((_a = fetcher.data) == null ? void 0 : _a.success) {
+      setSuccess(true);
+      setName("");
+      setContent("");
+      setStars(5);
+      setError(null);
+      const timer = setTimeout(() => {
+        setSuccess(false);
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
+      }, 2e3);
+      return () => clearTimeout(timer);
+    } else if ((_b = fetcher.data) == null ? void 0 : _b.error) {
+      setError(fetcher.data.error);
+    } else if ((_c = fetcher.data) == null ? void 0 : _c.errors) {
+      const errorMessages = Object.entries(fetcher.data.errors).filter(([_, messages]) => messages && messages.length > 0).map(([field, messages]) => `${field}: ${(messages == null ? void 0 : messages[0]) || "Invalid"}`).join(", ");
+      setError(errorMessages || "Validation failed");
+    }
+  }, [fetcher.data, onSubmitSuccess]);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError(null);
+    if (!name.trim()) {
+      setError("Please enter your name");
+      return;
+    }
+    if (!content.trim()) {
+      setError("Please write a review");
+      return;
+    }
+    if (content.length < 10) {
+      setError("Review must be at least 10 characters");
+      return;
+    }
+    if (stars < 1 || stars > 5) {
+      setError("Please select a rating between 1 and 5");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("product_id", productId);
+    formData.append("name", name);
+    formData.append("content", content);
+    formData.append("stars", stars.toString());
+    fetcher.submit(formData, {
+      method: "POST",
+      action: "/api/product-reviews/create"
+    });
   };
+  return /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, className: "space-y-6 bg-white p-6 rounded-lg border border-gray-200", children: [
+    /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Write a Review" }),
+    success && /* @__PURE__ */ jsxs("div", { className: "bg-green-50 border border-green-200 rounded-md p-4 text-green-800", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-semibold", children: "Thank you!" }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm mt-1", children: "Your review has been submitted and is pending approval." })
+    ] }),
+    error && /* @__PURE__ */ jsxs("div", { className: "bg-red-50 border border-red-200 rounded-md p-4 text-red-800", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-semibold", children: "Error" }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm mt-1", children: error })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: [
+        "Rating ",
+        /* @__PURE__ */ jsx("span", { className: "text-red-500", children: "*" })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(
+          StarRating,
+          {
+            value: stars,
+            onChange: (value) => setStars(value),
+            readOnly: false
+          }
+        ),
+        /* @__PURE__ */ jsx("span", { className: "text-sm text-gray-600 ml-2", children: stars === 0 ? "No rating" : `${stars} out of 5 stars` })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("label", { htmlFor: "name", className: "block text-sm font-medium text-gray-700 mb-2", children: [
+        "Your Name ",
+        /* @__PURE__ */ jsx("span", { className: "text-red-500", children: "*" })
+      ] }),
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          id: "name",
+          type: "text",
+          name: "name",
+          value: name,
+          onChange: (e) => setName(e.target.value),
+          placeholder: "Enter your name",
+          disabled: isSubmitting,
+          maxLength: 255,
+          className: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed",
+          required: true
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsxs("label", { htmlFor: "content", className: "block text-sm font-medium text-gray-700 mb-2", children: [
+        "Your Review ",
+        /* @__PURE__ */ jsx("span", { className: "text-red-500", children: "*" })
+      ] }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          id: "content",
+          name: "content",
+          value: content,
+          onChange: (e) => setContent(e.target.value),
+          placeholder: "Tell us what you think about this product...",
+          disabled: isSubmitting,
+          maxLength: 1e3,
+          rows: 5,
+          className: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed resize-none",
+          required: true
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-500 mt-1", children: [
+        content.length,
+        "/1000 characters"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "flex gap-3 justify-between", children: [
+      /* @__PURE__ */ jsx(
+        Button,
+        {
+          type: "button",
+          variant: "default",
+          onClick: onCancel,
+          disabled: isSubmitting,
+          className: "flex-1",
+          children: "Cancel"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        Button,
+        {
+          type: "submit",
+          variant: "primary",
+          disabled: isSubmitting,
+          className: "flex-1",
+          children: isSubmitting ? "Submitting..." : "Submit Review"
+        }
+      )
+    ] })
+  ] });
+};
+const ProductReviewList = ({
+  productReviews
+}) => {
   return /* @__PURE__ */ jsxs("div", { children: [
-    productReviews && productReviews.length > 0 && /* @__PURE__ */ jsx("div", { className: "", children: productReviews.map((review, reviewIndex) => {
-      const galleryImages = (review.images || []).map((image) => ({
-        url: image.url,
-        alt: "Customer's review image",
-        name: "Customer's review image"
-      }));
+    productReviews && productReviews.length > 0 && /* @__PURE__ */ jsx("div", { className: "space-y-8", children: productReviews.map((review, reviewIndex) => {
       return /* @__PURE__ */ jsxs("div", { className: "py-8", children: [
         /* @__PURE__ */ jsxs("div", { className: " flex items-center justify-between", children: [
           /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs("svg", { width: "54", height: "53", viewBox: "0 0 54 53", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: [
@@ -19232,57 +20211,23 @@ const ProductReviewList = ({ productReviews }) => {
             /* @__PURE__ */ jsx("path", { d: "M34 39.6667C34 41.8758 29.8932 45 27.5 45C25.1068 45 21 41.8758 21 39.6667C21 37.4575 25.1068 37 27.5 37C29.8932 37 34 37.4575 34 39.6667Z", fill: "#FFE977" }),
             /* @__PURE__ */ jsx("path", { d: "M27 0.706055C41.5344 0.706055 53.2939 12.2666 53.2939 26.5C53.2939 40.7334 41.5344 52.2939 27 52.2939C12.4656 52.2939 0.706055 40.7334 0.706055 26.5C0.706055 12.2666 12.4656 0.706055 27 0.706055Z", stroke: "black", "stroke-width": "1.41144" })
           ] }) }),
-          /* @__PURE__ */ jsx("h3", { className: "px-1.5 text-sm font-bold text-[32px] leading-[42px] tracking-normal uppercase line-clamp-1 text-center", children: review.name ?? "Anonymous" }),
-          /* @__PURE__ */ jsx("div", { className: "mt-1 flex items-center pb-1", children: /* @__PURE__ */ jsx(StarRating, { value: review.rating ?? 0, readOnly: true }) }),
+          /* @__PURE__ */ jsx("h3", { className: "px-1.5 font-title font-extrabold text-[32px] leading-[42px] tracking-normal uppercase line-clamp-1 text-center", children: review.name ?? "Anonymous" }),
+          /* @__PURE__ */ jsx("div", { className: "mt-1 flex items-center pb-1", children: /* @__PURE__ */ jsx(StarRating, { value: review.stars ?? 0, readOnly: true }) }),
           /* @__PURE__ */ jsxs("p", { className: "sr-only", children: [
-            review.rating,
+            review.stars,
             " out of 5 stars"
           ] })
         ] }),
         /* @__PURE__ */ jsx(
           "div",
           {
-            className: "mt-4 space-y-6 text-base italic text-gray-600",
+            className: "mt-4 space-y-6 text-base text-gray-600",
             dangerouslySetInnerHTML: { __html: review.content }
           }
-        ),
-        galleryImages.length > 0 && /* @__PURE__ */ jsx(
-          ReviewImageThumbnailRow,
-          {
-            galleryImages,
-            onClick: (imageIndex) => handleImageClick(galleryImages, imageIndex)
-          }
-        ),
-        review.response && review.response.content && /* @__PURE__ */ jsxs("div", { className: "mt-4 rounded-md bg-gray-50 p-4", children: [
-          /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsx("h4", { className: "text-sm font-medium text-gray-900", children: "Barrio's Response" }),
-            review.response.created_at && /* @__PURE__ */ jsx(
-              "time",
-              {
-                className: "ml-2 text-xs italic text-gray-500",
-                dateTime: String(review.response.created_at),
-                children: formatDate(new Date(review.response.created_at))
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsx(
-            "div",
-            {
-              className: "mt-2 text-sm text-gray-700",
-              dangerouslySetInnerHTML: { __html: review.response.content }
-            }
-          )
-        ] })
+        )
       ] }, review.id);
     }) }),
-    /* @__PURE__ */ jsx(
-      LightboxGallery,
-      {
-        images: currentGalleryImages.map(({ url, ...image }) => ({ ...image, src: url })),
-        lightBoxIndex: lightboxIndex,
-        setLightBoxIndex: setLightboxIndex
-      }
-    )
+    (!productReviews || productReviews.length === 0) && /* @__PURE__ */ jsx("div", { className: "mb-8 text-center py-8 text-gray-500", children: /* @__PURE__ */ jsx("p", { className: "text-lg", children: "No reviews yet. Be the first to review this product!" }) })
   ] });
 };
 const ProductReviewListWithPagination = ({
@@ -19297,8 +20242,12 @@ const ProductReviewListWithPagination = ({
 const ProductReviewSection = () => {
   const data2 = useRouteLoaderData("routes/products.$productHandle");
   if (!data2) return null;
-  const { product: product2, productReviews, productReviewStats } = data2;
-  if (!productReviews.count || productReviewStats.count < 1) return null;
+  const { product: product2, productReviews } = data2;
+  const [showForm, setShowForm] = useState(false);
+  const handleReviewSubmitted = () => {
+    setShowForm(false);
+    window.location.reload();
+  };
   return /* @__PURE__ */ jsxs(Fragment$1, { children: [
     /* @__PURE__ */ jsxs("p", { className: "text-center", children: [
       /* @__PURE__ */ jsx("span", { className: "text-5xl font-title font-extrabold text-64px leading-48px uppercase", children: "Customer" }),
@@ -19308,7 +20257,8 @@ const ProductReviewSection = () => {
       ProductReviewListWithPagination,
       {
         className: "col-span-12",
-        productReviews: productReviews.product_reviews,
+        productId: product2.id,
+        productReviews: productReviews.reviews,
         context: `products/${product2.handle}`,
         paginationConfig: {
           limit: productReviews.limit,
@@ -19316,7 +20266,26 @@ const ProductReviewSection = () => {
           count: productReviews.count
         }
       }
-    ) })
+    ) }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      showForm && /* @__PURE__ */ jsx(
+        SimpleReviewForm,
+        {
+          productId: product2.id,
+          onSubmitSuccess: handleReviewSubmitted,
+          onCancel: () => setShowForm(false)
+        }
+      ),
+      !showForm && /* @__PURE__ */ jsx("div", { className: "my-8 text-center", children: /* @__PURE__ */ jsx(
+        Button,
+        {
+          variant: "primary",
+          size: "lg",
+          onClick: () => setShowForm(true),
+          children: /* @__PURE__ */ jsx("span", { className: "font-semibold text-lg", children: "Write a Review" })
+        }
+      ) })
+    ] })
   ] });
 };
 const Collasape = ({
@@ -19398,7 +20367,7 @@ const Collasape = ({
 const variantIsSoldOut = (variant) => {
   return !!((variant == null ? void 0 : variant.manage_inventory) && (variant == null ? void 0 : variant.inventory_quantity) < 1);
 };
-const ProductTemplate = ({ product: product2, reviewsCount, reviewStats }) => {
+const ProductTemplate = ({ product: product2 }) => {
   var _a;
   const [indexGallery, setIndexGallery] = useState(0);
   const formRef = useRef(null);
@@ -19702,7 +20671,7 @@ const ProductTemplate = ({ product: product2, reviewsCount, reviewStats }) => {
         ]
       }
     ) }) }),
-    /* @__PURE__ */ jsx(Container, { children: reviewsCount > 0 && /* @__PURE__ */ jsx(ProductReviewSection, {}) })
+    /* @__PURE__ */ jsx(Container, { children: /* @__PURE__ */ jsx(ProductReviewSection, {}) })
   ] });
 };
 const withPaginationParams = ({
@@ -19737,37 +20706,23 @@ const loader$f = async (args) => {
   });
   if (!products.length) throw redirect("/404");
   const product2 = products[0];
-  const [productReviews, productReviewStats] = await Promise.all([fetchProductReviews({
-    product_id: product2.id,
-    fields: "id,rating,content,name,images.url,created_at,updated_at,response.content,response.created_at,response.id",
-    order: "created_at",
-    status: ["approved"],
-    // can use status: (pending, approved, flagged)[] to get reviews by status // default is approved
+  const productReviews = await fetchProductReviews(product2.id, {
     offset: reviewsOffset,
     limit: reviewsLimit
-  }), fetchProductReviewStats({
-    product_id: product2.id,
-    offset: 0,
-    limit: 1
-  })]);
+  });
   return {
     product: product2,
-    productReviews,
-    productReviewStats
+    productReviews
   };
 };
 const meta$2 = getMergedProductMeta;
 const products_$productHandle = UNSAFE_withComponentProps(function ProductDetailRoute() {
   const {
-    product: product2,
-    productReviews,
-    productReviewStats
+    product: product2
   } = useLoaderData();
   return /* @__PURE__ */ jsxs(Fragment$1, {
     children: [/* @__PURE__ */ jsx(ProductTemplate, {
-      product: product2,
-      reviewsCount: productReviews.count,
-      reviewStats: productReviewStats.product_review_stats[0]
+      product: product2
     }), /* @__PURE__ */ jsx(ProductList, {
       className: "!pb-[100px] xl:px-9",
       heading: "You may also like"
@@ -19970,9 +20925,8 @@ async function action$1(actionArgs) {
       cartId: data2.cartId,
       shippingOptionId: id
     })));
-    cart2 = await ensureStripePaymentSession(actionArgs.request, cart2);
+    cart2 = await ensurePaypalPaymentSession(actionArgs.request, cart2);
   }
-  cart2 = await ensurePaypalPaymentSession(actionArgs.request, cart2);
   console.log(data2, "data");
   if (data2.complete) {
     const cartResponse = await placeOrder(actionArgs.request);
@@ -19999,7 +20953,7 @@ async function action$1(actionArgs) {
       headers
     });
   }
-  cart2 = await ensureStripePaymentSession(actionArgs.request, cart2);
+  cart2 = await ensurePaypalPaymentSession(actionArgs.request, cart2);
   const shippingOptions = await listCartShippingOptions(data2.cartId);
   return Response.json({
     cart: cart2,
@@ -24220,7 +25174,7 @@ const route39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-KJVv3ieu.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/index-ryUWhltf.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-C-5a-QOg.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/index-ryUWhltf.js", "/assets/meta-DdeOJusI.js", "/assets/Button-E-8QNY68.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/IconButton-BcxydhMr.js", "/assets/useCart-5kzPSyqF.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/ShoppingCartIcon-CW0mJDUx.js", "/assets/prices-DJiVn0T5.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-Bcn-QzFe.js", "/assets/use-is-mounted-CDs0S30a.js", "/assets/description-2W3FHUaM.js", "/assets/Container-CwGEGTs5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/context-BmMhycnk.js"], "css": ["/assets/root-DnEdqNWq.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-nD4nvGye.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductListWithPagination-62dL0cVm.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.upsert": { "id": "routes/api.product-reviews.upsert", "parentId": "root", "path": "api/product-reviews/upsert", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.upsert-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-rDw3kYcM.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductListWithPagination-62dL0cVm.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-RH2WOxhZ.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Button-E-8QNY68.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/Container-CwGEGTs5.js", "/assets/Image-Bcn-QzFe.js", "/assets/clsx-B-dksMZM.js", "/assets/data-table-router-form-C_cEYWO6.js", "/assets/zod-v2Wtl3bk.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/formatters-BBrzIyNo.js", "/assets/IconButton-BcxydhMr.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/index-ryUWhltf.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": ["/assets/formatters-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._productHandle-hxwTp2-7.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/ProductList-BV6Tdwqd.js", "/assets/Button-E-8QNY68.js", "/assets/Container-CwGEGTs5.js", "/assets/GridColumn-uvIYSbIX.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/QuantitySelector-CUhvbZM0.js", "/assets/Image-Bcn-QzFe.js", "/assets/formatters-BBrzIyNo.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/tabs-D4HrBTLt.js", "/assets/use-is-mounted-CDs0S30a.js", "/assets/description-2W3FHUaM.js", "/assets/index-ryUWhltf.js", "/assets/prices-DJiVn0T5.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/useCart-5kzPSyqF.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/zod-v2Wtl3bk.js", "/assets/meta-DdeOJusI.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/IconButton-BcxydhMr.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js"], "css": ["/assets/formatters-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._index-Bf5dI3vN.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-DAhc98TR.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout.success-lG94PPyT.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/Container-CwGEGTs5.js", "/assets/Image-Bcn-QzFe.js", "/assets/prices-DJiVn0T5.js", "/assets/Button-E-8QNY68.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout._index-BRHzxZ0z.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/data-table-router-form-C_cEYWO6.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/Button-E-8QNY68.js", "/assets/clsx-B-dksMZM.js", "/assets/ShoppingCartIcon-CW0mJDUx.js", "/assets/zod-v2Wtl3bk.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/Image-Bcn-QzFe.js", "/assets/prices-DJiVn0T5.js", "/assets/QuantitySelector-CUhvbZM0.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/tabs-D4HrBTLt.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/index-ryUWhltf.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/use-is-mounted-CDs0S30a.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._index-CZlCLPXp.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/clsx-B-dksMZM.js", "/assets/Container-CwGEGTs5.js", "/assets/coming-collection-BDb54i6v.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._index-CkTo0-lu.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pick-a-card": { "id": "routes/pick-a-card", "parentId": "root", "path": "pick-a-card", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/pick-a-card-DTa2AD-c.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/clsx-B-dksMZM.js", "/assets/coming-collection-BDb54i6v.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/about-us-DdZye7D7.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/Button-E-8QNY68.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/contact-BNcPCBZM.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/zod-v2Wtl3bk.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductList-BV6Tdwqd.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/IconButton-BcxydhMr.js", "/assets/Button-E-8QNY68.js", "/assets/Image-Bcn-QzFe.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/tabs-D4HrBTLt.js", "/assets/use-is-mounted-CDs0S30a.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/stories-DTXi-J_-.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/GridColumn-uvIYSbIX.js", "/assets/Main-CTJhV_v5.js", "/assets/clsx-B-dksMZM.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_index-CTHI3Rqm.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/Main-CTJhV_v5.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js", "/assets/meta-DdeOJusI.js", "/assets/context-BmMhycnk.js"], "css": ["/assets/_index-CVDrmUgF.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-4bfc5a02.js", "version": "4bfc5a02", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-KJVv3ieu.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/index-ryUWhltf.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-4oFqgpw_.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/index-ryUWhltf.js", "/assets/meta-DdeOJusI.js", "/assets/Button-E-8QNY68.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/IconButton-BcxydhMr.js", "/assets/useCart-5kzPSyqF.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/ShoppingCartIcon-CW0mJDUx.js", "/assets/prices-DJiVn0T5.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-Bcn-QzFe.js", "/assets/use-is-mounted-CDs0S30a.js", "/assets/description-2W3FHUaM.js", "/assets/Container-CwGEGTs5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/context-BmMhycnk.js"], "css": ["/assets/root-BCZL6xU5.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-nD4nvGye.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductListWithPagination-62dL0cVm.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-rDw3kYcM.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductListWithPagination-62dL0cVm.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-C6HcIfeh.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Button-E-8QNY68.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/Container-CwGEGTs5.js", "/assets/Image-Bcn-QzFe.js", "/assets/clsx-B-dksMZM.js", "/assets/data-table-router-form-C_cEYWO6.js", "/assets/zod-v2Wtl3bk.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/LightboxGallery-CHS0onMb.js", "/assets/IconButton-BcxydhMr.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/index-ryUWhltf.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._productHandle-GM8lbFU6.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/ProductList-BV6Tdwqd.js", "/assets/Button-E-8QNY68.js", "/assets/Container-CwGEGTs5.js", "/assets/GridColumn-uvIYSbIX.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/QuantitySelector-CUhvbZM0.js", "/assets/Image-Bcn-QzFe.js", "/assets/LightboxGallery-CHS0onMb.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/tabs-D4HrBTLt.js", "/assets/use-is-mounted-CDs0S30a.js", "/assets/description-2W3FHUaM.js", "/assets/index-ryUWhltf.js", "/assets/prices-DJiVn0T5.js", "/assets/pagination-with-context-ycWPTcm3.js", "/assets/useCart-5kzPSyqF.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/zod-v2Wtl3bk.js", "/assets/meta-DdeOJusI.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/IconButton-BcxydhMr.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._index-Bf5dI3vN.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductGrid-DyREgvCi.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/Image-Bcn-QzFe.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/ArrowRightIcon-CQJJhLrP.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-DAhc98TR.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout.success-lG94PPyT.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/Container-CwGEGTs5.js", "/assets/Image-Bcn-QzFe.js", "/assets/prices-DJiVn0T5.js", "/assets/Button-E-8QNY68.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout._index-BRHzxZ0z.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/data-table-router-form-C_cEYWO6.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/Button-E-8QNY68.js", "/assets/clsx-B-dksMZM.js", "/assets/ShoppingCartIcon-CW0mJDUx.js", "/assets/zod-v2Wtl3bk.js", "/assets/SubmitButton-CSe2QbSv.js", "/assets/Image-Bcn-QzFe.js", "/assets/prices-DJiVn0T5.js", "/assets/QuantitySelector-CUhvbZM0.js", "/assets/ButtonLink-BQ1Kovmq.js", "/assets/tabs-D4HrBTLt.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/index-ryUWhltf.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/use-is-mounted-CDs0S30a.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._index-CZlCLPXp.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/clsx-B-dksMZM.js", "/assets/Container-CwGEGTs5.js", "/assets/coming-collection-BDb54i6v.js", "/assets/createLucideIcon-D6tX4iXv.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._index-CkTo0-lu.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pick-a-card": { "id": "routes/pick-a-card", "parentId": "root", "path": "pick-a-card", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/pick-a-card-DTa2AD-c.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/clsx-B-dksMZM.js", "/assets/coming-collection-BDb54i6v.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/about-us-DdZye7D7.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/Container-CwGEGTs5.js", "/assets/Button-E-8QNY68.js", "/assets/URLAwareNavLink-pwFhpeVQ.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/contact-BNcPCBZM.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/zod-v2Wtl3bk.js", "/assets/Container-CwGEGTs5.js", "/assets/ProductList-BV6Tdwqd.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-B2hyYdh2.js", "/assets/ArrowRightIcon-CQJJhLrP.js", "/assets/IconButton-BcxydhMr.js", "/assets/Button-E-8QNY68.js", "/assets/Image-Bcn-QzFe.js", "/assets/ProductListItem-_AQZUiwL.js", "/assets/useRegion-Bk1_9y5j.js", "/assets/useCart-5kzPSyqF.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/context-BmMhycnk.js", "/assets/animation-BrpFQVme.js", "/assets/PlusIcon-A66bXQM6.js", "/assets/prices-DJiVn0T5.js", "/assets/tabs-D4HrBTLt.js", "/assets/use-is-mounted-CDs0S30a.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/stories-DTXi-J_-.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/GridColumn-uvIYSbIX.js", "/assets/Main-CTJhV_v5.js", "/assets/clsx-B-dksMZM.js", "/assets/proxy-HYS6Zc_2.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_index-CTHI3Rqm.js", "imports": ["/assets/chunk-OIYGIGL5-DCgkdKKb.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BwhVl6mM.js", "/assets/Main-CTJhV_v5.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js", "/assets/meta-DdeOJusI.js", "/assets/context-BmMhycnk.js"], "css": ["/assets/_index-CVDrmUgF.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-60d47901.js", "version": "60d47901", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
@@ -24327,10 +25281,10 @@ const routes = {
     caseSensitive: void 0,
     module: route11
   },
-  "routes/api.product-reviews.upsert": {
-    id: "routes/api.product-reviews.upsert",
+  "routes/api.product-reviews.create": {
+    id: "routes/api.product-reviews.create",
     parentId: "root",
-    path: "api/product-reviews/upsert",
+    path: "api/product-reviews/create",
     index: void 0,
     caseSensitive: void 0,
     module: route12

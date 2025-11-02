@@ -20,17 +20,10 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       metadata: { count, take, skip } = {},
     } = await query.graph({
       entity: "review",
-      fields: ["id", "product_id", "name", "content", "stars", "status", "created_at", "updated_at"],
-      filters,
-      pagination: {
-        order: {
-          created_at: "DESC",
-        }
-      },
       ...req.queryConfig,
     })
 
-    res.json({
+    res.status(200).json({
       reviews,
       count,
       limit: take,
@@ -52,6 +45,7 @@ export const POST = async (
     const validatedData = AdminCreateReview.parse(req.body)
     const productReviewsModuleService = req.scope.resolve("productReviewsModuleService")
 
+    // @ts-ignore
     const review = await productReviewsModuleService.createReviews(validatedData)
 
     res.status(201).json({
