@@ -9,7 +9,7 @@
     "generate-env": "cp ./apps/medusa/.env.template ./apps/medusa/.env && cp ./apps/storefront/.env.template ./apps/storefront/.env",
     "medusa:init": "turbo run medusa:init --filter=medusa",
     "format": "turbo run format",
-    "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}'",
+    "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' \\;",
     "typecheck": "turbo run typecheck",
     "pm2:start": "pm2 start ecosystem.config.js",
     "pm2:stop": "pm2 stop all",
@@ -28,12 +28,7 @@
     "node": ">=20"
   },
   "resolutions": {
-    "@medusajs/workflows-sdk": "2.7.0",
-    "@medusajs/modules-sdk": "2.7.0",
-    "@medusajs/orchestration": "2.7.0",
-    "@medusajs/utils": "2.7.0",
-    "@medusajs/js-sdk": "2.7.0",
-    "@medusajs/types": "2.7.0"
+    "@mikro-orm/*": "6.4.16"
   },
   "packageManager": "yarn@4.5.0",
   "workspaces": [

@@ -109,7 +109,7 @@ export interface ModifiedStripePaymentMethod
   extends Pick<
     StripePaymentMethod,
     'id' | 'object' | 'billing_details' | 'card' | 'created' | 'customer' | 'livemode' | 'metadata' | 'type'
-  > {}
+  > { }
 
 export interface CustomPaymentSession extends BasePaymentSession {
   provider_id: string;
@@ -124,4 +124,14 @@ export interface LogoProps {
   onLetterClick?: (letter: LogoLetter) => void;
   onMouseEnterLetter?: (letter: LogoLetter) => void;
   onMouseLeaveLogo?: () => void;
+}
+
+export interface Review {
+  id: string;
+  product_id: string;
+  name: string;
+  content: string;
+  stars: number;
+  created_at: Date;
+  updated_at: Date;
 }

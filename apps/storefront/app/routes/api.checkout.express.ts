@@ -82,10 +82,8 @@ export async function action(actionArgs: ActionFunctionArgs) {
           }),
       ),
     );
-
-    cart = await ensureStripePaymentSession(actionArgs.request, cart!);
+    cart = await ensurePaypalPaymentSession(actionArgs.request, cart!);
   }
-  cart = await ensurePaypalPaymentSession(actionArgs.request, cart!);
 
   console.log(data, 'data');
 
@@ -108,7 +106,7 @@ export async function action(actionArgs: ActionFunctionArgs) {
     return Response.json({ order }, { headers });
   }
 
-  cart = await ensureStripePaymentSession(actionArgs.request, cart!);
+  cart = await ensurePaypalPaymentSession(actionArgs.request, cart!);
 
   const shippingOptions = await listCartShippingOptions(data.cartId);
 

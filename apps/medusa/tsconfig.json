@@ -27,5 +27,5 @@
     "swc": true
   },
   "include": ["**/*", ".medusa/types/*"],
-  "exclude": ["node_modules", ".medusa/server", ".medusa/admin", ".cache", "public"]
+  "exclude": ["node_modules", ".medusa/server", ".medusa/admin", ".cache", "public", "src/admin", "integration-tests", "**/*.spec.ts", "**/*.test.ts"]
 }

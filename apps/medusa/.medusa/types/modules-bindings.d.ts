@@ -1,4 +1,4 @@
-import type ProductReview from '@lambdacurry/medusa-product-reviews/.medusa/server/src/modules/product-review'
+import type Review from '@alphabite/medusa-reviews/.medusa/server/src/modules/review'
 import type { IStockLocationService } from '@medusajs/framework/types'
 import type { IInventoryService } from '@medusajs/framework/types'
 import type { IProductModuleService } from '@medusajs/framework/types'
@@ -14,6 +14,7 @@ import type { ITaxModuleService } from '@medusajs/framework/types'
 import type { ICurrencyModuleService } from '@medusajs/framework/types'
 import type { IPaymentModuleService } from '@medusajs/framework/types'
 import type { IOrderModuleService } from '@medusajs/framework/types'
+import type Settings from '@medusajs/medusa/settings'
 import type { IAuthModuleService } from '@medusajs/framework/types'
 import type { IUserModuleService } from '@medusajs/framework/types'
 import type { IFulfillmentModuleService } from '@medusajs/framework/types'
@@ -27,7 +28,7 @@ import type Blog from '../../src/modules/blog'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
-    'product_review': InstanceType<(typeof ProductReview)['service']>,
+    'review': InstanceType<(typeof Review)['service']>,
     'stock_location': IStockLocationService,
     'inventory': IInventoryService,
     'product': IProductModuleService,
@@ -43,6 +44,7 @@ declare module '@medusajs/framework/types' {
     'currency': ICurrencyModuleService,
     'payment': IPaymentModuleService,
     'order': IOrderModuleService,
+    'settings': InstanceType<(typeof Settings)['service']>,
     'auth': IAuthModuleService,
     'user': IUserModuleService,
     'fulfillment': IFulfillmentModuleService,

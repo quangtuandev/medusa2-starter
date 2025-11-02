@@ -11,43 +11,55 @@ import {
 
 import { MemoryFileStorage } from '@mjackson/file-storage/memory';
 import { FileUpload } from '@mjackson/form-data-parser';
+import { Review } from '@libs/types';
+export interface ReviewListResponse {
+  reviews: Review[];
+  limit: number;
+  offset: number;
+  count: number;
+}
+export interface CreateReviewInput {
+  product_id: string;
+  name: string;
+  content: string;
+  stars: number;
+}
+
 export const fetchProductReviews = async (
+  productId: string,
   query: Partial<StoreListProductReviewsQuery> = {},
   cacheOptions: { forceFresh?: boolean } = {},
-) => {
+): Promise<ReviewListResponse> => {
   return await cachified({
-    key: `product-reviews-${JSON.stringify(query)}`,
+    key: `product-reviews-${productId}-${JSON.stringify(query)}`,
     cache: sdkCache,
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
     forceFresh: cacheOptions.forceFresh,
     async getFreshValue() {
-      return await sdk.store.productReviews.list({
-        ...query,
-        offset: query.offset ?? 0,
-        limit: query.limit ?? 10,
+      return await sdk.client.fetch(`/store/reviews/${productId}`, {
+        method: 'GET',
+        query: {
+          ...query,
+          offset: query.offset ?? 0,
+          limit: query.limit ?? 10,
+        },
       });
     },
   });
 };
 
-export const fetchProductReviewStats = async (query: StoreListProductReviewStatsQuery = { offset: 0, limit: 10 }) => {
-  return await cachified({
-    key: `product-review-stats-${JSON.stringify(query)}`,
-    cache: sdkCache,
-    staleWhileRevalidate: MILLIS.ONE_HOUR,
-    ttl: MILLIS.TEN_SECONDS,
-    async getFreshValue() {
-      return await sdk.store.productReviews.listStats(query);
+export const createProductReview = async (data: CreateReviewInput) => {
+  return await sdk.client.fetch(`/store/reviews`, {
+    method: 'POST',
+    body: {
+      product_id: data.product_id,
+      name: data.name,
+      content: data.content,
+      stars: data.stars,
     },
   });
 };
-
-export const upsertProductReviews = withAuthHeaders(
-  async (request, authHeaders, data: StoreUpsertProductReviewsDTO) => {
-    return await sdk.store.productReviews.upsert(data, authHeaders);
-  },
-);
 
 export const memoryStorage = new MemoryFileStorage();
 

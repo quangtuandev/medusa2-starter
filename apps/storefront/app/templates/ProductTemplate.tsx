@@ -12,10 +12,6 @@ import { ProductOptionSelectorSelect } from '@app/components/product/ProductOpti
 import { ProductPrice } from '@app/components/product/ProductPrice';
 import { ProductPriceRange } from '@app/components/product/ProductPriceRange';
 import { ProductReviewSection } from '@app/components/reviews/ProductReviewSection';
-import { ProductReviewStars } from '@app/components/reviews/ProductReviewStars';
-import { Share } from '@app/components/share';
-import { animate } from "animejs"
-
 import { useCart } from '@app/hooks/useCart';
 import { useProductInventory } from '@app/hooks/useProductInventory';
 import { useRegion } from '@app/hooks/useRegion';
@@ -37,42 +33,8 @@ import { Link, useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import Collasape from '@app/components/common/collasape/Collasape';
 
-/**
- * Generates breadcrumbs for a product page
- * @param product - The product to generate breadcrumbs for
- * @returns An array of breadcrumb objects
- */
-const getBreadcrumbs = (product: StoreProduct) => {
-  const breadcrumbs: Breadcrumb[] = [
-    {
-      label: (
-        <span className="flex whitespace-nowrap">
-          <HomeIcon className="inline h-4 w-4" />
-          <span className="sr-only">Home</span>
-        </span>
-      ),
-      url: `/`,
-    },
-    {
-      label: 'All Products',
-      url: '/products',
-    },
-  ];
-
-  if (product.collection) {
-    breadcrumbs.push({
-      label: product.collection.title,
-      url: `/collections/${product.collection.handle}`,
-    });
-  }
-
-  return breadcrumbs;
-};
-
 export interface ProductTemplateProps {
   product: StoreProduct;
-  reviewsCount: number;
-  reviewStats?: StoreProductReviewStats;
 }
 
 /**
@@ -84,7 +46,7 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
   return !!(variant?.manage_inventory && variant?.inventory_quantity! < 1);
 };
 
-export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductTemplateProps) => {
+export const ProductTemplate = ({ product }: ProductTemplateProps) => {
   const [indexGallery, setIndexGallery] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const addToCartFetcher = useFetcher<any>({ key: FetcherKeys.cart.createLineItem });
@@ -425,30 +387,6 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
                 <GridColumn className="flex flex-col md:col-span-6">
                   <div className="h-fit">
                     <div className="px-0 sm:px-6 md:p-10 md:pt-0">
-                      {/* <div>
-                        <header className="flex gap-4 mb-2">
-                          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight">
-                            {product.title}
-                          </h1>
-                        </header>
-                      </div> */}
-
-                      {/* <ProductReviewStars reviewsCount={reviewsCount} reviewStats={reviewStats} /> */}
-
-                      {/* <section aria-labelledby="product-information" className="mt-4">
-                            <h2 id="product-information" className="sr-only">
-                              Product information
-                            </h2>
-
-                            <p className="text-lg text-gray-900 sm:text-xl flex gap-3">
-                              {selectedVariant ? (
-                                <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
-                              ) : (
-                                <ProductPriceRange product={product} currencyCode={currencyCode} />
-                              )}
-                            </p>
-                          </section> */}
-
                       <div className="flex items-center gap-4 py-2">
                         <div className="flex-1">
                           {!soldOut ? (
@@ -588,7 +526,7 @@ export const ProductTemplate = ({ product, reviewsCount, reviewStats }: ProductT
         </RemixFormProvider>
       </section>
       <Container>
-        {reviewsCount > 0 && <ProductReviewSection />}
+        <ProductReviewSection />
       </Container>
     </>
   );
