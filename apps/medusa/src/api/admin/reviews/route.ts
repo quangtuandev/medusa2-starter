@@ -20,7 +20,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       metadata: { count, take, skip } = {},
     } = await query.graph({
       entity: "review",
-      fields: ["id", "product_id", "name", "content", "stars", "created_at", "updated_at"],
+      fields: ["id", "product_id", "name", "content", "status", "stars", "created_at", "updated_at"],
       pagination: {
         order: {
           created_at: "DESC",

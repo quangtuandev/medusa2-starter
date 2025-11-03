@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import React, { useMemo, useState } from "react"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { ChatBubbleLeftRight, CheckCircleSolid, XCircle } from "@medusajs/icons"
 import {
@@ -9,12 +10,12 @@ import {
     Table,
     toast,
     Button,
+    FocusModal,
 } from "@medusajs/ui"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { sdk } from "../../lib/sdk"
-import { ColumnDef, createColumnHelper, PaginationState, useReactTable, getCoreRowModel } from "@tanstack/react-table"
+import { ColumnDef, createColumnHelper, PaginationState, useReactTable, getCoreRowModel, flexRender } from "@tanstack/react-table"
 
 // Define the Review type
 type Review = {
@@ -45,6 +46,8 @@ const ReviewsPage = () => {
         pageIndex: 0,
     })
     const [statusFilter, setStatusFilter] = useState<string>("all")
+    const [selectedReview, setSelectedReview] = useState<Review | null>(null)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
@@ -128,6 +131,7 @@ const ReviewsPage = () => {
     }
 
     const getStatusBadge = (status: Review["status"]) => {
+        console.log(status);
         switch (status) {
             case "approved":
                 return <Badge color="green">Approved</Badge>
@@ -240,7 +244,8 @@ const ReviewsPage = () => {
     })
 
     const handleViewReview = (review: Review) => {
-        navigate(`/app/reviews/${review.id}`)
+        setSelectedReview(review)
+        setIsDialogOpen(true)
     }
 
     const handleDeleteReview = (id: string) => {
@@ -307,7 +312,7 @@ const ReviewsPage = () => {
                                 <tr key={headerGroup.id}>
                                     {headerGroup.headers.map(header => (
                                         <th key={header.id} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {header.isPlaceholder ? null : header.column.columnDef.header as React.ReactNode}
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </th>
                                     ))}
                                 </tr>
@@ -318,7 +323,7 @@ const ReviewsPage = () => {
                                 <tr key={row.id} className="hover:bg-gray-50">
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id} className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                                            {cell.renderValue() as React.ReactNode}
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
                                 </tr>
@@ -357,6 +362,55 @@ const ReviewsPage = () => {
                         </Button>
                     </div>
                 </Container>
+            )}
+
+            {selectedReview && (
+                <FocusModal open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <FocusModal.Content>
+                        <FocusModal.Header>
+                            <FocusModal.Title>Review Details</FocusModal.Title>
+                        </FocusModal.Header>
+                        <FocusModal.Body className="p-6 space-y-4">
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">Product ID</h3>
+                                <p className="text-sm text-gray-500 font-mono">{selectedReview.product_id}</p>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">Reviewer Name</h3>
+                                <p className="text-sm text-gray-600">{selectedReview.name}</p>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">Rating</h3>
+                                <div className="flex items-center gap-2">
+                                    {renderStars(selectedReview.stars)}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">Status</h3>
+                                <div>{getStatusBadge(selectedReview.status)}</div>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">Review Content</h3>
+                                <p className="text-sm text-gray-600 whitespace-pre-wrap">{selectedReview.content}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-xs text-gray-500">
+                                <div>
+                                    <span className="font-semibold">Created:</span> {new Date(selectedReview.created_at).toLocaleString()}
+                                </div>
+                                <div>
+                                    <span className="font-semibold">Updated:</span> {new Date(selectedReview.updated_at).toLocaleString()}
+                                </div>
+                            </div>
+                        </FocusModal.Body>
+                        <FocusModal.Footer>
+                            <FocusModal.Close asChild>
+                                <Button variant="secondary" size="small">
+                                    Close
+                                </Button>
+                            </FocusModal.Close>
+                        </FocusModal.Footer>
+                    </FocusModal.Content>
+                </FocusModal>
             )}
         </Container>
     )
