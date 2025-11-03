@@ -16,7 +16,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const { products } = await fetchProducts(args.request, {
     handle: args.params.productHandle,
-    fields: 'id,title,subtitle,description,handle,is_giftcard,thumbnail,origin_country,metadata,variants,type,collection,options,images,categories',
+    fields: '*categories,*metadata',
   });
 
   if (!products.length) throw redirect('/404');
@@ -39,6 +39,7 @@ export const meta: MetaFunction<ProductPageLoaderData> = getMergedProductMeta;
 
 export default function ProductDetailRoute() {
   const { product } = useLoaderData<ProductPageLoaderData>();
+  console.log(product);
   return (
     <>
       <ProductTemplate
