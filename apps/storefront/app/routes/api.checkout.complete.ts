@@ -83,7 +83,6 @@ export async function action(actionArgs: ActionFunctionArgs) {
   }
 
   const cartResponse = await placeOrder(actionArgs.request);
-  console.log(cartResponse);
   if (cartResponse.type === 'cart' || !cartResponse) {
     return remixData(
       { errors: { root: { message: 'Cart could not be completed. Please try again.' } } },

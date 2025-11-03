@@ -1,18 +1,20 @@
 
 import { Alert } from "@app/components/common/alert";
 import { useCheckout } from "@app/hooks/useCheckout";
-import { Address } from "@libs/types";
 import { expressCheckoutClient } from "@libs/util/checkout/express-checkout-client";
 import { StoreCart } from "@medusajs/types";
 import { PayPalButtons, PayPalScriptProvider, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
+import { CheckoutStep } from "@app/providers/checkout-provider";
+import clsx from "clsx";
 export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
   const navigate = useNavigate();
-  const { paymentProviders } = useCheckout();
+  const { paymentProviders, step } = useCheckout();
   const [errorState, setErrorState] = useState<{ title: string; description: string } | null>(null);
   const [currentCart, setCurrentCart] = useState<StoreCart>(cart);
+  const isActiveStep = step === CheckoutStep.PAYMENT;
 
   const isPaypalAvailable = useMemo(() => {
     return paymentProviders?.some((p) => p.id?.includes("paypal"));
@@ -34,66 +36,29 @@ export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
 
   if (!currentCart || !isPaypalAvailable) return null;
 
-  const amountValue = ((currentCart.total || 0)).toFixed(2);
-
   const styles = {
     borderRadius: 10,
   };
 
+  const handleCreateOrder = async (): Promise<string> => {
+    const [updatedCartRes, updateError] = await expressCheckoutClient.update({
+      cartId: currentCart.id,
+      complete: false,
+    });
+    if (updateError) {
+      setErrorState({ title: "Error updating account details", description: updateError.message });
+      return '';
+    }
+    const updatedCart = updatedCartRes.cart;
+    const paymentSession = updatedCart.payment_collection?.payment_sessions?.[0];
+    return paymentSession?.data?.id as string || '';
+  }
+
   const handleApprove = async (_data: any, actions: any) => {
     try {
       if (!actions?.order) return;
-      const capture = await actions.order.capture();
-
-      const payer = capture?.payer;
-      const purchaseUnit = capture?.purchase_units?.[0];
-      const shipping = purchaseUnit?.shipping;
-
-      const fullName = shipping?.name?.full_name || `${payer?.name?.given_name ?? ""} ${payer?.name?.surname ?? ""}`;
-      const nameSplit = fullName.trim().split(" ");
-
-      const shippingAddress: Address = {
-        firstName: nameSplit[0] ?? "",
-        lastName: nameSplit.slice(1).join(" ") ?? "",
-        address1: shipping?.address?.address_line_1 ?? "",
-        address2: shipping?.address?.address_line_2 ?? "",
-        city: shipping?.address?.admin_area_2.toLowerCase() ?? "",
-        province: shipping?.address?.admin_area_1.toLowerCase() ?? "",
-        postalCode: shipping?.address?.postal_code ?? "",
-        countryCode: (shipping?.address?.country_code ?? "").toLowerCase(),
-        phone: payer?.phone?.phone_number?.national_number ?? "",
-      };
-
-      const billingAddress: Address = {
-        firstName: payer?.name?.given_name ?? nameSplit[0] ?? "",
-        lastName: payer?.name?.surname ?? nameSplit.slice(1).join(" ") ?? "",
-        address1: shipping?.address?.address_line_1 ?? "",
-        address2: shipping?.address?.address_line_2 ?? "",
-        city: shipping?.address?.admin_area_2.toLowerCase() ?? "",
-        province: shipping?.address?.admin_area_1.toLowerCase() ?? "",
-        postalCode: shipping?.address?.postal_code ?? "",
-        countryCode: (shipping?.address?.country_code ?? "").toLowerCase(),
-        phone: payer?.phone?.phone_number?.national_number ?? "",
-        company: fullName,
-      };
-
-      const [updatedCartRes, updateError] = await expressCheckoutClient.update({
-        cartId: currentCart.id,
-        email: payer?.email_address ?? currentCart.email ?? undefined,
-        shippingAddress,
-        billingAddress,
-        complete: false,
-      });
-
-      if (updateError) {
-        setErrorState({ title: "Error updating account details", description: updateError.message });
-        return;
-      }
-
-      const updatedCart = updatedCartRes.cart;
-
       const [checkoutRes, checkoutError] = await expressCheckoutClient.update({
-        cartId: updatedCart.id,
+        cartId: currentCart.id,
         complete: true,
       });
 
@@ -116,8 +81,7 @@ export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
   };
 
   return (
-    <div className="App">
-      <h2 className="text-2xl font-bold text-gray-900">Express Checkout</h2>
+    <div className={clsx("App", !isActiveStep && "hidden")}>
       {errorState ? (
         <Alert type="error" title={errorState.title} className="mt-4">
           {errorState.description}
@@ -127,19 +91,7 @@ export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
         <PayPalScriptProvider options={initialOptions}>
           <PayPalButtons
             style={styles}
-            createOrder={(_, actions) => {
-              return actions.order.create({
-                intent: "CAPTURE",
-                purchase_units: [
-                  {
-                    amount: {
-                      currency_code: (currentCart.currency_code || "USD").toUpperCase(),
-                      value: amountValue,
-                    },
-                  },
-                ],
-              });
-            }}
+            createOrder={handleCreateOrder}
             onApprove={handleApprove}
             onError={(err) => {
               const message = err instanceof Error ? err.message : "PayPal error";

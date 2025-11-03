@@ -100,7 +100,7 @@ export const ensureStripePaymentSession = async (request: Request, cart: StoreCa
 
   if (!activeSession) {
     await initiatePaymentSession(request, cart, {
-      provider_id: 'pp_stripe_stripe',
+      provider_id: 'pp_paypal_paypal',
     });
 
     return (await retrieveCart(request))!;
