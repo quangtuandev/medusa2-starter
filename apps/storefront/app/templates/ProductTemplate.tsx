@@ -47,7 +47,6 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
 };
 
 export const ProductTemplate = ({ product }: ProductTemplateProps) => {
-  const [indexGallery, setIndexGallery] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const addToCartFetcher = useFetcher<any>({ key: FetcherKeys.cart.createLineItem });
   const { toggleCartDrawer } = useCart();
@@ -220,12 +219,8 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
     form.setValue('options', newOptions);
   };
 
-  useEffect(() => {
-    if (selectedVariant) {
-      console.log('selectedVariant', selectedVariant);
-      const index = selectedVariant.title === 'small' ? 1 : 0;
-      setIndexGallery(index);
-    }
+  const variantImage = useMemo(() => {
+    return selectedVariant?.thumbnail || product.thumbnail;
   }, [selectedVariant]);
 
   const handleOptionChangeByRadio = (name: string, value: string) => {
@@ -342,7 +337,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                   <h2 className="xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
                     {customizationTitles[0]}
                   </h2>
-                  <ProductImageGallery key={product.id} product={product} indexGallery={indexGallery} />
+                  <ProductImageGallery key={product.id} product={product} variantImage={variantImage} />
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
                       {customizationTitles[1] && (

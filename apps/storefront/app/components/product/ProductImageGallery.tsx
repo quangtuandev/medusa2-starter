@@ -64,11 +64,11 @@ const GalleryImagesRow: FC<{ galleryImages: ProductGalleryImage[] }> = memo(({ g
   );
 });
 
-export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, indexGallery }) => {
+export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, variantImage }) => {
   const { images: productImages = [], thumbnail } = product;
   const images = productImages ?? [];
   const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const [selectedIndex, setSelectedIndex] = useState<number>(indexGallery || 0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const { scrollableDivRef, showStartArrow, showEndArrow, handleArrowClick } = useScrollArrows({
     buffer: 50,
@@ -98,8 +98,11 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, ind
   };
 
   useEffect(() => {
-    setSelectedIndex(indexGallery || 0);
-  }, [indexGallery]);
+    const index = gallery.findIndex((image) => image.url === variantImage);
+    if (index !== -1) {
+      setSelectedIndex(index);
+    }
+  }, [variantImage]);
 
   return (
     <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6" selectedIndex={selectedIndex} onChange={setSelectedIndex}>
