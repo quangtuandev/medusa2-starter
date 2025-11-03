@@ -1,1 +1,0 @@
-import{j as o}from"./chunk-OIYGIGL5-Dqha4PIa.js";import{c as m}from"./clsx-B-dksMZM.js";const i=({className:s,...a})=>o.jsx("div",{className:m("grid grid-cols-12 gap-3 sm:gap-4 md:gap-6 lg:gap-8 xl:gap-10",s),...a}),c=({className:s,...a})=>o.jsx("div",{className:m("col-span-12",s),...a});export{i as G,c as a};
