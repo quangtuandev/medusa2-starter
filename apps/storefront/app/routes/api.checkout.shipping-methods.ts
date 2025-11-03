@@ -54,7 +54,7 @@ export async function action(actionArgs: ActionFunctionArgs) {
   const updatedCart = (await updateCart(actionArgs.request, {})).cart;
 
   await initiatePaymentSession(actionArgs.request, updatedCart, {
-    provider_id: 'pp_stripe_stripe',
+    provider_id: 'pp_paypal_paypal',
   });
 
   const cart = (await retrieveCart(actionArgs.request)) as StoreCart;
