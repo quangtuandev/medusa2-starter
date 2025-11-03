@@ -451,6 +451,12 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                           </div>
                         )}
 
+                        {(product.metadata?.notes as string) && (
+                          <div className="mt-4">
+                            <div dangerouslySetInnerHTML={{ __html: product.metadata?.notes as string }} />
+                          </div>
+                        )}
+
                         {/* {product.categories && product.categories.length > 0 && (
                               <nav aria-label="Categories" className="mt-4">
                                 <h3 className="mb-2">Categories</h3>
@@ -493,25 +499,32 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       <hr className='col-span-8 border-t-[1px] border-primary' />
                     </div>
                     <div className="container mx-auto my-12 grid grid-cols-12 px-8 p-4 gap-[20px]">
-                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="INGREDIENTS" initiallyOpen={false}>
-                        <div>
-                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-                        </div>
-                      </Collasape>
-                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="PRECAUTIONS OF USE" initiallyOpen={false}>
-                        <div>
-                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-                        </div>
-                      </Collasape>
-                      <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="APPLICATION TIPS" initiallyOpen={false}>
-                        <div>
-                          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.</p>
-                        </div>
-                      </Collasape>
+                      {product.metadata?.ingredients as string && (
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="INGREDIENTS" initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.ingredients as string }} />
+                        </Collasape>
+                      )}
+
+                      {product.metadata?.precautions_of_use as string && (
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="PRECAUTIONS OF USE" initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.precautions_of_use as string }} />
+                        </Collasape>
+                      )}
+
+                      {product.metadata?.application_tips as string && (
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="APPLICATION TIPS" initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.application_tips as string }} />
+                        </Collasape>
+                      )}
                     </div>
-                    <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
-                      <hr className='col-span-8 border-t-[1px] border-primary' />
-                    </div>
+                    {!!(product.metadata?.ingredients as string)
+                      || !!(product.metadata?.precautions_of_use as string)
+                      || !!(product.metadata?.application_tips as string)
+                      && (
+                        <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
+                          <hr className='col-span-8 border-t-[1px] border-primary' />
+                        </div>
+                      )}
                   </div>
                 </GridColumn>
               </Grid>

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "esnext",
     "jsx": "react-jsx",
-    "types": ["react", "react-dom"]
+    "types": ["react", "react-dom"],
+    "allowImportingTsExtensions": true
   },
   "include": ["."],
   "exclude": ["**/*.spec.js"]

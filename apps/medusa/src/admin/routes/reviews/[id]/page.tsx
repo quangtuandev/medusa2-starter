@@ -9,7 +9,6 @@ import {
     toast,
     Button,
     Label,
-    Textarea,
     Input,
     Select,
 } from "@medusajs/ui"
@@ -17,6 +16,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { sdk } from "../../../lib/sdk"
+import QuillEditor from "../../../components/QuillEditor"
 
 // Define the Review type
 type Review = {
@@ -304,14 +304,15 @@ const ReviewDetailPage = () => {
                         </div>
 
                         <div>
-                            <Label htmlFor="content">Review Content</Label>
-                            <Textarea
+                            <QuillEditor
                                 id="content"
+                                label="Review Content"
                                 value={formData.content}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, content: e.target.value })
+                                onChange={(value: string) =>
+                                    setFormData({ ...formData, content: value })
                                 }
-                                rows={6}
+                                placeholder="Write the review content here..."
+                                height="250px"
                             />
                         </div>
 
