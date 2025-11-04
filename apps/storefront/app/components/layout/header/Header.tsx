@@ -5,11 +5,12 @@ import { URLAwareNavLink } from "@app/components/common/link";
 import { useCart } from "@app/hooks/useCart";
 import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { useSiteDetails } from "@app/hooks/useSiteDetails";
-import { Bars3Icon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { type FC, useState } from "react";
 import { HeaderSideNav } from "./HeaderSideNav";
 import { useActiveSection } from "./useActiveSection";
+import { ProductSearch } from "@app/components/product/Search";
 
 export type HeaderProps = {};
 
@@ -20,7 +21,7 @@ export const Header: FC<HeaderProps> = () => {
   const { activeSection } = useActiveSection(headerNavigationItems);
   const rootLoader = useRootLoaderData();
   const hasProducts = rootLoader?.hasPublishedProducts;
-
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
   if (!headerNavigationItems) return <>Loading...</>;
 
   return (
@@ -146,12 +147,21 @@ export const Header: FC<HeaderProps> = () => {
                       )}
                     </div>
                   </div>
+                  <div className="flex items-center justify-end">
+                    <IconButton
+                      aria-label="search"
+                      onClick={() => setSearchOpen(true)}
+                      className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2 w-[64px]"
+                      icon={MagnifyingGlassIcon}
+                    />
+                  </div>
                 </div>
               </div>
             </Container>
           </div>
         </div>
       </nav>
+      <ProductSearch open={searchOpen} setOpen={setSearchOpen} />
       <HeaderSideNav
         activeSection={activeSection}
         open={sideNavOpen}
