@@ -141,7 +141,7 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
     return (
         <>
             <motion.div
-                className={clsx("z-1", open ? "fixed inset-0 bg-gray-300 bg-opacity-50 backdrop-blur-sm transition-opacity" : "hidden")}
+                className={clsx("z-1", open ? "fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" : "hidden")}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: open ? 0.5 : 0 }}
                 transition={{ duration: 0.3 }}

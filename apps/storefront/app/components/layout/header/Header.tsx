@@ -5,12 +5,13 @@ import { URLAwareNavLink } from "@app/components/common/link";
 import { useCart } from "@app/hooks/useCart";
 import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { useSiteDetails } from "@app/hooks/useSiteDetails";
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { type FC, useState } from "react";
 import { HeaderSideNav } from "./HeaderSideNav";
 import { useActiveSection } from "./useActiveSection";
 import { ProductSearch } from "@app/components/product/Search";
+import { CollectionMenuList } from "@app/components/collection/collection-menu-list";
 
 export type HeaderProps = {};
 
@@ -22,7 +23,12 @@ export const Header: FC<HeaderProps> = () => {
   const rootLoader = useRootLoaderData();
   const hasProducts = rootLoader?.hasPublishedProducts;
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const [submenuOpen, setSubmenuOpen] = useState<boolean>(false);
   if (!headerNavigationItems) return <>Loading...</>;
+
+  const openSubmenu = () => {
+    setSubmenuOpen(true);
+  };
 
   return (
     <header className="sticky top-0 z-40 mkt-header bg-white mt-8">
@@ -85,19 +91,32 @@ export const Header: FC<HeaderProps> = () => {
                       {headerNavigationItems
                         .slice(0, 6)
                         .map(({ id, new_tab, ...navItemProps }, index) => (
-                          <URLAwareNavLink
-                            key={id}
-                            {...navItemProps}
-                            newTab={new_tab}
-                            className={({ isActive }) =>
-                              clsx(
-                                "my-4 flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
-                              )
-                            }
-                            prefetch="viewport"
-                          >
-                            {navItemProps.label}
-                          </URLAwareNavLink>
+                          <>
+                            <URLAwareNavLink
+                              key={id}
+                              {...navItemProps}
+                              newTab={new_tab}
+                              className={({ isActive }) =>
+                                clsx(
+                                  "my-4 flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
+                                )
+                              }
+                              prefetch="viewport"
+                            >
+                              {navItemProps.label}
+                              {index == 0 && (
+                                <IconButton
+                                  aria-label="open navigation menu"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    openSubmenu();
+                                  }}
+                                  className="hover:!bg-primary-50 focus:!bg-primary-50 text-white"
+                                  icon={ChevronDownIcon}
+                                />
+                              )}
+                            </URLAwareNavLink>
+                          </>
                         ))}
                     </>
                   )}
@@ -167,6 +186,7 @@ export const Header: FC<HeaderProps> = () => {
         open={sideNavOpen}
         setOpen={setSideNavOpen}
       />
+      <CollectionMenuList open={submenuOpen} setOpen={setSubmenuOpen} />
     </header>
   );
 };

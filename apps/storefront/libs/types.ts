@@ -14,6 +14,7 @@ export interface NavigationItem {
   new_tab: boolean;
   location: NavigationItemLocation;
   sort_order: number;
+  children?: NavigationItem[];
 }
 
 export type NavigationCollection = NavigationItem[];
