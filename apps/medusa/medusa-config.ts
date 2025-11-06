@@ -6,6 +6,14 @@ const REDIS_URL = process.env.REDIS_URL;
 const STRIPE_API_KEY = process.env.STRIPE_API_KEY;
 const IS_TEST = process.env.NODE_ENV === 'test';
 
+// Bank Transfer Configuration
+const BANK_NAME = process.env.BANK_NAME || 'VietComBank';
+const BANK_ACCOUNT_HOLDER = process.env.BANK_ACCOUNT_HOLDER || 'Company Name';
+const BANK_ACCOUNT_NUMBER = process.env.BANK_ACCOUNT_NUMBER || '1234567890';
+const BANK_CODE = process.env.BANK_CODE || 'VCB';
+const BANK_SWIFT_CODE = process.env.BANK_SWIFT_CODE;
+const BANK_QR_CODE_URL = process.env.BANK_QR_CODE_URL;
+
 const cacheModule = IS_TEST
   ? { resolve: '@medusajs/medusa/cache-inmemory' }
   : {
@@ -109,6 +117,18 @@ module.exports = defineConfig({
               apiKey: STRIPE_API_KEY,
             },
           },
+          // {
+          //   resolve: './src/modules/payment/providers/bank-transfer',
+          //   id: 'bank_transfer',
+          //   options: {
+          //     bankName: BANK_NAME,
+          //     accountHolder: BANK_ACCOUNT_HOLDER,
+          //     accountNumber: BANK_ACCOUNT_NUMBER,
+          //     bankCode: BANK_CODE,
+          //     swiftCode: BANK_SWIFT_CODE,
+          //     qrCodeUrl: BANK_QR_CODE_URL,
+          //   },
+          // },
         ],
       },
     },

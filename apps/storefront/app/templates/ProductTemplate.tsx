@@ -317,6 +317,17 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
       setCustomizationTitles([product.title]);
     }
   }, [product.title]);
+  const fetcher = useFetcher({ key: FetcherKeys.cart.updateLineItem });
+
+  const handleChange = (quantity: number) => {
+    fetcher.submit(
+      {
+        lineItemId: product.id,
+        quantity: quantity,
+      },
+      { method: 'post', action: '/api/cart/line-items/update' },
+    );
+  };
 
   return (
     <>
@@ -356,7 +367,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-6">
-                      {!soldOut && <QuantitySelector variant={selectedVariant} />}
+                      {!soldOut && <QuantitySelector variant={selectedVariant} onChange={handleChange} />}
                       <div className="flex-1">
                         {!soldOut ? (
                           <SubmitButton

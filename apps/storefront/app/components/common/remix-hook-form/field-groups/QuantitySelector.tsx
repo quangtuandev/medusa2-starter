@@ -13,7 +13,7 @@ interface QuantitySelectorProps {
   onChange?: (quantity: number) => void;
 }
 
-export const QuantitySelector: FC<QuantitySelectorProps> = ({ className, variant, maxInventory = 10, onChange }) => {
+export const QuantitySelector: FC<QuantitySelectorProps> = ({ className, variant, maxInventory = 100, onChange }) => {
   const formContext = useRemixFormContext();
 
   if (!formContext) {
@@ -26,22 +26,22 @@ export const QuantitySelector: FC<QuantitySelectorProps> = ({ className, variant
   const variantInventory =
     variant?.manage_inventory && !variant.allow_backorder ? variant.inventory_quantity || 0 : maxInventory;
 
-  const handleDecrement = (currentValue: number, onChange: (value: number) => void) => {
+  const handleDecrement = (currentValue: number, fieldOnChange: (value: number) => void) => {
     const newValue = Math.max(1, currentValue - 1);
-    onChange(newValue);
+    fieldOnChange(newValue);
     onChange?.(newValue);
   };
 
-  const handleIncrement = (currentValue: number, onChange: (value: number) => void) => {
-    const newValue = Math.min(variantInventory, currentValue + 1);
-    onChange(newValue);
+  const handleIncrement = (currentValue: number, fieldOnChange: (value: number) => void) => {
+    const newValue = Math.min(variantInventory, parseInt(currentValue.toString()) + 1);
+    fieldOnChange(newValue);
     onChange?.(newValue);
   };
 
-  const handleInputChange = (value: string, onChange: (value: number) => void) => {
+  const handleInputChange = (value: string, fieldOnChange: (value: number) => void) => {
     const numValue = parseInt(value, 10) || 1;
     const clampedValue = Math.max(1, Math.min(variantInventory, numValue));
-    onChange(clampedValue);
+    fieldOnChange(clampedValue);
     onChange?.(clampedValue);
   };
 

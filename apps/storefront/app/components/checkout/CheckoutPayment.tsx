@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import { FC, useMemo } from 'react';
 import { ManualPayment } from './ManualPayment/ManualPayment';
 import { StripePayment } from './StripePayment';
+import { BankTransferPayment } from './BankTransferPayment/BankTransferPayment';
 
 export const CheckoutPayment: FC = () => {
   const { env } = useEnv();
@@ -26,12 +27,23 @@ export const CheckoutPayment: FC = () => {
     [paymentProviders],
   );
 
+  const hasBankTransferPaymentProvider = useMemo(
+    () => !!paymentProviders?.some((p) => p.id.includes('pp_bank_transfer')),
+    [paymentProviders],
+  );
+
   const paymentOptions = [
     {
       id: 'pp_stripe_stripe',
       label: 'Credit Card',
       component: StripePayment,
       isActive: hasStripePaymentProvider,
+    },
+    {
+      id: 'pp_bank_transfer',
+      label: 'Bank Transfer',
+      component: BankTransferPayment,
+      isActive: hasBankTransferPaymentProvider,
     },
     {
       id: 'pp_system_default',

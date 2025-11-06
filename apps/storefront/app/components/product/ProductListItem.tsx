@@ -67,7 +67,7 @@ export const ProductListItem: FC<ProductListItemProps> = ({
               className={clsx(
                 "text-sm font-light  border border-[#716E6E] rounded-full px-2 py-1 hover:text-[#716E6E] hover:border-black text-[10px] font-display leading-none",
                 {
-                  "!text-black !border-black": selectedSize === value.value,
+                  "!text-black !border-black bg-highlight": selectedSize === value.value,
                 }
               )}
               onClick={(e) => {

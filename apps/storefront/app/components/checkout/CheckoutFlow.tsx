@@ -44,7 +44,7 @@ export const CheckoutFlow: FC = () => {
         <PaypalExpressCheckout cart={cart} />
 
         {/* <PaypalCheckoutSecond cart={cart} /> */}
-        {/* <CheckoutPayment /> */}
+        <CheckoutPayment />
       </div>
     </>
   );

@@ -110,8 +110,8 @@ const CartDrawerFooter: FC<{
         {cart
           ? formatCartSubtotal(cart)
           : formatPrice(0, {
-              currency: currencyCode,
-            })}
+            currency: currencyCode,
+          })}
       </p>
     </div>
     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
@@ -181,6 +181,7 @@ export const CartDrawer: FC = () => {
 
   const handleClose = useCallback(() => {
     toggleCartDrawer(false);
+    navigate('/collections');
   }, [toggleCartDrawer]);
 
   return (
