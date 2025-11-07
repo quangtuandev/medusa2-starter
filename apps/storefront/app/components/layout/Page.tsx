@@ -46,7 +46,7 @@ export const Page: FC<PageProps> = ({ className, children }) => {
           <div className="fixed bottom-6 right-6 z-50">
             <button onClick={() => toggleCartDrawer(true)} className="transition-all duration-300 transform hover:scale-110 flex items-center justify-center">
               <span>
-                <img src="/assets/images/cart.svg" alt="Chat" className="w-24 h-24" />
+                <img src="/assets/images/cart.svg" alt="Chat" className="w-32 h-32" />
               </span>
             </button>
           </div>

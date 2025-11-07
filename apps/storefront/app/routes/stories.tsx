@@ -4,6 +4,9 @@ import clsx from "clsx";
 import { motion, useScroll, useTransform } from "motion/react"
 import { useState } from "react";
 import { MainMenu } from "@app/components/common/menu/Main";
+import { IconButton } from "yet-another-react-lightbox";
+import { ArrowRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { href, Link } from "react-router-dom";
 
 export default function Stories() {
   const menu = [
@@ -90,9 +93,18 @@ export default function Stories() {
       element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
     }
   };
+
+  const handleBackClick = () => {
+    const element = document.getElementById(`stories-container`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+    }
+  };
+
   return (
     <motion.div
-      className="min-h-screen aspect-[1071/256] flex"
+      id="stories-container"
+      className="min-h-screen aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       style={{ overflow: "hidden" }}
       initial={{ x: 0 }}
       animate={{ x: 0 }}
@@ -117,7 +129,7 @@ export default function Stories() {
       </div>
 
       <div className="w-[85%] bg-white">
-        <div className="w-full h-full bg-cover bg-center overflow-hidden">
+        <div className="w-full h-full bg-cover bg-center overflow-hidden relative">
           <Grid className="h-[100vh] bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center">
             {items.map((item) => (
               <GridColumn id={item.id} key={item.alt} className={clsx('col-span-4 flex relative', item.classNameWrapper)}>
@@ -134,18 +146,26 @@ export default function Stories() {
                     )}>{item.text}</p>
                   </div>
                 </div>
-
-                {/* <img src={item.image} alt={item.alt} className={clsx('group', item.className)} />
-                <div className={clsx("w-full absolute group-hover:opacity-100 opacity-0 transition-all duration-300 ease-in-out", item.classNameTextWrapper)}>
-                  <p className={clsx('m-6 text-center z-10 absolute bottom-0 bg-center bg-repeat border border-[#000000] rounded-xl shadow-[0px_4px_10px_0px_#00000040] p-5', item.classNameText, `bg-${item.id}`)}>{item.text}</p>
-                </div> */}
-
                 {item.items.map((icon) => (
-                  <img src={icon.src} alt={item.alt} className={clsx('absolute', icon.className)} />
+                  <motion.img
+                    animate={{
+                      y: [0, 50, 0],
+                    }}
+                    transition={{
+                      duration: Math.random() * 2 + 1,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    src={icon.src} alt={item.alt} className={clsx('absolute', icon.className)} />
                 ))}
               </GridColumn>
             ))}
           </Grid>
+          <div className="absolute bottom-[12px] right-[12px]">
+            <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center" onClick={() => handleBackClick()}>
+              <ChevronLeftIcon color="white" className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </div>
     </motion.div>

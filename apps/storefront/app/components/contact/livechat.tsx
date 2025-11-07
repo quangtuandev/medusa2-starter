@@ -40,7 +40,7 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
         <div className={`fixed bottom-6 left-6 z-50 ${className}`}>
             {/* Social Icons Menu */}
             {isOpen && (
-                <div className="absolute bottom-20 right-0 flex flex-col gap-3 mb-2 z-50">
+                <div className="absolute bottom-24 right-0 flex flex-col gap-3 mb-2 z-50">
                     {/* Facebook Icon */}
                     {mergedConfig.facebook && (
                         <button
@@ -76,7 +76,7 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
                 title="Open chat"
             >
                 <span>
-                    <img src="/assets/images/livechat.gif" alt="Chat" className="w-12 h-12" />
+                    <img src="/assets/images/livechat.gif" alt="Chat" className="w-20 h-20" />
                 </span>
             </button>
 
