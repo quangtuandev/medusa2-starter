@@ -1,1 +1,0 @@
-import{j as m}from"./chunk-OIYGIGL5-Dw2D8vFu.js";import{c as r}from"./clsx-B-dksMZM.js";const t=({className:x,...s})=>m.jsx("div",{className:r("mx-auto w-full max-w-screen-2xl px-4 sm:px-6 md:px-8 xl:px-[86px]",x),...s});export{t as C};

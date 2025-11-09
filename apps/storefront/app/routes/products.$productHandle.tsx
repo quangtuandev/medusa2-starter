@@ -39,7 +39,6 @@ export const meta: MetaFunction<ProductPageLoaderData> = getMergedProductMeta;
 
 export default function ProductDetailRoute() {
   const { product } = useLoaderData<ProductPageLoaderData>();
-  console.log(product);
   return (
     <>
       <ProductTemplate
