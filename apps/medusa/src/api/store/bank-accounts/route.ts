@@ -22,8 +22,12 @@ export const GET = async (
             is_active: true,
             deleted_at: null,
         },
-        order: { display_order: "ASC" },
-        ...req.queryConfig,
+        pagination: {
+            order: { display_order: "ASC" },
+            take: 10,
+            skip: 0,
+            ...req.queryConfig,
+        },
     })
 
     res.json({

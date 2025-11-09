@@ -11,7 +11,7 @@ export const ManualPayment: FC<ManualPaymentProps> = (props) => (
   <CompleteCheckoutForm
     providerId="pp_system_default"
     id="TestPaymentForm"
-    submitMessage="Checkout using Test Payment"
+    submitMessage="Complete Order"
     className="mt-4"
     {...props}
   />
