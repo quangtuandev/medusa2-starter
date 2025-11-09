@@ -10,9 +10,10 @@ export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
   isTransitioning?: boolean;
   classNameImage?: string;
   isRemoveStyleDefault?: boolean;
+  forcedZoom?: number;
 }
 
-export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, ...props }) => {
+export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, forcedZoom, ...props }) => {
   const thumbnailImage = (product.images && product.images[0] && product.images[0].url) || product.thumbnail;
   const hoverImage = product.images && product.images[1] && product.images[1].url;
 
@@ -28,7 +29,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       }}
       {...props}
     >
-      <MorphingShape {...randomAssetMorphingShape(product.subtitle)} />
+      <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
       {thumbnailImage ? (
         <Image
           loading="lazy"
@@ -36,6 +37,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
           alt={product.title}
           className={clsx('h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
             'group-hover/product-card:opacity-75': !hoverImage,
+            'relative top-[-200px]': isRemoveStyleDefault,
           }, classNameImage,)}
         />
       ) : (

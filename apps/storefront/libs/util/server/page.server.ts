@@ -13,7 +13,7 @@ export const getProductListData = async (request: Request) => {
   const { products } = await fetchProducts(request, {
     ...productsQuery,
     region_id: region.id,
-    fields: 'id,title,handle,thumbnail,variants.*,variants.prices.*,options.*,options.values.*',
+    fields: 'id,title,handle,thumbnail,subtitle,variants.*,variants.prices.*,variants.options.*,options.*,options.values.*',
   });
   const collectionTabs = new Map<string, StoreCollection>();
   const categoryTabs = new Map<string, StoreProductCategory>();

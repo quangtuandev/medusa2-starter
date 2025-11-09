@@ -1,6 +1,7 @@
 import { useRegion } from "@app/hooks/useRegion";
 import {
   getFilteredOptionValues,
+  getVariantFromSelectedOptions,
   selectVariantFromMatrixBySelectedOptions,
   selectVariantMatrix,
 } from "@libs/util/products";
@@ -31,6 +32,7 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
 
     if (firstVariant && firstVariant.options && firstVariant.options.length > 0) {
       // Create options object from the first variant
+      // This ensures we get the actual option values from a real variant
       const options = firstVariant.options.reduce(
         (acc, option) => {
           if (option.option_id && option.value) {
@@ -41,8 +43,26 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
         {} as Record<string, string>,
       );
 
-      // Debug log
+      // Verify that we have values for all product options
+      // This is a safety check to ensure the variant has all required options
+      if (product.options && product.options.length > 0) {
+        const missingOptions = product.options.filter(
+          (opt) => opt.id && !options[opt.id]
+        );
+
+        if (missingOptions.length > 0) {
+          console.log('⚠️ First variant is missing some options:', missingOptions.map(opt => opt.id));
+          // Fill in missing options with first available value
+          missingOptions.forEach((opt) => {
+            if (opt.id && opt.values && opt.values.length > 0) {
+              options[opt.id] = opt.values[0].value;
+            }
+          });
+        }
+      }
+
       console.log('✅ defaultOptions from variant:', options);
+      console.log('✅ Product options:', product.options?.map(opt => ({ id: opt.id, title: opt.title })));
       return options;
     }
 
@@ -91,37 +111,82 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
 
   const variantMatrix = useMemo(() => selectVariantMatrix(product), [product]);
 
+  // selectedOptions is used for display/debugging only
+  // The actual variant selection uses controlledOptions directly
   const selectedOptions = useMemo(() => {
     if (!product.options || product.options.length === 0) {
       return [];
     }
-    // Map options and filter out undefined values, but keep the array length consistent
-    return product.options.map(({ id }) => controlledOptions[id] || '');
+    // Map options to their selected values in the correct order
+    // This array is used to build the lookup key for the variant matrix
+    return product.options.map(({ id }) => controlledOptions[id]).filter((opt): opt is string => Boolean(opt));
   }, [product, controlledOptions]);
 
   const selectedVariant = useMemo(() => {
     // If product has no options, return first variant
     if (!product.options || product.options.length === 0) {
+      console.log('✅ No options, using first variant');
       return product.variants?.[0];
     }
 
-    // Check if all options are selected (no empty strings)
-    const allSelected = selectedOptions.every((opt) => opt && opt !== '');
-    if (!allSelected) {
-      console.log('⚠️ Not all options selected:', selectedOptions);
+    // Check if we have all required options selected
+    // selectedOptions should have the same length as product.options
+    const allOptionsSelected = product.options.every((option) => {
+      if (!option.id) return false;
+      const value = controlledOptions[option.id];
+      return value && value !== '';
+    });
+
+    if (!allOptionsSelected) {
+      console.log('⚠️ Not all options selected. controlledOptions:', controlledOptions);
+      console.log('⚠️ Product options:', product.options.map(opt => ({ id: opt.id, title: opt.title })));
+      return undefined;
+    }
+
+    // Build selectedOptions array in the correct order (matching product.options order)
+    const orderedSelectedOptions = product.options
+      .map(({ id }) => controlledOptions[id])
+      .filter((opt): opt is string => Boolean(opt));
+
+    // Check if we have the right number of selected options
+    if (orderedSelectedOptions.length !== product.options.length) {
+      console.log('⚠️ Selected options count mismatch:', {
+        selected: orderedSelectedOptions.length,
+        required: product.options.length,
+        options: orderedSelectedOptions,
+      });
       return undefined;
     }
 
     // Debug: log the serialized key we're looking for
-    const serializedKey = selectedOptions.join('|');
+    const serializedKey = orderedSelectedOptions.join('|');
     console.log('🔍 Looking for variant with key:', serializedKey);
     console.log('🔍 Available keys in matrix:', Object.keys(variantMatrix));
 
-    // Otherwise, find variant based on selected options
-    const variant = selectVariantFromMatrixBySelectedOptions(variantMatrix, selectedOptions);
-    console.log('🎯 Found variant:', variant?.id || 'NOT FOUND');
+    // Find variant based on selected options using matrix first (faster)
+    let variant = selectVariantFromMatrixBySelectedOptions(variantMatrix, orderedSelectedOptions);
+
+    // Fallback: if not found in matrix, try direct lookup
+    if (!variant) {
+      console.log('⚠️ Variant not found in matrix. Trying direct lookup...');
+      console.log('⚠️ Matrix keys:', Object.keys(variantMatrix));
+      console.log('⚠️ Looking for:', serializedKey);
+      console.log('⚠️ controlledOptions:', controlledOptions);
+
+      // Try direct lookup using getVariantFromSelectedOptions
+      variant = getVariantFromSelectedOptions(product, controlledOptions);
+      console.log('variant', variant, product, controlledOptions);
+
+      if (variant) {
+        console.log('✅ Found variant via direct lookup:', variant.id);
+      } else {
+        console.log('❌ Variant not found via direct lookup either');
+      }
+    } else {
+      console.log('✅ Found variant in matrix:', variant.id);
+    }
     return variant;
-  }, [variantMatrix, selectedOptions, product]);
+  }, [variantMatrix, controlledOptions, product]);
 
   /**
    * Updates controlled options based on a changed option and resets subsequent options
@@ -227,7 +292,7 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
 
     // If product has options, check if all are selected and variant exists
     const result = allOptionsSelected && selectedVariant !== undefined;
-    console.log('Result:', result, '(allOptionsSelected:', allOptionsSelected, ', selectedVariant:', selectedVariant !== undefined, ')');
+    console.log('Result:', result, '(allOptionsSelected:', allOptionsSelected, ', selectedVariant:', selectedVariant !== undefined, ')', selectedVariant);
     return result;
   }, [product.options, product.variants, allOptionsSelected, selectedVariant, controlledOptions, selectedOptions, variantMatrix]);
 
@@ -240,66 +305,70 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
         isRemoveStyleDefault={true}
         isTransitioning={isTransitioning}
         product={product}
+        forcedZoom={0.25}
         className="!aspect-square !w-[200px] !h-[200px]"
         classNameImage="!w-[200px] !h-[200px] !object-cover"
       />
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4 justify-center">
         <p className="font-medium">{product.title}</p>
+        <div className="flex gap-2">
 
-        {selectedVariant ? (
-          <ProductPrice
-            product={product}
-            variant={selectedVariant}
-            currencyCode={currencyCode}
-          />
-        ) : (
-          <ProductPrice product={product} currencyCode={currencyCode} />
-        )}
+          {selectedVariant ? (
+            <ProductPrice
+              product={product}
+              variant={selectedVariant}
+              currencyCode={currencyCode}
+            />
+          ) : (
+            <ProductPrice product={product} currencyCode={currencyCode} />
+          )}
 
-        {/* Render all product options */}
-        {productSelectOptions && productSelectOptions.length > 0 && (
-          <div className="flex flex-col gap-2">
-            {productSelectOptions.map((option) => {
-              const filteredValues = option.values || [];
+          {/* Render all product options */}
+          {productSelectOptions && productSelectOptions.length > 0 && (
+            <div className="flex flex-col gap-2">
+              {productSelectOptions.map((option) => {
+                const filteredValues = option.values || [];
 
-              if (filteredValues.length === 0) return null;
+                if (filteredValues.length === 0) return null;
 
-              return (
-                <div key={option.id} className="flex flex-col gap-1">
-                  <span className="text-xs font-medium text-gray-600">{option.title}</span>
-                  <div className="flex flex-wrap gap-2">
-                    {filteredValues.map((value) => {
-                      const isSelected = controlledOptions[option.id] === value.value;
+                return (
+                  <div key={option.id} className="flex flex-col gap-1">
+                    {/* <span className="text-xs font-medium text-gray-600">{option.title}</span> */}
+                    <div className="flex flex-wrap gap-2">
+                      {filteredValues.map((value) => {
+                        const isSelected = controlledOptions[option.id] === value.value;
 
-                      return (
-                        <button
-                          key={value.id}
-                          type="button"
-                          onClick={() => handleOptionChange(option.id, value.value)}
-                          className={clsx(
-                            "text-xs font-light border rounded-full px-3 py-1 font-display leading-none transition-colors cursor-pointer",
-                            {
-                              "!text-black !border-black bg-highlight": isSelected,
-                              "border-[#716E6E] text-gray-700 hover:border-gray-900": !isSelected,
-                            }
-                          )}
-                        >
-                          {value.value}
-                        </button>
-                      );
-                    })}
+                        return (
+                          <button
+                            key={value.id}
+                            type="button"
+                            onClick={() => handleOptionChange(option.id, value.value)}
+                            className={clsx(
+                              "text-xs font-light border rounded-full px-3 py-1 font-display leading-none transition-colors cursor-pointer",
+                              {
+                                "!text-black !border-black bg-highlight": isSelected,
+                                "border-[#716E6E] text-gray-700 hover:border-gray-900": !isSelected,
+                              }
+                            )}
+                          >
+                            {value.value}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         <AddToCartButton
           product={product}
           selectedOptions={controlledOptions}
           disabled={!canAddToCart}
-          variant="primary"
+          isFullText={true}
+          variant="secondary"
         />
       </div>
     </article>

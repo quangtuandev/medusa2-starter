@@ -79,25 +79,28 @@ const ProductSwiperBase: FC<ProductSwiperProps> = ({ className, heading, text, a
         }}
         spaceBetween={24}
         slidesPerView={1}
-      // autoplay={{
-      //   delay: 3000,
-      //   disableOnInteraction: false,
-      // }}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
       >
         {products.map((product) => (
           <SwiperSlide key={product.id}>
-            <NavLink prefetch="viewport" to={`/products/${product.handle}`} viewTransition>
+            <div>
+              <ProductSuggestionItem isTransitioning={false} product={product} />
+            </div>
+            {/* <NavLink prefetch="viewport" to={`/products/${product.handle}`} viewTransition>
               {({ isTransitioning }) => (
                 <ProductSuggestionItem isTransitioning={isTransitioning} product={product} />
               )}
-            </NavLink>
+            </NavLink> */}
           </SwiperSlide>
         ))}
       </Swiper>
 
       {/* Custom Navigation Buttons */}
       <button
-        className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Previous slide"
       >
         <svg
@@ -110,7 +113,7 @@ const ProductSwiperBase: FC<ProductSwiperProps> = ({ className, heading, text, a
         </svg>
       </button>
       <button
-        className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Next slide"
       >
         <svg

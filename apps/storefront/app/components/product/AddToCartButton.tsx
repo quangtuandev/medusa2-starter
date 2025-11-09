@@ -13,6 +13,7 @@ export interface AddToCartButtonProps {
   className?: string;
   variant?: "primary" | "secondary";
   size?: "sm" | "md" | "lg";
+  isFullText?: boolean;
 }
 
 export const AddToCartButton: FC<AddToCartButtonProps> = ({
@@ -23,6 +24,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
   className,
   variant = "primary",
   size = "md",
+  isFullText = false,
 }) => {
   const { t } = useI18n();
   const { addToCart, isLoading } = useAddToCart();
@@ -70,13 +72,21 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
     <button
       onClick={handleAddToCart}
       disabled={isDisabled}
-      className={buttonClasses}
+      className={clsx(buttonClasses, {
+        "justify-center": isFullText,
+      })}
       aria-label={`${t("common.addToCart")} ${product.title}`}
     >
-      <i className="w-4">
+      <i hidden={isFullText} className="w-4">
         <PlusIcon className="size-1" />
       </i>
-      <span className="text-nowrap btn-add opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto"> Add to cart</span>
+      <span className={clsx(
+        "text-nowrap btn-add ",
+        {
+          "text-center": isFullText,
+          "opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto": !isFullText,
+        }
+      )}> Add to cart</span>
     </button>
   );
 };
