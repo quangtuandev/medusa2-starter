@@ -1,1 +1,0 @@
-import{j as t}from"./chunk-OIYGIGL5-Dw2D8vFu.js";import{P as i}from"./pagination-with-context-BRbHoxMG.js";import{P as m}from"./ProductGrid-HMriGeaM.js";const d=({context:r,paginationConfig:o,...s})=>t.jsxs("div",{children:[t.jsx(m,{...s}),o&&t.jsx(i,{context:r,paginationConfig:o})]});export{d as P};

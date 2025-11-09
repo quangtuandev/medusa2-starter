@@ -145,7 +145,7 @@ export const MainMenu = () => {
                             }}
                         >
                             <div className="flex flex-col items-center justify-center">
-                                <img id={`menu-image-${item.id}`} src={item.image} alt={item.label} className="w-full h-full object-contain menu-image z-[-2] bg-red-500" />
+                                <img id={`menu-image-${item.id}`} src={item.image} alt={item.label} className="w-full h-full object-contain menu-image z-[-2]" />
                                 <FancyText id={`fancy-text-${item.id}`} className="text-center absolute text-white z-[9] leading-[0]" text={item.label} />
                             </div>
                         </Link>
