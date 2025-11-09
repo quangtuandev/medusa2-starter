@@ -41,7 +41,7 @@ export const CheckoutFlow: FC = () => {
         <hr className="my-10" />
 
         <CheckoutDeliveryMethod />
-        <PaypalExpressCheckout cart={cart} />
+        {/* <PaypalExpressCheckout cart={cart} /> */}
 
         {/* <PaypalCheckoutSecond cart={cart} /> */}
         <CheckoutPayment />

@@ -136,3 +136,15 @@ export interface Review {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface BankAccount {
+  id: string;
+  name: string;
+  account_holder: string;
+  account_number: string;
+  bank_code: string;
+  swift_code?: string | null;
+  qr_code_url?: string | null;
+  display_order: number;
+  [key: string]: any;
+}

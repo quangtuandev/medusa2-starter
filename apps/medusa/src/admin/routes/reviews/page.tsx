@@ -131,7 +131,6 @@ const ReviewsPage = () => {
     }
 
     const getStatusBadge = (status: Review["status"]) => {
-        console.log(status);
         switch (status) {
             case "approved":
                 return <Badge color="green">Approved</Badge>

@@ -25,6 +25,7 @@ import type { ILockingModule } from '@medusajs/framework/types'
 import type { IFileModuleService } from '@medusajs/framework/types'
 import type Blog from '../../src/modules/blog'
 import type ProductReviewsModuleService from '../../src/modules/product-reviews'
+import type BankAccount from '../../src/modules/bank-account'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
@@ -54,6 +55,7 @@ declare module '@medusajs/framework/types' {
     'locking': ILockingModule,
     'file': IFileModuleService,
     'blog': InstanceType<(typeof Blog)['service']>,
-    'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>
+    'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>,
+    'bankAccount': InstanceType<(typeof BankAccount)['service']>
   }
 }

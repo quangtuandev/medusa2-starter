@@ -60,10 +60,29 @@ export async function action(actionArgs: ActionFunctionArgs) {
   const activePaymentSession = cart.payment_collection?.payment_sessions?.find((ps) => ps.status === 'pending');
 
   if (activePaymentSession?.provider_id !== data.providerId || !cart.payment_collection?.payment_sessions?.length) {
-    await initiatePaymentSession(actionArgs.request, cart, {
+    // Prepare payment session data
+    const paymentSessionData: {
+      provider_id: string;
+      data?: Record<string, unknown>;
+    } = {
       provider_id: data.providerId,
-      data: { payment_method: data.paymentMethodId },
-    });
+    };
+
+    // For bank transfer, preserve bank_account_id from existing session
+    if (data.providerId === 'pp_bank_transfer_bank_transfer') {
+      const existingBankTransferSession = cart.payment_collection?.payment_sessions?.find(
+        (ps) => ps.provider_id === 'pp_bank_transfer_bank_transfer'
+      );
+      if (existingBankTransferSession?.data?.bank_account_id) {
+        paymentSessionData.data = {
+          bank_account_id: existingBankTransferSession.data.bank_account_id,
+        };
+      }
+    } else {
+      paymentSessionData.data = { payment_method: data.paymentMethodId };
+    }
+
+    await initiatePaymentSession(actionArgs.request, cart, paymentSessionData);
   }
 
   const isNewPaymentMethod = data.paymentMethodId === 'new';

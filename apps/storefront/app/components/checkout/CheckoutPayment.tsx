@@ -9,16 +9,17 @@ import { FC, useMemo } from 'react';
 import { ManualPayment } from './ManualPayment/ManualPayment';
 import { StripePayment } from './StripePayment';
 import { BankTransferPayment } from './BankTransferPayment/BankTransferPayment';
+import PaypalExpressCheckout from './StripePayment/PaypalExpressCheckout';
 
 export const CheckoutPayment: FC = () => {
   const { env } = useEnv();
   const { step, paymentProviders, cart } = useCheckout();
   const isActiveStep = step === CheckoutStep.PAYMENT;
-
+  console.log(paymentProviders);
   if (!cart) return null;
 
-  const hasStripePaymentProvider = useMemo(
-    () => paymentProviders?.some((p) => p.id.includes('pp_stripe_stripe')),
+  const hasPayPalPaymentProvider = useMemo(
+    () => paymentProviders?.some((p) => p.id.includes('pp_paypal_paypal')),
     [paymentProviders],
   );
 
@@ -28,28 +29,28 @@ export const CheckoutPayment: FC = () => {
   );
 
   const hasBankTransferPaymentProvider = useMemo(
-    () => !!paymentProviders?.some((p) => p.id.includes('pp_bank_transfer')),
+    () => !!paymentProviders?.some((p) => p.id.includes('pp_bank_transfer_bank_transfer')),
     [paymentProviders],
   );
 
   const paymentOptions = [
     {
-      id: 'pp_stripe_stripe',
-      label: 'Credit Card',
-      component: StripePayment,
-      isActive: hasStripePaymentProvider,
+      id: 'pp_paypal_paypal',
+      label: 'PayPal',
+      component: PaypalExpressCheckout,
+      isActive: hasPayPalPaymentProvider,
     },
     {
-      id: 'pp_bank_transfer',
+      id: 'pp_bank_transfer_bank_transfer',
       label: 'Bank Transfer',
       component: BankTransferPayment,
       isActive: hasBankTransferPaymentProvider,
     },
     {
       id: 'pp_system_default',
-      label: 'Test Payment',
+      label: 'Cash on Delivery',
       component: ManualPayment,
-      isActive: hasManualPaymentProvider && env.NODE_ENV === 'development',
+      isActive: hasManualPaymentProvider,
     },
   ];
 

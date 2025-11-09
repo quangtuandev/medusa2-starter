@@ -9,9 +9,10 @@ import { useNavigate } from "react-router";
 
 import { CheckoutStep } from "@app/providers/checkout-provider";
 import clsx from "clsx";
-export default function PaypalExpressCheckout({ cart }: { cart: StoreCart }) {
+export default function PaypalExpressCheckout() {
   const navigate = useNavigate();
-  const { paymentProviders, step } = useCheckout();
+  const { paymentProviders, step, cart } = useCheckout();
+  if (!cart) return null;
   const [errorState, setErrorState] = useState<{ title: string; description: string } | null>(null);
   const [currentCart, setCurrentCart] = useState<StoreCart>(cart);
   const isActiveStep = step === CheckoutStep.PAYMENT;
