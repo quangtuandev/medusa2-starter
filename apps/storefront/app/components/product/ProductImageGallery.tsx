@@ -145,15 +145,15 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
       )}
 
       <TabPanels className="flex-1">
-        <div className="relative aspect-square rounded-2xl overflow-hidden">
+        <div className="relative rounded-2xl overflow-hidden">
           {gallery.length > 0 ? (
             gallery.map((image, imageIndex) => (
               <TabPanel
                 key={image.id}
-                className="group relative h-full w-full overflow-hidden cursor-pointer"
+                className="group relative w-1/2 mx-auto overflow-hidden cursor-pointer"
                 onClick={() => setLightboxIndex(imageIndex)}
               >
-                <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.75} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
+                <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.5} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
                 <Image
                   key={image.id}
                   style={{
