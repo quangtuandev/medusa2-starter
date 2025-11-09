@@ -8,17 +8,19 @@ import { randomAssetMorphingShape } from '@libs/util/random';
 export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
   product: StoreProduct;
   isTransitioning?: boolean;
+  classNameImage?: string;
+  isRemoveStyleDefault?: boolean;
 }
 
-export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, ...props }) => {
+export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, ...props }) => {
   const thumbnailImage = (product.images && product.images[0] && product.images[0].url) || product.thumbnail;
   const hoverImage = product.images && product.images[1] && product.images[1].url;
 
   return (
     <figure
       className={clsx(
-        'product-thumbnail',
-        'aspect-w-1 aspect-h-1 w-full overflow-hidden',
+        'product-thumbnail overflow-hidden',
+        !isRemoveStyleDefault && 'aspect-w-1 aspect-h-1 w-full',
         className,
       )}
       style={{
@@ -34,7 +36,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
           alt={product.title}
           className={clsx('h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
             'group-hover/product-card:opacity-75': !hoverImage,
-          })}
+          }, classNameImage,)}
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center object-cover object-center group-hover/product-card:opacity-75">

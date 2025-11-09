@@ -10,26 +10,38 @@ import clsx from 'clsx';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useFetchers, useNavigate } from 'react-router';
 import { CartDrawerItem } from './CartDrawerItem';
+import { ProductSwiper } from '../sections/ProductSwiper';
 
 // Cart Drawer Header Component
 const CartDrawerHeader: FC<{ itemCount: number; onClose: () => void }> = ({ itemCount, onClose }) => (
-  <div className="flex items-start justify-between">
-    <DialogTitle className="text-lg font-bold text-gray-900">
-      My Cart{' '}
-      {itemCount > 0 && (
-        <span className="pl-2">
-          ({itemCount} item{itemCount > 1 ? 's' : ''})
-        </span>
-      )}
-    </DialogTitle>
-    <div className="ml-3 flex h-7 items-center">
+  <div className="flex items-start justify-between relative">
+    {itemCount > 0 && (
+      <DialogTitle className="text-lg font-bold text-gray-900 text-center">
+        Your Cart
+      </DialogTitle>
+    )}
+    <div className="absolute top-0 right-0">
       <IconButton icon={XMarkIcon} onClick={onClose} className="-m-2" aria-label="Close panel" />
     </div>
   </div>
 );
 
 // Cart Drawer Empty Component
-const CartDrawerEmpty: FC = () => <p className="text-center text-sm text-gray-500">Looks like your cart is empty!</p>;
+const CartDrawerEmpty: FC = () => {
+  const navigate = useNavigate();
+  const { toggleCartDrawer } = useCart();
+  return (
+    <div className='flex flex-col items-center justify-center gap-4 w-full'>
+      <p className="font-alexandria font-extrabold text-[42px] text-center leading-[100%]">YOUR CART <br />IS EMPTY :0</p>
+      <ButtonLink variant='primary' size="sm" onClick={() => {
+        navigate('/collections');
+        toggleCartDrawer(false);
+      }}>
+        Continue Shopping
+      </ButtonLink>
+    </div>
+  )
+}
 
 // Cart Drawer Loading Component
 const CartDrawerLoading: FC<{ className?: string }> = ({ className }) => (
@@ -79,7 +91,7 @@ const CartDrawerContent: FC<{
   const hasItems = items && items.length > 0;
 
   return (
-    <div className="mt-8">
+    <div className={clsx(!hasItems && !isAddingItem ? 'flex flex-1 h-full items-center mt-0 justify-center' : 'mt-8')}>
       <div className="flow-root">
         {/* Show items when there are items in the cart */}
         {hasItems && <CartDrawerItems items={items} isRemovingItemId={isRemovingItemId} currencyCode={currencyCode} />}
@@ -93,6 +105,12 @@ const CartDrawerContent: FC<{
     </div>
   );
 };
+
+const CartDrawerEmptyFooter: FC = () => (
+  <div className="border-t border-gray-200 py-6 max-h-[215px]">
+    <ProductSwiper />
+  </div>
+);
 
 // Cart Drawer Footer Component
 const CartDrawerFooter: FC<{
@@ -198,7 +216,7 @@ export const CartDrawer: FC = () => {
             {/* Panel with transition */}
             <DialogPanel
               transition
-              className="pointer-events-auto w-screen max-w-md transform duration-500 ease-in-out data-[closed]:translate-x-full"
+              className="pointer-events-auto w-screen max-w-xl transform duration-500 ease-in-out data-[closed]:translate-x-full"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                 {/* Content */}
@@ -216,14 +234,14 @@ export const CartDrawer: FC = () => {
                 </div>
 
                 {/* Footer */}
-                <CartDrawerFooter
+                {lineItemsTotal > 0 ? <CartDrawerFooter
                   navigatingToCheckout={navigatingToCheckout}
                   cart={cart}
                   currencyCode={region.currency_code}
                   itemCount={lineItemsTotal}
                   onCheckout={handleCheckoutClick}
                   onClose={handleClose}
-                />
+                /> : <CartDrawerEmptyFooter />}
               </div>
             </DialogPanel>
           </div>
