@@ -48,7 +48,7 @@ export const Logo: FC<LogoProps> = memo(({
     return (
         <div className={className}>
             <div
-                className="title flex items-center gap-6 mix-blend-exclusion"
+                className="title flex items-center lg:gap-6 mix-blend-exclusion gap-1"
                 onMouseLeave={handleLogoMouseLeave}
             >
                 <span
@@ -64,7 +64,7 @@ export const Logo: FC<LogoProps> = memo(({
                         viewBox="0 0 109 108"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="character-k"
+                        className="character-k h-[80px] lg:h-auto"
                     >
                         <path
                             pointerEvents="none"
@@ -88,7 +88,7 @@ export const Logo: FC<LogoProps> = memo(({
                         viewBox="0 0 31 108"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="character-i"
+                        className="character-i h-[80px] lg:h-auto"
                     >
                         <path
                             pointerEvents="none"
@@ -111,7 +111,7 @@ export const Logo: FC<LogoProps> = memo(({
                         viewBox="0 0 101 109"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="character-r"
+                        className="character-r h-[80px] lg:h-auto"
                     >
                         <path
                             pointerEvents="none"
@@ -134,7 +134,7 @@ export const Logo: FC<LogoProps> = memo(({
                         viewBox="0 0 107 108"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="character-a"
+                        className="character-a h-[80px] lg:h-auto"
                     >
                         <path
                             pointerEvents="none"

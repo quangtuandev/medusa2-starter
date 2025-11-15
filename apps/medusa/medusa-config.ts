@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv, Module } from '@medusajs/framework/utils';
+import { initializeContentful, createContentTypes, enableLocales } from './src/modules/contentful/loaders';
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
@@ -68,6 +69,9 @@ module.exports = defineConfig({
     },
   ],
   modules: [
+    {
+      resolve: "./src/modules/contentful",
+    },
     {
       resolve: "./src/modules/blog",
     },

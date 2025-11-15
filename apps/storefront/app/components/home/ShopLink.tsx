@@ -10,8 +10,8 @@ export const ShopLink: FC<{ className?: string }> = ({ className }) => {
   return (
     <>
       <div className={clsx("flex items-center flex-col", className)}>
-        <div className="flex items-center gap-6">
-          <div className="relative h-20 w-20">
+        <div className="flex items-center gap-1 lg:gap-6">
+          <div className="relative h-12 w-12 lg:h-20 lg:w-20">
             <img
               className="animate-rotate-bounce absolute top-0 left-0"
               src="/assets/images/home/cup.svg"

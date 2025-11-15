@@ -146,10 +146,10 @@ export default function IndexRoute() {
       ref={containerRef}
       className="relative h-screen w-screen px-11 py-8 flex flex-col items-center justify-center overflow-hidden"
     >
-      <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-11 pt-8">
-        <p className="font-title font-bold text-8xl uppercase">
+      <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-4 lg:px-11 pt-8 z-10">
+        <p className="font-title font-bold text-6xl lg:text-8xl uppercase">
           <span>This</span> <br />
-          <span className="ml-[14px]">is</span>
+          <span className="ml-[8px] lg:ml-[14px]">is</span>
         </p>
         {activeComponent === 'main' &&
           <div ref={menuRef} className="flex flex-col gap-6">
@@ -163,7 +163,7 @@ export default function IndexRoute() {
       {activeComponent === 'main' && isOpen && <MainMenu />}
 
       <div ref={logoRef} className="flex relative flex-col items-center gap-3">
-        {activeComponent !== 'main' && <div className="z-10 h-[80px]" />}
+        {activeComponent !== 'main' && <div className="z-10 h-[48px] lg:h-[80px]" />}
         {activeComponent === 'main' && <ShopLink className="z-10" />}
 
         <Logo
@@ -180,9 +180,9 @@ export default function IndexRoute() {
       {activeComponent === 'R' && <R />}
       {activeComponent === 'A' && <A />}
 
-      <div className="flex gap-11 justify-between absolute bottom-0 left-0 w-full px-11">
-        <p className="font-title font-medium text-[65px] uppercase">Est.</p>
-        <p className="font-title font-medium text-[65px] uppercase">2025</p>
+      <div className="flex gap-11 justify-between absolute bottom-0 left-0 w-full px-4 lg:px-11">
+        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">Est.</p>
+        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">2025</p>
       </div>
     </div>
   );

@@ -92,7 +92,8 @@ module.exports = {
         },
       },
       screens: {
-        xs: '400px',
+        // xs: '400px',
+        'mobile': '640px',
         '2xl': '1440px',
         'h-sm': { 'raw': '(max-height: 790px)' },
       },
