@@ -33,14 +33,11 @@ function useClickOutside<T extends HTMLElement = HTMLDivElement>(
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      console.log('handleClickOutside', ref.current);
-      // Kiểm tra xem click có nằm trong element chính không
       if (ref.current && !ref.current.contains(target)) {
-        // Kiểm tra xem click có nằm trong các element được loại trừ không
         const isExcluded = excludeRefs?.some(excludeRef =>
           excludeRef.current && excludeRef.current.contains(target)
         );
-
+        console.log('isExcluded', isExcluded);
         if (!isExcluded) {
           callback();
         }

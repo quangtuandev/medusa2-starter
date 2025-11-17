@@ -112,13 +112,13 @@ module.exports = defineConfig({
               includeCustomerData: false,
             },
           },
-          {
-            resolve: '@medusajs/medusa/payment-stripe',
-            id: 'stripe',
-            options: {
-              apiKey: STRIPE_API_KEY,
-            },
-          },
+          // {
+          //   resolve: '@medusajs/medusa/payment-stripe',
+          //   id: 'stripe',
+          //   options: {
+          //     apiKey: STRIPE_API_KEY,
+          //   },
+          // },
           {
             resolve: './src/modules/bank-transfer',
             id: 'bank_transfer',

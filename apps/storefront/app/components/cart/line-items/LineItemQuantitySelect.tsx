@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { FC, HTMLAttributes } from 'react';
 import { useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
+import debounce from 'lodash/debounce';
 
 export interface LineItemQuantitySelectProps extends HTMLAttributes<HTMLFormElement> {
   formId: string;
@@ -38,7 +39,7 @@ export const LineItemQuantitySelect: FC<LineItemQuantitySelectProps> = ({
     },
   });
 
-  const handleChange = (quantity: number) => {
+  const debouncedChange = debounce((quantity: number) => {
     fetcher.submit(
       {
         lineItemId: item.id,
@@ -46,6 +47,10 @@ export const LineItemQuantitySelect: FC<LineItemQuantitySelectProps> = ({
       },
       { method: 'post', action: '/api/cart/line-items/update' },
     );
+  }, 700);
+
+  const handleChange = (quantity: number) => {
+    debouncedChange(quantity);
   };
 
   return (

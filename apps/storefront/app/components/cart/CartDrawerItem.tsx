@@ -1,11 +1,14 @@
 import { Button } from '@app/components/common/buttons/Button';
 import { Image } from '@app/components/common/images/Image';
 import { useRemoveCartItem } from '@app/hooks/useRemoveCartItem';
+import { QuantitySelector } from '@app/components/common/remix-hook-form/field-groups/QuantitySelector';
 import { formatLineItemPrice } from '@libs/util/prices';
 import { StoreCartLineItem } from '@medusajs/types';
 import clsx from 'clsx';
 import type { FC } from 'react';
-
+import { FetcherKeys } from '@libs/util/fetcher-keys';
+import { useFetcher } from 'react-router';
+import { LineItemQuantitySelect } from './line-items/LineItemQuantitySelect';
 export interface CartDrawerItemProps {
   item: StoreCartLineItem;
   currencyCode: string;
@@ -15,6 +18,17 @@ export interface CartDrawerItemProps {
 export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, isRemoving }) => {
   const removeCartItem = useRemoveCartItem();
   const handleRemoveFromCart = () => removeCartItem.submit(item);
+  const fetcher = useFetcher({ key: FetcherKeys.cart.updateLineItem });
+
+  const handleChange = (quantity: number) => {
+    fetcher.submit(
+      {
+        lineItemId: item.id,
+        quantity: quantity,
+      },
+      { method: 'post', action: '/api/cart/line-items/update' },
+    );
+  };
 
   return (
     <li
@@ -45,8 +59,9 @@ export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, is
         </div>
         <div className="flex-1" />
         <div className="flex items-center justify-between">
-          <p className="text-sm  text-gray-500">Qty {item.quantity}</p>
-
+          <p className="text-sm  text-gray-500">
+            <LineItemQuantitySelect formId={`quantity-${item.id}`} item={item} />
+          </p>
           <div className="flex">
             <p className="ml-4">{formatLineItemPrice(item, currencyCode)}</p>
           </div>

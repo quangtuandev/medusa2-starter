@@ -280,10 +280,10 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
     // Create a new form data submission
     const formData = new FormData();
     formData.append('productId', product.id!);
-    formData.append('quantity', form.getValues('quantity'));
+    formData.append('quantity', form.getValues('quantity') as string);
 
     // Add selected options to form data
-    const options = form.getValues('options');
+    const options = form.getValues('options') as Record<string, string>;
     Object.entries(options).forEach(([key, value]) => {
       formData.append(`options.${key}`, value as string);
     });
@@ -320,13 +320,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
   const fetcher = useFetcher({ key: FetcherKeys.cart.updateLineItem });
 
   const handleChange = (quantity: number) => {
-    fetcher.submit(
-      {
-        lineItemId: product.id,
-        quantity: quantity,
-      },
-      { method: 'post', action: '/api/cart/line-items/update' },
-    );
+    form.setValue('quantity', quantity.toString());
   };
 
   return (
