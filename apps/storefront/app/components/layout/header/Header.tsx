@@ -85,7 +85,7 @@ export const Header: FC<HeaderProps> = () => {
                 )}
               >
                 <div className="flex flex-wrap-reverse justify-between w-full">
-                  <LogoStoreName className="xs:h-14 h-8" primary />
+                  <LogoStoreName className="h-8 lg:h-14" primary />
                   {headerNavigationItems && (
                     <>
                       {headerNavigationItems

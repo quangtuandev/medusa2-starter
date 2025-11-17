@@ -39,36 +39,38 @@ export default function PickACard() {
   };
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen overflow-hidden xl:overflow-visible">
       <div className="z-10">
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="font-title text-[110px] font-bold">THIS IS OUR</h1>
-          <p className="font-centuryBook italic text-[125px] leading-[114px]">Heart & Soul</p>
-        </div>
-      </div>
-      <div className="flex items-center justify-center bg-white px-10 flex-col h-[60vh] z-0">
-        <div className="relative w-full flex justify-between items-center">
+        < div className="flex flex-col items-center justify-center mt-16 xl:mt-0" >
+          <h1 className="font-title xl:text-[110px] text-5xl text-center xl:text-left font-bold">THIS IS OUR</h1>
+          <p className="font-centuryBook italic xl:text-[125px] text-5xl leading-[114px] text-center xl:text-left">Heart & Soul</p>
+        </div >
+      </div >
+      <div className="flex items-center justify-center bg-white px-10 flex-col xl:h-[60vh] h-[calc(100vh-206px)] z-0">
+        <div className="relative w-full hidden xl:flex justify-between items-center">
           <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-right">Pick <br /> a</p>
           <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-left">card</p>
         </div>
-        <div className="relative left-[-10vw] top-[-100px]">
+        <div className="relative xl:left-[-10vw] xl:top-[-100px] left-[25%] -translate-x-1/2 top-0 w-full xl:w-auto">
+          <div className="relative w-full">
 
-          {cards.map((card, i) => {
-            return (
-              <motion.div
-                key={card.id}
-                onClick={() => handleClick()}
-                className={clsx("absolute bottom-0 left-1/2 -translate-x-1/2")}
-                animate={card.animate}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              >
+            {cards.map((card, i) => {
+              return (
+                <motion.div
+                  key={card.id}
+                  onClick={() => handleClick()}
+                  className={clsx("absolute bottom-0 left-1/2 -translate-x-1/2")}
+                  animate={card.animate}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
 
-                {card.component()}
-              </motion.div>
-            );
-          })}
+                  {card.component()}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
