@@ -199,7 +199,7 @@ export const CartDrawer: FC = () => {
 
   const handleClose = useCallback(() => {
     toggleCartDrawer(false);
-    navigate('/collections');
+    // navigate('/collections');
   }, [toggleCartDrawer]);
 
   return (
