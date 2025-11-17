@@ -126,7 +126,7 @@ export const Header: FC<HeaderProps> = () => {
                       <IconButton
                         aria-label="open navigation menu"
                         onClick={() => setSideNavOpen(true)}
-                        className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white md:hidden"
+                        className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white xl:hidden"
                         icon={Bars3Icon}
                       />
                     )}

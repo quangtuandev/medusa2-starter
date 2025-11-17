@@ -49,7 +49,7 @@ export const CollectionMenuList = ({ open, setOpen }: { open: boolean, setOpen: 
                 <div className='xl:px-[96px] max-w-[1268px] relative mx-auto'>
                     <motion.div
                         ref={collectionMenuListRef}
-                        className={clsx("absolute w-full xl:w-[400px] z-10 left-0 bg-white top-4 rounded-lg py-2 border border-primary", open ? "opacity-100" : "!opacity-0 !z-[-1000]")}
+                        className={clsx("absolute w-full xl:w-[400px] z-10 left-0 bg-white top-4 rounded-lg py-2 border border-primary", open ? "opacity-100" : "hidden !opacity-0 !z-[-1000]")}
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: "easeOut", delay: 0.3 }}

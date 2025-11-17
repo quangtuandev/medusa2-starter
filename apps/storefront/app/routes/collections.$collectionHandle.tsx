@@ -54,7 +54,7 @@ export default function ProductCollectionRoute() {
       <h1 className="relative flex flex-col xl:flex-row items-center xl:items-end text-4xl xl:text-[110px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 after:hidden xl:after:block after:content-[''] after:block after:w-1/2 after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
         <p className="flex-1 font-title font-bold uppercase leading-none relative top-[-18px]">
           <span>This</span> <br className="hidden xl:block" />
-          <span className="pl-[14px] pr-16 bg-white z-10 relative">is</span>
+          <span className="px-0 xl:pl-[14px] xl:pr-16 bg-white z-10 relative">is</span>
         </p>
         <span className="flex-1 inline-block justify-center bg-white z-10 relative px-16 text-center font-centuryBook block italic">
           {collection.title}

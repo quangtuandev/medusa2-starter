@@ -53,13 +53,14 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
     };
 
     return (
-        <section className="relative min-h-[1146px] overflow-hidden flex flex-col justify-center">
-            <div className="w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2">
+        <section className="relative xl:min-h-[1146px] overflow-hidden flex flex-col justify-center">
+            <div className="hidden xl:block w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2">
                 <img src="/assets/images/contact.webp" alt="Contact" className="absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" />
             </div>
             <Container>
                 <div className="contact-form-container relative">
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 z-10 relative max-w-[446px] mb-[100px] ml-auto mr-[170px]">
+                    <h1 className="text-4xl font-centuryBook italic xl:text-[64px] leading-normal xl:leading-[48px] tracking-normal text-center text-primary mb-6">Contact Us</h1>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 z-10 relative max-w-[446px] mb-6 xl:mb-[100px] xl:ml-auto xl:mr-[170px]">
                         <div>
                             <input
                                 id="name"
@@ -143,7 +144,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                     </form>
                 </div>
 
-                <p className="font-title font-light text-[20px] leading-[30px] tracking-normal text-center text-primary absolute bottom-[150px] right-0 w-1/2 max-w-[720px] ml-auto mr-[170px]">
+                <p className="mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]">
                     We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!
                     <br />
                     Our email: <a href="mailto:bykiraperfume@gmail.com" className="text-primary underline">bykiraperfume@gmail.com</a>
