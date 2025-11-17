@@ -37,7 +37,7 @@ export const ProductReviewList = ({
                     </svg>
                   </div>
 
-                  <h3 className="px-1.5 font-title font-extrabold text-[32px] leading-[42px] tracking-normal uppercase line-clamp-1 text-center">{review.name ?? 'Anonymous'}</h3>
+                  <h3 className="px-1.5 font-title font-extrabold text-2xl xl:text-[32px] leading-normal xl:leading-[42px] tracking-normal uppercase line-clamp-1 text-center">{review.name ?? 'Anonymous'}</h3>
                   <div className="mt-1 flex items-center pb-1">
                     <StarRating value={review.stars ?? 0} readOnly />
                   </div>

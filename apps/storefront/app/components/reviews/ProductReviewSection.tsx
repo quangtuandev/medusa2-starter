@@ -22,10 +22,10 @@ export const ProductReviewSection = () => {
   return (
     <>
       <p className='text-center'>
-        <span className='text-5xl font-title font-extrabold text-64px leading-48px uppercase'>Customer</span>
-        <span className='text-6xl font-centuryBook italic text-64px leading-48px pl-2'>Review</span>
+        <span className='text-4xl font-title font-extrabold xl:text-[64px] leading-normal xl:leading-[48px] uppercase'>Customer</span>
+        <span className='text-4xl font-centuryBook italic xl:text-[64px] leading-normal xl:leading-[48px] pl-2'>Review</span>
       </p>
-      <section id="reviews" className="container mx-auto my-12 grid grid-cols-12 px-8">
+      <section id="reviews" className="container mx-auto my-6 xl:my-12 grid grid-cols-12 xl:px-8">
 
         <ProductReviewListWithPagination
           className="col-span-12"

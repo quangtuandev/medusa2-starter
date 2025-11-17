@@ -25,8 +25,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const data = await listPosts();
 
-  console.log(data, 'data loader');
-
   return {
     count: data?.length,
     limit: postsLimit,
@@ -39,8 +37,6 @@ export type BlogsIndexRouteLoader = typeof loader;
 
 export default function BlogsIndexRoute() {
   const data = useLoaderData<BlogsIndexRouteLoader>();
-
-  console.log(data);
 
   return (
     <Container className="flex flex-col gap-12">

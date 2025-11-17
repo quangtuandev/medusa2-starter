@@ -105,10 +105,9 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
   }, [variantImage]);
 
   return (
-    <TabGroup as="div" className="flex flex-col gap-4 lg:flex-row lg:gap-6" selectedIndex={selectedIndex} onChange={setSelectedIndex}>
-      <h2 className="sr-only">Images</h2>
+    <TabGroup as="div" className="flex flex-col-reverse gap-4 lg:flex-row lg:gap-6" selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       {gallery.length > 1 && (
-        <div className="absolute -bottom-8 flex justify-center w-full gap-4">
+        <div className="xl:absolute xl:-bottom-8 flex justify-center w-full gap-4">
           <TabList
             ref={scrollableDivRef}
             className="flex flex-row gap-2 p-3 bg-[#D1D1D1] rounded-full"

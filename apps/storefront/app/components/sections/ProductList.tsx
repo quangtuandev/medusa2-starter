@@ -118,8 +118,8 @@ export const ProductList: FC<ProductListProps> = memo(({ className, heading, tex
         <Container>
           {/* <ProductListHeader heading={heading} text={text} actions={actions} /> */}
           <p className='text-center mb-12'>
-            <span className='text-5xl font-title font-extrabold text-64px leading-48px uppercase'>Something</span>
-            <span className='text-6xl font-centuryBook italic text-64px leading-48px pl-2'>New?</span>
+            <span className='text-4xl font-title font-extrabold xl:text-[64px] leading-normal xl:leading-[48px] uppercase'>Something</span>
+            <span className='text-4xl font-centuryBook italic xl:text-[64px] leading-normal xl:leading-[48px] pl-2'>New?</span>
           </p>
           <ProductListBase {...props} />
         </Container>

@@ -338,7 +338,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
 
             <Container className="px-0 sm:px-6 md:px-8">
               <Grid className="!gap-0 overflow-visible">
-                <GridColumn className="mb-8 md:col-span-6 sticky top-[144px] [height:min-content]">
+                <GridColumn className="mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]">
                   <h2 className="xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
                     {customizationTitles[0]}
                   </h2>
@@ -503,7 +503,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                     <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
                       <hr className='col-span-8 border-t-[1px] border-primary' />
                     </div>
-                    <div className="container mx-auto my-12 grid grid-cols-12 px-8 p-4 gap-[20px]">
+                    <div className="container mx-auto my-6 xl:my-12 grid grid-cols-12 xl:px-8 p-4 gap-[20px]">
                       {product.metadata?.ingredients as string && (
                         <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="INGREDIENTS" initiallyOpen={false}>
                           <div dangerouslySetInnerHTML={{ __html: product.metadata?.ingredients as string }} />
