@@ -36,9 +36,9 @@ export default function ProductCollectionRoute() {
 
   return (
     <Container className="pb-32">
-      <h1 className="relative text-center text-[100px] text-[#321D14] mt-24 after:content-[''] after:block after:w-full after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
+      <h1 className="relative text-center text-4xl xl:text-[100px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 xl:mt-24 after:hidden xl:after:block after:content-[''] after:block after:w-full after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
         <span className="inline-block justify-center bg-white z-10 relative px-16 text-center">
-          <span className=" font-centuryBook block leading-6">All</span>
+          <span className=" font-centuryBook block leading-normal xl:leading-6">All</span>
           <span className="font-bold font-title uppercase">Collections</span>
         </span>
       </h1>

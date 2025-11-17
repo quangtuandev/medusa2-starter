@@ -42,10 +42,10 @@ export const Footer = () => {
     <footer className="bg-black min-h-[140px] py-8 text-white">
       <Container className='flex flex-col gap-[72px]'>
         <LogoStoreName theme="dark" />
-        <div className="flex justify-center gap-[72px]">
+        <div className="flex justify-center gap-4 xl:gap-[72px] flex-wrap">
           {footerNavigationItems.map((item) => (
             <div key={item.id}>
-              <Link to={item.url} className="hover:underline text-white text-[24px] font-alexandria font-regular leading-[145%] tracking-normal">{item.label}</Link>
+              <Link to={item.url} className="hover:underline text-white text-base xl:text-[24px] font-alexandria font-regular leading-[145%] tracking-normal">{item.label}</Link>
             </div>
           ))}
         </div>

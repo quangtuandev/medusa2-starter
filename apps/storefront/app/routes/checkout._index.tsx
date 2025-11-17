@@ -147,7 +147,7 @@ export default function CheckoutIndexRoute() {
     >
       <section>
         <div className="mx-auto max-w-2xl px-4 pb-8 pt-6 sm:px-6 sm:pb-16 sm:pt-8 lg:max-w-7xl lg:px-8 lg:pb-24 lg:pt-16">
-          <div className="lg:grid lg:grid-cols-[4fr_3fr] lg:gap-x-12 xl:gap-x-16">
+          <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[4fr_3fr] lg:gap-x-12 xl:gap-x-16">
             <CheckoutFlow />
             <CheckoutSidebar />
           </div>
