@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -18,6 +18,24 @@ const initialCards = [
 
 export default function HalfFanSlider() {
   const [cards, setCards] = useState(initialCards);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice =
+        window.innerWidth <= 768 || // Tablet and below
+        'ontouchstart' in window || // Touch device
+        navigator.maxTouchPoints > 0 || // Touch device
+        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const next = () => {
     handleClick(0);
@@ -62,14 +80,14 @@ export default function HalfFanSlider() {
 
   return (
     <div className="min-h-[max(calc(100vh-144px),_900px)] flex flex-col">
-      <Container className="flex items-center justify-between mt-16">
+      <Container className="flex items-center justify-between mt-4 xl:mt-16">
         <button
           onClick={prev}
           className="p-3 bg-yellow-300 rounded-full hover:scale-105 transition"
         >
           <ChevronLeft />
         </button>
-        <div id="collection-card-title" className="flex items-center justify-center text-[110px] font-bold leading-[114px] text-center">
+        <div id="collection-card-title" className="flex items-center justify-center text-4xl xl:text-[110px] font-bold leading-normal xl:leading-[114px] text-center">
           {activeCard.h1}
         </div>
         <button
@@ -79,12 +97,13 @@ export default function HalfFanSlider() {
           <ChevronRight />
         </button>
       </Container>
-      <div className="flex items-center justify-end bg-white px-10 flex-1">
-        <div className="relative w-[535px] mr-10">
+      <div className="flex items-center justify-end bg-white px-10 flex-1 flex-col-reverse xl:flex-row">
+        <div className="relative xl:w-[535px] w-full mr-10 min-h-[310px] xl:min-h-0">
           {cards.map((card, i) => {
+
             const rotate = (i - (cards.length - 1)) * 18; // fan sang trái
-            const x = (i - (cards.length - 1)) * 185; // lệch sang trái
-            const y = i === (cards.length - 1) ? 55 : Math.abs(i - (cards.length - 1)) * 80;
+            const x = (i - (cards.length - 1)) * (isMobile ? 120 : 185); // lệch sang trái
+            const y = i === (cards.length - 1) ? (isMobile ? 40 : 55) : Math.abs(i - (cards.length - 1)) * (isMobile ? 60 : 80);
             const z = i * 10 - i;
 
             return (
@@ -93,11 +112,11 @@ export default function HalfFanSlider() {
                 onClick={() => handleClick(i)}
                 onMouseEnter={() => handleMouseEnter(card.id)}
                 onMouseLeave={() => handleMouseLeave(card.id)}
-                className={clsx("absolute bottom-0 left-1/2 flex collection-card-item", {
-                  "w-[190px] h-[310px]": i === 0,
-                  "w-[200px] h-[320px]": i === 1,
-                  "w-[210px] h-[330px]": i === 2,
-                  "w-[280px] h-[400px]": i === 3,
+                className={clsx("absolute bottom-0 xl:left-1/2 left-[20%] flex collection-card-item", {
+                  "w-[150px] h-[250px] xl:w-[190px] xl:h-[310px]": i === 0,
+                  "w-[160px] h-[260px] xl:w-[200px] xl:h-[320px]": i === 1,
+                  "w-[170px] h-[270px] xl:w-[210px] xl:h-[330px]": i === 2,
+                  "w-[220px] h-[340px] xl:w-[280px] xl:h-[400px]": i === 3,
                   "collection-card-active": card.id === activeCard.id,
                 })}
                 animate={{ x, y, rotate, zIndex: z, skewX: 4, skewY: 0 }}
@@ -109,7 +128,7 @@ export default function HalfFanSlider() {
             );
           })}
         </div>
-        <div className="flex flex-col justify-center h-full items-center w-[650px] top-[-100px] relative">
+        <div className="flex flex-col justify-center h-full items-center w-full xl:w-[650px] top-0 xl:top-[-100px] relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCard.id}
@@ -126,9 +145,9 @@ export default function HalfFanSlider() {
                 </div>
               )}
               <div className="flex items-center justify-center">
-                <h2 className="mb-2 font-centuryBook italic text-[125px] leading-[114px] text-center" dangerouslySetInnerHTML={{ __html: activeCard.title }} />
+                <h2 className="mb-2 font-centuryBook italic text-4xl xl:text-[125px] leading-normal xl:leading-[114px] text-center" dangerouslySetInnerHTML={{ __html: activeCard.title }} />
                 {(activeCard.id !== 1 && activeCard.id !== 4) && (
-                  <div className="relative h-20 w-20">
+                  <div className="relative h-10 xl:h-20 w-10 xl:w-20">
                     <img
                       className="animate-rotate-bounce absolute top-0 left-0"
                       src="/assets/images/home/cup.svg"
@@ -144,12 +163,12 @@ export default function HalfFanSlider() {
               </div>
 
               {activeCard.id !== 4 && (
-                <p className={clsx("font-title font-medium text-[75.37px] leading-[95.47px] text-center", {
+                <p className={clsx("font-title font-medium text-2xl xl:text-[75.37px] leading-normal xl:leading-[95.47px] text-center", {
                   "text-[#FFE977]": activeCard.id === 1,
                   "text-[#A2D4FD]": activeCard.id !== 1,
                 })}>collection</p>
               )}
-              <p className="font-montserrat font-regular text-[15px] leading-[26px] text-center text-[#000] max-w-[430px]">{activeCard.subtitle}</p>
+              <p className="font-montserrat font-regular text-[15px] leading-normal xl:leading-[26px] text-center text-[#000] max-w-[430px]">{activeCard.subtitle}</p>
             </motion.div>
           </AnimatePresence>
         </div>

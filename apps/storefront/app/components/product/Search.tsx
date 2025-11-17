@@ -150,7 +150,7 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
                 <div className='xl:px-[96px] max-w-[1268px] relative mx-auto'>
                     <motion.div
                         ref={searchContainerRef}
-                        className={clsx("absolute w-[400px] z-10 right-0 top-4", open ? "opacity-100" : "!opacity-0 !z-[-1000]")}
+                        className={clsx("absolute w-full xl:w-[400px] z-10 right-0 top-4", open ? "opacity-100" : "hidden !z-[-1000]")}
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: "easeOut", delay: 0.3 }}

@@ -36,55 +36,12 @@ export const Header: FC<HeaderProps> = () => {
         <div className="bg-transparent">
           <div className="">
             <Container>
-              {hasProducts && (
-                <div className="-mb-2 flex w-full items-center justify-end gap-4 pt-2 sm:hidden">
-                  <IconButton
-                    aria-label="open shopping cart"
-                    iconProps={{
-                      className:
-                        "!hover:bg-transparent hover:text-gray-700 focus:text-gray-700",
-                    }}
-                    className="!hover:bg-transparent hover:text-gray-700 focus:text-gray-700"
-                    icon={(iconProps) => (
-                      <div className="relative">
-                        <ShoppingCartIcon
-                          {...iconProps}
-                          className={clsx(
-                            iconProps.className,
-                            "hover:!bg-primary-50 focus:!bg-primary-50"
-                          )}
-                        />
-                        {!!cart &&
-                          hasProducts &&
-                          cart.items &&
-                          cart.items.length > 0 && (
-                            <span className="flex h-4 min-w-[1rem] items-center justify-center px-1 text-xs font-bold">
-                              <span>
-                                {cart.items.reduce(
-                                  (acc, item) => acc + item.quantity,
-                                  0
-                                )}{" "}
-                                <span className="sr-only">
-                                  items in cart, view bag
-                                </span>
-                              </span>
-                            </span>
-                          )}
-                      </div>
-                    )}
-                    onClick={() => toggleCartDrawer(true)}
-                  />
-
-                  <div className="flex-auto" />
-                </div>
-              )}
-
               <div
                 className={clsx(
-                  "h-[var(--mkt-header-height)] flex sm:h-[var(--mkt-header-height-desktop)] flex-nowrap items-center justify-between gap-2 py-2 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
+                  "flex sm:h-[var(--mkt-header-height-desktop)] flex-nowrap items-center justify-between gap-2 py-2 px-4 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
                 )}
               >
-                <div className="flex flex-wrap-reverse justify-between w-full">
+                <div className="flex flex-wrap-reverse justify-between w-full items-center">
                   <LogoStoreName className="h-8 lg:h-14" primary />
                   {headerNavigationItems && (
                     <>
@@ -98,7 +55,7 @@ export const Header: FC<HeaderProps> = () => {
                               newTab={new_tab}
                               className={({ isActive }) =>
                                 clsx(
-                                  "my-4 flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
+                                  "my-4 hidden xl:flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
                                 )
                               }
                               prefetch="viewport"
@@ -121,7 +78,7 @@ export const Header: FC<HeaderProps> = () => {
                     </>
                   )}
 
-                  <div className="flex items-center justify-end">
+                  <div className="hidden xl:flex items-center justify-end">
                     <div className="flex items-center gap-x-3 text-sm">
                       <IconButton
                         aria-label="open shopping cart"
@@ -156,14 +113,6 @@ export const Header: FC<HeaderProps> = () => {
                         )}
                         onClick={() => toggleCartDrawer(true)}
                       />
-                      {!!headerNavigationItems?.length && (
-                        <IconButton
-                          aria-label="open navigation menu"
-                          onClick={() => setSideNavOpen(true)}
-                          className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white md:hidden"
-                          icon={Bars3Icon}
-                        />
-                      )}
                     </div>
                   </div>
                   <div className="flex items-center justify-end">
@@ -173,6 +122,14 @@ export const Header: FC<HeaderProps> = () => {
                       className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2 w-[64px]"
                       icon={MagnifyingGlassIcon}
                     />
+                    {!!headerNavigationItems?.length && (
+                      <IconButton
+                        aria-label="open navigation menu"
+                        onClick={() => setSideNavOpen(true)}
+                        className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white md:hidden"
+                        icon={Bars3Icon}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

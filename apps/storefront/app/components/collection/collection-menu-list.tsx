@@ -49,13 +49,13 @@ export const CollectionMenuList = ({ open, setOpen }: { open: boolean, setOpen: 
                 <div className='xl:px-[96px] max-w-[1268px] relative mx-auto'>
                     <motion.div
                         ref={collectionMenuListRef}
-                        className={clsx("absolute w-[400px] z-10 left-0 bg-white top-4 rounded-lg py-2 border border-primary", open ? "opacity-100" : "!opacity-0 !z-[-1000]")}
+                        className={clsx("absolute w-full xl:w-[400px] z-10 left-0 bg-white top-4 rounded-lg py-2 border border-primary", open ? "opacity-100" : "!opacity-0 !z-[-1000]")}
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, ease: "easeOut", delay: 0.3 }}
                     >
                         <IconButton icon={XMarkIcon} className="absolute top-2 right-2 hover:!bg-transparent hover:text-gray-700 focus:text-gray-700 z-10 !text-primary" onClick={() => setOpen(false)} />
-                        <div className="relative flex flex-col">
+                        <div className="relative flex-col hidden xl:flex">
                             {collections.map((collection) => (
                                 <div key={collection.id} className="flex items-center p-2 rounded-md last:font-bold">
                                     <Link to={`/collections/${collection.handle}`} onClick={() => setOpen(false)}>

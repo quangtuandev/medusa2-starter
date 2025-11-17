@@ -41,7 +41,7 @@ export const LogoStoreName: FC<{ primary?: boolean; className?: string, theme?: 
         <img
           src={logoSrc}
           alt="Logo"
-          className="w-full h-full max-h-[40px]"
+          className="w-full h-full max-h-[32px] xl:max-h-[40px]"
         />
       </LogoHeader>
     </Link>
