@@ -4,8 +4,7 @@ import { CONTENTFUL_MODULE } from '../../../modules/contentful';
 /**
  * GET /store/contentful/locales
  *
- * Fetch list of available locales from Contentful
- * This is used by the storefront to populate locale selector
+ * Fetch all available locales from Contentful
  */
 export const GET = async (
   req: MedusaRequest,
@@ -13,13 +12,20 @@ export const GET = async (
 ) => {
   try {
     const contentfulService = req.scope.resolve(CONTENTFUL_MODULE) as any;
+
+    if (!contentfulService) {
+      return res.status(503).json({
+        error: 'Contentful service not available',
+      });
+    }
+
     const locales = await contentfulService.getAvailableLocales();
 
     return res.json({
       locales,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch locales';
+    const message = error instanceof Error ? error.message : 'An error occurred';
     return res.status(500).json({
       error: message,
     });

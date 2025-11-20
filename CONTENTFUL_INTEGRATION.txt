@@ -1,0 +1,324 @@
+================================================================================
+                    CONTENTFUL INTEGRATION - QUICK START
+================================================================================
+
+OVERVIEW:
+=========
+Full Contentful integration for Medusa with product sync to Contentful CMS
+- Admin button to sync products with multi-language support
+- Bulk sync functionality
+- Variant tracking
+- Store API for fetching localized content
+
+SETUP:
+======
+
+1. Environment Configuration
+   Add to .env:
+
+   CONTENTFUL_SPACE_ID=your_space_id
+   CONTENTFUL_ACCESS_TOKEN=your_management_token
+   CONTENTFUL_ENVIRONMENT=master
+
+2. Start Medusa
+
+   cd apps/medusa
+   yarn dev
+
+   The module will automatically:
+   - Initialize Contentful client
+   - Create content types (Product, ProductVariant)
+   - Enable required locales (en-US, vi)
+
+API ENDPOINTS:
+==============
+
+ADMIN ROUTES:
+=============
+
+1. Sync Single Product
+   POST /admin/contentful/sync
+
+   Body:
+   {
+     "product_id": "prod_123",
+     "locales": {
+       "en-US": {
+         "title": "Product Title",
+         "description": "Product description",
+         "seoTitle": "SEO Title",
+         "seoDescription": "SEO Description"
+       },
+       "vi": {
+         "title": "Tên Sản Phẩm",
+         "description": "Mô tả sản phẩm"
+       }
+     }
+   }
+
+   Response:
+   {
+     "success": true,
+     "message": "Product synced to Contentful successfully",
+     "data": { "id": "...", "medusaId": "prod_123" }
+   }
+
+2. Bulk Sync Products
+   POST /admin/contentful/sync/bulk
+
+   Body:
+   {
+     "product_ids": ["prod_1", "prod_2", "prod_3"],
+     "locales": {
+       "en-US": { "title": "...", "description": "..." },
+       "vi": { "title": "...", "description": "..." }
+     }
+   }
+
+   Response:
+   {
+     "success": true,
+     "results": [...],
+     "errors": [...],
+     "summary": { "total": 3, "successful": 3, "failed": 0 }
+   }
+
+3. List Products for Sync
+   GET /admin/contentful/sync/products?limit=20&offset=0&q=search
+
+   Response:
+   {
+     "products": [...],
+     "pagination": { "total": 100, "limit": 20, "offset": 0, "hasMore": true }
+   }
+
+4. Check Sync Status
+   GET /admin/contentful/sync/status/:productId
+
+   Response:
+   {
+     "product_id": "prod_123",
+     "synced": true,
+     "data": { "title": "...", "description": "..." }
+   }
+
+5. Remove Product from Contentful
+   DELETE /admin/contentful/sync/:productId
+
+   Response:
+   {
+     "success": true,
+     "message": "Product removed from Contentful"
+   }
+
+STORE ROUTES (for fetching localized content):
+===============================================
+
+1. Get Localized Product
+   GET /store/contentful/products/:id/localized?locale=en-US
+
+   Response:
+   {
+     "product": { "id", "title", "handle", "description" },
+     "contentful": { "title", "description", "seoTitle", "seoDescription" },
+     "locale": "en-US"
+   }
+
+2. Get Localized Variants
+   GET /store/contentful/products/:id/variants?locale=en-US
+
+   Response:
+   {
+     "product_id": "prod_123",
+     "locale": "en-US",
+     "variants": [...]
+   }
+
+3. Get Available Locales
+   GET /store/contentful/locales
+
+   Response:
+   {
+     "locales": ["en-US", "vi"]
+   }
+
+ADMIN BUTTON INTEGRATION:
+=========================
+
+The ContentfulSyncButton component is ready to use:
+
+File: apps/medusa/src/admin/widgets/contentful-sync-button.tsx
+
+Usage Example:
+
+  import ContentfulSyncButton from './widgets/contentful-sync-button'
+
+  export default function ProductDetail({ product }) {
+    return (
+      <div>
+        <h1>{product.title}</h1>
+        <ContentfulSyncButton
+          productId={product.id}
+          productTitle={product.title}
+          onSyncComplete={() => {
+            // Refresh or notify user
+          }}
+        />
+      </div>
+    )
+  }
+
+Features:
+- Sync to Contentful button
+- Check sync status button
+- Remove from Contentful button
+- Real-time feedback (success/error messages)
+- Loading states
+- Multi-language support
+
+WORKFLOW ARCHITECTURE:
+======================
+
+The syncProductToContentfulWorkflow orchestrates the sync process:
+
+1. fetchProductStep
+   - Retrieves product from Medusa with relations
+
+2. prepareContentfulDataStep
+   - Transforms Medusa data to Contentful format
+   - Merges localized content
+
+3. publishProductToContentfulStep
+   - Creates/updates product entry in Contentful
+   - Publishes entry
+
+4. syncVariantsStep
+   - Syncs product variants
+   - Tracks variant status
+
+LOCALES:
+========
+
+Default supported locales: en-US, vi
+
+To add more locales:
+1. Edit: apps/medusa/src/modules/contentful/loaders.ts
+2. Update LOCALES array
+3. Restart application
+
+CONTENTFUL CONTENT TYPES:
+=========================
+
+Product:
+  - medusaId (Symbol, required): Medusa product ID
+  - title (Symbol, localized, required): Product title
+  - description (Text, localized): Description
+  - handle (Symbol): URL slug
+  - seoTitle (Symbol, localized): SEO title
+  - seoDescription (Text, localized): SEO description
+
+ProductVariant (optional):
+  - medusaVariantId (Symbol, required): Variant ID
+  - productMedusaId (Symbol, required): Product reference
+  - title (Symbol, localized): Variant title
+  - sku (Symbol): Product SKU
+
+FILE STRUCTURE:
+================
+
+apps/medusa/src/modules/contentful/
+  ├── index.ts (Module definition)
+  ├── service.ts (ContentfulService with publish/fetch methods)
+  ├── models.ts (ProductContentfulLink model)
+  ├── loaders.ts (Initialization and setup)
+  └── migrations/ (Database migrations)
+
+apps/medusa/src/workflows/
+  └── sync-product-to-contentful.ts (Multi-step workflow)
+
+apps/medusa/src/api/admin/contentful/
+  ├── sync.ts (Sync endpoints)
+  ├── integration-guide.ts (API documentation)
+  └── [id]/ (Status/delete routes)
+
+apps/medusa/src/api/store/contentful/
+  ├── locales.ts (Get available locales)
+  └── products/ (Get localized product content)
+
+apps/medusa/src/admin/widgets/
+  ├── contentful-sync-button.tsx (React button component)
+  └── CONTENTFUL_BUTTON_USAGE.ts (Component documentation)
+
+TESTING:
+========
+
+Using curl:
+
+# Sync single product
+curl -X POST http://localhost:7901/admin/contentful/sync \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_id": "prod_123",
+    "locales": {
+      "en-US": {
+        "title": "Coffee Blend",
+        "description": "Premium coffee"
+      },
+      "vi": {
+        "title": "Hỗn Hợp Cà Phê",
+        "description": "Cà phê cao cấp"
+      }
+    }
+  }'
+
+# List products
+curl http://localhost:7901/admin/contentful/sync/products
+
+# Check status
+curl http://localhost:7901/admin/contentful/sync/status/prod_123
+
+# Remove product
+curl -X DELETE http://localhost:7901/admin/contentful/sync/prod_123
+
+DOCUMENTATION:
+===============
+
+For detailed information, see:
+
+1. API Documentation
+   File: apps/medusa/src/api/admin/contentful/integration-guide.ts
+
+2. Button Component Guide
+   File: apps/medusa/src/admin/widgets/CONTENTFUL_BUTTON_USAGE.ts
+
+3. Workflow Implementation
+   File: apps/medusa/src/workflows/sync-product-to-contentful.ts
+
+4. Service Methods
+   File: apps/medusa/src/modules/contentful/service.ts
+
+TROUBLESHOOTING:
+=================
+
+Issue: Contentful service not available
+Solution: Check environment variables are set and credentials are correct
+
+Issue: Content type creation fails
+Solution: Verify Contentful space has permissions for content type creation
+
+Issue: Sync button not working
+Solution: Check browser console for errors, verify admin token in localStorage
+
+Issue: Localized content not syncing
+Solution: Ensure locales are passed in request and Contentful locales are enabled
+
+ERROR CODES:
+============
+
+400 - Bad Request (validation errors, missing fields)
+401 - Unauthorized (invalid admin token)
+404 - Not Found (product doesn't exist)
+500 - Server Error (Contentful API issue)
+503 - Service Unavailable (Contentful not configured)
+
+================================================================================

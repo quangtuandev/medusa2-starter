@@ -9,7 +9,8 @@ import clsx from 'clsx';
 import { FC, memo, useEffect, useState } from 'react';
 import MorphingShape from '../generativeart/MorphingShape';
 import { randomAssetMorphingShape } from '@libs/util/random';
-
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'motion/react';
 export interface ProductGalleryImage {
   id: string;
   url: string;
@@ -126,7 +127,7 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
               </Tab>
             ))}
           </TabList>
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-2 z-10">
             <button
               onClick={prevTab}
               className="w-8 h-8 py-1 bg-[#D1D1D1] rounded-full flex items-center justify-center focus:outline-none focus:ring-0 hover:bg-gray-300"
@@ -143,16 +144,17 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
         </div>
       )}
 
-      <TabPanels className="flex-1">
-        <div className="relative rounded-2xl overflow-hidden">
+      <TabPanels className="h-[320px] xl:h-[380px]">
+        <div className="relative rounded-2xl h-full">
+          <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.5} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
+
           {gallery.length > 0 ? (
             gallery.map((image, imageIndex) => (
               <TabPanel
                 key={image.id}
-                className="group relative w-1/2 mx-auto overflow-hidden cursor-pointer"
+                className="group relative w-1/2 mx-auto overflow-hidden cursor-pointer z-10 h-full"
                 onClick={() => setLightboxIndex(imageIndex)}
               >
-                <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.5} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
                 <Image
                   key={image.id}
                   style={{
