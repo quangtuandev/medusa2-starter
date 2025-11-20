@@ -53,6 +53,19 @@ function useClickOutside<T extends HTMLElement = HTMLDivElement>(
   return ref;
 }
 export default function IndexRoute() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768 || // Tablet and below
+        "ontouchstart" in window || // Touch device
+        navigator.maxTouchPoints > 0 || // Touch device
+        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const [isOpen, setIsOpen] = useState(false);
   const [hoverActiveClass, setHoverActiveClass] = useState('');
   const [activeComponent, setActiveComponent] = useState<'main' | 'K' | 'I' | 'R' | 'A'>('main');
@@ -172,10 +185,10 @@ export default function IndexRoute() {
         <Description className={clsx("z-10 mt-8", descriptionClassName)} description={descriptionText} />
       </div>
       {activeComponent === 'main' && <Main />}
-      {activeComponent === 'K' && <K />}
-      {activeComponent === 'I' && <I />}
-      {activeComponent === 'R' && <R />}
-      {activeComponent === 'A' && <A />}
+      {activeComponent === 'K' && <K isMobile={isMobile} />}
+      {activeComponent === 'I' && <I isMobile={isMobile} />}
+      {activeComponent === 'R' && <R isMobile={isMobile} />}
+      {activeComponent === 'A' && <A isMobile={isMobile} />}
 
       <div className="flex gap-11 justify-between absolute bottom-0 left-0 w-full px-4 lg:px-11">
         <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">Est.</p>

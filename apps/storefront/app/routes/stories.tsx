@@ -104,7 +104,7 @@ export default function Stories() {
   return (
     <motion.div
       id="stories-container"
-      className="min-h-screen aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      className="min-h-screen w-[400vw] lg:w-auto lg:aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       style={{ overflow: "hidden" }}
       initial={{ x: 0 }}
       animate={{ x: 0 }}
@@ -112,7 +112,7 @@ export default function Stories() {
     >
       {isOpen && <MainMenu />}
 
-      <div className="w-[15%] flex flex-col px-[45px] py-[32px]">
+      <div className="w-[100vw] lg:w-[15%] flex flex-col px-4 py-2 lg:px-[45px] lg:py-[32px]">
         <p className="font-title font-bold text-8xl">
           <span>THIS</span> <br />
           <span className="ml-[14px]">IS <span className="font-centuryBook italic font-normal">Our</span></span>
@@ -128,7 +128,7 @@ export default function Stories() {
         />
       </div>
 
-      <div className="w-[85%] bg-white">
+      <div className="w-[300vw] lg:w-[85%] bg-white">
         <div className="w-full h-full bg-cover bg-center overflow-hidden relative">
           <Grid className="h-[100vh] bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center">
             {items.map((item) => (

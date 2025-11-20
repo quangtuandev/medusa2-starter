@@ -1,35 +1,37 @@
 import { useEffect, useRef } from "react";
 import { animate, spring } from 'animejs';
 import MorphingShape from "@app/components/generativeart/MorphingShape";
-import { useI18n } from "@app/hooks/useI18n";
 import clsx from "clsx";
-import { LogoProps } from "@libs/types";
 
-export const I = () => {
+export const I = ({ isMobile }: { isMobile: boolean }) => {
 
     const particles = [
         {
             id: 'tower',
-            className: 'w-[142px]',
+            className: 'w-0 xl:w-[142px]',
             position: { x: '-547px', y: '-205px', rotate: '-22deg' },
+            positionMobile: { x: '-50%', y: '-205px', rotate: '-22deg' },
             src: "assets/images/art/i/tower.webp",
         },
         {
             id: 'imagineative',
-            className: 'w-[895px]',
+            className: 'w-[395px] xl:w-[895px]',
             position: { x: '-547px', y: '-663px' },
+            positionMobile: { x: '-50%', y: '-463px' },
             src: "assets/images/art/i/imagineative.webp",
         },
         {
             id: 'statue',
             className: 'w-[507px]',
             position: { x: '216px', y: '-563px', rotate: '22deg' },
+            positionMobile: { x: '216px', y: '-563px', rotate: '22deg' },
             src: "assets/images/art/i/statue.webp",
         },
         {
             id: 'camera',
             className: 'w-[686px] bottom-0 h-sm:w-[556px]',
             position: { x: '-343px' },
+            positionMobile: { x: '-50%' },
             src: "assets/images/art/i/camera.webp",
         },
         {
@@ -43,6 +45,7 @@ export const I = () => {
                 colorEnd: "#E5DC95",
             },
             position: { x: '144px', y: '-410px', rotate: '-50deg' },
+            positionMobile: { x: '144px', y: '-410px', rotate: '-50deg' },
         },
         {
             id: 'morphingshape-2',
@@ -55,14 +58,16 @@ export const I = () => {
                 colorEnd: "#E5DC95",
             },
             position: { x: '-648px', y: '102px', rotate: '-50deg' },
+            positionMobile: { x: '-648px', y: '102px', rotate: '-50deg' },
         }
     ]
 
     useEffect(() => {
         particles.forEach(particle => {
+            const position = isMobile ? particle.positionMobile : particle.position;
             animate(`#particle-${particle.id}`, {
-                x: particle.position.x,
-                y: particle.position.y,
+                x: position.x,
+                y: position.y,
                 opacity: [0, 1],
                 ease: spring({
                     bounce: 0.65,

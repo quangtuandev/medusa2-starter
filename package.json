@@ -6,6 +6,8 @@
     "start": "turbo start",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "start:storefront": "turbo run start --filter=storefront",
+    "start:medusa": "turbo run start --filter=medusa",
     "generate-env": "cp ./apps/medusa/.env.template ./apps/medusa/.env && cp ./apps/storefront/.env.template ./apps/storefront/.env",
     "medusa:init": "turbo run medusa:init --filter=medusa",
     "format": "turbo run format",

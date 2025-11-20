@@ -4,6 +4,7 @@ import { Button, Container } from "@medusajs/ui";
 import { sdk } from "../lib/sdk";
 import QuillEditor from "../components/QuillEditor";
 import { toast } from "@medusajs/ui";
+import { ContentfulSyncButton } from "./contentful-sync-button";
 
 const ProductMetadataWidget = ({ data }) => {
     const [customField, setCustomField] = useState({
@@ -22,9 +23,10 @@ const ProductMetadataWidget = ({ data }) => {
         });
         toast.success("Product metadata saved successfully");
     };
-
+    console.log('data', data);
     return (
         <Container className="bg-white p-4 rounded-lg space-y-6">
+            <ContentfulSyncButton data={data} />
             <QuillEditor
                 id="notes"
                 label="Notes"

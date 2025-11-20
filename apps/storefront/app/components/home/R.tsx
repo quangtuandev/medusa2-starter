@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { animate, spring } from 'animejs';
 import clsx from "clsx";
 
-export const R = () => {
+export const R = ({ isMobile }: { isMobile: boolean }) => {
 
     const mirrors = [
         {
@@ -40,33 +40,38 @@ export const R = () => {
             id: 'rectangle',
             className: 'w-[376px]',
             position: { x: '-576px', y: '-154px' },
+            positionMobile: { x: '-576px', y: '-154px' },
             src: "assets/images/art/r/rectangle.webp",
         },
         {
             id: 'radiant',
             className: 'w-[696px]',
             position: { x: '-216px', y: '-714px' },
+            positionMobile: { x: '-50%', y: '-510px' },
             src: "assets/images/art/r/radiant.webp",
         },
         {
             id: 'earth',
             className: 'w-[395px]',
             position: { x: '360px', y: '-358px' },
+            positionMobile: { x: '360px', y: '-358px' },
             src: "assets/images/art/r/earth.webp",
         },
         {
             id: 'sun',
             className: 'w-[636px] bottom-0 h-sm:w-[516px]',
             position: { x: '-318px' },
+            positionMobile: { x: '-50%' },
             src: "assets/images/art/r/sun.webp",
         }
     ]
 
     useEffect(() => {
         particles.forEach(particle => {
+            const position = isMobile ? particle.positionMobile : particle.position;
             animate(`#particle-${particle.id}`, {
-                x: particle.position.x,
-                y: particle.position.y,
+                x: position.x,
+                y: position.y,
                 opacity: [0, 1],
                 ease: spring({
                     bounce: 0.65,

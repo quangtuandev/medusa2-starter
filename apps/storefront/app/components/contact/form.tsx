@@ -59,8 +59,8 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
             </div>
             <Container>
                 <div className="contact-form-container relative">
-                    <h1 className="text-4xl font-centuryBook italic xl:text-[64px] leading-normal xl:leading-[48px] tracking-normal text-center text-primary mb-6">Contact Us</h1>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 z-10 relative max-w-[446px] mb-6 xl:mb-[100px] xl:ml-auto xl:mr-[170px]">
+                    <h1 className="text-4xl font-centuryBook italic xl:hidden leading-normal tracking-normal text-center text-primary mb-6">Contact Us</h1>
+                    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto space-y-6 z-10 relative max-w-[446px] mb-6 xl:mb-[100px] xl:ml-auto xl:mr-[170px]">
                         <div>
                             <input
                                 id="name"
@@ -144,7 +144,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                     </form>
                 </div>
 
-                <p className="mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]">
+                <p className="mx-auto mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]">
                     We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!
                     <br />
                     Our email: <a href="mailto:bykiraperfume@gmail.com" className="text-primary underline">bykiraperfume@gmail.com</a>
