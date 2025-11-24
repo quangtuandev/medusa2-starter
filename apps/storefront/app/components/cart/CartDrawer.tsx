@@ -216,7 +216,7 @@ export const CartDrawer: FC = () => {
             {/* Panel with transition */}
             <DialogPanel
               transition
-              className="pointer-events-auto w-screen max-w-xl transform duration-500 ease-in-out data-[closed]:translate-x-full"
+              className="pointer-events-auto w-full xl:w-screen max-w-xl transform duration-500 ease-in-out data-[closed]:translate-x-full"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                 {/* Content */}
