@@ -130,10 +130,20 @@ export const BankTransferPayment: FC<BankTransferPaymentProps> = ({
         throw new Error(errorData.message || 'Failed to select bank transfer payment');
       }
 
+      setBankInfo({
+        id: selectedBankAccountId,
+        bankName: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.name || '',
+        accountHolder: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.account_holder || '',
+        accountNumber: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.account_number || '',
+        bankCode: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.bank_code || '',
+        swiftCode: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.swift_code || '',
+        qrCodeUrl: bankAccounts.find((bank) => bank.id === selectedBankAccountId)?.qr_code_url || '',
+      });
       // Reload the page to refresh cart data
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       setError((err as Error).message || 'Failed to select bank transfer payment');
+    } finally {
       setIsLoading(false);
     }
   };
