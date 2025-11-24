@@ -20,8 +20,6 @@ import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import { SubmitButton } from '../common/remix-hook-form/buttons/SubmitButton';
 import { FormError } from '../common/remix-hook-form/forms/FormError';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
-import HiddenAddressGroup from './HiddenAddressGroup';
-import { MedusaStripeAddress, type StripeAddress } from './MedusaStripeAddress/MedusaStripeAddress';
 import { AddressDisplay } from './address/AddressDisplay';
 import { selectInitialShippingAddress } from './checkout-form-helpers';
 
@@ -79,19 +77,6 @@ export const CheckoutAccountDetails = () => {
     },
   });
 
-  const setShippingAddress = (address: StripeAddress) => {
-    form.setValue('shippingAddress.address1', address.address.address1 ?? '');
-    form.setValue('shippingAddress.address2', address.address.address2 ?? '');
-    form.setValue('shippingAddress.city', address.address.city ?? '');
-    form.setValue('shippingAddress.province', address.address.province ?? '');
-    form.setValue('shippingAddress.countryCode', address.address.countryCode ?? '');
-    form.setValue('shippingAddress.postalCode', address.address.postalCode ?? '');
-    form.setValue('shippingAddress.phone', address.address.phone ?? '');
-    form.setValue('shippingAddress.firstName', address.address.firstName ?? '');
-    form.setValue('shippingAddress.lastName', address.address.lastName ?? '');
-    form.setValue('shippingAddress.company', address.address.company ?? '');
-    form.setValue('shippingAddress.phone', address.address.phone ?? '');
-  };
 
   const shippingAddress = form.watch('shippingAddress');
 
@@ -140,18 +125,112 @@ export const CheckoutAccountDetails = () => {
                 className="[&_input]:!ring-0 mb-2"
               />
 
-              <HiddenAddressGroup address={shippingAddress} prefix="shippingAddress" />
-
               <StyledTextField type="hidden" name="shippingAddressId" value={initialShippingAddressId} />
 
-              <MedusaStripeAddress
-                mode="shipping"
-                address={shippingAddress}
-                allowedCountries={allowedCountries}
-                setAddress={setShippingAddress}
-              />
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.firstName"
+                    type="text"
+                    label="First Name"
+                    placeholder="First Name"
+                  />
 
-              <FormError />
+                </div>
+
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.lastName"
+                    type="text"
+                    label="Last Name"
+                    placeholder="Last Name"
+                  />
+
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <StyledTextField
+                  name="shippingAddress.company"
+                  type="text"
+                  label="Company (Optional)"
+                  placeholder="Company"
+                />
+              </div>
+
+              <div className="mt-4">
+                <StyledTextField
+                  name="shippingAddress.address1"
+                  type="text"
+                  label="Address"
+                  placeholder="Address"
+                />
+
+              </div>
+
+              <div className="mt-4">
+                <StyledTextField
+                  name="shippingAddress.address2"
+                  type="text"
+                  label="Apartment, suite, etc. (Optional)"
+                  placeholder="Apartment, suite, etc."
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.city"
+                    type="text"
+                    label="City"
+                    placeholder="City"
+                  />
+
+                </div>
+
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.province"
+                    type="text"
+                    label="Province"
+                    placeholder="Province"
+                  />
+
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.postalCode"
+                    type="text"
+                    label="Postal Code"
+                    placeholder="Postal Code"
+                  />
+
+                </div>
+
+                <div>
+                  <StyledTextField
+                    name="shippingAddress.countryCode"
+                    type="text"
+                    label="Country"
+                    placeholder="Country"
+                  />
+
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <StyledTextField
+                  name="shippingAddress.phone"
+                  type="tel"
+                  label="Phone (Optional)"
+                  placeholder="Phone"
+                />
+              </div>
+
+              {/* <FormError /> */}
 
               <Actions>
                 <SubmitButton disabled={isSubmitting || isCartMutating}>

@@ -281,3 +281,7 @@
   overflow: hidden;
   z-index: -1;
 }
+
+.form-message {
+  @apply text-sm font-medium text-red-500;
+}

@@ -76,7 +76,7 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
                 title="Open chat"
             >
                 <span>
-                    <img src="/assets/images/livechat.gif" alt="Chat" className="w-20 h-20" />
+                    <img src="/assets/images/livechat.gif" alt="Chat" className="xl:w-20 xl:h-20 w-10 h-10" />
                 </span>
             </button>
 

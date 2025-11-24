@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import { animate, spring } from "animejs";
-import debounce from "lodash/debounce"
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
@@ -22,7 +21,7 @@ export const MainMenu = () => {
             label: 'Blog',
             image: '/assets/images/menu/blog.webp',
             url: '/blogs',
-            className: 'max-w-[494px] left-0',
+            className: 'max-w-[100vw] xl:max-w-[494px] left-0',
             imagePosition: { x: '5%' },
             position: {
                 x: '100%',
@@ -34,7 +33,7 @@ export const MainMenu = () => {
             label: 'Product',
             image: '/assets/images/menu/product.webp',
             url: '/pick-a-card',
-            className: 'max-w-[648px] left-[366px]',
+            className: 'max-w-[100vw] xl:max-w-[648px] left-[366px]',
             imagePosition: { x: '4%' },
             position: {
                 x: '80%',
@@ -46,7 +45,7 @@ export const MainMenu = () => {
             label: 'Story',
             image: '/assets/images/menu/story.webp',
             url: '/stories',
-            className: 'max-w-[446px] left-[864px]',
+            className: 'max-w-[100vw] xl:max-w-[446px] left-[864px]',
             imagePosition: { x: '4%' },
             position: {
                 x: '-70%',
@@ -58,7 +57,7 @@ export const MainMenu = () => {
             label: 'Contact',
             image: '/assets/images/menu/contact.webp',
             url: '/contact',
-            className: 'w-[670px] right-0',
+            className: 'max-w-[100vw] xl:max-w-[670px] right-0',
             imagePosition: { x: '-7%' },
             position: {
                 x: '-90%',
@@ -132,7 +131,7 @@ export const MainMenu = () => {
     return (
         <div className="absolute inset-0 z-[9999] bg-white ">
             <div className="h-full w-full">
-                <div className="absolute flex w-[1840px] h-[max(calc(100vh-300px),400px)] left-1/2 -translate-x-1/2 items-center">
+                <div className="xl:w-[1840px] w-[400vw] xl:absolute flex h-[max(calc(100vh-300px),400px)] xl:left-1/2 xl:-translate-x-1/2 items-center">
                     <div className="absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[-1] opacity-0 menu-background" />
                     {categoryItems.map((item) => (
                         <Link to={item.url} className={clsx('aspect-square absolute', item.className)} key={item.id}
@@ -151,14 +150,14 @@ export const MainMenu = () => {
                         </Link>
                     ))}
                 </div>
-                <div className="absolute bottom-0 left-0 w-full bg-[url('/assets/images/menu/background.webp')] bg-contain bg-repeat-x bg-bottom bg-center">
+                <div className="absolute bottom-0 left-0 w-full bg-[url('/assets/images/menu/background.webp')] bg-repeat-x bg-bottom bg-center xl:bg-contain bg-cover">
                     <div className="absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[2] opacity-0 menu-background" />
                     <p className="absolute bottom-0 w-full text-center mb-[98px] z-[3]">
-                        <span className={clsx("font-title font-bold text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>This is</span>
-                        <span className="font-centuryBook font-italic text-[200px] italic text-[#FFE977] -ml-[100px] z-[1]">Our</span>
+                        <span className={clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>This is</span>
+                        <span className="font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">Our</span>
                     </p>
                     <div className="overflow-hidden h-[300px] relative">
-                        <img src="/assets/images/menu/chair-bottom.webp" alt="logo" className="w-full h-full object-cover object-position-center" />
+                        <img src="/assets/images/menu/chair-bottom.webp" alt="logo" className="w-full h-full xl:object-cover object-position-center object-contain" />
                     </div>
                 </div>
             </div>
