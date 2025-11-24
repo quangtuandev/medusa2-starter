@@ -33,8 +33,8 @@ export default function Stories() {
       classNameWrapper: "items-end",
       background: "/assets/images/stories/background-story.webp",
       text: 'Kira was born as a joyful sparkling fragrance, capturing the very essence of sunshine and laughter in every delicate spritz. Like a playful breeze on a warm day, our scents effortlessly invigorate the spirit, infusing the air with a sense of lightness and elegance.',
-      classNameText: "font-montserrat font-medium text-[17.65px] leading-[28.24px] text-center w-[630px] px-5 py-2 rotate-[-6deg]",
-      classNameTextWrapper: "left-[20%] top-[30vh]",
+      classNameText: "font-montserrat font-medium text-xs xl:text-[18px] leading-[28.24px] text-center xl:w-[630px] w-[90vw] px-5 py-2 rotate-[-6deg]",
+      classNameTextWrapper: "xl:left-[20%] left-[0%] xl:top-[30vh] top-[40vh]",
       items: [
         { src: '/assets/images/stories/items/story-1.webp', className: 'top-1/2 -translate-y-1/2 left-0 h-[16vh] object-contain' },
         { src: '/assets/images/stories/items/story-2.webp', className: 'top-[30vh] left-[10%] h-[20vh] object-contain' },
@@ -52,8 +52,8 @@ export default function Stories() {
       classNameWrapper: "",
       background: "/assets/images/stories/background-mission.webp",
       text: 'Kira was born as a joyful sparkling fragrance, capturing the very essence of sunshine and laughter in every delicate spritz. Like a playful breeze on a warm day, our scents effortlessly invigorate the spirit, infusing the air with a sense of lightness and elegance.',
-      classNameText: "font-montserrat font-medium text-[17.65px] leading-[28.24px] text-center w-[630px] px-5 py-2 rotate-[3deg]",
-      classNameTextWrapper: "left-[20%] bottom-[10vh]",
+      classNameText: "font-montserrat font-medium text-xs xl:text-[18px] leading-[28.24px] text-center xl:w-[630px] w-[90vw] px-5 py-2 rotate-[3deg]",
+      classNameTextWrapper: "xl:left-[20%] left-[0%] xl:bottom-[10vh] bottom-[0vh]",
       items: [
         { src: '/assets/images/stories/items/mission-1.webp', className: 'top-[55vh] left-0 h-[20vh] object-contain' },
         { src: '/assets/images/stories/items/mission-2.webp', className: 'top-[52vh] left-[10%] h-[12vh] object-contain' },
@@ -71,8 +71,8 @@ export default function Stories() {
       background: "/assets/images/stories/background-packaging.webp",
       classNameWrapper: "items-end",
       text: 'One special aspect of Kira is that the packaging is entirely made of paper and sugarcane bagasse, implementing an extremely eco-friendly approach to recycling and resource conservation to protect the environment. Specifically, the packaging for the perfume bottles in the first collection will be a paper cup used for daily coffee, which you might typically toss away right after use. However, at Kira, this paper cup will preserve memories and lasting joy for the user, without the feeling of being wasteful.',
-      classNameText: "font-montserrat font-medium text-[17.65px] leading-[28.24px] text-center w-[830px] text-white px-5 py-2 rotate-[-5deg]",
-      classNameTextWrapper: "right-[12vh] top-[40vh]",
+      classNameText: "font-montserrat font-medium text-xs xl:text-[18px] leading-[28.24px] text-center xl:w-[830px] w-[90vw] text-white px-5 py-2 rotate-[-5deg]",
+      classNameTextWrapper: "xl:right-[12vh] right-[2%] xl:top-[40vh] top-[50vh]",
       items: [
         { src: '/assets/images/stories/items/pack-1.webp', className: 'top-[60vh] left-[-10%] h-[20vh] object-contain' },
         { src: '/assets/images/stories/items/pack-2.webp', className: 'top-[68vh] left-[3%] h-[22vh] object-contain' },
@@ -104,7 +104,13 @@ export default function Stories() {
   return (
     <motion.div
       id="stories-container"
-      className="min-h-screen w-[400vw] lg:w-auto lg:aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      className={
+        clsx(
+          'min-h-screen w-[400vw] lg:w-auto lg:aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
+          isOpen ? '!w-[100vw] overflow-hidden' : ''
+        )
+      }
+
       style={{ overflow: "hidden" }}
       initial={{ x: 0 }}
       animate={{ x: 0 }}
@@ -136,7 +142,7 @@ export default function Stories() {
                 <div className="group">
                   <img src={item.image} alt={item.alt} className={clsx(item.className)} />
                   <div className={clsx(
-                    "w-full absolute opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out",
+                    "w-full absolute xl:opacity-0 opacity-100 group-hover:opacity-100 transition-all duration-300 ease-in-out",
                     item.classNameTextWrapper
                   )}>
                     <p className={clsx(

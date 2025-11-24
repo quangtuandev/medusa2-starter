@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
-        <p style={{ display: 'none' }} id={id} className={clsx('font-centuryBook font-bold uppercase', className)}>
-            <span className="italic text-[150px]">{text.slice(0, 1)}</span>
-            <span className="font-title text-[95px]">{text.slice(1)}</span>
+        <p id={id} className={clsx('font-centuryBook font-bold uppercase xl:hidden block', className)}>
+            <span className="italic xl:text-[150px] text-[95px]">{text.slice(0, 1)}</span>
+            <span className="font-title xl:text-[95px] text-[60px]">{text.slice(1)}</span>
         </p>
     );
 }
@@ -130,11 +130,11 @@ export const MainMenu = () => {
 
     return (
         <div className="absolute inset-0 z-[9999] bg-white ">
-            <div className="h-full w-full">
-                <div className="xl:w-[1840px] w-[400vw] xl:absolute flex h-[max(calc(100vh-300px),400px)] xl:left-1/2 xl:-translate-x-1/2 items-center">
+            <div className="h-full w-full overflow-x-scroll xl:overflow-x-hidden">
+                <div className="xl:w-[1840px] w-[400vw] xl:absolute flex h-[max(calc(100vh-300px),400px)] xl:left-1/2 xl:-translate-x-1/2 items-center overflow-x-scroll xl:overflow-x-hidden">
                     <div className="absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[-1] opacity-0 menu-background" />
                     {categoryItems.map((item) => (
-                        <Link to={item.url} className={clsx('aspect-square absolute', item.className)} key={item.id}
+                        <Link to={item.url} className={clsx('aspect-square w-[100vw] xl:w-auto xl:absolute', item.className)} key={item.id}
                             id={item.id}
                             onMouseEnter={() => {
                                 handleMouseEnter(item);
@@ -143,9 +143,9 @@ export const MainMenu = () => {
                                 handleMouseLeave(item);
                             }}
                         >
-                            <div className="flex flex-col items-center justify-center">
+                            <div className="flex flex-col-reverse xl:flex-col items-center justify-center">
                                 <img id={`menu-image-${item.id}`} src={item.image} alt={item.label} className="w-full h-full object-contain menu-image z-[-2]" />
-                                <FancyText id={`fancy-text-${item.id}`} className="text-center absolute text-white z-[9] leading-[0]" text={item.label} />
+                                <FancyText id={`fancy-text-${item.id}`} className="text-center xl:absolute text-[#FFE977] xl:text-white z-[9] xl:leading-[0]" text={item.label} />
                             </div>
                         </Link>
                     ))}
