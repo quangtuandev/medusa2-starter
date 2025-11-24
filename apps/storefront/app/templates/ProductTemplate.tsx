@@ -339,19 +339,19 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
             <Container className="px-0 sm:px-6 md:px-8">
               <Grid className="!gap-0 overflow-visible">
                 <GridColumn className="mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]">
-                  <h2 className="xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
+                  <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
                     {customizationTitles[0]}
                   </h2>
                   <ProductImageGallery key={product.id} product={product} variantImage={variantImage} />
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
                       {customizationTitles[1] && (
-                        <h2 className="xl:text-[100px] font-bold text-gray-900">
+                        <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900">
                           {customizationTitles[1]}
                         </h2>
                       )}
                       <p className="text-gray-900 font-bold flex gap-3">
-                        <span className="text-5xl">
+                        <span className="text-3xl">
                           {selectedVariant ? (
                             <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
                           ) : (
@@ -369,7 +369,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                             size='image'
                             disabled={isAddingToCart || isBuyingNow}
                             className="disabled:opacity-50 disabled:cursor-not-allowed">
-                            <img src="/assets/images/add-to-cart.svg" alt="Add to cart" className="w-auto h-[108px]" />
+                            <img src="/assets/images/add-to-cart.svg" alt="Add to cart" className="w-auto h-[80px] xl:h-[108px]" />
                           </SubmitButton>
                         ) : (
                           <SubmitButton

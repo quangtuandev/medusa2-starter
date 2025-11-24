@@ -152,7 +152,7 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
             gallery.map((image, imageIndex) => (
               <TabPanel
                 key={image.id}
-                className="group relative w-1/2 mx-auto overflow-hidden cursor-pointer z-10 h-full"
+                className="group relative w-full xl:w-1/2 mx-auto overflow-hidden cursor-pointer z-10 h-full"
                 onClick={() => setLightboxIndex(imageIndex)}
               >
                 <Image
