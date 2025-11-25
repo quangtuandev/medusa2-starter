@@ -46,7 +46,6 @@ export default function BlogsIndexRoute() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  console.log(post);
   return (
     <section>
       <Container className="flex flex-col gap-12">
