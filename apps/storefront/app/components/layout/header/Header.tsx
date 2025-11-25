@@ -43,40 +43,34 @@ export const Header: FC<HeaderProps> = () => {
               >
                 <div className="flex flex-wrap-reverse justify-between w-full items-center">
                   <LogoStoreName className="h-8 lg:h-14" primary />
-                  {headerNavigationItems && (
-                    <>
-                      {headerNavigationItems
-                        .slice(0, 6)
-                        .map(({ id, new_tab, ...navItemProps }, index) => (
-                          <>
-                            <URLAwareNavLink
-                              key={id}
-                              {...navItemProps}
-                              newTab={new_tab}
-                              className={({ isActive }) =>
-                                clsx(
-                                  "my-4 hidden xl:flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
-                                )
-                              }
-                              prefetch="viewport"
-                            >
-                              {navItemProps.label}
-                              {index == 0 && (
-                                <IconButton
-                                  aria-label="open navigation menu"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    openSubmenu();
-                                  }}
-                                  className="hover:!bg-primary-50 focus:!bg-primary-50 text-white"
-                                  icon={ChevronDownIcon}
-                                />
-                              )}
-                            </URLAwareNavLink>
-                          </>
-                        ))}
-                    </>
-                  )}
+                  {headerNavigationItems && headerNavigationItems
+                    .slice(0, 6)
+                    .map(({ id, new_tab, ...navItemProps }, index) => (
+                      <URLAwareNavLink
+                        key={id}
+                        {...navItemProps}
+                        newTab={new_tab}
+                        className={({ isActive }) =>
+                          clsx(
+                            "my-4 hidden xl:flex items-center whitespace-nowrap font-normal font-body font-regular text-[24px] leading-none tracking-normal"
+                          )
+                        }
+                        prefetch="viewport"
+                      >
+                        {navItemProps.label}
+                        {index == 0 && (
+                          <IconButton
+                            aria-label="open navigation menu"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              openSubmenu();
+                            }}
+                            className="hover:!bg-primary-50 focus:!bg-primary-50 text-white"
+                            icon={ChevronDownIcon}
+                          />
+                        )}
+                      </URLAwareNavLink>
+                    ))}
 
                   <div className="hidden xl:flex items-center justify-end">
                     <div className="flex items-center gap-x-3 text-sm">

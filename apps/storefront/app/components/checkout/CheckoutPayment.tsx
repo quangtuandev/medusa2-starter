@@ -15,7 +15,6 @@ export const CheckoutPayment: FC = () => {
   const { env } = useEnv();
   const { step, paymentProviders, cart } = useCheckout();
   const isActiveStep = step === CheckoutStep.PAYMENT;
-  console.log(paymentProviders);
   if (!cart) return null;
 
   const hasPayPalPaymentProvider = useMemo(

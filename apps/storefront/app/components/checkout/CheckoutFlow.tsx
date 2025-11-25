@@ -5,10 +5,6 @@ import { FC, useEffect } from 'react';
 import { CheckoutAccountDetails } from './CheckoutAccountDetails';
 import { CheckoutDeliveryMethod } from './CheckoutDeliveryMethod';
 import { CheckoutPayment } from './CheckoutPayment';
-import PaypalExpressCheckout from './StripePayment/PaypalExpressCheckout';
-// import { StripeExpressCheckout } from './StripePayment/StripeExpressPayment';
-// import PaypalCheckout from './StripePayment/PaypalCheckout';
-// import PaypalCheckoutSecond from './StripePayment/PaypalCheckoutSecond';
 export const CheckoutFlow: FC = () => {
   const { customer } = useCustomer();
   const { goToNextStep, cart } = useCheckout();
@@ -33,17 +29,11 @@ export const CheckoutFlow: FC = () => {
           </Alert>
         )}
 
-
-        {/* <StripeExpressCheckout cart={cart} /> */}
-
         <CheckoutAccountDetails />
 
         <hr className="my-10" />
 
         <CheckoutDeliveryMethod />
-        {/* <PaypalExpressCheckout cart={cart} /> */}
-
-        {/* <PaypalCheckoutSecond cart={cart} /> */}
         <CheckoutPayment />
       </div>
     </>
