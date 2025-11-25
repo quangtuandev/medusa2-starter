@@ -109,11 +109,11 @@ const PostsPage = () => {
     })
 
     const handleCreatePost = () => {
-        navigate("/app/posts/create")
+        navigate("/posts/create")
     }
 
     const handleEditPost = (post: Post) => {
-        navigate(`/app/posts/edit/${post.id}`)
+        navigate(`/posts/edit/${post.id}`)
     }
 
     const handleDeletePost = (id: string) => {

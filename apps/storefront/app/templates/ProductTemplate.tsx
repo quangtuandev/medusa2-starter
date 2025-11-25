@@ -351,7 +351,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                         </h2>
                       )}
                       <p className="text-gray-900 font-bold flex gap-3">
-                        <span className="text-3xl">
+                        <span className="text-3xl xl:text-5xl">
                           {selectedVariant ? (
                             <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
                           ) : (

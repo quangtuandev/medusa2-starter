@@ -70,9 +70,6 @@ module.exports = defineConfig({
   ],
   modules: [
     {
-      resolve: "./src/modules/contentful",
-    },
-    {
       resolve: "./src/modules/blog",
     },
     {

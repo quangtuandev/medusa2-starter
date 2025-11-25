@@ -100,7 +100,7 @@ const CreateEditPostPage = () => {
         },
         onSuccess: () => {
             toast.success("Post created successfully")
-            navigate("/app/posts")
+            navigate("/posts")
         },
         onError: () => {
             toast.error("Failed to create post")
@@ -117,7 +117,7 @@ const CreateEditPostPage = () => {
         },
         onSuccess: () => {
             toast.success("Post updated successfully")
-            navigate("/app/posts")
+            navigate("/posts")
         },
         onError: () => {
             toast.error("Failed to update post")
@@ -231,7 +231,7 @@ const CreateEditPostPage = () => {
     }
 
     const handleBack = () => {
-        navigate("/app/posts")
+        navigate("/posts")
     }
 
     return (
