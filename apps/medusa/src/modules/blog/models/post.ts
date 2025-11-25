@@ -5,6 +5,7 @@ export const Post = model.define("post", {
   title: model.text(),
   content: model.text(),
   slug: model.text(),
+  language: model.text().default("en"),
   thumbnail: model.text().nullable(),
   description: model.text().nullable(),
   sub_title: model.text().nullable(),

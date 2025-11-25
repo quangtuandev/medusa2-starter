@@ -48,7 +48,8 @@
     "contentful-management": "^11.63.0",
     "pg": "^8.13.0",
     "quill": "^2.0.3",
-    "react-quill": "^2.0.0"
+    "react-quill": "^2.0.0",
+    "slugify": "^1.6.6"
   },
   "devDependencies": {
     "@medusajs/test-utils": "^2.7.0",
@@ -63,7 +64,8 @@
     "@types/jest": "^29.5.12",
     "@types/mime": "1.3.5",
     "@types/node": "^17.0.8",
-    "@types/react": "^18.3.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "jest": "^29.7.0",
     "prop-types": "^15.8.1",
     "ts-node": "^10.9.2",

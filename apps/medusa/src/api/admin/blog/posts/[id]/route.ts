@@ -1,5 +1,5 @@
 import { MedusaRequest, MedusaResponse } from '@medusajs/framework';
-const BLOG_MODULE = 'blogModuleService';
+import { BLOG_MODULE } from '../../../../../modules/blog';
 
 export async function GET(
   req: MedusaRequest,
@@ -8,7 +8,7 @@ export async function GET(
   const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
   const { id } = req.params;
 
-  const post = await blogModuleService.getPostById(id);
+  const post = await blogModuleService.retrievePost(id);
   if (!post) {
     res.status(404).json({ error: 'Post not found' });
     return;
@@ -24,7 +24,7 @@ export async function PUT(
   const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
   const { id } = req.params;
 
-  const post = await blogModuleService.updatePost(id, req.body);
+  const post = await blogModuleService.updatePosts([{ id, ...(req.body as any) }]);
   if (!post) {
     res.status(404).json({ error: 'Post not found' });
     return;
@@ -40,7 +40,7 @@ export async function DELETE(
   const blogModuleService: any = req.scope.resolve(BLOG_MODULE);
   const { id } = req.params;
 
-  const success = await blogModuleService.deletePost(id);
+  const success = await blogModuleService.deletePosts(id);
   if (!success) {
     res.status(404).json({ error: 'Post not found' });
     return;

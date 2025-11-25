@@ -13,20 +13,20 @@ interface BlogPost {
   created_at: string;
   updated_at: string;
 }
-export const listPosts = async function (): Promise<{ posts: BlogPost[] }> {
+export const listPosts = async function (language: string): Promise<{ posts: BlogPost[] }> {
   return cachified({
     key: 'list-posts',
     cache: sdkCache,
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
     async getFreshValue() {
-      return _listPosts();
+      return _listPosts(language);
     },
   });
 };
 
-export const _listPosts = async function (): Promise<{ posts: BlogPost[] }> {
-  return sdk.client.fetch(`/store/blog/posts`, {
+export const _listPosts = async function (language: string): Promise<{ posts: BlogPost[] }> {
+  return sdk.client.fetch(`/store/blog/posts/${language}`, {
     query: {
       limit: 10,
       offset: 0,
@@ -35,7 +35,7 @@ export const _listPosts = async function (): Promise<{ posts: BlogPost[] }> {
 };
 
 export const getPostBySlug = async function (slug: string): Promise<BlogPost | null> {
-  return sdk.client.fetch(`/store/blog/posts/${slug}`, {
+  return sdk.client.fetch(`/store/post/${slug}`, {
     query: {
       limit: 1,
       offset: 0,

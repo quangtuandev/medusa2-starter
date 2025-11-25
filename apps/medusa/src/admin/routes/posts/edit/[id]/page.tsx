@@ -16,23 +16,23 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useMemo, useState, useRef, useCallback } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { sdk } from "../../../lib/sdk"
+import { sdk } from "../../../../lib/sdk"
 import * as z from "zod"
 import slugify from "slugify"
 
 // Import ReactQuill and CSS
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+import ReactQuill from "react-quill"
+import "react-quill/dist/quill.snow.css"
 
 // Define the Post type
 type Post = {
     id: string
     language: string
     title: string
-    sub_title: string
-    description: string
     content: string
     slug: string
+    description: string
+    sub_title: string
     thumbnail: string
     published: boolean
 }
@@ -63,22 +63,21 @@ const formats = [
 const languages = [
     { label: "English", value: "en" },
     { label: "Tiếng Việt", value: "vi" },
-] as const;
+] as const
 
-const CreatePostPage = () => {
+const EditPostPage = () => {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
-    const [isCreate, setIsCreate] = useState(!id)
     const [isLoading, setIsLoading] = useState(false)
     const quillRef = useRef<ReactQuill>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const thumbnailInputRef = useRef<HTMLInputElement>(null)
 
     const [formData, setFormData] = useState({
-        sub_title: "",
-        description: "",
         language: "en",
         title: "",
+        sub_title: "",
+        description: "",
         content: "",
         slug: "",
         thumbnail: "",
@@ -87,43 +86,27 @@ const CreatePostPage = () => {
 
     // Fetch existing post if editing
     const { data: post, isLoading: isLoadingPost } = useQuery<Post>({
-        queryFn: () => sdk.client.get(`/admin/blog/posts/${id}`),
+        queryFn: () => sdk.client.fetch(`/admin/blog/posts/${id}`),
         queryKey: ["post", id],
-        enabled: !!id && !isCreate,
+        enabled: !!id,
     })
 
     // Set form data when post is loaded
     useMemo(() => {
-        if (post && !isCreate) {
+        console.log(post)
+        if (post) {
             setFormData({
-                sub_title: post.sub_title || "",
-                description: post.description || "",
                 language: post.language,
                 title: post.title,
+                sub_title: post.sub_title || "",
+                description: post.description || "",
                 content: post.content,
                 slug: post.slug,
                 thumbnail: post.thumbnail,
                 published: post.published,
             })
         }
-    }, [post, isCreate])
-
-    // Mutation for creating posts
-    const createMutation = useMutation({
-        mutationFn: async (newPost: z.infer<typeof PostFormSchema>) => {
-            return sdk.client.fetch("/admin/blog/posts", {
-                method: "POST",
-                body: newPost,
-            })
-        },
-        onSuccess: () => {
-            toast.success("Post created successfully")
-            navigate("/posts")
-        },
-        onError: () => {
-            toast.error("Failed to create post")
-        },
-    })
+    }, [post])
 
     // Mutation for updating posts
     const updateMutation = useMutation({
@@ -149,25 +132,19 @@ const CreatePostPage = () => {
     // Custom image handler for ReactQuill
     const handleImageUpload = async (file: File): Promise<string> => {
         const formData = new FormData()
-        formData.append('file', file)
+        formData.append("file", file)
 
         try {
-            const response = await sdk.admin.upload.create(
-                {
-                    files: [
-                        file
-                    ],
-                }
-            )
-            // Return the uploaded file URL
+            const response = await sdk.admin.upload.create({
+                files: [file],
+            })
             return response.files[0].url
         } catch (error) {
-            console.error('Image upload failed:', error)
-            throw new Error('Failed to upload image')
+            console.error("Image upload failed:", error)
+            throw new Error("Failed to upload image")
         }
     }
 
-    // Handler for image button click in Quill toolbar
     const imageHandler = useCallback(() => {
         fileInputRef.current?.click()
     }, [])
@@ -177,100 +154,96 @@ const CreatePostPage = () => {
         const file = e.target.files?.[0]
         if (!file) return
 
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            toast.error('Please select an image file')
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please select an image file")
             return
         }
 
-        // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            toast.error('Image size must be less than 5MB')
+            toast.error("Image size must be less than 5MB")
             return
         }
 
         const quill = quillRef.current?.getEditor()
         if (!quill) return
 
-        // Get current selection
         const range = quill.getSelection(true)
         if (!range) return
 
         try {
-            // Show loading state
-            quill.insertText(range.index, 'Uploading image...', 'user')
+            quill.insertText(range.index, "Uploading image...", "user")
             quill.setSelection(range.index + 19, 0)
 
-            // Upload image
             const imageUrl = await handleImageUpload(file)
 
-            // Remove loading text and insert image
             quill.deleteText(range.index, 19)
-            quill.insertEmbed(range.index, 'image', imageUrl, 'user')
+            quill.insertEmbed(range.index, "image", imageUrl, "user")
             quill.setSelection(range.index + 1, 0)
 
-            toast.success('Image uploaded successfully')
+            toast.success("Image uploaded successfully")
         } catch (error) {
-            // Remove loading text on error
             quill.deleteText(range.index, 19)
-            toast.error('Failed to upload image. Please try again.')
+            toast.error("Failed to upload image. Please try again.")
         } finally {
-            // Reset file input
             if (fileInputRef.current) {
-                fileInputRef.current.value = ''
+                fileInputRef.current.value = ""
             }
         }
     }, [])
 
-    // Handler for thumbnail upload
-    const handleThumbnailUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (!file) return
+    const handleThumbnailUpload = useCallback(
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0]
+            if (!file) return
 
-        if (!file.type.startsWith('image/')) {
-            toast.error('Please select an image file')
-            return
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error('Image size must be less than 5MB')
-            return
-        }
-
-        try {
-            const imageUrl = await handleImageUpload(file)
-            setFormData(prev => ({ ...prev, thumbnail: imageUrl }))
-            toast.success('Thumbnail uploaded successfully')
-        } catch (error) {
-            toast.error('Failed to upload thumbnail. Please try again.')
-        } finally {
-            if (thumbnailInputRef.current) {
-                thumbnailInputRef.current.value = ''
+            if (!file.type.startsWith("image/")) {
+                toast.error("Please select an image file")
+                return
             }
-        }
-    }, [handleImageUpload])
 
-    // Configure Quill with basic toolbar
-    const modules = useMemo(() => ({
-        toolbar: {
-            container: [
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                [{ 'font': [] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                [{ 'indent': '-1' }, { 'indent': '+1' }],
-                ['direction', { 'align': [] }],
-                ['link'],
-                ['image'],
-                ['clean']
-            ],
-            handlers: {
-                image: imageHandler
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error("Image size must be less than 5MB")
+                return
             }
-        }
-    }), [imageHandler])
 
+            try {
+                const imageUrl = await handleImageUpload(file)
+                setFormData((prev) => ({ ...prev, thumbnail: imageUrl }))
+                toast.success("Thumbnail uploaded successfully")
+            } catch (error) {
+                toast.error("Failed to upload thumbnail. Please try again.")
+            } finally {
+                if (thumbnailInputRef.current) {
+                    thumbnailInputRef.current.value = ""
+                }
+            }
+        },
+        [handleImageUpload]
+    )
+
+    // Configure Quill modules
+    const modules = useMemo(
+        () => ({
+            toolbar: {
+                container: [
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    [{ font: [] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ color: [] }, { background: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    ["direction", { align: [] }],
+                    ["link"],
+                    ["image"],
+                    ["clean"],
+                ],
+                handlers: {
+                    image: imageHandler,
+                },
+            },
+        }),
+        [imageHandler]
+    )
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -279,13 +252,11 @@ const CreatePostPage = () => {
             const validatedData = PostFormSchema.parse(formData)
             setIsLoading(true)
 
-            if (!isCreate && id) {
+            if (id) {
                 await updateMutation.mutateAsync({
                     id,
                     data: validatedData,
                 })
-            } else {
-                await createMutation.mutateAsync(validatedData)
             }
         } catch (error) {
             if (error instanceof z.ZodError) {
@@ -310,17 +281,14 @@ const CreatePostPage = () => {
                         Back to Posts
                     </Button>
                     <Heading level="h1">
-                        {isCreate ? "Create New Post" : `Edit Post: ${formData.title || "Loading..."}`}
+                        Edit Post: {formData.title || "Loading..."}
                     </Heading>
                 </div>
                 <Button
                     onClick={handleSubmit}
-                    disabled={isLoading || createMutation.isPending || updateMutation.isPending}
+                    disabled={isLoading || updateMutation.isPending}
                 >
-                    {isLoading || createMutation.isPending || updateMutation.isPending
-                        ? "Saving..."
-                        : isCreate ? "Create Post" : "Update Post"
-                    }
+                    {isLoading || updateMutation.isPending ? "Saving..." : "Update Post"}
                 </Button>
             </div>
 
@@ -419,6 +387,7 @@ const CreatePostPage = () => {
                                 required
                             />
                         </div>
+
                         {/* Content Field with WYSIWYG Editor */}
                         <div>
                             <Label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
@@ -431,7 +400,7 @@ const CreatePostPage = () => {
                                         type="file"
                                         accept="image/*"
                                         onChange={handleFileChange}
-                                        style={{ display: 'none' }}
+                                        style={{ display: "none" }}
                                     />
                                     <ReactQuill
                                         ref={quillRef}
@@ -442,7 +411,7 @@ const CreatePostPage = () => {
                                         formats={formats}
                                         theme="snow"
                                         placeholder="Write your post content here..."
-                                        style={{ height: '400px' }}
+                                        style={{ height: "400px" }}
                                     />
                                 </div>
                             </div>
@@ -458,7 +427,7 @@ const CreatePostPage = () => {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleThumbnailUpload}
-                                style={{ display: 'none' }}
+                                style={{ display: "none" }}
                             />
                             <div className="flex gap-3">
                                 <Input
@@ -485,7 +454,9 @@ const CreatePostPage = () => {
                                         src={formData.thumbnail}
                                         alt="Thumbnail Preview"
                                         className="rounded border w-32 h-32 object-cover"
-                                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = "none"
+                                        }}
                                     />
                                 </div>
                             )}
@@ -523,7 +494,7 @@ const CreatePostPage = () => {
 }
 
 export const config = defineRouteConfig({
-    label: "Create Post",
+    label: "Edit Post",
 })
 
-export default CreatePostPage
+export default EditPostPage

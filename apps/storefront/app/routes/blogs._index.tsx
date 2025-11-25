@@ -5,6 +5,7 @@ import { withPaginationParams } from "@libs/util/withPaginationParams";
 import clsx from "clsx";
 import { Link } from "react-router";
 import { LoaderFunctionArgs, useLoaderData } from "react-router";
+import { getCookie } from "@libs/util/server/cookies.server";
 interface BlogPost {
   id: string;
   title: string;
@@ -18,13 +19,15 @@ interface BlogPost {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+
   const { limit: postsLimit, offset: postsOffset } = withPaginationParams({
     request: request,
     defaultPageSize: 2,
   });
 
-  const data = await listPosts();
-
+  const language = await getCookie(request.headers, "lng");
+  const data = await listPosts(language);
+  console.log(language, data);
   return {
     count: data?.length,
     limit: postsLimit,
