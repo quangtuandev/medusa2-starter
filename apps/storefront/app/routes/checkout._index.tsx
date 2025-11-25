@@ -14,7 +14,7 @@ import { LoaderFunctionArgs, redirect } from 'react-router';
 import { Link, useLoaderData } from 'react-router';
 
 const SYSTEM_PROVIDER_ID = 'pp_system_default';
-
+const PAYPAL_PROVIDER_ID = 'pp_paypal_paypal';
 const fetchShippingOptions = async (cartId: string) => {
   if (!cartId) return [];
 
@@ -58,7 +58,7 @@ const ensureCartPaymentSessions = async (request: Request, cart: StoreCart) => {
     const paymentProviders = await listCartPaymentProviders(cart.region_id!);
     if (!paymentProviders.length) return activeSession;
 
-    const provider = paymentProviders.find((p) => p.id !== SYSTEM_PROVIDER_ID) || paymentProviders[0];
+    const provider = paymentProviders.find((p) => p.id === PAYPAL_PROVIDER_ID) || paymentProviders[0];
 
     const { payment_collection } = await initiatePaymentSession(request, cart, {
       provider_id: provider.id,
