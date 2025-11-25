@@ -183,7 +183,8 @@ var NavigationItemLocation = /* @__PURE__ */ ((NavigationItemLocation2) => {
 const headerNavigationItems = [
   {
     id: 1,
-    label: "Products",
+    label: "navigation.products",
+    // i18n key
     url: "/pick-a-card",
     sort_order: 0,
     location: NavigationItemLocation.header,
@@ -191,7 +192,8 @@ const headerNavigationItems = [
   },
   {
     id: 2,
-    label: "About Us",
+    label: "navigation.aboutUs",
+    // i18n key
     url: "/stories",
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -199,7 +201,8 @@ const headerNavigationItems = [
   },
   {
     id: 3,
-    label: "Blog",
+    label: "navigation.blog",
+    // i18n key
     url: "/blogs",
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -207,7 +210,8 @@ const headerNavigationItems = [
   },
   {
     id: 4,
-    label: "Let's talk",
+    label: "navigation.letsTalk",
+    // i18n key
     url: "/contact",
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -217,7 +221,8 @@ const headerNavigationItems = [
 const footerNavigationItems = [
   {
     id: 1,
-    label: "About Us",
+    label: "navigation.aboutUs",
+    // i18n key
     url: "/stories",
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -225,7 +230,8 @@ const footerNavigationItems = [
   },
   {
     id: 2,
-    label: "FAQs",
+    label: "navigation.faqs",
+    // i18n key
     url: "/faqs",
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -233,7 +239,8 @@ const footerNavigationItems = [
   },
   {
     id: 3,
-    label: "Documentation",
+    label: "navigation.documentation",
+    // i18n key
     url: "/docs",
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -241,7 +248,8 @@ const footerNavigationItems = [
   },
   {
     id: 4,
-    label: "Terms of Service",
+    label: "navigation.termsOfService",
+    // i18n key
     url: "/terms-of-service",
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -15230,7 +15238,7 @@ const getProductsById = ({
     id: ids,
     region_id: regionId,
     fields: "*variants.calculated_price,+variants.inventory_quantity"
-  }).then(({ products }) => products);
+  }).then(({ products: products2 }) => products2);
 };
 const retrieveCart = withAuthHeaders(async (request, authHeaders) => {
   const cartId = await getCartId(request.headers);
@@ -15317,13 +15325,13 @@ async function enrichLineItems(lineItems, regionId) {
     ids: lineItems.map((lineItem) => lineItem.product_id),
     regionId
   };
-  const products = await getProductsById(queryParams);
-  if (!(products == null ? void 0 : products.length)) {
+  const products2 = await getProductsById(queryParams);
+  if (!(products2 == null ? void 0 : products2.length)) {
     return [];
   }
   const enrichedItems = lineItems.map((item) => {
     var _a;
-    const product2 = products.find((p) => p.id === item.product_id);
+    const product2 = products2.find((p) => p.id === item.product_id);
     const variant = (_a = product2 == null ? void 0 : product2.variants) == null ? void 0 : _a.find((v) => v.id === item.variant_id);
     if (!product2 || !variant) {
       return item;
@@ -16241,13 +16249,16 @@ const AddToCartButton = ({
       "aria-label": `${t("common.addToCart")} ${product2.title}`,
       children: [
         /* @__PURE__ */ jsx("i", { hidden: isFullText, className: "w-4", children: /* @__PURE__ */ jsx(PlusIcon, { className: "size-1" }) }),
-        /* @__PURE__ */ jsx("span", { className: clsx(
+        /* @__PURE__ */ jsxs("span", { className: clsx(
           "text-nowrap btn-add ",
           {
             "text-center": isFullText,
             "opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto": !isFullText
           }
-        ), children: " Add to cart" })
+        ), children: [
+          " ",
+          t("common.addToCart")
+        ] })
       ]
     }
   );
@@ -16645,7 +16656,7 @@ const ProductSwiperBase = ({ className, heading, text, actions: actions2, ...pro
   const [isInitialized, setIsInitialized] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const fetcher = useFetcher();
-  const { products } = fetcher.data || {};
+  const { products: products2 } = fetcher.data || {};
   const fetchData = (filters) => {
     const queryString = buildSearchParamsFromObject({
       subloader: "productList",
@@ -16668,11 +16679,11 @@ const ProductSwiperBase = ({ className, heading, text, actions: actions2, ...pro
     }
   }, [fetcher.data]);
   useEffect(() => {
-    if (swiperInstance && products) {
+    if (swiperInstance && products2) {
       swiperInstance.update();
     }
-  }, [products, swiperInstance]);
-  if (!products || products.length === 0) {
+  }, [products2, swiperInstance]);
+  if (!products2 || products2.length === 0) {
     return /* @__PURE__ */ jsx("div", { className: "text-center py-12", children: /* @__PURE__ */ jsx("p", { className: "text-gray-500", children: "Không có sản phẩm nào để hiển thị" }) });
   }
   return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
@@ -16691,7 +16702,7 @@ const ProductSwiperBase = ({ className, heading, text, actions: actions2, ...pro
           delay: 5e3,
           disableOnInteraction: false
         },
-        children: products.map((product2) => /* @__PURE__ */ jsx(SwiperSlide, { children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductSuggestionItem, { isTransitioning: false, product: product2 }) }) }, product2.id))
+        children: products2.map((product2) => /* @__PURE__ */ jsx(SwiperSlide, { children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(ProductSuggestionItem, { isTransitioning: false, product: product2 }) }) }, product2.id))
       }
     ),
     /* @__PURE__ */ jsx(
@@ -16733,23 +16744,23 @@ const ProductSwiperBase = ({ className, heading, text, actions: actions2, ...pro
 const ProductSwiper = memo(({ className, heading, text, actions: actions2, ...props }) => {
   return /* @__PURE__ */ jsx("section", { className: clsx(`mkt-section relative overflow-x-hidden`, className), ...props, children: /* @__PURE__ */ jsx(ProductSwiperBase, { ...props }) });
 });
-const CartDrawerHeader = ({ itemCount, onClose }) => /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between relative", children: [
-  itemCount > 0 && /* @__PURE__ */ jsx(DialogTitle, { className: "text-lg font-bold text-gray-900 text-center", children: "Your Cart" }),
-  /* @__PURE__ */ jsx("div", { className: "absolute top-0 right-0", children: /* @__PURE__ */ jsx(IconButton, { icon: XMarkIcon, onClick: onClose, className: "-m-2", "aria-label": "Close panel" }) })
-] });
+const CartDrawerHeader = ({ itemCount, onClose }) => {
+  const { t } = useI18n();
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between relative", children: [
+    itemCount > 0 && /* @__PURE__ */ jsx(DialogTitle, { className: "text-lg font-bold text-gray-900 text-center", children: t("cart.yourCart") }),
+    /* @__PURE__ */ jsx("div", { className: "absolute top-0 right-0", children: /* @__PURE__ */ jsx(IconButton, { icon: XMarkIcon, onClick: onClose, className: "-m-2", "aria-label": "Close panel" }) })
+  ] });
+};
 const CartDrawerEmpty = () => {
   const navigate = useNavigate();
   const { toggleCartDrawer } = useCart();
+  const { t } = useI18n();
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center gap-4 w-full", children: [
-    /* @__PURE__ */ jsxs("p", { className: "font-alexandria font-extrabold text-[42px] text-center leading-[100%]", children: [
-      "YOUR CART ",
-      /* @__PURE__ */ jsx("br", {}),
-      "IS EMPTY :0"
-    ] }),
+    /* @__PURE__ */ jsx("p", { className: "font-alexandria font-extrabold text-[42px] text-center leading-[100%]", children: t("cart.cartEmpty") }),
     /* @__PURE__ */ jsx(ButtonLink, { variant: "primary", size: "sm", onClick: () => {
       navigate("/collections");
       toggleCartDrawer(false);
-    }, children: "Continue Shopping" })
+    }, children: t("cart.continueShopping") })
   ] });
 };
 const CartDrawerLoading = ({ className }) => /* @__PURE__ */ jsx("li", { className: clsx("list-none", className), children: /* @__PURE__ */ jsxs("div", { className: "flex animate-pulse space-x-4", children: [
@@ -16778,34 +16789,37 @@ const CartDrawerContent = ({ items, isRemovingItemId, isAddingItem, showEmptyCar
   ] }) });
 };
 const CartDrawerEmptyFooter = () => /* @__PURE__ */ jsx("div", { className: "border-t border-gray-200 py-6 max-h-[215px]", children: /* @__PURE__ */ jsx(ProductSwiper, {}) });
-const CartDrawerFooter = ({ cart: cart2, currencyCode, itemCount, navigatingToCheckout, onCheckout, onClose }) => /* @__PURE__ */ jsxs("div", { className: "border-t border-gray-200 px-4 py-6 sm:px-6", children: [
-  /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-base font-bold text-gray-900", children: [
-    /* @__PURE__ */ jsx("p", { children: "Subtotal" }),
-    /* @__PURE__ */ jsx("p", { children: cart2 ? formatCartSubtotal(cart2) : formatPrice(0, {
-      currency: currencyCode
-    }) })
-  ] }),
-  /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-sm text-gray-500", children: "Shipping and taxes calculated at checkout." }),
-  /* @__PURE__ */ jsx("div", { className: "mt-6", children: /* @__PURE__ */ jsx(
-    Button,
-    {
-      variant: "primary",
-      disabled: itemCount === 0 || navigatingToCheckout,
-      onClick: onCheckout,
-      className: "h-12 w-full !text-base font-bold",
-      children: navigatingToCheckout ? "Preparing checkout..." : "Checkout"
-    }
-  ) }),
-  /* @__PURE__ */ jsx("div", { className: "mt-4 flex justify-center text-center text-sm text-gray-500", children: /* @__PURE__ */ jsxs("p", { children: [
-    "or",
-    " ",
-    /* @__PURE__ */ jsx(ButtonLink, { size: "sm", onClick: onClose, children: /* @__PURE__ */ jsxs("div", { children: [
-      "Continue Shopping",
-      ` `,
-      /* @__PURE__ */ jsx("span", { "aria-hidden": "true", children: "→" })
+const CartDrawerFooter = ({ cart: cart2, currencyCode, itemCount, navigatingToCheckout, onCheckout, onClose }) => {
+  const { t } = useI18n();
+  return /* @__PURE__ */ jsxs("div", { className: "border-t border-gray-200 px-4 py-6 sm:px-6", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-base font-bold text-gray-900", children: [
+      /* @__PURE__ */ jsx("p", { children: t("cart.subtotal") }),
+      /* @__PURE__ */ jsx("p", { children: cart2 ? formatCartSubtotal(cart2) : formatPrice(0, {
+        currency: currencyCode
+      }) })
+    ] }),
+    /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-sm text-gray-500", children: t("cart.shippingTaxesCalculated") }),
+    /* @__PURE__ */ jsx("div", { className: "mt-6", children: /* @__PURE__ */ jsx(
+      Button,
+      {
+        variant: "primary",
+        disabled: itemCount === 0 || navigatingToCheckout,
+        onClick: onCheckout,
+        className: "h-12 w-full !text-base font-bold",
+        children: navigatingToCheckout ? t("cart.preparingCheckout") : t("cart.checkout")
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "mt-4 flex justify-center text-center text-sm text-gray-500", children: /* @__PURE__ */ jsxs("p", { children: [
+      t("cart.or"),
+      " ",
+      /* @__PURE__ */ jsx(ButtonLink, { size: "sm", onClick: onClose, children: /* @__PURE__ */ jsxs("div", { children: [
+        t("cart.continueShopping"),
+        ` `,
+        /* @__PURE__ */ jsx("span", { "aria-hidden": "true", children: "→" })
+      ] }) })
     ] }) })
-  ] }) })
-] });
+  ] });
+};
 const CartDrawer = () => {
   const navigate = useNavigate();
   const {
@@ -17077,6 +17091,7 @@ const SocialIcons = ({ siteSettings: siteSettings2 }) => {
 };
 const Footer = () => {
   const { footerNavigationItems: footerNavigationItems2, settings } = useSiteDetails();
+  const { t } = useI18n();
   const rootData = useRootLoaderData();
   rootData == null ? void 0 : rootData.hasPublishedProducts;
   useFetcher();
@@ -17090,7 +17105,7 @@ const Footer = () => {
   }, [regions]);
   return /* @__PURE__ */ jsx("footer", { className: "bg-black min-h-[140px] py-8 text-white", children: /* @__PURE__ */ jsxs(Container, { className: "flex flex-col gap-[72px]", children: [
     /* @__PURE__ */ jsx(LogoStoreName, { theme: "dark" }),
-    /* @__PURE__ */ jsx("div", { className: "flex justify-center gap-4 xl:gap-[72px] flex-wrap", children: footerNavigationItems2.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link, { to: item.url, className: "hover:underline text-white text-base xl:text-[24px] font-alexandria font-regular leading-[145%] tracking-normal", children: item.label }) }, item.id)) }),
+    /* @__PURE__ */ jsx("div", { className: "flex justify-center gap-4 xl:gap-[72px] flex-wrap", children: footerNavigationItems2.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link, { to: item.url, className: "hover:underline text-white text-base xl:text-[24px] font-alexandria font-regular leading-[145%] tracking-normal", children: t(item.label) }) }, item.id)) }),
     /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
       /* @__PURE__ */ jsx("span", { className: "text-[18.56px] font-alexandria font-regular leading-[145%] tracking-normal flex-1", children: "© 2025 KIRA" }),
       /* @__PURE__ */ jsx("div", { className: "flex-1 flex justify-center", children: /* @__PURE__ */ jsx(SocialIcons, { siteSettings: settings }) }),
@@ -17134,6 +17149,7 @@ const URLAwareNavLink = ({ url, newTab, prefetch = "intent", preventScrollReset,
 };
 const HeaderSideNav = ({ open, setOpen, activeSection }) => {
   const { headerNavigationItems: headerNavigationItems2 } = useSiteDetails();
+  const { t } = useI18n();
   return /* @__PURE__ */ jsx(Transition.Root, { show: !!open, as: Fragment$1, children: /* @__PURE__ */ jsxs(Dialog, { as: "div", className: "relative z-50", onClose: () => setOpen(false), children: [
     /* @__PURE__ */ jsx(
       Transition.Child,
@@ -17160,7 +17176,7 @@ const HeaderSideNav = ({ open, setOpen, activeSection }) => {
         leaveTo: "translate-x-full",
         children: /* @__PURE__ */ jsx(Dialog.Panel, { className: "pointer-events-auto w-screen max-w-md", children: /* @__PURE__ */ jsx("div", { className: "flex h-full flex-col overflow-y-scroll bg-white shadow-xl", children: /* @__PURE__ */ jsxs("div", { className: "flex-1 overflow-y-auto px-4 py-6 sm:px-6", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
-            /* @__PURE__ */ jsx(Dialog.Title, { className: "text-lg font-bold text-gray-900", children: "Navigation" }),
+            /* @__PURE__ */ jsx(Dialog.Title, { className: "text-lg font-bold text-gray-900", children: t("navigation.title") }),
             /* @__PURE__ */ jsx("div", { className: "ml-3 flex h-7 items-center", children: /* @__PURE__ */ jsx(
               IconButton,
               {
@@ -17182,7 +17198,7 @@ const HeaderSideNav = ({ open, setOpen, activeSection }) => {
                 isActive && (!navItemProps.url.includes("#") || activeSection === navItemProps.url.split("#")[1].split("?")[0]) ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               ),
               prefetch: "viewport",
-              children: /* @__PURE__ */ jsx("span", { className: "flex-1", children: navItemProps.label })
+              children: /* @__PURE__ */ jsx("span", { className: "flex-1", children: t(navItemProps.label) })
             },
             id
           )) }) }) })
@@ -17481,6 +17497,7 @@ const Header = () => {
   const [sideNavOpen, setSideNavOpen] = useState(false);
   const { headerNavigationItems: headerNavigationItems2 } = useSiteDetails();
   const { cart: cart2, toggleCartDrawer } = useCart();
+  const { t } = useI18n();
   const { activeSection } = useActiveSection(headerNavigationItems2);
   const rootLoader = useRootLoaderData();
   const hasProducts = rootLoader == null ? void 0 : rootLoader.hasPublishedProducts;
@@ -17509,7 +17526,7 @@ const Header = () => {
               ),
               prefetch: "viewport",
               children: [
-                navItemProps.label,
+                t(navItemProps.label),
                 index == 0 && /* @__PURE__ */ jsx(
                   IconButton,
                   {
@@ -17981,11 +17998,18 @@ const navigation$1 = {
   products: "Products",
   categories: "Categories",
   about: "About Us",
+  aboutUs: "About Us",
   contact: "Contact",
   account: "Account",
   login: "Login",
   logout: "Logout",
-  register: "Register"
+  register: "Register",
+  blog: "Blog",
+  letsTalk: "Let's talk",
+  faqs: "FAQs",
+  documentation: "Documentation",
+  termsOfService: "Terms of Service",
+  title: "Navigation"
 };
 const hero$1 = {
   title: "BARRIO",
@@ -18012,7 +18036,15 @@ const product$1 = {
   availability: "Availability",
   sku: "SKU",
   category: "Category",
-  tags: "Tags"
+  tags: "Tags",
+  soldOut: "Sold out",
+  processing: "Processing...",
+  buyNow: "Buy Now",
+  productOptions: "Product options",
+  ingredients: "INGREDIENTS",
+  precautionsOfUse: "PRECAUTIONS OF USE",
+  applicationTips: "APPLICATION TIPS",
+  addToCart: "Add to cart"
 };
 const cart$1 = {
   title: "Shopping Cart",
@@ -18022,7 +18054,15 @@ const cart$1 = {
   update: "Update Cart",
   clear: "Clear Cart",
   estimatedTotal: "Estimated Total",
-  shippingCalculated: "Shipping calculated at checkout"
+  shippingCalculated: "Shipping calculated at checkout",
+  yourCart: "Your Cart",
+  cartEmpty: "YOUR CART IS EMPTY :0",
+  continueShopping: "Continue Shopping",
+  subtotal: "Subtotal",
+  shippingTaxesCalculated: "Shipping and taxes calculated at checkout.",
+  preparingCheckout: "Preparing checkout...",
+  checkout: "Checkout",
+  or: "or"
 };
 const checkout$1 = {
   title: "Checkout",
@@ -18035,7 +18075,36 @@ const checkout$1 = {
   processing: "Processing...",
   orderConfirmation: "Order Confirmation",
   thankYou: "Thank you for your order!",
-  orderNumber: "Order Number"
+  orderNumber: "Order Number",
+  checkingOutAs: "Checking out as:",
+  accountDetails: "Account details",
+  toGetStartedSelect: "To get started, please select your shipping address.",
+  toGetStartedEnter: "To get started, enter your email address.",
+  emailAddress: "Email Address",
+  emailAddressPlaceholder: "Email address",
+  firstName: "First Name",
+  firstNamePlaceholder: "First Name",
+  lastName: "Last Name",
+  lastNamePlaceholder: "Last Name",
+  company: "Company (Optional)",
+  companyPlaceholder: "Company",
+  address: "Address",
+  addressPlaceholder: "Address",
+  apartmentSuite: "Apartment, suite, etc. (Optional)",
+  apartmentSuitePlaceholder: "Apartment, suite, etc.",
+  city: "City",
+  cityPlaceholder: "City",
+  province: "Province",
+  provincePlaceholder: "Province",
+  postalCode: "Postal Code",
+  postalCodePlaceholder: "Postal Code",
+  country: "Country",
+  countryPlaceholder: "Country",
+  phone: "Phone (Optional)",
+  phonePlaceholder: "Phone",
+  saving: "Saving...",
+  saveAndContinue: "Save and continue",
+  cancelEdit: "Cancel edit"
 };
 const shop$1 = "EAU DE PARFUM";
 const home$1 = {
@@ -18053,7 +18122,71 @@ const home$1 = {
   },
   r: {
     description: "Kira is a shimmering burst of light, an alchemy of sunshine and laughter, woven into each delicate spritz—an ethereal dance of joy that lingers like a memory of the sun's warm embrace."
-  }
+  },
+  "this": "This",
+  is: "is",
+  est: "Est.",
+  year: "2025",
+  thisIs: "This is",
+  our: "Our"
+};
+const success$1 = {
+  hurray: "Hurray!!!",
+  weGotU: "WE GOT U ;3",
+  deliveringSweetness: "we'll be delivering sweetness to u soon",
+  youMayAlsoLike: "You may also like",
+  oohh: "Oohh",
+  uGotSomething: "U GOT SOMETHING ;3",
+  okay: "Okay!!!",
+  weGotUContact: "WE GOT U ;3",
+  replyingSoon: "we'll be replying to u sooooon!!!",
+  inTheMeantime: "in the meantime......."
+};
+const menu$1 = {
+  blog: "Blog",
+  product: "Product",
+  story: "Story",
+  contact: "Contact"
+};
+const products$1 = {
+  newMagic: "NEW MAGIC",
+  comingSoon: "Coming <br /> soon...",
+  stayTuned: "Stay tuned",
+  thisIsOur: "THIS IS OUR",
+  icy: "Icy",
+  thirsty: "Thirsty",
+  thisIs: "THIS IS",
+  allOfOur: "All of Our",
+  collection: "collection",
+  icyDescription: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
+  thirstyDescription: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
+  cupAlt: "Cup",
+  coming: "Coming",
+  all: "All",
+  heartAndSoul: "Heart & Soul",
+  pickA: "Pick <br /> a",
+  card: "card",
+  collections: "Collections"
+};
+const contact$2 = {
+  title: "Contact Us",
+  name: "Name",
+  namePlaceholder: "Name",
+  email: "Email",
+  emailPlaceholder: "Email",
+  message: "Message",
+  messagePlaceholder: "Message",
+  send: "Send",
+  sending: "Sending...",
+  error: "Failed to send message. Please try again later.",
+  validation: {
+    nameMin: "Name must be at least 2 characters",
+    emailInvalid: "Please enter a valid email",
+    messageMin: "Message must be at least 10 characters"
+  },
+  description: "We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!",
+  ourEmail: "Our email:",
+  contactAlt: "Contact"
 };
 const en = {
   common: common$1,
@@ -18064,7 +18197,11 @@ const en = {
   cart: cart$1,
   checkout: checkout$1,
   shop: shop$1,
-  home: home$1
+  home: home$1,
+  success: success$1,
+  menu: menu$1,
+  products: products$1,
+  contact: contact$2
 };
 const common = {
   home: "Trang chủ",
@@ -18120,11 +18257,18 @@ const navigation = {
   products: "Sản phẩm",
   categories: "Danh mục",
   about: "Giới thiệu",
+  aboutUs: "Giới thiệu",
   contact: "Liên hệ",
   account: "Tài khoản",
   login: "Đăng nhập",
   logout: "Đăng xuất",
-  register: "Đăng ký"
+  register: "Đăng ký",
+  blog: "Blog",
+  letsTalk: "Liên hệ",
+  faqs: "Câu hỏi thường gặp",
+  documentation: "Tài liệu",
+  termsOfService: "Điều khoản dịch vụ",
+  title: "Điều hướng"
 };
 const hero = {
   title: "BARRIO",
@@ -18151,7 +18295,15 @@ const product = {
   availability: "Tình trạng",
   sku: "Mã sản phẩm",
   category: "Danh mục",
-  tags: "Thẻ"
+  tags: "Thẻ",
+  soldOut: "Hết hàng",
+  processing: "Đang xử lý...",
+  buyNow: "Mua ngay",
+  productOptions: "Tùy chọn sản phẩm",
+  ingredients: "THÀNH PHẦN",
+  precautionsOfUse: "LƯU Ý KHI SỬ DỤNG",
+  applicationTips: "MẸO SỬ DỤNG",
+  addToCart: "Thêm vào giỏ"
 };
 const cart = {
   title: "Giỏ hàng",
@@ -18161,7 +18313,15 @@ const cart = {
   update: "Cập nhật giỏ hàng",
   clear: "Xóa giỏ hàng",
   estimatedTotal: "Tổng ước tính",
-  shippingCalculated: "Phí vận chuyển được tính khi thanh toán"
+  shippingCalculated: "Phí vận chuyển được tính khi thanh toán",
+  yourCart: "Giỏ hàng của bạn",
+  cartEmpty: "GIỎ HÀNG CỦA BẠN ĐANG TRỐNG :0",
+  continueShopping: "Tiếp tục mua sắm",
+  subtotal: "Tạm tính",
+  shippingTaxesCalculated: "Phí vận chuyển và thuế được tính khi thanh toán.",
+  preparingCheckout: "Đang chuẩn bị thanh toán...",
+  checkout: "Thanh toán",
+  or: "hoặc"
 };
 const checkout = {
   title: "Thanh toán",
@@ -18174,7 +18334,36 @@ const checkout = {
   processing: "Đang xử lý...",
   orderConfirmation: "Xác nhận đơn hàng",
   thankYou: "Cảm ơn bạn đã đặt hàng!",
-  orderNumber: "Số đơn hàng"
+  orderNumber: "Số đơn hàng",
+  checkingOutAs: "Thanh toán với tư cách:",
+  accountDetails: "Thông tin tài khoản",
+  toGetStartedSelect: "Để bắt đầu, vui lòng chọn địa chỉ giao hàng của bạn.",
+  toGetStartedEnter: "Để bắt đầu, vui lòng nhập địa chỉ email của bạn.",
+  emailAddress: "Địa chỉ Email",
+  emailAddressPlaceholder: "Địa chỉ email",
+  firstName: "Tên",
+  firstNamePlaceholder: "Tên",
+  lastName: "Họ",
+  lastNamePlaceholder: "Họ",
+  company: "Công ty (Tùy chọn)",
+  companyPlaceholder: "Công ty",
+  address: "Địa chỉ",
+  addressPlaceholder: "Địa chỉ",
+  apartmentSuite: "Căn hộ, số nhà, v.v. (Tùy chọn)",
+  apartmentSuitePlaceholder: "Căn hộ, số nhà, v.v.",
+  city: "Thành phố",
+  cityPlaceholder: "Thành phố",
+  province: "Tỉnh/Thành",
+  provincePlaceholder: "Tỉnh/Thành",
+  postalCode: "Mã bưu điện",
+  postalCodePlaceholder: "Mã bưu điện",
+  country: "Quốc gia",
+  countryPlaceholder: "Quốc gia",
+  phone: "Điện thoại (Tùy chọn)",
+  phonePlaceholder: "Điện thoại",
+  saving: "Đang lưu...",
+  saveAndContinue: "Lưu và tiếp tục",
+  cancelEdit: "Hủy chỉnh sửa"
 };
 const shop = "Cửa hàng nước hoa";
 const home = {
@@ -18192,7 +18381,71 @@ const home = {
   },
   r: {
     description: "Kira là một vụ nổ ánh sáng lấp lánh, một phép thuật của ánh nắng và tiếng cười, dệt vào mỗi lần xịt tinh tế—một điệu nhảy tinh thần của niềm vui tồn tại như một kỷ niệm về cái ôm ấm áp của mặt trời."
-  }
+  },
+  "this": "This",
+  is: "is",
+  est: "Est.",
+  year: "2025",
+  thisIs: "This is",
+  our: "Our"
+};
+const success = {
+  hurray: "Tuyệt vời!!!",
+  weGotU: "CHÚNG TÔI ĐÃ NHẬN ĐƯỢC ĐƠN CỦA BẠN ;3",
+  deliveringSweetness: "chúng tôi sẽ giao hàng ngọt ngào đến bạn sớm thôi",
+  youMayAlsoLike: "Bạn cũng có thể thích",
+  oohh: "Ồ",
+  uGotSomething: "BẠN ĐÃ CÓ GÌ ĐÓ ;3",
+  okay: "Được rồi!!!",
+  weGotUContact: "CHÚNG TÔI ĐÃ NHẬN ĐƯỢC ;3",
+  replyingSoon: "chúng tôi sẽ trả lời bạn sớm thôi!!!",
+  inTheMeantime: "trong lúc chờ đợi......."
+};
+const menu = {
+  blog: "Blog",
+  product: "Sản phẩm",
+  story: "Câu chuyện",
+  contact: "Liên hệ"
+};
+const products = {
+  newMagic: "PHÉP MÀU MỚI",
+  comingSoon: "Sắp ra <br /> mắt...",
+  stayTuned: "Hãy đón chờ",
+  thisIsOur: "ĐÂY LÀ",
+  icy: "Icy",
+  thirsty: "Thirsty",
+  thisIs: "ĐÂY LÀ",
+  allOfOur: "Tất cả",
+  collection: "bộ sưu tập",
+  icyDescription: "Đưa bạn đến một quán cà phê ấm cúng vào buổi sáng đầy nắng. Hương thơm pha trộn giữa cà phê mới pha phong phú với một chút vani kem và gia vị ấm áp.",
+  thirstyDescription: "Đưa bạn đến một quán cà phê ấm cúng vào buổi sáng đầy nắng. Hương thơm pha trộn giữa cà phê mới pha phong phú với một chút vani kem và gia vị ấm áp.",
+  cupAlt: "Cốc",
+  coming: "Sắp ra mắt",
+  all: "Tất cả",
+  heartAndSoul: "Trái tim & Tâm hồn",
+  pickA: "Chọn <br /> một",
+  card: "thẻ",
+  collections: "Bộ sưu tập"
+};
+const contact$1 = {
+  title: "Liên hệ với chúng tôi",
+  name: "Tên",
+  namePlaceholder: "Tên",
+  email: "Email",
+  emailPlaceholder: "Email",
+  message: "Tin nhắn",
+  messagePlaceholder: "Tin nhắn",
+  send: "Gửi",
+  sending: "Đang gửi...",
+  error: "Gửi tin nhắn thất bại. Vui lòng thử lại sau.",
+  validation: {
+    nameMin: "Tên phải có ít nhất 2 ký tự",
+    emailInvalid: "Vui lòng nhập email hợp lệ",
+    messageMin: "Tin nhắn phải có ít nhất 10 ký tự"
+  },
+  description: "Chúng tôi rất vui được trả lời mọi câu hỏi của bạn :) Nếu bạn gặp vấn đề với đơn hàng, vui lòng cung cấp số đơn hàng để chúng tôi có thể hỗ trợ bạn nhanh chóng nhất có thể!",
+  ourEmail: "Email của chúng tôi:",
+  contactAlt: "Liên hệ"
 };
 const vi = {
   common,
@@ -18203,7 +18456,11 @@ const vi = {
   cart,
   checkout,
   shop,
-  home
+  home,
+  success,
+  menu,
+  products,
+  contact: contact$1
 };
 const defaultNS = "translation";
 const resources = {
@@ -18216,29 +18473,32 @@ const resources = {
 };
 const supportedLanguages = ["en", "vi"];
 const isBrowser$1 = typeof window !== "undefined";
+i18n.use(initReactI18next);
 if (isBrowser$1) {
   i18n.use(LanguageDetector);
 }
-i18n.init({
+const initOptions = {
   debug: process.env.NODE_ENV === "development",
   fallbackLng: "en",
   defaultNS,
   ns: [defaultNS],
   resources,
   supportedLngs: supportedLanguages,
-  lng: "en",
-  // Set default language explicitly
   interpolation: {
     escapeValue: false
-  },
-  // Only provide detection config on the client
-  detection: isBrowser$1 ? {
+  }
+};
+if (!isBrowser$1) {
+  initOptions.lng = "en";
+}
+if (isBrowser$1) {
+  initOptions.detection = {
     order: ["localStorage", "navigator", "htmlTag"],
     caches: ["localStorage"],
     lookupLocalStorage: "i18nextLng"
-  } : void 0
-});
-i18n.use(initReactI18next);
+  };
+}
+i18n.init(initOptions);
 const I18nProvider = ({ children }) => {
   return /* @__PURE__ */ jsx(I18nextProvider, { i18n, children });
 };
@@ -18855,12 +19115,12 @@ const ProductListItem = ({
 const ProductGrid = ({
   heading,
   actions: actions2,
-  products,
+  products: products2,
   className = "grid grid-cols-1 gap-y-6 @md:grid-cols-2 gap-x-[6vw] @2xl:!grid-cols-3 "
 }) => {
   const navigation2 = useNavigation();
   const isLoading = navigation2.state !== "idle";
-  if (!products) return /* @__PURE__ */ jsx(ProductGridSkeleton, { length: 5 });
+  if (!products2) return /* @__PURE__ */ jsx(ProductGridSkeleton, { length: 5 });
   return /* @__PURE__ */ jsxs(
     "div",
     {
@@ -18869,7 +19129,7 @@ const ProductGrid = ({
       }),
       children: [
         /* @__PURE__ */ jsx(ProductListHeader, { heading, actions: actions2 }),
-        /* @__PURE__ */ jsx("div", { className, children: products == null ? void 0 : products.map((product2) => /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx("div", { className, children: products2 == null ? void 0 : products2.map((product2) => /* @__PURE__ */ jsx(
           NavLink,
           {
             prefetch: "viewport",
@@ -18923,7 +19183,7 @@ const loader$k = async ({
   const collection = collections == null ? void 0 : collections.find((collection2) => collection2.handle === handle);
   if (!collection) throw redirect("/products");
   const {
-    products,
+    products: products2,
     count,
     limit,
     offset
@@ -18931,7 +19191,7 @@ const loader$k = async ({
     collection_id: collection.id
   });
   return {
-    products,
+    products: products2,
     count,
     limit,
     offset,
@@ -18942,7 +19202,7 @@ const collections_$collectionHandle = UNSAFE_withComponentProps(function Product
   const data2 = useLoaderData();
   if (!data2) return null;
   const {
-    products,
+    products: products2,
     count,
     limit,
     offset,
@@ -19003,7 +19263,7 @@ const collections_$collectionHandle = UNSAFE_withComponentProps(function Product
       children: /* @__PURE__ */ jsx("div", {
         className: "flex-1",
         children: /* @__PURE__ */ jsx(ProductListWithPagination, {
-          products,
+          products: products2,
           paginationConfig: {
             count,
             offset,
@@ -19568,7 +19828,7 @@ const loader$j = async ({
     throw redirect("/products");
   }
   const {
-    products,
+    products: products2,
     count,
     limit,
     offset
@@ -19576,7 +19836,7 @@ const loader$j = async ({
     category_id: category.id
   });
   return {
-    products,
+    products: products2,
     count,
     limit,
     offset,
@@ -19588,7 +19848,7 @@ const categories_$categoryHandle = UNSAFE_withComponentProps(function ProductCat
   const data2 = useLoaderData();
   if (!data2) return null;
   const {
-    products,
+    products: products2,
     count,
     limit,
     offset,
@@ -19623,7 +19883,7 @@ const categories_$categoryHandle = UNSAFE_withComponentProps(function ProductCat
       children: /* @__PURE__ */ jsx("div", {
         className: "flex-1",
         children: /* @__PURE__ */ jsx(ProductListWithPagination, {
-          products,
+          products: products2,
           paginationConfig: {
             count,
             offset,
@@ -20428,8 +20688,8 @@ const route17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   loader: loader$h
 }, Symbol.toStringTag, { value: "Module" }));
 const ProductCarouselSkeleton = ({ length }) => /* @__PURE__ */ jsx("div", { className: "xs:grid-cols-2 grid grid-cols-1 gap-y-10 gap-x-6 md:!grid-cols-3 xl:!grid-cols-4 xl:gap-x-8", children: Array.from({ length }, (_, i) => /* @__PURE__ */ jsx(EmptyProductListItem, {}, i)) });
-const ProductRow = memo(({ products }) => {
-  return /* @__PURE__ */ jsx(Fragment, { children: products.map((product2) => /* @__PURE__ */ jsx(
+const ProductRow = memo(({ products: products2 }) => {
+  return /* @__PURE__ */ jsx(Fragment, { children: products2.map((product2) => /* @__PURE__ */ jsx(
     "div",
     {
       className: "xs:w-[31.2%] xs:snap-start mr-6 inline-block w-[100%] snap-center last:mr-0 sm:mr-6 sm:snap-start md:w-[31.2%] xl:mr-8 xl:w-[23%]",
@@ -20438,19 +20698,19 @@ const ProductRow = memo(({ products }) => {
     product2.id
   )) });
 });
-const ProductCarousel = ({ products, className }) => {
+const ProductCarousel = ({ products: products2, className }) => {
   const { scrollableDivRef, ...scrollArrowProps } = useScrollArrows({
     buffer: 100,
-    resetOnDepChange: [products]
+    resetOnDepChange: [products2]
   });
-  if (!products) return /* @__PURE__ */ jsx(ProductCarouselSkeleton, { length: 4 });
+  if (!products2) return /* @__PURE__ */ jsx(ProductCarouselSkeleton, { length: 4 });
   return /* @__PURE__ */ jsxs("div", { className: clsx("product-carousel relative", className), children: [
     /* @__PURE__ */ jsx(
       "div",
       {
         ref: scrollableDivRef,
         className: "w-full snap-both snap-mandatory overflow-x-auto whitespace-nowrap pb-2 sm:snap-proximity",
-        children: /* @__PURE__ */ jsx(ProductRow, { products })
+        children: /* @__PURE__ */ jsx(ProductRow, { products: products2 })
       }
     ),
     /* @__PURE__ */ jsx(ScrollArrowButtons, { className: "-mt-12", ...scrollArrowProps })
@@ -20501,8 +20761,8 @@ const ProductListBase = () => {
   const [selectedTab, setSelectedTab] = useState(void 0);
   const fetcher = useFetcher();
   const params = useParams();
-  const { collection_tabs, category_tabs, products } = fetcher.data || {};
-  const filteredProducts = params.productHandle ? products == null ? void 0 : products.filter((product2) => product2.handle !== params.productHandle) : products;
+  const { collection_tabs, category_tabs, products: products2 } = fetcher.data || {};
+  const filteredProducts = params.productHandle ? products2 == null ? void 0 : products2.filter((product2) => product2.handle !== params.productHandle) : products2;
   const hasCollectionTabs = !!(collection_tabs == null ? void 0 : collection_tabs.length);
   const hasCategoryTabs = !!(category_tabs == null ? void 0 : category_tabs.length);
   const hasProducts = isInitialized && !(filteredProducts == null ? void 0 : filteredProducts.length);
@@ -20832,7 +21092,7 @@ const SimpleReviewForm = ({
   const [content, setContent] = useState("");
   const [stars, setStars] = useState(5);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [success2, setSuccess] = useState(false);
   const fetcher = useFetcher$1();
   const isSubmitting = fetcher.state !== "idle";
   useEffect(() => {
@@ -20888,7 +21148,7 @@ const SimpleReviewForm = ({
   };
   return /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, className: "space-y-6 bg-white p-6 rounded-lg border border-gray-200", children: [
     /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold text-gray-900", children: "Write a Review" }),
-    success && /* @__PURE__ */ jsxs("div", { className: "bg-green-50 border border-green-200 rounded-md p-4 text-green-800", children: [
+    success2 && /* @__PURE__ */ jsxs("div", { className: "bg-green-50 border border-green-200 rounded-md p-4 text-green-800", children: [
       /* @__PURE__ */ jsx("p", { className: "font-semibold", children: "Thank you!" }),
       /* @__PURE__ */ jsx("p", { className: "text-sm mt-1", children: "Your review has been submitted and is pending approval." })
     ] }),
@@ -21153,12 +21413,34 @@ const variantIsSoldOut = (variant) => {
   return !!((variant == null ? void 0 : variant.manage_inventory) && (variant == null ? void 0 : variant.inventory_quantity) < 1);
 };
 const ProductTemplate = ({ product: product2 }) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p;
+  const { currentLanguage, t } = useI18n();
+  const [description, setDescription] = useState(product2.description || "");
+  const [notes, setNotes] = useState(((_a = product2.metadata) == null ? void 0 : _a.notes) || "");
+  const [ingredients, setIngredients] = useState(((_b = product2.metadata) == null ? void 0 : _b.ingredients) || "");
+  const [precautionsOfUse, setPrecautionsOfUse] = useState(((_c = product2.metadata) == null ? void 0 : _c.precautions_of_use) || "");
+  const [applicationTips, setApplicationTips] = useState(((_d = product2.metadata) == null ? void 0 : _d.application_tips) || "");
+  useEffect(() => {
+    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2;
+    if (currentLanguage === "vi") {
+      setDescription(((_a2 = product2.metadata) == null ? void 0 : _a2.description_vi) || "");
+      setNotes(((_b2 = product2.metadata) == null ? void 0 : _b2.notes_vi) || "");
+      setIngredients(((_c2 = product2.metadata) == null ? void 0 : _c2.ingredients_vi) || "");
+      setPrecautionsOfUse(((_d2 = product2.metadata) == null ? void 0 : _d2.precautions_of_use_vi) || "");
+      setApplicationTips(((_e2 = product2.metadata) == null ? void 0 : _e2.application_tips_vi) || "");
+    } else {
+      setDescription(((_f2 = product2.metadata) == null ? void 0 : _f2.description) || "");
+      setNotes(((_g2 = product2.metadata) == null ? void 0 : _g2.notes) || "");
+      setIngredients(((_h2 = product2.metadata) == null ? void 0 : _h2.ingredients) || "");
+      setPrecautionsOfUse(((_i2 = product2.metadata) == null ? void 0 : _i2.precautions_of_use) || "");
+      setApplicationTips(((_j2 = product2.metadata) == null ? void 0 : _j2.application_tips) || "");
+    }
+  }, [currentLanguage, product2.metadata]);
   const formRef = useRef(null);
   const addToCartFetcher = useFetcher({ key: FetcherKeys.cart.createLineItem });
   const { toggleCartDrawer } = useCart();
   const { region } = useRegion();
-  const hasErrors = Object.keys(((_a = addToCartFetcher.data) == null ? void 0 : _a.errors) || {}).length > 0;
+  const hasErrors = Object.keys(((_e = addToCartFetcher.data) == null ? void 0 : _e.errors) || {}).length > 0;
   const isAddingToCart = ["submitting", "loading"].includes(addToCartFetcher.state);
   const defaultValues = {
     productId: product2.id,
@@ -21368,11 +21650,11 @@ const ProductTemplate = ({ product: product2 }) => {
           /* @__PURE__ */ jsx("input", { type: "hidden", name: "productId", value: product2.id }),
           /* @__PURE__ */ jsx(Container, { className: "px-0 sm:px-6 md:px-8", children: /* @__PURE__ */ jsxs(Grid, { className: "!gap-0 overflow-visible", children: [
             /* @__PURE__ */ jsxs(GridColumn, { className: "mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]", children: [
-              /* @__PURE__ */ jsx("h2", { className: "text-4xl xl:text-[100px] font-bold text-gray-900 leading-[5rem]", children: customizationTitles[0] }),
+              /* @__PURE__ */ jsx("h2", { className: "text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight", children: customizationTitles[0] }),
               /* @__PURE__ */ jsx(ProductImageGallery, { product: product2, variantImage }, product2.id),
               /* @__PURE__ */ jsxs("div", { className: "flex gap-4 items-end justify-between", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2", children: [
-                  customizationTitles[1] && /* @__PURE__ */ jsx("h2", { className: "text-4xl xl:text-[100px] font-bold text-gray-900", children: customizationTitles[1] }),
+                  customizationTitles[1] && /* @__PURE__ */ jsx("h2", { className: "text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight", children: customizationTitles[1] }),
                   /* @__PURE__ */ jsx("p", { className: "text-gray-900 font-bold flex gap-3", children: /* @__PURE__ */ jsx("span", { className: "text-3xl xl:text-5xl", children: selectedVariant ? /* @__PURE__ */ jsx(ProductPrice, { product: product2, variant: selectedVariant, currencyCode }) : /* @__PURE__ */ jsx(ProductPriceRange, { product: product2, currencyCode }) }) })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-end gap-6", children: [
@@ -21384,14 +21666,14 @@ const ProductTemplate = ({ product: product2 }) => {
                       size: "image",
                       disabled: isAddingToCart || isBuyingNow,
                       className: "disabled:opacity-50 disabled:cursor-not-allowed",
-                      children: /* @__PURE__ */ jsx("img", { src: "/assets/images/add-to-cart.svg", alt: "Add to cart", className: "w-auto h-[80px] xl:h-[108px]" })
+                      children: /* @__PURE__ */ jsx("img", { src: "/assets/images/add-to-cart.svg", alt: t("product.addToCart"), className: "w-auto h-[80px] xl:h-[108px]" })
                     }
                   ) : /* @__PURE__ */ jsx(
                     SubmitButton,
                     {
                       disabled: true,
                       className: "pointer-events-none !h-12 w-full !text-base !font-bold opacity-50",
-                      children: "Sold out"
+                      children: t("product.soldOut")
                     }
                   ) })
                 ] })
@@ -21406,18 +21688,18 @@ const ProductTemplate = ({ product: product2 }) => {
                     onClick: handleBuyNow,
                     disabled: isAddingToCart || isBuyingNow,
                     className: "!h-12 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed",
-                    children: isBuyingNow ? "Processing..." : "Buy Now"
+                    children: isBuyingNow ? t("product.processing") : t("product.buyNow")
                   }
                 ) : /* @__PURE__ */ jsx(
                   Button,
                   {
                     disabled: true,
                     className: "pointer-events-none !h-12 !text-base !font-bold opacity-50 bg-gray-300 text-gray-500",
-                    children: "Sold out"
+                    children: t("product.soldOut")
                   }
                 ) }) }),
                 productSelectOptions && productSelectOptions.length > 5 && /* @__PURE__ */ jsxs("section", { "aria-labelledby": "product-options", className: "product-options", children: [
-                  /* @__PURE__ */ jsx("h2", { id: "product-options", className: "sr-only", children: "Product options" }),
+                  /* @__PURE__ */ jsx("h2", { id: "product-options", className: "sr-only", children: t("product.productOptions") }),
                   /* @__PURE__ */ jsx("div", { className: "space-y-4", children: productSelectOptions.map((option, optionIndex) => /* @__PURE__ */ jsx(
                     ProductOptionSelectorSelect,
                     {
@@ -21430,7 +21712,7 @@ const ProductTemplate = ({ product: product2 }) => {
                   )) })
                 ] }),
                 productSelectOptions && productSelectOptions.length <= 5 && /* @__PURE__ */ jsxs("section", { "aria-labelledby": "product-options", className: "product-options my-6 grid gap-4", children: [
-                  /* @__PURE__ */ jsx("h2", { id: "product-options", className: "sr-only", children: "Product options" }),
+                  /* @__PURE__ */ jsx("h2", { id: "product-options", className: "sr-only", children: t("product.productOptions") }),
                   productSelectOptions.map((option, optionIndex) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
                     ProductOptionSelectorRadio,
                     {
@@ -21442,17 +21724,17 @@ const ProductTemplate = ({ product: product2 }) => {
                   ) }, optionIndex))
                 ] }),
                 /* @__PURE__ */ jsxs("div", { className: "my-2 flex flex-col gap-2", children: [
-                  !!product2.description && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx("div", { className: "whitespace-pre-wrap text-base text-primary-800", children: product2.description }) }),
-                  ((_b = product2.metadata) == null ? void 0 : _b.notes) && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: (_c = product2.metadata) == null ? void 0 : _c.notes } }) })
+                  !!product2.description && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx("div", { className: "whitespace-pre-wrap text-base text-primary-800", children: description ? description : product2.description }) }),
+                  ((_f = product2.metadata) == null ? void 0 : _f.notes) && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: notes ? notes : (_g = product2.metadata) == null ? void 0 : _g.notes } }) })
                 ] })
               ] }),
               /* @__PURE__ */ jsx("div", { className: "container mx-auto grid grid-cols-12 px-8 gap-[20px]", children: /* @__PURE__ */ jsx("hr", { className: "col-span-8 border-t-[1px] border-primary" }) }),
               /* @__PURE__ */ jsxs("div", { className: "container mx-auto my-6 xl:my-12 grid grid-cols-12 xl:px-8 p-4 gap-[20px]", children: [
-                ((_d = product2.metadata) == null ? void 0 : _d.ingredients) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: "INGREDIENTS", initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: (_e = product2.metadata) == null ? void 0 : _e.ingredients } }) }),
-                ((_f = product2.metadata) == null ? void 0 : _f.precautions_of_use) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: "PRECAUTIONS OF USE", initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: (_g = product2.metadata) == null ? void 0 : _g.precautions_of_use } }) }),
-                ((_h = product2.metadata) == null ? void 0 : _h.application_tips) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: "APPLICATION TIPS", initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: (_i = product2.metadata) == null ? void 0 : _i.application_tips } }) })
+                ((_h = product2.metadata) == null ? void 0 : _h.ingredients) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: t("product.ingredients"), initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: ingredients ? ingredients : (_i = product2.metadata) == null ? void 0 : _i.ingredients } }) }),
+                ((_j = product2.metadata) == null ? void 0 : _j.precautions_of_use) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: t("product.precautionsOfUse"), initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: precautionsOfUse ? precautionsOfUse : (_k = product2.metadata) == null ? void 0 : _k.precautions_of_use } }) }),
+                ((_l = product2.metadata) == null ? void 0 : _l.application_tips) && /* @__PURE__ */ jsx(Collasape, { className: "col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]", title: t("product.applicationTips"), initiallyOpen: false, children: /* @__PURE__ */ jsx("div", { dangerouslySetInnerHTML: { __html: applicationTips ? applicationTips : (_m = product2.metadata) == null ? void 0 : _m.application_tips } }) })
               ] }),
-              !!((_j = product2.metadata) == null ? void 0 : _j.ingredients) || !!((_k = product2.metadata) == null ? void 0 : _k.precautions_of_use) || !!((_l = product2.metadata) == null ? void 0 : _l.application_tips) && /* @__PURE__ */ jsx("div", { className: "container mx-auto grid grid-cols-12 px-8 gap-[20px]", children: /* @__PURE__ */ jsx("hr", { className: "col-span-8 border-t-[1px] border-primary" }) })
+              !!(ingredients ? ingredients : (_n = product2.metadata) == null ? void 0 : _n.ingredients) || !!(precautionsOfUse ? precautionsOfUse : (_o = product2.metadata) == null ? void 0 : _o.precautions_of_use) || !!(applicationTips ? applicationTips : (_p = product2.metadata) == null ? void 0 : _p.application_tips) && /* @__PURE__ */ jsx("div", { className: "container mx-auto grid grid-cols-12 px-8 gap-[20px]", children: /* @__PURE__ */ jsx("hr", { className: "col-span-8 border-t-[1px] border-primary" }) })
             ] }) })
           ] }) })
         ]
@@ -21486,13 +21768,13 @@ const loader$g = async (args) => {
     defaultPageSize: 2
   });
   const {
-    products
+    products: products2
   } = await fetchProducts(args.request, {
     handle: args.params.productHandle,
     fields: "*categories,*metadata"
   });
-  if (!products.length) throw redirect("/404");
-  const product2 = products[0];
+  if (!products2.length) throw redirect("/404");
+  const product2 = products2[0];
   const productReviews = await fetchProductReviews(product2.id, {
     offset: reviewsOffset,
     limit: reviewsLimit
@@ -21507,12 +21789,15 @@ const products_$productHandle = UNSAFE_withComponentProps(function ProductDetail
   const {
     product: product2
   } = useLoaderData();
+  const {
+    t
+  } = useI18n();
   return /* @__PURE__ */ jsxs(Fragment, {
     children: [/* @__PURE__ */ jsx(ProductTemplate, {
       product: product2
     }), /* @__PURE__ */ jsx(ProductList, {
       className: "!pb-[100px] xl:px-9",
-      heading: "You may also like"
+      heading: t("success.youMayAlsoLike")
     })]
   });
 });
@@ -21526,13 +21811,13 @@ const loader$f = async ({
   request
 }) => {
   const {
-    products
+    products: products2
   } = await sdk.store.product.list({
     limit: 1e3
   });
   const host = request.headers.get("host");
   const baseUrl = `https://${host}`;
-  const urls = products.map(({
+  const urls = products2.map(({
     handle,
     updated_at
   }) => ({
@@ -21793,12 +22078,12 @@ async function loader$d({
   request
 }) {
   const {
-    products
+    products: products2
   } = await fetchProducts(request, {
     q: new URL(request.url).searchParams.get("q") || "",
     limit: 3
   });
-  return data(products, {
+  return data(products2, {
     status: 200
   });
 }
@@ -21816,7 +22101,7 @@ const loader$c = async ({
   if (!collections.length) throw redirect("/products");
   const collectionsWithProducts = await Promise.all(collections.map(async (collection) => {
     const {
-      products,
+      products: products2,
       count,
       limit,
       offset
@@ -21825,7 +22110,7 @@ const loader$c = async ({
     });
     return {
       ...collection,
-      products,
+      products: products2,
       count,
       limit,
       offset
@@ -21837,6 +22122,9 @@ const loader$c = async ({
 };
 const collections__index = UNSAFE_withComponentProps(function ProductCollectionRoute2() {
   const data2 = useLoaderData();
+  const {
+    t
+  } = useI18n();
   if (!data2) return null;
   const {
     collectionsWithProducts
@@ -21844,15 +22132,15 @@ const collections__index = UNSAFE_withComponentProps(function ProductCollectionR
   return /* @__PURE__ */ jsxs(Container, {
     className: "pb-32",
     children: [/* @__PURE__ */ jsx("h1", {
-      className: "relative text-center text-4xl xl:text-[100px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 xl:mt-24 after:hidden xl:after:block after:content-[''] after:block after:w-full after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0",
+      className: "relative text-center text-4xl xl:text-[100px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 xl:mt-20 after:hidden xl:after:block after:content-[''] after:block after:w-full after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0",
       children: /* @__PURE__ */ jsxs("span", {
         className: "inline-block justify-center bg-white z-10 relative px-16 text-center",
         children: [/* @__PURE__ */ jsx("span", {
-          className: " font-centuryBook block leading-normal xl:leading-6",
-          children: "All"
+          className: " font-centuryBook block leading-normal xl:leading-tight",
+          children: t("products.all")
         }), /* @__PURE__ */ jsx("span", {
           className: "font-bold font-title uppercase",
-          children: "Collections"
+          children: t("products.collections")
         })]
       })
     }), collectionsWithProducts.length > 1 && /* @__PURE__ */ jsx("div", {
@@ -22039,22 +22327,25 @@ const route26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   loader: loader$a
 }, Symbol.toStringTag, { value: "Module" }));
 const checkout_success = UNSAFE_withComponentProps(function CheckoutSuccessRoute() {
+  const {
+    t
+  } = useI18n();
   return /* @__PURE__ */ jsxs(Fragment, {
     children: [/* @__PURE__ */ jsxs("div", {
       className: "bg-[url('/assets/images/checkout/success-bg.png')] bg-contain bg-center contact-success-message text-center mt-8",
       children: [/* @__PURE__ */ jsx("p", {
         className: "text-[90px] xl:text-[150px] font-centuryBook italic",
-        children: "Hurray!!!"
+        children: t("success.hurray")
       }), /* @__PURE__ */ jsx("p", {
         className: "text-[60px] xl:text-[110px] font-title font-bold",
-        children: "WE GOT U ;3"
+        children: t("success.weGotU")
       }), /* @__PURE__ */ jsx("p", {
         className: "text-[30px] font-title font-light",
-        children: "we’ll be delivering sweetness to u soon"
+        children: t("success.deliveringSweetness")
       })]
     }), /* @__PURE__ */ jsx(ProductList, {
       className: "py-8 xl:!py-[100px] xl:px-9",
-      heading: "You may also like"
+      heading: t("success.youMayAlsoLike")
     })]
   });
 });
@@ -22196,6 +22487,7 @@ const selectInitialShippingAddress = (cart2, customer) => {
 const NEW_SHIPPING_ADDRESS_ID = "new";
 const CheckoutAccountDetails = () => {
   var _a, _b, _c;
+  const { t } = useI18n();
   const checkoutAccountDetailsFormFetcher = useFetcher({ key: FetcherKeys.cart.accountDetails });
   const { customer } = useCustomer();
   const { regions } = useRegions();
@@ -22245,10 +22537,10 @@ const CheckoutAccountDetails = () => {
   };
   const showCompleted = isComplete && !isActiveStep;
   return /* @__PURE__ */ jsxs("div", { className: "checkout-account-details", children: [
-    /* @__PURE__ */ jsx(CheckoutSectionHeader, { completed: showCompleted, setStep, step: CheckoutStep.ACCOUNT_DETAILS, children: "Account details" }),
-    !isActiveStep && isComplete && /* @__PURE__ */ jsx(AddressDisplay, { title: "Shipping Address", address: shippingAddress, countryOptions }),
+    /* @__PURE__ */ jsx(CheckoutSectionHeader, { completed: showCompleted, setStep, step: CheckoutStep.ACCOUNT_DETAILS, children: t("checkout.accountDetails") }),
+    !isActiveStep && isComplete && /* @__PURE__ */ jsx(AddressDisplay, { title: t("checkout.shippingAddress"), address: shippingAddress, countryOptions }),
     isActiveStep && /* @__PURE__ */ jsxs(Fragment, { children: [
-      (customer == null ? void 0 : customer.email) ? /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm mb-2", children: "To get started, please select your shipping address." }) : /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm mb-4", children: "To get started, enter your email address." }),
+      (customer == null ? void 0 : customer.email) ? /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm mb-2", children: t("checkout.toGetStartedSelect") }) : /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm mb-4", children: t("checkout.toGetStartedEnter") }),
       /* @__PURE__ */ jsx(RemixFormProvider, { ...form, children: /* @__PURE__ */ jsxs(checkoutAccountDetailsFormFetcher.Form, { id: "checkout-account-details-form", onSubmit: form.handleSubmit, children: [
         /* @__PURE__ */ jsx(TextField, { type: "hidden", name: "cartId" }),
         /* @__PURE__ */ jsx(TextField, { type: "hidden", name: "customerId" }),
@@ -22258,8 +22550,8 @@ const CheckoutAccountDetails = () => {
             name: "email",
             type: "email",
             autoComplete: "email",
-            placeholder: "Email address",
-            label: "Email Address",
+            placeholder: t("checkout.emailAddressPlaceholder"),
+            label: t("checkout.emailAddress"),
             className: "[&_input]:!ring-0 mb-2"
           }
         ),
@@ -22270,8 +22562,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.firstName",
               type: "text",
-              label: "First Name",
-              placeholder: "First Name"
+              label: t("checkout.firstName"),
+              placeholder: t("checkout.firstNamePlaceholder")
             }
           ) }),
           /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
@@ -22279,8 +22571,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.lastName",
               type: "text",
-              label: "Last Name",
-              placeholder: "Last Name"
+              label: t("checkout.lastName"),
+              placeholder: t("checkout.lastNamePlaceholder")
             }
           ) })
         ] }),
@@ -22289,8 +22581,8 @@ const CheckoutAccountDetails = () => {
           {
             name: "shippingAddress.company",
             type: "text",
-            label: "Company (Optional)",
-            placeholder: "Company"
+            label: t("checkout.company"),
+            placeholder: t("checkout.companyPlaceholder")
           }
         ) }),
         /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx(
@@ -22298,8 +22590,8 @@ const CheckoutAccountDetails = () => {
           {
             name: "shippingAddress.address1",
             type: "text",
-            label: "Address",
-            placeholder: "Address"
+            label: t("checkout.address"),
+            placeholder: t("checkout.addressPlaceholder")
           }
         ) }),
         /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx(
@@ -22307,8 +22599,8 @@ const CheckoutAccountDetails = () => {
           {
             name: "shippingAddress.address2",
             type: "text",
-            label: "Apartment, suite, etc. (Optional)",
-            placeholder: "Apartment, suite, etc."
+            label: t("checkout.apartmentSuite"),
+            placeholder: t("checkout.apartmentSuitePlaceholder")
           }
         ) }),
         /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 mt-4", children: [
@@ -22317,8 +22609,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.city",
               type: "text",
-              label: "City",
-              placeholder: "City"
+              label: t("checkout.city"),
+              placeholder: t("checkout.cityPlaceholder")
             }
           ) }),
           /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
@@ -22326,8 +22618,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.province",
               type: "text",
-              label: "Province",
-              placeholder: "Province"
+              label: t("checkout.province"),
+              placeholder: t("checkout.provincePlaceholder")
             }
           ) })
         ] }),
@@ -22337,8 +22629,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.postalCode",
               type: "text",
-              label: "Postal Code",
-              placeholder: "Postal Code"
+              label: t("checkout.postalCode"),
+              placeholder: t("checkout.postalCodePlaceholder")
             }
           ) }),
           /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
@@ -22346,8 +22638,8 @@ const CheckoutAccountDetails = () => {
             {
               name: "shippingAddress.countryCode",
               type: "text",
-              label: "Country",
-              placeholder: "Country"
+              label: t("checkout.country"),
+              placeholder: t("checkout.countryPlaceholder")
             }
           ) })
         ] }),
@@ -22356,13 +22648,13 @@ const CheckoutAccountDetails = () => {
           {
             name: "shippingAddress.phone",
             type: "tel",
-            label: "Phone (Optional)",
-            placeholder: "Phone"
+            label: t("checkout.phone"),
+            placeholder: t("checkout.phonePlaceholder")
           }
         ) }),
         /* @__PURE__ */ jsxs(Actions, { children: [
-          /* @__PURE__ */ jsx(SubmitButton, { disabled: isSubmitting || isCartMutating, children: isSubmitting ? "Saving..." : "Save and continue" }),
-          isComplete && /* @__PURE__ */ jsx(Button, { disabled: isSubmitting, onClick: handleCancel, children: "Cancel edit" })
+          /* @__PURE__ */ jsx(SubmitButton, { disabled: isSubmitting || isCartMutating, children: isSubmitting ? t("checkout.saving") : t("checkout.saveAndContinue") }),
+          isComplete && /* @__PURE__ */ jsx(Button, { disabled: isSubmitting, onClick: handleCancel, children: t("checkout.cancelEdit") })
         ] })
       ] }) })
     ] })
@@ -23284,6 +23576,7 @@ const CheckoutPayment = () => {
 const CheckoutFlow = () => {
   const { customer } = useCustomer();
   const { goToNextStep, cart: cart2 } = useCheckout();
+  const { t } = useI18n();
   const isLoggedIn = !!(customer == null ? void 0 : customer.id);
   if (!cart2) return;
   useEffect(() => {
@@ -23292,7 +23585,7 @@ const CheckoutFlow = () => {
   }, [isLoggedIn]);
   return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { className: "lg:min-h-[calc(100vh-320px)] lg:pl-8", children: [
     isLoggedIn && /* @__PURE__ */ jsxs(Alert, { type: "info", className: "mb-8", children: [
-      "Checking out as:",
+      t("checkout.checkingOutAs"),
       " ",
       /* @__PURE__ */ jsxs("strong", { className: "font-bold", children: [
         customer.first_name,
@@ -23832,42 +24125,81 @@ const IcyCollection = ({ className, isActive }) => {
 const ComingCollection = ({ className, isActive }) => {
   return /* @__PURE__ */ jsx("div", { className: clsx("flex overflow-hidden rounded-[30px] shadow-[1px_4px_10px_0px_rgba(83,39,39,0.39)] shadow-[3px_18px_18px_0px_rgba(83,39,39,0.34)] shadow-[6px_40px_24px_0px_rgba(83,39,39,0.20)] shadow-[12px_70px_28px_0px_rgba(83,39,39,0.06)] shadow-[18px_110px_31px_0px_rgba(83,39,39,0.01)] border-8 border-white ", className), to: "/collections", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/coming-collection.gif", className: "scale-110 object-cover", alt: "Coming Collection" }) });
 };
-const initialCards$1 = [{
-  id: 4,
-  h1: "NEW MAGIC",
-  title: "Coming <br /> soon...",
-  subtitle: "Stay tuned",
-  component: (isActive) => /* @__PURE__ */ jsx(ComingCollection, {
-    isActive
-  })
-}, {
-  id: 3,
-  h1: "THIS IS OUR",
-  title: "Icy",
-  subtitle: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
-  component: (isActive) => /* @__PURE__ */ jsx(IcyCollection, {
-    isActive
-  })
-}, {
-  id: 2,
-  h1: "THIS IS OUR",
-  title: "Thirsty",
-  subtitle: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
-  component: (isActive) => /* @__PURE__ */ jsx(ThirstyCollection, {
-    isActive
-  })
-}, {
-  id: 1,
-  h1: "THIS IS",
-  title: "All of Our",
-  subtitle: "",
-  component: (isActive) => /* @__PURE__ */ jsx(AllCollection, {
-    isActive
-  })
-}];
 const products__index = UNSAFE_withComponentProps(function HalfFanSlider() {
-  const [cards, setCards] = useState(initialCards$1);
+  const {
+    t
+  } = useI18n();
+  const initialCards = useMemo(() => [{
+    id: 4,
+    h1: t("products.newMagic"),
+    title: t("products.comingSoon"),
+    subtitle: t("products.stayTuned"),
+    component: (isActive) => /* @__PURE__ */ jsx(ComingCollection, {
+      isActive
+    })
+  }, {
+    id: 3,
+    h1: t("products.thisIsOur"),
+    title: t("products.icy"),
+    subtitle: t("products.icyDescription"),
+    component: (isActive) => /* @__PURE__ */ jsx(IcyCollection, {
+      isActive
+    })
+  }, {
+    id: 2,
+    h1: t("products.thisIsOur"),
+    title: t("products.thirsty"),
+    subtitle: t("products.thirstyDescription"),
+    component: (isActive) => /* @__PURE__ */ jsx(ThirstyCollection, {
+      isActive
+    })
+  }, {
+    id: 1,
+    h1: t("products.thisIs"),
+    title: t("products.allOfOur"),
+    subtitle: "",
+    component: (isActive) => /* @__PURE__ */ jsx(AllCollection, {
+      isActive
+    })
+  }], [t]);
+  const [cards, setCards] = useState(initialCards);
   const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const updatedCards = [{
+      id: 4,
+      h1: t("products.newMagic"),
+      title: t("products.comingSoon"),
+      subtitle: t("products.stayTuned"),
+      component: (isActive) => /* @__PURE__ */ jsx(ComingCollection, {
+        isActive
+      })
+    }, {
+      id: 3,
+      h1: t("products.thisIsOur"),
+      title: t("products.icy"),
+      subtitle: t("products.icyDescription"),
+      component: (isActive) => /* @__PURE__ */ jsx(IcyCollection, {
+        isActive
+      })
+    }, {
+      id: 2,
+      h1: t("products.thisIsOur"),
+      title: t("products.thirsty"),
+      subtitle: t("products.thirstyDescription"),
+      component: (isActive) => /* @__PURE__ */ jsx(ThirstyCollection, {
+        isActive
+      })
+    }, {
+      id: 1,
+      h1: t("products.thisIs"),
+      title: t("products.allOfOur"),
+      subtitle: "",
+      component: (isActive) => /* @__PURE__ */ jsx(AllCollection, {
+        isActive
+      })
+    }];
+    setCards(updatedCards);
+  }, [t]);
   useEffect(() => {
     const checkMobile = () => {
       const isMobileDevice = window.innerWidth <= 768 || // Tablet and below
@@ -24013,11 +24345,11 @@ const products__index = UNSAFE_withComponentProps(function HalfFanSlider() {
                 children: [/* @__PURE__ */ jsx("img", {
                   className: "animate-rotate-bounce absolute top-0 left-0",
                   src: "/assets/images/home/cup.svg",
-                  alt: "Cup"
+                  alt: t("products.cupAlt")
                 }), /* @__PURE__ */ jsx("img", {
                   className: "animate-rotate-bounce-reverse absolute top-0 left-0",
                   src: "/assets/images/home/cup-bg.svg",
-                  alt: "Cup"
+                  alt: t("products.cupAlt")
                 })]
               })]
             }), activeCard.id !== 4 && /* @__PURE__ */ jsx("p", {
@@ -24025,7 +24357,7 @@ const products__index = UNSAFE_withComponentProps(function HalfFanSlider() {
                 "text-[#FFE977]": activeCard.id === 1,
                 "text-[#A2D4FD]": activeCard.id !== 1
               }),
-              children: "collection"
+              children: t("products.collection")
             }), /* @__PURE__ */ jsx("p", {
               className: "font-montserrat font-regular text-[15px] leading-normal xl:leading-[26px] text-center text-[#000] max-w-[430px]",
               children: activeCard.subtitle
@@ -24086,14 +24418,14 @@ const getProductListData = async (request) => {
     limit: 10,
     offset: 0
   };
-  const { products } = await fetchProducts(request, {
+  const { products: products2 } = await fetchProducts(request, {
     ...productsQuery,
     region_id: region.id,
     fields: "id,title,handle,thumbnail,subtitle,variants.*,variants.prices.*,variants.options.*,options.*,options.values.*"
   });
   const collectionTabs = /* @__PURE__ */ new Map();
   const categoryTabs = /* @__PURE__ */ new Map();
-  products.forEach((product2) => {
+  products2.forEach((product2) => {
     var _a;
     (_a = product2 == null ? void 0 : product2.categories) == null ? void 0 : _a.forEach((category) => {
       categoryTabs.set(category.id, category);
@@ -24103,7 +24435,7 @@ const getProductListData = async (request) => {
     }
   });
   return {
-    products,
+    products: products2,
     collection_tabs: [...collectionTabs.values()],
     category_tabs: [...categoryTabs.values()]
   };
@@ -24233,19 +24565,22 @@ const route35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   loader: loader$3
 }, Symbol.toStringTag, { value: "Module" }));
 const cartsEmpty = UNSAFE_withComponentProps(function CartsEmpty() {
+  const {
+    t
+  } = useI18n();
   return /* @__PURE__ */ jsxs(Fragment, {
     children: [/* @__PURE__ */ jsxs("div", {
       className: "contact-success-message text-center mt-8",
       children: [/* @__PURE__ */ jsx("p", {
         className: "text-[90px] xl:text-[150px] font-centuryBook italic text-64px leading-48px pl-2",
-        children: "Oohh"
+        children: t("success.oohh")
       }), /* @__PURE__ */ jsx("p", {
         className: "text-[60px] xl:text-[110px] font-title font-bold text-64px leading-48px pl-2",
-        children: "U GOT SOMETHING ;3"
+        children: t("success.uGotSomething")
       })]
     }), /* @__PURE__ */ jsx(ProductList, {
       className: "py-8 xl:!py-[100px] xl:px-9",
-      heading: "You may also like"
+      heading: t("success.youMayAlsoLike")
     })]
   });
 });
@@ -24253,74 +24588,145 @@ const route36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   default: cartsEmpty
 }, Symbol.toStringTag, { value: "Module" }));
-const initialCards = [{
-  id: 4,
-  h1: "NEW MAGIC",
-  animate: {
-    x: "90px",
-    y: "280px",
-    rotate: "35deg",
-    zIndex: 0,
-    skewX: -25,
-    skewY: 10
-  },
-  title: "Coming",
-  component: () => /* @__PURE__ */ jsx(ComingCollection, {
-    isActive: false,
-    className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
-  })
-}, {
-  id: 3,
-  h1: "THIS IS OUR",
-  animate: {
-    x: "100px",
-    y: "155px",
-    rotate: "10deg",
-    zIndex: 0,
-    skewX: -15,
-    skewY: 0
-  },
-  title: "Icy",
-  component: () => /* @__PURE__ */ jsx(IcyCollection, {
-    isActive: false,
-    className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
-  })
-}, {
-  id: 2,
-  h1: "THIS IS OUR",
-  animate: {
-    x: "-100px",
-    y: "55px",
-    rotate: "-10deg",
-    zIndex: 0,
-    skewX: 15,
-    skewY: 0
-  },
-  title: "Thirsty",
-  component: () => /* @__PURE__ */ jsx(ThirstyCollection, {
-    isActive: false,
-    className: "w-[200px] h-[330px] h-sm:w-[164px] h-sm:h-[270px]"
-  })
-}, {
-  id: 1,
-  h1: "THIS IS",
-  animate: {
-    x: 0,
-    y: 0,
-    rotate: "-10deg",
-    zIndex: 0,
-    skewX: 3,
-    skewY: 0
-  },
-  title: "All",
-  component: () => /* @__PURE__ */ jsx(AllCollection, {
-    isActive: false,
-    className: "w-[200px] h-[336px] h-sm:w-[164px] h-sm:h-[276px]"
-  })
-}];
 const pickACard = UNSAFE_withComponentProps(function PickACard() {
   const navigate = useNavigate$1();
-  const [cards, _] = useState(initialCards);
+  const {
+    t
+  } = useI18n();
+  const initialCards = useMemo(() => [{
+    id: 4,
+    h1: t("products.newMagic"),
+    animate: {
+      x: "90px",
+      y: "280px",
+      rotate: "35deg",
+      zIndex: 0,
+      skewX: -25,
+      skewY: 10
+    },
+    title: t("products.coming"),
+    component: () => /* @__PURE__ */ jsx(ComingCollection, {
+      isActive: false,
+      className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
+    })
+  }, {
+    id: 3,
+    h1: t("products.thisIsOur"),
+    animate: {
+      x: "100px",
+      y: "155px",
+      rotate: "10deg",
+      zIndex: 0,
+      skewX: -15,
+      skewY: 0
+    },
+    title: t("products.icy"),
+    component: () => /* @__PURE__ */ jsx(IcyCollection, {
+      isActive: false,
+      className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
+    })
+  }, {
+    id: 2,
+    h1: t("products.thisIsOur"),
+    animate: {
+      x: "-100px",
+      y: "55px",
+      rotate: "-10deg",
+      zIndex: 0,
+      skewX: 15,
+      skewY: 0
+    },
+    title: t("products.thirsty"),
+    component: () => /* @__PURE__ */ jsx(ThirstyCollection, {
+      isActive: false,
+      className: "w-[200px] h-[330px] h-sm:w-[164px] h-sm:h-[270px]"
+    })
+  }, {
+    id: 1,
+    h1: t("products.thisIs"),
+    animate: {
+      x: 0,
+      y: 0,
+      rotate: "-10deg",
+      zIndex: 0,
+      skewX: 3,
+      skewY: 0
+    },
+    title: t("products.all"),
+    component: () => /* @__PURE__ */ jsx(AllCollection, {
+      isActive: false,
+      className: "w-[200px] h-[336px] h-sm:w-[164px] h-sm:h-[276px]"
+    })
+  }], [t]);
+  const [cards, setCards] = useState(initialCards);
+  useEffect(() => {
+    const updatedCards = [{
+      id: 4,
+      h1: t("products.newMagic"),
+      animate: {
+        x: "90px",
+        y: "280px",
+        rotate: "35deg",
+        zIndex: 0,
+        skewX: -25,
+        skewY: 10
+      },
+      title: t("products.coming"),
+      component: () => /* @__PURE__ */ jsx(ComingCollection, {
+        isActive: false,
+        className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
+      })
+    }, {
+      id: 3,
+      h1: t("products.thisIsOur"),
+      animate: {
+        x: "100px",
+        y: "155px",
+        rotate: "10deg",
+        zIndex: 0,
+        skewX: -15,
+        skewY: 0
+      },
+      title: t("products.icy"),
+      component: () => /* @__PURE__ */ jsx(IcyCollection, {
+        isActive: false,
+        className: "w-[230px] h-[380px] h-sm:w-[184px] h-sm:h-[304px]"
+      })
+    }, {
+      id: 2,
+      h1: t("products.thisIsOur"),
+      animate: {
+        x: "-100px",
+        y: "55px",
+        rotate: "-10deg",
+        zIndex: 0,
+        skewX: 15,
+        skewY: 0
+      },
+      title: t("products.thirsty"),
+      component: () => /* @__PURE__ */ jsx(ThirstyCollection, {
+        isActive: false,
+        className: "w-[200px] h-[330px] h-sm:w-[164px] h-sm:h-[270px]"
+      })
+    }, {
+      id: 1,
+      h1: t("products.thisIs"),
+      animate: {
+        x: 0,
+        y: 0,
+        rotate: "-10deg",
+        zIndex: 0,
+        skewX: 3,
+        skewY: 0
+      },
+      title: t("products.all"),
+      component: () => /* @__PURE__ */ jsx(AllCollection, {
+        isActive: false,
+        className: "w-[200px] h-[336px] h-sm:w-[164px] h-sm:h-[276px]"
+      })
+    }];
+    setCards(updatedCards);
+  }, [t]);
   const handleClick = () => {
     navigate("/products");
   };
@@ -24332,22 +24738,24 @@ const pickACard = UNSAFE_withComponentProps(function PickACard() {
         className: "flex flex-col items-center justify-center mt-16 xl:mt-0",
         children: [/* @__PURE__ */ jsx("h1", {
           className: "font-title xl:text-[110px] text-5xl text-center xl:text-left font-bold",
-          children: "THIS IS OUR"
+          children: t("products.thisIsOur")
         }), /* @__PURE__ */ jsx("p", {
           className: "font-centuryBook italic xl:text-[125px] text-5xl leading-[114px] text-center xl:text-left",
-          children: "Heart & Soul"
+          children: t("products.heartAndSoul")
         })]
       })
     }), /* @__PURE__ */ jsxs("div", {
       className: "flex items-center justify-center bg-white px-10 flex-col xl:h-[60vh] h-[calc(100vh-206px)] z-0",
       children: [/* @__PURE__ */ jsxs("div", {
         className: "relative w-full hidden xl:flex justify-between items-center",
-        children: [/* @__PURE__ */ jsxs("p", {
+        children: [/* @__PURE__ */ jsx("p", {
           className: "font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-right",
-          children: ["Pick ", /* @__PURE__ */ jsx("br", {}), " a"]
+          dangerouslySetInnerHTML: {
+            __html: t("products.pickA")
+          }
         }), /* @__PURE__ */ jsx("p", {
           className: "font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-left",
-          children: "card"
+          children: t("products.card")
         })]
       }), /* @__PURE__ */ jsx("div", {
         className: "relative xl:left-[-10vw] xl:top-[-100px] left-[25%] -translate-x-1/2 top-0 w-full xl:w-auto",
@@ -24570,14 +24978,15 @@ const route39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   loader: loader$2,
   meta: meta$1
 }, Symbol.toStringTag, { value: "Module" }));
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  message: z.string().min(10, "Message must be at least 10 characters")
-});
 function ContactForm({ onSubmitSuccess }) {
+  const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const contactSchema = useMemo(() => z.object({
+    name: z.string().min(2, t("contact.validation.nameMin")),
+    email: z.string().email(t("contact.validation.emailInvalid")),
+    message: z.string().min(10, t("contact.validation.messageMin"))
+  }), [t]);
   const {
     register,
     handleSubmit,
@@ -24605,16 +25014,16 @@ function ContactForm({ onSubmitSuccess }) {
       onSubmitSuccess();
     } catch (error2) {
       console.error("EmailJS error:", error2);
-      setError("Failed to send message. Please try again later.");
+      setError(t("contact.error"));
     } finally {
       setIsSubmitting(false);
     }
   };
   return /* @__PURE__ */ jsxs("section", { className: "relative xl:min-h-[1146px] overflow-hidden flex flex-col justify-center", children: [
-    /* @__PURE__ */ jsx("div", { className: "hidden xl:block w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/contact.webp", alt: "Contact", className: "absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" }) }),
+    /* @__PURE__ */ jsx("div", { className: "hidden xl:block w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/contact.webp", alt: t("contact.contactAlt"), className: "absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" }) }),
     /* @__PURE__ */ jsxs(Container, { children: [
       /* @__PURE__ */ jsxs("div", { className: "contact-form-container relative", children: [
-        /* @__PURE__ */ jsx("h1", { className: "text-4xl font-centuryBook italic xl:hidden leading-normal tracking-normal text-center text-primary mb-6", children: "Contact Us" }),
+        /* @__PURE__ */ jsx("h1", { className: "text-4xl font-centuryBook italic xl:hidden leading-normal tracking-normal text-center text-primary mb-6", children: t("contact.title") }),
         /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit(onSubmit), className: "mx-auto space-y-6 z-10 relative max-w-[446px] mb-6 xl:mb-[100px] xl:ml-auto xl:mr-[170px]", children: [
           /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsx(
@@ -24624,7 +25033,7 @@ function ContactForm({ onSubmitSuccess }) {
                 type: "text",
                 ...register("name"),
                 className: "w-full px-3 py-2 border border-primary rounded-full focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium",
-                placeholder: "Name"
+                placeholder: t("contact.namePlaceholder")
               }
             ),
             errors.name && /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-red-600", children: errors.name.message })
@@ -24637,7 +25046,7 @@ function ContactForm({ onSubmitSuccess }) {
                 type: "email",
                 ...register("email"),
                 className: "w-full px-3 py-2 border border-primary rounded-full focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium",
-                placeholder: "Email"
+                placeholder: t("contact.emailPlaceholder")
               }
             ),
             errors.email && /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-red-600", children: errors.email.message })
@@ -24650,7 +25059,7 @@ function ContactForm({ onSubmitSuccess }) {
                 rows: 5,
                 ...register("message"),
                 className: "w-full px-3 py-2 border border-primary rounded-[20px] focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium",
-                placeholder: "Message"
+                placeholder: t("contact.messagePlaceholder")
               }
             ),
             errors.message && /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-red-600", children: errors.message.message })
@@ -24693,36 +25102,38 @@ function ContactForm({ onSubmitSuccess }) {
                     ]
                   }
                 ),
-                "Sending..."
-              ] }) : "Send"
+                t("contact.sending")
+              ] }) : t("contact.send")
             }
           ) })
         ] })
       ] }),
       /* @__PURE__ */ jsxs("p", { className: "mx-auto mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]", children: [
-        "We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!",
+        t("contact.description"),
         /* @__PURE__ */ jsx("br", {}),
-        "Our email: ",
+        t("contact.ourEmail"),
+        " ",
         /* @__PURE__ */ jsx("a", { href: "mailto:bykiraperfume@gmail.com", className: "text-primary underline", children: "bykiraperfume@gmail.com" })
       ] })
     ] })
   ] });
 }
 function ContactSuccess() {
+  const { t } = useI18n();
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsxs("div", { className: "contact-success-message text-center mt-8", children: [
-      /* @__PURE__ */ jsx("p", { className: "text-[90px] xl:text-[150px] font-centuryBook italic text-64px leading-48px pl-2", children: "Okay!!!" }),
-      /* @__PURE__ */ jsx("p", { className: "text-[60px] xl:text-[110px] font-title font-bold text-64px leading-48px pl-2", children: "WE GOT U ;3" }),
-      /* @__PURE__ */ jsx("p", { className: "text-[30px] font-title font-light text-30px leading-30px pl-2", children: "we’ll be replying to u sooooon!!!" }),
-      /* @__PURE__ */ jsx("p", { className: "text-[30px] font-title font-light text-30px leading-30px pl-2", children: "in the meantime....... " })
+      /* @__PURE__ */ jsx("p", { className: "text-[90px] xl:text-[150px] font-centuryBook italic text-64px leading-48px pl-2", children: t("success.okay") }),
+      /* @__PURE__ */ jsx("p", { className: "text-[60px] xl:text-[110px] font-title font-bold text-64px leading-48px pl-2", children: t("success.weGotUContact") }),
+      /* @__PURE__ */ jsx("p", { className: "text-[30px] font-title font-light text-30px leading-30px pl-2", children: t("success.replyingSoon") }),
+      /* @__PURE__ */ jsx("p", { className: "text-[30px] font-title font-light text-30px leading-30px pl-2", children: t("success.inTheMeantime") })
     ] }),
-    /* @__PURE__ */ jsx(ProductList, { className: "py-8 xl:!py-[100px] xl:px-9", heading: "You may also like" })
+    /* @__PURE__ */ jsx(ProductList, { className: "py-8 xl:!py-[100px] xl:px-9", heading: t("success.youMayAlsoLike") })
   ] });
 }
 const contact = UNSAFE_withComponentProps(function Contact() {
-  const [success, setSuccess] = useState(false);
+  const [success2, setSuccess] = useState(false);
   return /* @__PURE__ */ jsx(Fragment, {
-    children: success ? /* @__PURE__ */ jsx(ContactSuccess, {}) : /* @__PURE__ */ jsx(ContactForm, {
+    children: success2 ? /* @__PURE__ */ jsx(ContactSuccess, {}) : /* @__PURE__ */ jsx(ContactForm, {
       onSubmitSuccess: () => setSuccess(true)
     })
   });
@@ -24761,11 +25172,12 @@ function FancyText({ id, text, className }) {
   ] });
 }
 const MainMenu = () => {
+  const { t } = useI18n();
   const [isHovering, setIsHovering] = useState(false);
   const categoryItems = [
     {
       id: "blog",
-      label: "Blog",
+      label: t("menu.blog"),
       image: "/assets/images/menu/blog.webp",
       url: "/blogs",
       className: "max-w-[100vw] xl:max-w-[494px] left-0",
@@ -24777,7 +25189,7 @@ const MainMenu = () => {
     },
     {
       id: "product",
-      label: "Product",
+      label: t("menu.product"),
       image: "/assets/images/menu/product.webp",
       url: "/pick-a-card",
       className: "max-w-[100vw] xl:max-w-[648px] left-[366px]",
@@ -24789,7 +25201,7 @@ const MainMenu = () => {
     },
     {
       id: "story",
-      label: "Story",
+      label: t("menu.story"),
       image: "/assets/images/menu/story.webp",
       url: "/stories",
       className: "max-w-[100vw] xl:max-w-[446px] left-[864px]",
@@ -24801,7 +25213,7 @@ const MainMenu = () => {
     },
     {
       id: "contact",
-      label: "Contact",
+      label: t("menu.contact"),
       image: "/assets/images/menu/contact.webp",
       url: "/contact",
       className: "max-w-[100vw] xl:max-w-[670px] right-0",
@@ -24899,15 +25311,15 @@ const MainMenu = () => {
     /* @__PURE__ */ jsxs("div", { className: "absolute bottom-0 left-0 w-full bg-[url('/assets/images/menu/background.webp')] bg-repeat-x bg-bottom bg-center xl:bg-contain bg-cover", children: [
       /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[2] opacity-0 menu-background" }),
       /* @__PURE__ */ jsxs("p", { className: "absolute bottom-0 w-full text-center mb-[98px] z-[3]", children: [
-        /* @__PURE__ */ jsx("span", { className: clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && "text-white"), children: "This is" }),
-        /* @__PURE__ */ jsx("span", { className: "font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]", children: "Our" })
+        /* @__PURE__ */ jsx("span", { className: clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && "text-white"), children: t("home.thisIs") }),
+        /* @__PURE__ */ jsx("span", { className: "font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]", children: t("home.our") })
       ] }),
       /* @__PURE__ */ jsx("div", { className: "overflow-hidden h-[300px] relative", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/menu/chair-bottom.webp", alt: "logo", className: "w-full h-full xl:object-cover object-position-center object-contain" }) })
     ] })
   ] }) });
 };
 const stories = UNSAFE_withComponentProps(function Stories() {
-  const menu = [{
+  const menu2 = [{
     label: "STORY",
     id: "story"
   }, {
@@ -25061,7 +25473,7 @@ const stories = UNSAFE_withComponentProps(function Stories() {
         })]
       }), /* @__PURE__ */ jsx("div", {
         className: "flex flex-col gap-8 h-full flex-1 justify-center",
-        children: menu.map((item) => /* @__PURE__ */ jsx("span", {
+        children: menu2.map((item) => /* @__PURE__ */ jsx("span", {
           onClick: () => handleItemClick(item.id),
           className: "font-title font-bold text-[40px] rounded-full border border-black mx-6 py-2 text-center hover:bg-[#FFE977] hover:border-[#FFE977] transition-all duration-300 ease-in-out",
           children: item.label
@@ -25914,10 +26326,10 @@ const _index = UNSAFE_withComponentProps(function IndexRoute2() {
       children: [/* @__PURE__ */ jsxs("p", {
         className: "font-title font-bold text-6xl lg:text-8xl uppercase",
         children: [/* @__PURE__ */ jsx("span", {
-          children: "This"
+          children: t("home.this")
         }), " ", /* @__PURE__ */ jsx("br", {}), /* @__PURE__ */ jsx("span", {
           className: "ml-[8px] lg:ml-[14px]",
-          children: "is"
+          children: t("home.is")
         })]
       }), activeComponent === "main" && /* @__PURE__ */ jsxs("div", {
         ref: menuRef,
@@ -25956,10 +26368,10 @@ const _index = UNSAFE_withComponentProps(function IndexRoute2() {
       className: "flex gap-11 justify-between absolute bottom-0 left-0 w-full px-4 lg:px-11",
       children: [/* @__PURE__ */ jsx("p", {
         className: "font-title font-medium text-4xl lg:text-[65px] uppercase",
-        children: "Est."
+        children: t("home.est")
       }), /* @__PURE__ */ jsx("p", {
         className: "font-title font-medium text-4xl lg:text-[65px] uppercase",
-        children: "2025"
+        children: t("home.year")
       })]
     })]
   });
@@ -25977,7 +26389,7 @@ const route43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-YrK2O4H-.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/index-gMKRMYsJ.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-D8p00bdY.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/index-gMKRMYsJ.js", "/assets/meta-DdeOJusI.js", "/assets/Button-1to4fflA.js", "/assets/ButtonLink-D1OnKopR.js", "/assets/IconButton-CoVaBPMI.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/useRegions-CPMpnEDN.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-DFEw9BqF.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-DYcwmSMt.js", "/assets/use-is-mounted-CV1LEgbp.js", "/assets/Container-h-ucWubj.js", "/assets/URLAwareNavLink-w3sRAlA_.js", "/assets/proxy-B0NGuh22.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/coerce-D09H21Zt.js", "/assets/zod-Dq-Shab3.js", "/assets/index-1GpmYXPj.js", "/assets/debounce-DWZCWN6T.js", "/assets/animation-BrpFQVme.js"], "css": ["/assets/root-DqlrEWjt.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-BHOtsipG.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/ProductListWithPagination-BvhDwUeJ.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-BITHDCev.js", "/assets/ProductGrid-DEaMGmhf.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/URLAwareNavLink-w3sRAlA_.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/animation-BrpFQVme.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-Cv2DSBGz.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/ProductListWithPagination-BvhDwUeJ.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-BITHDCev.js", "/assets/ProductGrid-DEaMGmhf.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/animation-BrpFQVme.js", "/assets/URLAwareNavLink-w3sRAlA_.js", "/assets/ArrowRightIcon-BjgGslyr.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-By7f2Ezt.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Button-1to4fflA.js", "/assets/ButtonLink-D1OnKopR.js", "/assets/Container-h-ucWubj.js", "/assets/Image-DFEw9BqF.js", "/assets/clsx-B-dksMZM.js", "/assets/data-table-router-form-Z-swEMKC.js", "/assets/zod-Dq-Shab3.js", "/assets/index-1GpmYXPj.js", "/assets/SubmitButton-CSK2AVW8.js", "/assets/LightboxGallery-GAxQ652l.js", "/assets/IconButton-CoVaBPMI.js", "/assets/useScrollArrows-B-1Qs5om.js", "/assets/createLucideIcon-CzAA8fGv.js", "/assets/index-gMKRMYsJ.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/debounce-DWZCWN6T.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._productHandle-6ufANnng.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/ProductList-By2kDtB2.js", "/assets/Button-1to4fflA.js", "/assets/Container-h-ucWubj.js", "/assets/GridColumn-Db8ddi0Y.js", "/assets/SubmitButton-CSK2AVW8.js", "/assets/coerce-D09H21Zt.js", "/assets/Image-DFEw9BqF.js", "/assets/LightboxGallery-GAxQ652l.js", "/assets/useScrollArrows-B-1Qs5om.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/tabs-BuLBB7EY.js", "/assets/use-is-mounted-CV1LEgbp.js", "/assets/ProductPriceRange-DYcwmSMt.js", "/assets/index-gMKRMYsJ.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/index-1GpmYXPj.js", "/assets/pagination-with-context-BITHDCev.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/zod-Dq-Shab3.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/IconButton-CoVaBPMI.js", "/assets/debounce-DWZCWN6T.js", "/assets/animation-BrpFQVme.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._index-rqjl1IFH.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/ProductGrid-DEaMGmhf.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/animation-BrpFQVme.js", "/assets/URLAwareNavLink-w3sRAlA_.js", "/assets/ArrowRightIcon-BjgGslyr.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-5M7HYhye.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout.success-D7vqWI91.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/ProductList-By2kDtB2.js", "/assets/Container-h-ucWubj.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-B-1Qs5om.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/IconButton-CoVaBPMI.js", "/assets/Button-1to4fflA.js", "/assets/debounce-DWZCWN6T.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/animation-BrpFQVme.js", "/assets/tabs-BuLBB7EY.js", "/assets/use-is-mounted-CV1LEgbp.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout._index-BnoLNRCn.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/data-table-router-form-Z-swEMKC.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/Button-1to4fflA.js", "/assets/clsx-B-dksMZM.js", "/assets/useRegions-CPMpnEDN.js", "/assets/zod-Dq-Shab3.js", "/assets/index-1GpmYXPj.js", "/assets/Image-DFEw9BqF.js", "/assets/SubmitButton-CSK2AVW8.js", "/assets/ButtonLink-D1OnKopR.js", "/assets/tabs-BuLBB7EY.js", "/assets/createLucideIcon-CzAA8fGv.js", "/assets/index-gMKRMYsJ.js", "/assets/coerce-D09H21Zt.js", "/assets/debounce-DWZCWN6T.js", "/assets/use-is-mounted-CV1LEgbp.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._index-B36qBC6Q.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/clsx-B-dksMZM.js", "/assets/Container-h-ucWubj.js", "/assets/coming-collection-CDGueOKi.js", "/assets/createLucideIcon-CzAA8fGv.js", "/assets/proxy-B0NGuh22.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._index-DLVi09bu.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/carts-empty-BSgIifcB.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/ProductList-By2kDtB2.js", "/assets/Container-h-ucWubj.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-B-1Qs5om.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/IconButton-CoVaBPMI.js", "/assets/Button-1to4fflA.js", "/assets/debounce-DWZCWN6T.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/animation-BrpFQVme.js", "/assets/tabs-BuLBB7EY.js", "/assets/use-is-mounted-CV1LEgbp.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pick-a-card": { "id": "routes/pick-a-card", "parentId": "root", "path": "pick-a-card", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/pick-a-card-Cpo_dTI8.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/clsx-B-dksMZM.js", "/assets/coming-collection-CDGueOKi.js", "/assets/proxy-B0NGuh22.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/about-us-BIZCoPUj.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/Container-h-ucWubj.js", "/assets/Button-1to4fflA.js", "/assets/URLAwareNavLink-w3sRAlA_.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/contact-D8Y2NfLH.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/zod-Dq-Shab3.js", "/assets/Container-h-ucWubj.js", "/assets/ProductList-By2kDtB2.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-B-1Qs5om.js", "/assets/ArrowRightIcon-BjgGslyr.js", "/assets/IconButton-CoVaBPMI.js", "/assets/Button-1to4fflA.js", "/assets/debounce-DWZCWN6T.js", "/assets/Image-DFEw9BqF.js", "/assets/ProductListItem-BFDw8AIV.js", "/assets/PlusIcon-DaKNzPhp.js", "/assets/ProductThumbnail-M0mvowGg.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/animation-BrpFQVme.js", "/assets/tabs-BuLBB7EY.js", "/assets/use-is-mounted-CV1LEgbp.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/stories-BFKbElgW.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/GridColumn-Db8ddi0Y.js", "/assets/Main-D2Nf3H3a.js", "/assets/clsx-B-dksMZM.js", "/assets/proxy-B0NGuh22.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_index-B8fSCSKP.js", "imports": ["/assets/chunk-OIYGIGL5-DA7B83DT.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BeQZ52ZC.js", "/assets/Main-D2Nf3H3a.js", "/assets/animation-BrpFQVme.js", "/assets/index-B3BSRMWe.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/_index-CVDrmUgF.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-69c5450d.js", "version": "69c5450d", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-soyBAzY7.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/index-6F69r3HC.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": true, "module": "/assets/root-D7cQnGIn.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/index-6F69r3HC.js", "/assets/meta-DdeOJusI.js", "/assets/Button-nspP1mxw.js", "/assets/ButtonLink-BCp6hWhH.js", "/assets/IconButton-X0ifzMhi.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/PlusIcon-G-wafARz.js", "/assets/useRegions-CxTuXuhC.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-DrDZq5nI.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-BxbUqEpy.js", "/assets/useI18n-D43I3SgH.js", "/assets/use-is-mounted-Dk7IirPH.js", "/assets/Container-Cka58j8f.js", "/assets/URLAwareNavLink-DdNUjAsW.js", "/assets/proxy-DWaf4B7v.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/coerce-CqrxpV6N.js", "/assets/zod-BYecpI2c.js", "/assets/index-Cbew0HNx.js", "/assets/debounce-BJJYK4fz.js"], "css": ["/assets/root-CJWIGOsX.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-8Wpg2k7A.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/ProductListWithPagination-BxN7k-fW.js", "/assets/useI18n-D43I3SgH.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-BRbHoxMG.js", "/assets/ProductGrid-Cuc5eL5A.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/URLAwareNavLink-DdNUjAsW.js", "/assets/ArrowRightIcon-DAEVZW4X.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-DqWKnRRs.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/ProductListWithPagination-BxN7k-fW.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-BRbHoxMG.js", "/assets/ProductGrid-Cuc5eL5A.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/useI18n-D43I3SgH.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/URLAwareNavLink-DdNUjAsW.js", "/assets/ArrowRightIcon-DAEVZW4X.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-6WDzpeaW.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Button-nspP1mxw.js", "/assets/ButtonLink-BCp6hWhH.js", "/assets/Container-Cka58j8f.js", "/assets/Image-DrDZq5nI.js", "/assets/clsx-B-dksMZM.js", "/assets/data-table-router-form-CB1UZz77.js", "/assets/zod-BYecpI2c.js", "/assets/index-Cbew0HNx.js", "/assets/SubmitButton-GcA7ATgx.js", "/assets/LightboxGallery-DOV7tzZi.js", "/assets/IconButton-X0ifzMhi.js", "/assets/useScrollArrows-BZQN77Qp.js", "/assets/createLucideIcon-BU51__11.js", "/assets/index-6F69r3HC.js", "/assets/ArrowRightIcon-DAEVZW4X.js", "/assets/debounce-BJJYK4fz.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._productHandle-BYcc1xwx.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/ProductList-D7z6BSuY.js", "/assets/Button-nspP1mxw.js", "/assets/Container-Cka58j8f.js", "/assets/GridColumn-DFw9Ve2O.js", "/assets/SubmitButton-GcA7ATgx.js", "/assets/coerce-CqrxpV6N.js", "/assets/Image-DrDZq5nI.js", "/assets/LightboxGallery-DOV7tzZi.js", "/assets/useScrollArrows-BZQN77Qp.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/tabs-W0_EixNg.js", "/assets/use-is-mounted-Dk7IirPH.js", "/assets/ProductPriceRange-BxbUqEpy.js", "/assets/index-6F69r3HC.js", "/assets/PlusIcon-G-wafARz.js", "/assets/index-Cbew0HNx.js", "/assets/pagination-with-context-BRbHoxMG.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/zod-BYecpI2c.js", "/assets/useI18n-D43I3SgH.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ArrowRightIcon-DAEVZW4X.js", "/assets/IconButton-X0ifzMhi.js", "/assets/debounce-BJJYK4fz.js", "/assets/animation-C5sjsJLW.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/LightboxGallery-Dv3yAxos.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/collections._index-CHvAG1pP.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/ProductGrid-Cuc5eL5A.js", "/assets/useI18n-D43I3SgH.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/URLAwareNavLink-DdNUjAsW.js", "/assets/ArrowRightIcon-DAEVZW4X.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-Ch-JYa3w.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout.success-CFtwCpuo.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/ProductList-D7z6BSuY.js", "/assets/useI18n-D43I3SgH.js", "/assets/Container-Cka58j8f.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-BZQN77Qp.js", "/assets/ArrowRightIcon-DAEVZW4X.js", "/assets/IconButton-X0ifzMhi.js", "/assets/Button-nspP1mxw.js", "/assets/debounce-BJJYK4fz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/tabs-W0_EixNg.js", "/assets/use-is-mounted-Dk7IirPH.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/checkout._index-j1QCO-Oe.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/data-table-router-form-CB1UZz77.js", "/assets/PlusIcon-G-wafARz.js", "/assets/useI18n-D43I3SgH.js", "/assets/Button-nspP1mxw.js", "/assets/clsx-B-dksMZM.js", "/assets/useRegions-CxTuXuhC.js", "/assets/zod-BYecpI2c.js", "/assets/index-Cbew0HNx.js", "/assets/SubmitButton-GcA7ATgx.js", "/assets/Image-DrDZq5nI.js", "/assets/ButtonLink-BCp6hWhH.js", "/assets/tabs-W0_EixNg.js", "/assets/createLucideIcon-BU51__11.js", "/assets/index-6F69r3HC.js", "/assets/coerce-CqrxpV6N.js", "/assets/debounce-BJJYK4fz.js", "/assets/use-is-mounted-Dk7IirPH.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/products._index-BKQSPijZ.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/clsx-B-dksMZM.js", "/assets/Container-Cka58j8f.js", "/assets/coming-collection-ByMoLBJs.js", "/assets/useI18n-D43I3SgH.js", "/assets/createLucideIcon-BU51__11.js", "/assets/proxy-DWaf4B7v.js", "/assets/animation-C5sjsJLW.js", "/assets/index-Bmv3aSl2.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/blogs._index-CcxNFVbA.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/carts-empty-cUsaCZDB.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/ProductList-D7z6BSuY.js", "/assets/useI18n-D43I3SgH.js", "/assets/Container-Cka58j8f.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-BZQN77Qp.js", "/assets/ArrowRightIcon-DAEVZW4X.js", "/assets/IconButton-X0ifzMhi.js", "/assets/Button-nspP1mxw.js", "/assets/debounce-BJJYK4fz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/tabs-W0_EixNg.js", "/assets/use-is-mounted-Dk7IirPH.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pick-a-card": { "id": "routes/pick-a-card", "parentId": "root", "path": "pick-a-card", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/pick-a-card-DwGzBOg3.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/clsx-B-dksMZM.js", "/assets/coming-collection-ByMoLBJs.js", "/assets/useI18n-D43I3SgH.js", "/assets/proxy-DWaf4B7v.js", "/assets/animation-C5sjsJLW.js", "/assets/index-Bmv3aSl2.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/about-us-JQ9nNE_i.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/Container-Cka58j8f.js", "/assets/Button-nspP1mxw.js", "/assets/URLAwareNavLink-DdNUjAsW.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/contact-CgtkULtp.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/zod-BYecpI2c.js", "/assets/Container-Cka58j8f.js", "/assets/useI18n-D43I3SgH.js", "/assets/ProductList-D7z6BSuY.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-BZQN77Qp.js", "/assets/ArrowRightIcon-DAEVZW4X.js", "/assets/IconButton-X0ifzMhi.js", "/assets/Button-nspP1mxw.js", "/assets/debounce-BJJYK4fz.js", "/assets/Image-DrDZq5nI.js", "/assets/ProductListItem-C6-Ofiog.js", "/assets/PlusIcon-G-wafARz.js", "/assets/ProductThumbnail-DNLlbbHn.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/tabs-W0_EixNg.js", "/assets/use-is-mounted-Dk7IirPH.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/stories-C86cO5w7.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/GridColumn-DFw9Ve2O.js", "/assets/Main-BmzO562p.js", "/assets/clsx-B-dksMZM.js", "/assets/proxy-DWaf4B7v.js", "/assets/useI18n-D43I3SgH.js", "/assets/animation-C5sjsJLW.js", "/assets/index-Bmv3aSl2.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_index-CyhJKwOp.js", "imports": ["/assets/chunk-OIYGIGL5-Dw2D8vFu.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/useI18n-D43I3SgH.js", "/assets/Main-BmzO562p.js", "/assets/MorphingShape-BSRnvjtz.js", "/assets/animation-C5sjsJLW.js", "/assets/index-Bmv3aSl2.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/_index-CVDrmUgF.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-5453058d.js", "version": "5453058d", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "v8_middleware": false, "unstable_optimizeDeps": false, "unstable_splitRouteModules": false, "unstable_subResourceIntegrity": false, "unstable_viteEnvironmentApi": false };
