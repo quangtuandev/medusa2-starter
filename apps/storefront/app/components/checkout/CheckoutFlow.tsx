@@ -1,6 +1,7 @@
 import { Alert } from '@app/components/common/alert/Alert';
 import { useCheckout } from '@app/hooks/useCheckout';
 import { useCustomer } from '@app/hooks/useCustomer';
+import { useI18n } from '@app/hooks/useI18n';
 import { FC, useEffect } from 'react';
 import { CheckoutAccountDetails } from './CheckoutAccountDetails';
 import { CheckoutDeliveryMethod } from './CheckoutDeliveryMethod';
@@ -8,6 +9,7 @@ import { CheckoutPayment } from './CheckoutPayment';
 export const CheckoutFlow: FC = () => {
   const { customer } = useCustomer();
   const { goToNextStep, cart } = useCheckout();
+  const { t } = useI18n();
   const isLoggedIn = !!customer?.id;
 
   if (!cart) return;
@@ -22,7 +24,7 @@ export const CheckoutFlow: FC = () => {
       <div className="lg:min-h-[calc(100vh-320px)] lg:pl-8">
         {isLoggedIn && (
           <Alert type="info" className="mb-8">
-            Checking out as:{' '}
+            {t('checkout.checkingOutAs')}{' '}
             <strong className="font-bold">
               {customer.first_name} {customer.last_name} ({customer.email})
             </strong>

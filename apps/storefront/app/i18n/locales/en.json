@@ -53,11 +53,18 @@
     "products": "Products",
     "categories": "Categories",
     "about": "About Us",
+    "aboutUs": "About Us",
     "contact": "Contact",
     "account": "Account",
     "login": "Login",
     "logout": "Logout",
-    "register": "Register"
+    "register": "Register",
+    "blog": "Blog",
+    "letsTalk": "Let's talk",
+    "faqs": "FAQs",
+    "documentation": "Documentation",
+    "termsOfService": "Terms of Service",
+    "title": "Navigation"
   },
   "hero": {
     "title": "BARRIO",
@@ -84,7 +91,15 @@
     "availability": "Availability",
     "sku": "SKU",
     "category": "Category",
-    "tags": "Tags"
+    "tags": "Tags",
+    "soldOut": "Sold out",
+    "processing": "Processing...",
+    "buyNow": "Buy Now",
+    "productOptions": "Product options",
+    "ingredients": "INGREDIENTS",
+    "precautionsOfUse": "PRECAUTIONS OF USE",
+    "applicationTips": "APPLICATION TIPS",
+    "addToCart": "Add to cart"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -94,7 +109,15 @@
     "update": "Update Cart",
     "clear": "Clear Cart",
     "estimatedTotal": "Estimated Total",
-    "shippingCalculated": "Shipping calculated at checkout"
+    "shippingCalculated": "Shipping calculated at checkout",
+    "yourCart": "Your Cart",
+    "cartEmpty": "YOUR CART IS EMPTY :0",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shippingTaxesCalculated": "Shipping and taxes calculated at checkout.",
+    "preparingCheckout": "Preparing checkout...",
+    "checkout": "Checkout",
+    "or": "or"
   },
   "checkout": {
     "title": "Checkout",
@@ -107,7 +130,36 @@
     "processing": "Processing...",
     "orderConfirmation": "Order Confirmation",
     "thankYou": "Thank you for your order!",
-    "orderNumber": "Order Number"
+    "orderNumber": "Order Number",
+    "checkingOutAs": "Checking out as:",
+    "accountDetails": "Account details",
+    "toGetStartedSelect": "To get started, please select your shipping address.",
+    "toGetStartedEnter": "To get started, enter your email address.",
+    "emailAddress": "Email Address",
+    "emailAddressPlaceholder": "Email address",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "First Name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Last Name",
+    "company": "Company (Optional)",
+    "companyPlaceholder": "Company",
+    "address": "Address",
+    "addressPlaceholder": "Address",
+    "apartmentSuite": "Apartment, suite, etc. (Optional)",
+    "apartmentSuitePlaceholder": "Apartment, suite, etc.",
+    "city": "City",
+    "cityPlaceholder": "City",
+    "province": "Province",
+    "provincePlaceholder": "Province",
+    "postalCode": "Postal Code",
+    "postalCodePlaceholder": "Postal Code",
+    "country": "Country",
+    "countryPlaceholder": "Country",
+    "phone": "Phone (Optional)",
+    "phonePlaceholder": "Phone",
+    "saving": "Saving...",
+    "saveAndContinue": "Save and continue",
+    "cancelEdit": "Cancel edit"
   },
   "shop": "EAU DE PARFUM",
   "home": {
@@ -125,6 +177,70 @@
     },
     "r": {
       "description": "Kira is a shimmering burst of light, an alchemy of sunshine and laughter, woven into each delicate spritz—an ethereal dance of joy that lingers like a memory of the sun's warm embrace."
-    }
+    },
+    "this": "This",
+    "is": "is",
+    "est": "Est.",
+    "year": "2025",
+    "thisIs": "This is",
+    "our": "Our"
+  },
+  "success": {
+    "hurray": "Hurray!!!",
+    "weGotU": "WE GOT U ;3",
+    "deliveringSweetness": "we'll be delivering sweetness to u soon",
+    "youMayAlsoLike": "You may also like",
+    "oohh": "Oohh",
+    "uGotSomething": "U GOT SOMETHING ;3",
+    "okay": "Okay!!!",
+    "weGotUContact": "WE GOT U ;3",
+    "replyingSoon": "we'll be replying to u sooooon!!!",
+    "inTheMeantime": "in the meantime......."
+  },
+  "menu": {
+    "blog": "Blog",
+    "product": "Product",
+    "story": "Story",
+    "contact": "Contact"
+  },
+  "products": {
+    "newMagic": "NEW MAGIC",
+    "comingSoon": "Coming <br /> soon...",
+    "stayTuned": "Stay tuned",
+    "thisIsOur": "THIS IS OUR",
+    "icy": "Icy",
+    "thirsty": "Thirsty",
+    "thisIs": "THIS IS",
+    "allOfOur": "All of Our",
+    "collection": "collection",
+    "icyDescription": "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
+    "thirstyDescription": "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.",
+    "cupAlt": "Cup",
+    "coming": "Coming",
+    "all": "All",
+    "heartAndSoul": "Heart & Soul",
+    "pickA": "Pick <br /> a",
+    "card": "card",
+    "collections": "Collections"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "namePlaceholder": "Name",
+    "email": "Email",
+    "emailPlaceholder": "Email",
+    "message": "Message",
+    "messagePlaceholder": "Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "error": "Failed to send message. Please try again later.",
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "emailInvalid": "Please enter a valid email",
+      "messageMin": "Message must be at least 10 characters"
+    },
+    "description": "We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!",
+    "ourEmail": "Our email:",
+    "contactAlt": "Contact"
   }
 }

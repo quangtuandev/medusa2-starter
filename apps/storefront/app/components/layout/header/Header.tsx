@@ -5,6 +5,7 @@ import { URLAwareNavLink } from "@app/components/common/link";
 import { useCart } from "@app/hooks/useCart";
 import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { useSiteDetails } from "@app/hooks/useSiteDetails";
+import { useI18n } from "@app/hooks/useI18n";
 import { ChevronDownIcon, Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { type FC, useState } from "react";
@@ -19,6 +20,7 @@ export const Header: FC<HeaderProps> = () => {
   const [sideNavOpen, setSideNavOpen] = useState<boolean>(false);
   const { headerNavigationItems } = useSiteDetails();
   const { cart, toggleCartDrawer } = useCart();
+  const { t } = useI18n();
   const { activeSection } = useActiveSection(headerNavigationItems);
   const rootLoader = useRootLoaderData();
   const hasProducts = rootLoader?.hasPublishedProducts;
@@ -57,7 +59,7 @@ export const Header: FC<HeaderProps> = () => {
                         }
                         prefetch="viewport"
                       >
-                        {navItemProps.label}
+                        {t(navItemProps.label)}
                         {index == 0 && (
                           <IconButton
                             aria-label="open navigation menu"

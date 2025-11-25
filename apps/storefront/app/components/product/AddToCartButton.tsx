@@ -86,7 +86,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
           "text-center": isFullText,
           "opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto": !isFullText,
         }
-      )}> Add to cart</span>
+      )}> {t('common.addToCart')}</span>
     </button>
   );
 };

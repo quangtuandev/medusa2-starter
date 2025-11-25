@@ -2,6 +2,7 @@ import { IconButton } from '@app/components/common/buttons';
 import { LanguageSwitcher } from '@app/components/common/LanguageSwitcher/LanguageSwitcher';
 import { URLAwareNavLink } from '@app/components/common/link';
 import { useSiteDetails } from '@app/hooks/useSiteDetails';
+import { useI18n } from '@app/hooks/useI18n';
 import { Dialog, Transition } from '@headlessui/react';
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
 import clsx from 'clsx';
@@ -16,6 +17,7 @@ export interface HeaderSideNavProps {
 
 export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSection }) => {
   const { headerNavigationItems } = useSiteDetails();
+  const { t } = useI18n();
 
   return (
     <Transition.Root show={!!open} as={Fragment}>
@@ -48,7 +50,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-center justify-between">
-                        <Dialog.Title className="text-lg font-bold text-gray-900">Navigation</Dialog.Title>
+                        <Dialog.Title className="text-lg font-bold text-gray-900">{t('navigation.title')}</Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <IconButton
                             icon={XMarkIcon}
@@ -81,7 +83,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                                   }
                                   prefetch="viewport"
                                 >
-                                  <span className="flex-1">{navItemProps.label}</span>
+                                  <span className="flex-1">{t(navItemProps.label)}</span>
                                 </URLAwareNavLink>
                               ))}
                             </nav>

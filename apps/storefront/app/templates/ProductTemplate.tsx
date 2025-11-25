@@ -32,6 +32,8 @@ import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } f
 import { Link, useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import Collasape from '@app/components/common/collasape/Collasape';
+import { useI18n } from '@app/hooks/useI18n';
+
 
 export interface ProductTemplateProps {
   product: StoreProduct;
@@ -47,6 +49,28 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
 };
 
 export const ProductTemplate = ({ product }: ProductTemplateProps) => {
+  const { currentLanguage, t } = useI18n();
+  const [description, setDescription] = useState<string>(product.description || '');
+  const [notes, setNotes] = useState<string>(product.metadata?.notes as string || '');
+  const [ingredients, setIngredients] = useState<string>(product.metadata?.ingredients as string || '');
+  const [precautionsOfUse, setPrecautionsOfUse] = useState<string>(product.metadata?.precautions_of_use as string || '');
+  const [applicationTips, setApplicationTips] = useState<string>(product.metadata?.application_tips as string || '');
+  useEffect(() => {
+    if (currentLanguage === 'vi') {
+      setDescription(product.metadata?.description_vi as string || '');
+      setNotes(product.metadata?.notes_vi as string || '');
+      setIngredients(product.metadata?.ingredients_vi as string || '');
+      setPrecautionsOfUse(product.metadata?.precautions_of_use_vi as string || '');
+      setApplicationTips(product.metadata?.application_tips_vi as string || '');
+    } else {
+      setDescription(product.metadata?.description as string || '');
+      setNotes(product.metadata?.notes as string || '');
+      setIngredients(product.metadata?.ingredients as string || '');
+      setPrecautionsOfUse(product.metadata?.precautions_of_use as string || '');
+      setApplicationTips(product.metadata?.application_tips as string || '');
+    }
+  }, [currentLanguage, product.metadata]);
+
   const formRef = useRef<HTMLFormElement>(null);
   const addToCartFetcher = useFetcher<any>({ key: FetcherKeys.cart.createLineItem });
   const { toggleCartDrawer } = useCart();
@@ -339,14 +363,14 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
             <Container className="px-0 sm:px-6 md:px-8">
               <Grid className="!gap-0 overflow-visible">
                 <GridColumn className="mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]">
-                  <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-[5rem]">
+                  <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight">
                     {customizationTitles[0]}
                   </h2>
                   <ProductImageGallery key={product.id} product={product} variantImage={variantImage} />
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
                       {customizationTitles[1] && (
-                        <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900">
+                        <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight">
                           {customizationTitles[1]}
                         </h2>
                       )}
@@ -369,14 +393,14 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                             size='image'
                             disabled={isAddingToCart || isBuyingNow}
                             className="disabled:opacity-50 disabled:cursor-not-allowed">
-                            <img src="/assets/images/add-to-cart.svg" alt="Add to cart" className="w-auto h-[80px] xl:h-[108px]" />
+                            <img src="/assets/images/add-to-cart.svg" alt={t('product.addToCart')} className="w-auto h-[80px] xl:h-[108px]" />
                           </SubmitButton>
                         ) : (
                           <SubmitButton
                             disabled
                             className="pointer-events-none !h-12 w-full !text-base !font-bold opacity-50"
                           >
-                            Sold out
+                            {t('product.soldOut')}
                           </SubmitButton>
                         )}
                       </div>
@@ -396,14 +420,14 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                               disabled={isAddingToCart || isBuyingNow}
                               className="!h-12 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              {isBuyingNow ? 'Processing...' : 'Buy Now'}
+                              {isBuyingNow ? t('product.processing') : t('product.buyNow')}
                             </Button>
                           ) : (
                             <Button
                               disabled
                               className="pointer-events-none !h-12 !text-base !font-bold opacity-50 bg-gray-300 text-gray-500"
                             >
-                              Sold out
+                              {t('product.soldOut')}
                             </Button>
                           )}
                         </div>
@@ -412,7 +436,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       {productSelectOptions && productSelectOptions.length > 5 && (
                         <section aria-labelledby="product-options" className="product-options">
                           <h2 id="product-options" className="sr-only">
-                            Product options
+                            {t('product.productOptions')}
                           </h2>
 
                           <div className="space-y-4">
@@ -432,7 +456,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       {productSelectOptions && productSelectOptions.length <= 5 && (
                         <section aria-labelledby="product-options" className="product-options my-6 grid gap-4">
                           <h2 id="product-options" className="sr-only">
-                            Product options
+                            {t('product.productOptions')}
                           </h2>
                           {productSelectOptions.map((option, optionIndex) => (
                             <div key={optionIndex}>
@@ -451,14 +475,14 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                         {!!product.description && (
                           <div className="mt-4">
                             <div className="whitespace-pre-wrap text-base text-primary-800">
-                              {product.description}
+                              {description ? description : product.description}
                             </div>
                           </div>
                         )}
 
                         {(product.metadata?.notes as string) && (
                           <div className="mt-4">
-                            <div dangerouslySetInnerHTML={{ __html: product.metadata?.notes as string }} />
+                            <div dangerouslySetInnerHTML={{ __html: notes ? notes : product.metadata?.notes as string }} />
                           </div>
                         )}
 
@@ -505,26 +529,26 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                     </div>
                     <div className="container mx-auto my-6 xl:my-12 grid grid-cols-12 xl:px-8 p-4 gap-[20px]">
                       {product.metadata?.ingredients as string && (
-                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="INGREDIENTS" initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.ingredients as string }} />
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.ingredients')} initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: ingredients ? ingredients : product.metadata?.ingredients as string }} />
                         </Collasape>
                       )}
 
                       {product.metadata?.precautions_of_use as string && (
-                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="PRECAUTIONS OF USE" initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.precautions_of_use as string }} />
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.precautionsOfUse')} initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: precautionsOfUse ? precautionsOfUse : product.metadata?.precautions_of_use as string }} />
                         </Collasape>
                       )}
 
                       {product.metadata?.application_tips as string && (
-                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title="APPLICATION TIPS" initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: product.metadata?.application_tips as string }} />
+                        <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.applicationTips')} initiallyOpen={false}>
+                          <div dangerouslySetInnerHTML={{ __html: applicationTips ? applicationTips : product.metadata?.application_tips as string }} />
                         </Collasape>
                       )}
                     </div>
-                    {!!(product.metadata?.ingredients as string)
-                      || !!(product.metadata?.precautions_of_use as string)
-                      || !!(product.metadata?.application_tips as string)
+                    {!!(ingredients ? ingredients : product.metadata?.ingredients as string)
+                      || !!(precautionsOfUse ? precautionsOfUse : product.metadata?.precautions_of_use as string)
+                      || !!(applicationTips ? applicationTips : product.metadata?.application_tips as string)
                       && (
                         <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
                           <hr className='col-span-8 border-t-[1px] border-primary' />

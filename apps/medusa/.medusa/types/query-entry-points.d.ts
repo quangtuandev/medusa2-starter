@@ -170,30 +170,6 @@ export type StoreCurrency = {
   deleted_at: Maybe<Scalars['DateTime']['output']>;
 };
 
-export type ViewConfiguration = {
-  __typename?: 'ViewConfiguration';
-  id: Scalars['ID']['output'];
-  entity: Scalars['String']['output'];
-  name: Maybe<Scalars['String']['output']>;
-  user_id: Maybe<Scalars['String']['output']>;
-  is_system_default: Scalars['Boolean']['output'];
-  configuration: Scalars['JSON']['output'];
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type UserPreference = {
-  __typename?: 'UserPreference';
-  id: Scalars['ID']['output'];
-  user_id: Scalars['String']['output'];
-  key: Scalars['String']['output'];
-  value: Scalars['JSON']['output'];
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
 export type User = {
   __typename?: 'User';
   id: Scalars['ID']['output'];
@@ -215,6 +191,30 @@ export type Invite = {
   token: Scalars['String']['output'];
   expires_at: Scalars['DateTime']['output'];
   metadata: Maybe<Scalars['JSON']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ViewConfiguration = {
+  __typename?: 'ViewConfiguration';
+  id: Scalars['ID']['output'];
+  entity: Scalars['String']['output'];
+  name: Maybe<Scalars['String']['output']>;
+  user_id: Maybe<Scalars['String']['output']>;
+  is_system_default: Scalars['Boolean']['output'];
+  configuration: Scalars['JSON']['output'];
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type UserPreference = {
+  __typename?: 'UserPreference';
+  id: Scalars['ID']['output'];
+  user_id: Scalars['String']['output'];
+  key: Scalars['String']['output'];
+  value: Scalars['JSON']['output'];
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
@@ -1491,6 +1491,30 @@ export type Currency = {
   deleted_at: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type WorkflowExecutionStateEnum =
+  | 'not_started'
+  | 'invoking'
+  | 'waiting_to_compensate'
+  | 'compensating'
+  | 'done'
+  | 'reverted'
+  | 'failed';
+
+export type WorkflowExecution = {
+  __typename?: 'WorkflowExecution';
+  id: Scalars['ID']['output'];
+  workflow_id: Scalars['ID']['output'];
+  transaction_id: Scalars['ID']['output'];
+  run_id: Scalars['ID']['output'];
+  execution: Maybe<Scalars['JSON']['output']>;
+  context: Maybe<Scalars['JSON']['output']>;
+  state: WorkflowExecutionStateEnum;
+  retention_time: Maybe<Scalars['Int']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type Region = {
   __typename?: 'Region';
   id: Scalars['ID']['output'];
@@ -1518,6 +1542,32 @@ export type Country = {
   region_id: Maybe<Scalars['String']['output']>;
   region: Maybe<Region>;
   metadata: Maybe<Scalars['JSON']['output']>;
+  created_at: Scalars['DateTime']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  deleted_at: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type NotificationStatusEnum =
+  | 'pending'
+  | 'success'
+  | 'failure';
+
+export type Notification = {
+  __typename?: 'Notification';
+  id: Scalars['ID']['output'];
+  to: Scalars['String']['output'];
+  channel: Scalars['String']['output'];
+  template: Maybe<Scalars['String']['output']>;
+  data: Maybe<Scalars['JSON']['output']>;
+  trigger_type: Maybe<Scalars['String']['output']>;
+  resource_id: Maybe<Scalars['String']['output']>;
+  resource_type: Maybe<Scalars['String']['output']>;
+  receiver_id: Maybe<Scalars['String']['output']>;
+  original_notification_id: Maybe<Scalars['String']['output']>;
+  idempotency_key: Maybe<Scalars['String']['output']>;
+  external_id: Maybe<Scalars['String']['output']>;
+  status: NotificationStatusEnum;
+  provider_id: Maybe<Scalars['String']['output']>;
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
@@ -1702,32 +1752,6 @@ export type ShippingProfile = {
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
   products_link: Maybe<Array<Maybe<LinkProductShippingProfile>>>;
-};
-
-export type NotificationStatusEnum =
-  | 'pending'
-  | 'success'
-  | 'failure';
-
-export type Notification = {
-  __typename?: 'Notification';
-  id: Scalars['ID']['output'];
-  to: Scalars['String']['output'];
-  channel: Scalars['String']['output'];
-  template: Maybe<Scalars['String']['output']>;
-  data: Maybe<Scalars['JSON']['output']>;
-  trigger_type: Maybe<Scalars['String']['output']>;
-  resource_id: Maybe<Scalars['String']['output']>;
-  resource_type: Maybe<Scalars['String']['output']>;
-  receiver_id: Maybe<Scalars['String']['output']>;
-  original_notification_id: Maybe<Scalars['String']['output']>;
-  idempotency_key: Maybe<Scalars['String']['output']>;
-  external_id: Maybe<Scalars['String']['output']>;
-  status: NotificationStatusEnum;
-  provider_id: Maybe<Scalars['String']['output']>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type AccountHolder = {
@@ -1943,30 +1967,6 @@ export type TaxProvider = {
   id: Scalars['ID']['output'];
   is_enabled: Scalars['Boolean']['output'];
   regions: Array<Maybe<TaxRegion>>;
-  created_at: Scalars['DateTime']['output'];
-  updated_at: Scalars['DateTime']['output'];
-  deleted_at: Maybe<Scalars['DateTime']['output']>;
-};
-
-export type WorkflowExecutionStateEnum =
-  | 'not_started'
-  | 'invoking'
-  | 'waiting_to_compensate'
-  | 'compensating'
-  | 'done'
-  | 'reverted'
-  | 'failed';
-
-export type WorkflowExecution = {
-  __typename?: 'WorkflowExecution';
-  id: Scalars['ID']['output'];
-  workflow_id: Scalars['ID']['output'];
-  transaction_id: Scalars['ID']['output'];
-  run_id: Scalars['ID']['output'];
-  execution: Maybe<Scalars['JSON']['output']>;
-  context: Maybe<Scalars['JSON']['output']>;
-  state: WorkflowExecutionStateEnum;
-  retention_time: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['DateTime']['output'];
   updated_at: Scalars['DateTime']['output'];
   deleted_at: Maybe<Scalars['DateTime']['output']>;
@@ -2193,14 +2193,14 @@ declare module '@medusajs/framework/types' {
     stores: Store
     store_currency: StoreCurrency
     store_currencies: StoreCurrency
-    view_configuration: ViewConfiguration
-    view_configurations: ViewConfiguration
-    user_preference: UserPreference
-    user_preferences: UserPreference
     user: User
     users: User
     invite: Invite
     invites: Invite
+    view_configuration: ViewConfiguration
+    view_configurations: ViewConfiguration
+    user_preference: UserPreference
+    user_preferences: UserPreference
     inventory_items: InventoryItem
     inventory_item: InventoryItem
     inventory: InventoryItem
@@ -2298,10 +2298,14 @@ declare module '@medusajs/framework/types' {
     return_reasons: any
     currency: Currency
     currencies: Currency
+    workflow_execution: WorkflowExecution
+    workflow_executions: WorkflowExecution
     region: Region
     regions: Region
     country: Country
     countries: Country
+    notification: Notification
+    notifications: Notification
     fulfillment_address: any
     fulfillment_addresses: any
     fulfillment_item: FulfillmentItem
@@ -2326,8 +2330,6 @@ declare module '@medusajs/framework/types' {
     shipping_options: ShippingOption
     shipping_profile: ShippingProfile
     shipping_profiles: ShippingProfile
-    notification: Notification
-    notifications: Notification
     payment_method: any
     payment_methods: any
     account_holder: AccountHolder
@@ -2354,8 +2356,6 @@ declare module '@medusajs/framework/types' {
     tax_rate_rules: TaxRateRule
     tax_provider: TaxProvider
     tax_providers: TaxProvider
-    workflow_execution: WorkflowExecution
-    workflow_executions: WorkflowExecution
     cart_payment_collection: LinkCartPaymentCollection
     cart_payment_collections: LinkCartPaymentCollection
     cart_promotion: LinkCartPromotion

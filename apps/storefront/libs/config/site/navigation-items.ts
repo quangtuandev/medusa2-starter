@@ -1,9 +1,10 @@
 import { NavigationCollection, NavigationItemLocation } from '@libs/types';
 
+// Navigation items with i18n keys instead of hardcoded labels
 export const headerNavigationItems: NavigationCollection = [
   {
     id: 1,
-    label: 'Products',
+    label: 'navigation.products', // i18n key
     url: '/pick-a-card',
     sort_order: 0,
     location: NavigationItemLocation.header,
@@ -11,7 +12,7 @@ export const headerNavigationItems: NavigationCollection = [
   },
   {
     id: 2,
-    label: 'About Us',
+    label: 'navigation.aboutUs', // i18n key
     url: '/stories',
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -19,7 +20,7 @@ export const headerNavigationItems: NavigationCollection = [
   },
   {
     id: 3,
-    label: 'Blog',
+    label: 'navigation.blog', // i18n key
     url: '/blogs',
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -27,7 +28,7 @@ export const headerNavigationItems: NavigationCollection = [
   },
   {
     id: 4,
-    label: "Let's talk",
+    label: 'navigation.letsTalk', // i18n key
     url: '/contact',
     sort_order: 1,
     location: NavigationItemLocation.header,
@@ -38,7 +39,7 @@ export const headerNavigationItems: NavigationCollection = [
 export const footerNavigationItems: NavigationCollection = [
   {
     id: 1,
-    label: 'About Us',
+    label: 'navigation.aboutUs', // i18n key
     url: '/stories',
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -46,7 +47,7 @@ export const footerNavigationItems: NavigationCollection = [
   },
   {
     id: 2,
-    label: 'FAQs',
+    label: 'navigation.faqs', // i18n key
     url: '/faqs',
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -54,7 +55,7 @@ export const footerNavigationItems: NavigationCollection = [
   },
   {
     id: 3,
-    label: 'Documentation',
+    label: 'navigation.documentation', // i18n key
     url: '/docs',
     location: NavigationItemLocation.footer,
     sort_order: 1,
@@ -62,7 +63,7 @@ export const footerNavigationItems: NavigationCollection = [
   },
   {
     id: 4,
-    label: 'Terms of Service',
+    label: 'navigation.termsOfService', // i18n key
     url: '/terms-of-service',
     location: NavigationItemLocation.footer,
     sort_order: 1,

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { animate, spring } from "animejs";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useI18n } from "@app/hooks/useI18n";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
@@ -14,11 +15,12 @@ function FancyText({ id, text, className }: { id: string, text: string, classNam
 
 
 export const MainMenu = () => {
+    const { t } = useI18n();
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const categoryItems = [
         {
             id: 'blog',
-            label: 'Blog',
+            label: t('menu.blog'),
             image: '/assets/images/menu/blog.webp',
             url: '/blogs',
             className: 'max-w-[100vw] xl:max-w-[494px] left-0',
@@ -30,7 +32,7 @@ export const MainMenu = () => {
         },
         {
             id: 'product',
-            label: 'Product',
+            label: t('menu.product'),
             image: '/assets/images/menu/product.webp',
             url: '/pick-a-card',
             className: 'max-w-[100vw] xl:max-w-[648px] left-[366px]',
@@ -42,7 +44,7 @@ export const MainMenu = () => {
         },
         {
             id: 'story',
-            label: 'Story',
+            label: t('menu.story'),
             image: '/assets/images/menu/story.webp',
             url: '/stories',
             className: 'max-w-[100vw] xl:max-w-[446px] left-[864px]',
@@ -54,7 +56,7 @@ export const MainMenu = () => {
         },
         {
             id: 'contact',
-            label: 'Contact',
+            label: t('menu.contact'),
             image: '/assets/images/menu/contact.webp',
             url: '/contact',
             className: 'max-w-[100vw] xl:max-w-[670px] right-0',
@@ -153,8 +155,8 @@ export const MainMenu = () => {
                 <div className="absolute bottom-0 left-0 w-full bg-[url('/assets/images/menu/background.webp')] bg-repeat-x bg-bottom bg-center xl:bg-contain bg-cover">
                     <div className="absolute bottom-0 left-0 w-full h-full bg-[#00000099] z-[2] opacity-0 menu-background" />
                     <p className="absolute bottom-0 w-full text-center mb-[98px] z-[3]">
-                        <span className={clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>This is</span>
-                        <span className="font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">Our</span>
+                        <span className={clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>{t('home.thisIs')}</span>
+                        <span className="font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{t('home.our')}</span>
                     </p>
                     <div className="overflow-hidden h-[300px] relative">
                         <img src="/assets/images/menu/chair-bottom.webp" alt="logo" className="w-full h-full xl:object-cover object-position-center object-contain" />

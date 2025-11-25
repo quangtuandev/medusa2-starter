@@ -53,11 +53,18 @@
     "products": "Sản phẩm",
     "categories": "Danh mục",
     "about": "Giới thiệu",
+    "aboutUs": "Giới thiệu",
     "contact": "Liên hệ",
     "account": "Tài khoản",
     "login": "Đăng nhập",
     "logout": "Đăng xuất",
-    "register": "Đăng ký"
+    "register": "Đăng ký",
+    "blog": "Blog",
+    "letsTalk": "Liên hệ",
+    "faqs": "Câu hỏi thường gặp",
+    "documentation": "Tài liệu",
+    "termsOfService": "Điều khoản dịch vụ",
+    "title": "Điều hướng"
   },
   "hero": {
     "title": "BARRIO",
@@ -84,7 +91,15 @@
     "availability": "Tình trạng",
     "sku": "Mã sản phẩm",
     "category": "Danh mục",
-    "tags": "Thẻ"
+    "tags": "Thẻ",
+    "soldOut": "Hết hàng",
+    "processing": "Đang xử lý...",
+    "buyNow": "Mua ngay",
+    "productOptions": "Tùy chọn sản phẩm",
+    "ingredients": "THÀNH PHẦN",
+    "precautionsOfUse": "LƯU Ý KHI SỬ DỤNG",
+    "applicationTips": "MẸO SỬ DỤNG",
+    "addToCart": "Thêm vào giỏ"
   },
   "cart": {
     "title": "Giỏ hàng",
@@ -94,7 +109,15 @@
     "update": "Cập nhật giỏ hàng",
     "clear": "Xóa giỏ hàng",
     "estimatedTotal": "Tổng ước tính",
-    "shippingCalculated": "Phí vận chuyển được tính khi thanh toán"
+    "shippingCalculated": "Phí vận chuyển được tính khi thanh toán",
+    "yourCart": "Giỏ hàng của bạn",
+    "cartEmpty": "GIỎ HÀNG CỦA BẠN ĐANG TRỐNG :0",
+    "continueShopping": "Tiếp tục mua sắm",
+    "subtotal": "Tạm tính",
+    "shippingTaxesCalculated": "Phí vận chuyển và thuế được tính khi thanh toán.",
+    "preparingCheckout": "Đang chuẩn bị thanh toán...",
+    "checkout": "Thanh toán",
+    "or": "hoặc"
   },
   "checkout": {
     "title": "Thanh toán",
@@ -107,7 +130,36 @@
     "processing": "Đang xử lý...",
     "orderConfirmation": "Xác nhận đơn hàng",
     "thankYou": "Cảm ơn bạn đã đặt hàng!",
-    "orderNumber": "Số đơn hàng"
+    "orderNumber": "Số đơn hàng",
+    "checkingOutAs": "Thanh toán với tư cách:",
+    "accountDetails": "Thông tin tài khoản",
+    "toGetStartedSelect": "Để bắt đầu, vui lòng chọn địa chỉ giao hàng của bạn.",
+    "toGetStartedEnter": "Để bắt đầu, vui lòng nhập địa chỉ email của bạn.",
+    "emailAddress": "Địa chỉ Email",
+    "emailAddressPlaceholder": "Địa chỉ email",
+    "firstName": "Tên",
+    "firstNamePlaceholder": "Tên",
+    "lastName": "Họ",
+    "lastNamePlaceholder": "Họ",
+    "company": "Công ty (Tùy chọn)",
+    "companyPlaceholder": "Công ty",
+    "address": "Địa chỉ",
+    "addressPlaceholder": "Địa chỉ",
+    "apartmentSuite": "Căn hộ, số nhà, v.v. (Tùy chọn)",
+    "apartmentSuitePlaceholder": "Căn hộ, số nhà, v.v.",
+    "city": "Thành phố",
+    "cityPlaceholder": "Thành phố",
+    "province": "Tỉnh/Thành",
+    "provincePlaceholder": "Tỉnh/Thành",
+    "postalCode": "Mã bưu điện",
+    "postalCodePlaceholder": "Mã bưu điện",
+    "country": "Quốc gia",
+    "countryPlaceholder": "Quốc gia",
+    "phone": "Điện thoại (Tùy chọn)",
+    "phonePlaceholder": "Điện thoại",
+    "saving": "Đang lưu...",
+    "saveAndContinue": "Lưu và tiếp tục",
+    "cancelEdit": "Hủy chỉnh sửa"
   },
   "shop": "Cửa hàng nước hoa",
   "home": {
@@ -125,6 +177,70 @@
     },
     "r": {
       "description": "Kira là một vụ nổ ánh sáng lấp lánh, một phép thuật của ánh nắng và tiếng cười, dệt vào mỗi lần xịt tinh tế—một điệu nhảy tinh thần của niềm vui tồn tại như một kỷ niệm về cái ôm ấm áp của mặt trời."
-    }
+    },
+    "this": "This",
+    "is": "is",
+    "est": "Est.",
+    "year": "2025",
+    "thisIs": "This is",
+    "our": "Our"
+  },
+  "success": {
+    "hurray": "Tuyệt vời!!!",
+    "weGotU": "CHÚNG TÔI ĐÃ NHẬN ĐƯỢC ĐƠN CỦA BẠN ;3",
+    "deliveringSweetness": "chúng tôi sẽ giao hàng ngọt ngào đến bạn sớm thôi",
+    "youMayAlsoLike": "Bạn cũng có thể thích",
+    "oohh": "Ồ",
+    "uGotSomething": "BẠN ĐÃ CÓ GÌ ĐÓ ;3",
+    "okay": "Được rồi!!!",
+    "weGotUContact": "CHÚNG TÔI ĐÃ NHẬN ĐƯỢC ;3",
+    "replyingSoon": "chúng tôi sẽ trả lời bạn sớm thôi!!!",
+    "inTheMeantime": "trong lúc chờ đợi......."
+  },
+  "menu": {
+    "blog": "Blog",
+    "product": "Sản phẩm",
+    "story": "Câu chuyện",
+    "contact": "Liên hệ"
+  },
+  "products": {
+    "newMagic": "PHÉP MÀU MỚI",
+    "comingSoon": "Sắp ra <br /> mắt...",
+    "stayTuned": "Hãy đón chờ",
+    "thisIsOur": "ĐÂY LÀ",
+    "icy": "Icy",
+    "thirsty": "Thirsty",
+    "thisIs": "ĐÂY LÀ",
+    "allOfOur": "Tất cả",
+    "collection": "bộ sưu tập",
+    "icyDescription": "Đưa bạn đến một quán cà phê ấm cúng vào buổi sáng đầy nắng. Hương thơm pha trộn giữa cà phê mới pha phong phú với một chút vani kem và gia vị ấm áp.",
+    "thirstyDescription": "Đưa bạn đến một quán cà phê ấm cúng vào buổi sáng đầy nắng. Hương thơm pha trộn giữa cà phê mới pha phong phú với một chút vani kem và gia vị ấm áp.",
+    "cupAlt": "Cốc",
+    "coming": "Sắp ra mắt",
+    "all": "Tất cả",
+    "heartAndSoul": "Trái tim & Tâm hồn",
+    "pickA": "Chọn <br /> một",
+    "card": "thẻ",
+    "collections": "Bộ sưu tập"
+  },
+  "contact": {
+    "title": "Liên hệ với chúng tôi",
+    "name": "Tên",
+    "namePlaceholder": "Tên",
+    "email": "Email",
+    "emailPlaceholder": "Email",
+    "message": "Tin nhắn",
+    "messagePlaceholder": "Tin nhắn",
+    "send": "Gửi",
+    "sending": "Đang gửi...",
+    "error": "Gửi tin nhắn thất bại. Vui lòng thử lại sau.",
+    "validation": {
+      "nameMin": "Tên phải có ít nhất 2 ký tự",
+      "emailInvalid": "Vui lòng nhập email hợp lệ",
+      "messageMin": "Tin nhắn phải có ít nhất 10 ký tự"
+    },
+    "description": "Chúng tôi rất vui được trả lời mọi câu hỏi của bạn :) Nếu bạn gặp vấn đề với đơn hàng, vui lòng cung cấp số đơn hàng để chúng tôi có thể hỗ trợ bạn nhanh chóng nhất có thể!",
+    "ourEmail": "Email của chúng tôi:",
+    "contactAlt": "Liên hệ"
   }
 }

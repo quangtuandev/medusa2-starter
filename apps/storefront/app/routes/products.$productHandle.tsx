@@ -7,6 +7,7 @@ import { fetchProducts } from '@libs/util/server/products.server';
 import { withPaginationParams } from '@libs/util/withPaginationParams';
 import { type LoaderFunctionArgs, type MetaFunction, redirect } from 'react-router';
 import { useLoaderData } from 'react-router';
+import { useI18n } from '@app/hooks/useI18n';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { limit: reviewsLimit, offset: reviewsOffset } = withPaginationParams({
@@ -39,12 +40,13 @@ export const meta: MetaFunction<ProductPageLoaderData> = getMergedProductMeta;
 
 export default function ProductDetailRoute() {
   const { product } = useLoaderData<ProductPageLoaderData>();
+  const { t } = useI18n();
   return (
     <>
       <ProductTemplate
         product={product}
       />
-      <ProductList className="!pb-[100px] xl:px-9" heading="You may also like" />
+      <ProductList className="!pb-[100px] xl:px-9" heading={t('success.youMayAlsoLike')} />
     </>
   );
 }

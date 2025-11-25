@@ -11,33 +11,38 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { useFetchers, useNavigate } from 'react-router';
 import { CartDrawerItem } from './CartDrawerItem';
 import { ProductSwiper } from '../sections/ProductSwiper';
+import { useI18n } from '@app/hooks/useI18n';
 
 // Cart Drawer Header Component
-const CartDrawerHeader: FC<{ itemCount: number; onClose: () => void }> = ({ itemCount, onClose }) => (
-  <div className="flex items-start justify-between relative">
-    {itemCount > 0 && (
-      <DialogTitle className="text-lg font-bold text-gray-900 text-center">
-        Your Cart
-      </DialogTitle>
-    )}
-    <div className="absolute top-0 right-0">
-      <IconButton icon={XMarkIcon} onClick={onClose} className="-m-2" aria-label="Close panel" />
+const CartDrawerHeader: FC<{ itemCount: number; onClose: () => void }> = ({ itemCount, onClose }) => {
+  const { t } = useI18n();
+  return (
+    <div className="flex items-start justify-between relative">
+      {itemCount > 0 && (
+        <DialogTitle className="text-lg font-bold text-gray-900 text-center">
+          {t('cart.yourCart')}
+        </DialogTitle>
+      )}
+      <div className="absolute top-0 right-0">
+        <IconButton icon={XMarkIcon} onClick={onClose} className="-m-2" aria-label="Close panel" />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Cart Drawer Empty Component
 const CartDrawerEmpty: FC = () => {
   const navigate = useNavigate();
   const { toggleCartDrawer } = useCart();
+  const { t } = useI18n();
   return (
     <div className='flex flex-col items-center justify-center gap-4 w-full'>
-      <p className="font-alexandria font-extrabold text-[42px] text-center leading-[100%]">YOUR CART <br />IS EMPTY :0</p>
+      <p className="font-alexandria font-extrabold text-[42px] text-center leading-[100%]">{t('cart.cartEmpty')}</p>
       <ButtonLink variant='primary' size="sm" onClick={() => {
         navigate('/collections');
         toggleCartDrawer(false);
       }}>
-        Continue Shopping
+        {t('cart.continueShopping')}
       </ButtonLink>
     </div>
   )
@@ -120,42 +125,45 @@ const CartDrawerFooter: FC<{
   itemCount: number;
   onCheckout: () => void;
   onClose: () => void;
-}> = ({ cart, currencyCode, itemCount, navigatingToCheckout, onCheckout, onClose }) => (
-  <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-    <div className="flex justify-between text-base font-bold text-gray-900">
-      <p>Subtotal</p>
-      <p>
-        {cart
-          ? formatCartSubtotal(cart)
-          : formatPrice(0, {
-            currency: currencyCode,
-          })}
-      </p>
+}> = ({ cart, currencyCode, itemCount, navigatingToCheckout, onCheckout, onClose }) => {
+  const { t } = useI18n();
+  return (
+    <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+      <div className="flex justify-between text-base font-bold text-gray-900">
+        <p>{t('cart.subtotal')}</p>
+        <p>
+          {cart
+            ? formatCartSubtotal(cart)
+            : formatPrice(0, {
+              currency: currencyCode,
+            })}
+        </p>
+      </div>
+      <p className="mt-0.5 text-sm text-gray-500">{t('cart.shippingTaxesCalculated')}</p>
+      <div className="mt-6">
+        <Button
+          variant="primary"
+          disabled={itemCount === 0 || navigatingToCheckout}
+          onClick={onCheckout}
+          className="h-12 w-full !text-base font-bold"
+        >
+          {navigatingToCheckout ? t('cart.preparingCheckout') : t('cart.checkout')}
+        </Button>
+      </div>
+      <div className="mt-4 flex justify-center text-center text-sm text-gray-500">
+        <p>
+          {t('cart.or')}{' '}
+          <ButtonLink size="sm" onClick={onClose}>
+            <div>
+              {t('cart.continueShopping')}{` `}
+              <span aria-hidden="true">&rarr;</span>
+            </div>
+          </ButtonLink>
+        </p>
+      </div>
     </div>
-    <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-    <div className="mt-6">
-      <Button
-        variant="primary"
-        disabled={itemCount === 0 || navigatingToCheckout}
-        onClick={onCheckout}
-        className="h-12 w-full !text-base font-bold"
-      >
-        {navigatingToCheckout ? 'Preparing checkout...' : 'Checkout'}
-      </Button>
-    </div>
-    <div className="mt-4 flex justify-center text-center text-sm text-gray-500">
-      <p>
-        or{' '}
-        <ButtonLink size="sm" onClick={onClose}>
-          <div>
-            Continue Shopping{` `}
-            <span aria-hidden="true">&rarr;</span>
-          </div>
-        </ButtonLink>
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 export const CartDrawer: FC = () => {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -8,17 +8,31 @@ import { AllCollection } from "@app/components/collection/items/all-collection";
 import { ThirstyCollection } from "@app/components/collection/items/thirsty-collection";
 import { IcyCollection } from "@app/components/collection/items/icy-collection";
 import { ComingCollection } from "@app/components/collection/items/coming-collection";
-
-const initialCards = [
-  { id: 4, h1: "NEW MAGIC", title: "Coming <br /> soon...", subtitle: "Stay tuned", component: (isActive: boolean) => <ComingCollection isActive={isActive} /> },
-  { id: 3, h1: "THIS IS OUR", title: "Icy", subtitle: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.", component: (isActive: boolean) => <IcyCollection isActive={isActive} /> },
-  { id: 2, h1: "THIS IS OUR", title: "Thirsty", subtitle: "Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.", component: (isActive: boolean) => <ThirstyCollection isActive={isActive} /> },
-  { id: 1, h1: "THIS IS", title: "All of Our", subtitle: "", component: (isActive: boolean) => <AllCollection isActive={isActive} /> },
-];
+import { useI18n } from "@app/hooks/useI18n";
 
 export default function HalfFanSlider() {
+  const { t } = useI18n();
+
+  const initialCards = useMemo(() => [
+    { id: 4, h1: t('products.newMagic'), title: t('products.comingSoon'), subtitle: t('products.stayTuned'), component: (isActive: boolean) => <ComingCollection isActive={isActive} /> },
+    { id: 3, h1: t('products.thisIsOur'), title: t('products.icy'), subtitle: t('products.icyDescription'), component: (isActive: boolean) => <IcyCollection isActive={isActive} /> },
+    { id: 2, h1: t('products.thisIsOur'), title: t('products.thirsty'), subtitle: t('products.thirstyDescription'), component: (isActive: boolean) => <ThirstyCollection isActive={isActive} /> },
+    { id: 1, h1: t('products.thisIs'), title: t('products.allOfOur'), subtitle: "", component: (isActive: boolean) => <AllCollection isActive={isActive} /> },
+  ], [t]);
+
   const [cards, setCards] = useState(initialCards);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Update cards when language changes
+  useEffect(() => {
+    const updatedCards = [
+      { id: 4, h1: t('products.newMagic'), title: t('products.comingSoon'), subtitle: t('products.stayTuned'), component: (isActive: boolean) => <ComingCollection isActive={isActive} /> },
+      { id: 3, h1: t('products.thisIsOur'), title: t('products.icy'), subtitle: t('products.icyDescription'), component: (isActive: boolean) => <IcyCollection isActive={isActive} /> },
+      { id: 2, h1: t('products.thisIsOur'), title: t('products.thirsty'), subtitle: t('products.thirstyDescription'), component: (isActive: boolean) => <ThirstyCollection isActive={isActive} /> },
+      { id: 1, h1: t('products.thisIs'), title: t('products.allOfOur'), subtitle: "", component: (isActive: boolean) => <AllCollection isActive={isActive} /> },
+    ];
+    setCards(updatedCards);
+  }, [t]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -151,12 +165,12 @@ export default function HalfFanSlider() {
                     <img
                       className="animate-rotate-bounce absolute top-0 left-0"
                       src="/assets/images/home/cup.svg"
-                      alt="Cup"
+                      alt={t('products.cupAlt')}
                     />
                     <img
                       className="animate-rotate-bounce-reverse absolute top-0 left-0"
                       src="/assets/images/home/cup-bg.svg"
-                      alt="Cup"
+                      alt={t('products.cupAlt')}
                     />
                   </div>
                 )}
@@ -166,7 +180,7 @@ export default function HalfFanSlider() {
                 <p className={clsx("font-title font-medium text-2xl xl:text-[75.37px] leading-normal xl:leading-[95.47px] text-center", {
                   "text-[#FFE977]": activeCard.id === 1,
                   "text-[#A2D4FD]": activeCard.id !== 1,
-                })}>collection</p>
+                })}>{t('products.collection')}</p>
               )}
               <p className="font-montserrat font-regular text-[15px] leading-normal xl:leading-[26px] text-center text-[#000] max-w-[430px]">{activeCard.subtitle}</p>
             </motion.div>

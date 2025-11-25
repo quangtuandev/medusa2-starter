@@ -158,8 +158,8 @@ export default function IndexRoute() {
     >
       <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-4 lg:px-11 pt-8 z-10">
         <p className="font-title font-bold text-6xl lg:text-8xl uppercase">
-          <span>This</span> <br />
-          <span className="ml-[8px] lg:ml-[14px]">is</span>
+          <span>{t('home.this')}</span> <br />
+          <span className="ml-[8px] lg:ml-[14px]">{t('home.is')}</span>
         </p>
         {activeComponent === 'main' &&
           <div ref={menuRef} className="flex flex-col gap-6">
@@ -191,8 +191,8 @@ export default function IndexRoute() {
       {activeComponent === 'A' && <A isMobile={isMobile} />}
 
       <div className="flex gap-11 justify-between absolute bottom-0 left-0 w-full px-4 lg:px-11">
-        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">Est.</p>
-        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">2025</p>
+        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">{t('home.est')}</p>
+        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">{t('home.year')}</p>
       </div>
     </div>
   );

@@ -22,10 +22,12 @@ import { FormError } from '../common/remix-hook-form/forms/FormError';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 import { AddressDisplay } from './address/AddressDisplay';
 import { selectInitialShippingAddress } from './checkout-form-helpers';
+import { useI18n } from '@app/hooks/useI18n';
 
 const NEW_SHIPPING_ADDRESS_ID = 'new';
 
 export const CheckoutAccountDetails = () => {
+  const { t } = useI18n();
   const checkoutAccountDetailsFormFetcher = useFetcher<{
     errors: FieldErrors;
   }>({ key: FetcherKeys.cart.accountDetails });
@@ -96,19 +98,19 @@ export const CheckoutAccountDetails = () => {
   return (
     <div className="checkout-account-details">
       <CheckoutSectionHeader completed={showCompleted} setStep={setStep} step={CheckoutStep.ACCOUNT_DETAILS}>
-        Account details
+        {t('checkout.accountDetails')}
       </CheckoutSectionHeader>
 
       {!isActiveStep && isComplete && (
-        <AddressDisplay title="Shipping Address" address={shippingAddress} countryOptions={countryOptions} />
+        <AddressDisplay title={t('checkout.shippingAddress')} address={shippingAddress} countryOptions={countryOptions} />
       )}
 
       {isActiveStep && (
         <>
           {customer?.email ? (
-            <p className="mt-2 text-sm mb-2">To get started, please select your shipping address.</p>
+            <p className="mt-2 text-sm mb-2">{t('checkout.toGetStartedSelect')}</p>
           ) : (
-            <p className="mt-2 text-sm mb-4">To get started, enter your email address.</p>
+            <p className="mt-2 text-sm mb-4">{t('checkout.toGetStartedEnter')}</p>
           )}
 
           <RemixFormProvider {...form}>
@@ -120,8 +122,8 @@ export const CheckoutAccountDetails = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                placeholder="Email address"
-                label="Email Address"
+                placeholder={t('checkout.emailAddressPlaceholder')}
+                label={t('checkout.emailAddress')}
                 className="[&_input]:!ring-0 mb-2"
               />
 
@@ -132,8 +134,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.firstName"
                     type="text"
-                    label="First Name"
-                    placeholder="First Name"
+                    label={t('checkout.firstName')}
+                    placeholder={t('checkout.firstNamePlaceholder')}
                   />
 
                 </div>
@@ -142,8 +144,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.lastName"
                     type="text"
-                    label="Last Name"
-                    placeholder="Last Name"
+                    label={t('checkout.lastName')}
+                    placeholder={t('checkout.lastNamePlaceholder')}
                   />
 
                 </div>
@@ -153,8 +155,8 @@ export const CheckoutAccountDetails = () => {
                 <StyledTextField
                   name="shippingAddress.company"
                   type="text"
-                  label="Company (Optional)"
-                  placeholder="Company"
+                  label={t('checkout.company')}
+                  placeholder={t('checkout.companyPlaceholder')}
                 />
               </div>
 
@@ -162,8 +164,8 @@ export const CheckoutAccountDetails = () => {
                 <StyledTextField
                   name="shippingAddress.address1"
                   type="text"
-                  label="Address"
-                  placeholder="Address"
+                  label={t('checkout.address')}
+                  placeholder={t('checkout.addressPlaceholder')}
                 />
 
               </div>
@@ -172,8 +174,8 @@ export const CheckoutAccountDetails = () => {
                 <StyledTextField
                   name="shippingAddress.address2"
                   type="text"
-                  label="Apartment, suite, etc. (Optional)"
-                  placeholder="Apartment, suite, etc."
+                  label={t('checkout.apartmentSuite')}
+                  placeholder={t('checkout.apartmentSuitePlaceholder')}
                 />
               </div>
 
@@ -182,8 +184,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.city"
                     type="text"
-                    label="City"
-                    placeholder="City"
+                    label={t('checkout.city')}
+                    placeholder={t('checkout.cityPlaceholder')}
                   />
 
                 </div>
@@ -192,8 +194,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.province"
                     type="text"
-                    label="Province"
-                    placeholder="Province"
+                    label={t('checkout.province')}
+                    placeholder={t('checkout.provincePlaceholder')}
                   />
 
                 </div>
@@ -204,8 +206,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.postalCode"
                     type="text"
-                    label="Postal Code"
-                    placeholder="Postal Code"
+                    label={t('checkout.postalCode')}
+                    placeholder={t('checkout.postalCodePlaceholder')}
                   />
 
                 </div>
@@ -214,8 +216,8 @@ export const CheckoutAccountDetails = () => {
                   <StyledTextField
                     name="shippingAddress.countryCode"
                     type="text"
-                    label="Country"
-                    placeholder="Country"
+                    label={t('checkout.country')}
+                    placeholder={t('checkout.countryPlaceholder')}
                   />
 
                 </div>
@@ -225,8 +227,8 @@ export const CheckoutAccountDetails = () => {
                 <StyledTextField
                   name="shippingAddress.phone"
                   type="tel"
-                  label="Phone (Optional)"
-                  placeholder="Phone"
+                  label={t('checkout.phone')}
+                  placeholder={t('checkout.phonePlaceholder')}
                 />
               </div>
 
@@ -234,12 +236,12 @@ export const CheckoutAccountDetails = () => {
 
               <Actions>
                 <SubmitButton disabled={isSubmitting || isCartMutating}>
-                  {isSubmitting ? 'Saving...' : 'Save and continue'}
+                  {isSubmitting ? t('checkout.saving') : t('checkout.saveAndContinue')}
                 </SubmitButton>
 
                 {isComplete && (
                   <Button disabled={isSubmitting} onClick={handleCancel}>
-                    Cancel edit
+                    {t('checkout.cancelEdit')}
                   </Button>
                 )}
               </Actions>

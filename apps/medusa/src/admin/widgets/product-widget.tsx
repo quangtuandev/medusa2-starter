@@ -8,10 +8,16 @@ import { ContentfulSyncButton } from "./contentful-sync-button";
 
 const ProductMetadataWidget = ({ data }) => {
     const [customField, setCustomField] = useState({
+        description: "",
+        description_vi: "",
         notes: "",
+        notes_vi: "",
         ingredients: "",
+        ingredients_vi: "",
         precautions_of_use: "",
+        precautions_of_use_vi: "",
         application_tips: "",
+        application_tips_vi: "",
     });
 
     const handleSave = async () => {
@@ -23,10 +29,34 @@ const ProductMetadataWidget = ({ data }) => {
         });
         toast.success("Product metadata saved successfully");
     };
-    console.log('data', data);
     return (
         <Container className="bg-white p-4 rounded-lg space-y-6">
-            <ContentfulSyncButton data={data} />
+            <QuillEditor
+                id="description"
+                label="Description"
+                value={customField.description || data.metadata?.description || ""}
+                onChange={(value: string) => {
+                    setCustomField({
+                        ...customField,
+                        description: value,
+                    });
+                }}
+                placeholder="Enter product description..."
+                height="200px"
+            />
+            <QuillEditor
+                id="description-vi"
+                label="Description in Vietnamese"
+                value={customField.description_vi || data.metadata?.description_vi || ""}
+                onChange={(value: string) => {
+                    setCustomField({
+                        ...customField,
+                        description_vi: value,
+                    });
+                }}
+                placeholder="Enter product description in Vietnamese..."
+                height="200px"
+            />
             <QuillEditor
                 id="notes"
                 label="Notes"
@@ -41,6 +71,20 @@ const ProductMetadataWidget = ({ data }) => {
                 height="200px"
             />
             <QuillEditor
+                id="notes-vi"
+                label="Notes in Vietnamese"
+                value={customField.notes_vi || data.metadata?.notes_vi || ""}
+                onChange={(value: string) => {
+                    setCustomField({
+                        ...customField,
+                        notes_vi: value,
+                    });
+                }}
+                placeholder="Enter product notes in Vietnamese..."
+                height="200px"
+            />
+
+            <QuillEditor
                 id="ingredients"
                 label="Ingredients"
                 value={customField.ingredients || data.metadata?.ingredients || ""}
@@ -54,16 +98,16 @@ const ProductMetadataWidget = ({ data }) => {
                 height="200px"
             />
             <QuillEditor
-                id="ingredients"
-                label="Ingredients"
-                value={customField.ingredients || data.metadata?.ingredients || ""}
+                id="ingredients-vi"
+                label="Ingredients in Vietnamese"
+                value={customField.ingredients_vi || data.metadata?.ingredients_vi || ""}
                 onChange={(value: string) => {
                     setCustomField({
                         ...customField,
-                        ingredients: value,
+                        ingredients_vi: value,
                     });
                 }}
-                placeholder="Enter product ingredients..."
+                placeholder="Enter product ingredients in Vietnamese..."
                 height="200px"
             />
             <QuillEditor
@@ -80,6 +124,19 @@ const ProductMetadataWidget = ({ data }) => {
                 height="200px"
             />
             <QuillEditor
+                id="precautions-vi"
+                label="Precautions of use in Vietnamese"
+                value={customField.precautions_of_use_vi || data.metadata?.precautions_of_use_vi || ""}
+                onChange={(value: string) => {
+                    setCustomField({
+                        ...customField,
+                        precautions_of_use_vi: value,
+                    });
+                }}
+                placeholder="Enter usage precautions in Vietnamese..."
+                height="200px"
+            />
+            <QuillEditor
                 id="application-tips"
                 label="Application tips"
                 value={customField.application_tips || data.metadata?.application_tips || ""}
@@ -90,6 +147,19 @@ const ProductMetadataWidget = ({ data }) => {
                     });
                 }}
                 placeholder="Enter application tips..."
+                height="200px"
+            />
+            <QuillEditor
+                id="application-tips-vi"
+                label="Application tips in Vietnamese"
+                value={customField.application_tips_vi || data.metadata?.application_tips_vi || ""}
+                onChange={(value: string) => {
+                    setCustomField({
+                        ...customField,
+                        application_tips_vi: value,
+                    });
+                }}
+                placeholder="Enter application tips in Vietnamese..."
                 height="200px"
             />
             <Button onClick={handleSave}>Save</Button>

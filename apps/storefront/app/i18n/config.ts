@@ -23,33 +23,40 @@ export type SupportedLanguage = typeof supportedLanguages[number];
 // Initialize i18n; guard browser-only language detection to be SSR-safe
 const isBrowser = typeof window !== 'undefined';
 
+// Use plugins before initialization
+i18n.use(initReactI18next);
+
 if (isBrowser) {
   i18n.use(LanguageDetector);
 }
 
-// Initialize i18n synchronously first
-i18n.init({
+// Initialize i18n
+const initOptions: Parameters<typeof i18n.init>[0] = {
   debug: process.env.NODE_ENV === 'development',
   fallbackLng: 'en',
   defaultNS,
   ns: [defaultNS],
   resources,
   supportedLngs: supportedLanguages,
-  lng: 'en', // Set default language explicitly
   interpolation: {
     escapeValue: false,
   },
-  // Only provide detection config on the client
-  detection: isBrowser
-    ? {
-        order: ['localStorage', 'navigator', 'htmlTag'],
-        caches: ['localStorage'],
-        lookupLocalStorage: 'i18nextLng',
-      }
-    : undefined,
-});
+};
 
-// Then use initReactI18next
-i18n.use(initReactI18next);
+// Only set lng for SSR (server-side), let LanguageDetector handle browser
+if (!isBrowser) {
+  initOptions.lng = 'en';
+}
+
+// Only provide detection config on the client
+if (isBrowser) {
+  initOptions.detection = {
+    order: ['localStorage', 'navigator', 'htmlTag'],
+    caches: ['localStorage'],
+    lookupLocalStorage: 'i18nextLng',
+  };
+}
+
+i18n.init(initOptions);
 
 export default i18n;

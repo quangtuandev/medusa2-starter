@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { send } from "@emailjs/browser";
 import { Container } from "../common/container/Container";
+import { useI18n } from "@app/hooks/useI18n";
 
-const contactSchema = z.object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email"),
-    message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
+type ContactFormData = {
+    name: string;
+    email: string;
+    message: string;
+};
 
 export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () => void }) {
+    const { t } = useI18n();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const contactSchema = useMemo(() => z.object({
+        name: z.string().min(2, t('contact.validation.nameMin')),
+        email: z.string().email(t('contact.validation.emailInvalid')),
+        message: z.string().min(10, t('contact.validation.messageMin')),
+    }), [t]);
 
     const {
         register,
@@ -46,7 +52,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
             onSubmitSuccess();
         } catch (error) {
             console.error("EmailJS error:", error);
-            setError("Failed to send message. Please try again later.");
+            setError(t('contact.error'));
         } finally {
             setIsSubmitting(false);
         }
@@ -55,11 +61,11 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
     return (
         <section className="relative xl:min-h-[1146px] overflow-hidden flex flex-col justify-center">
             <div className="hidden xl:block w-[2000px] absolute inset-0 left-1/2 -translate-x-1/2">
-                <img src="/assets/images/contact.webp" alt="Contact" className="absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" />
+                <img src="/assets/images/contact.webp" alt={t('contact.contactAlt')} className="absolute top-0 left-0 w-[1700px] h-[1146px] object-cover z-0" />
             </div>
             <Container>
                 <div className="contact-form-container relative">
-                    <h1 className="text-4xl font-centuryBook italic xl:hidden leading-normal tracking-normal text-center text-primary mb-6">Contact Us</h1>
+                    <h1 className="text-4xl font-centuryBook italic xl:hidden leading-normal tracking-normal text-center text-primary mb-6">{t('contact.title')}</h1>
                     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto space-y-6 z-10 relative max-w-[446px] mb-6 xl:mb-[100px] xl:ml-auto xl:mr-[170px]">
                         <div>
                             <input
@@ -67,7 +73,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                                 type="text"
                                 {...register("name")}
                                 className="w-full px-3 py-2 border border-primary rounded-full focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium"
-                                placeholder="Name"
+                                placeholder={t('contact.namePlaceholder')}
                             />
                             {errors.name && (
                                 <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -80,7 +86,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                                 type="email"
                                 {...register("email")}
                                 className="w-full px-3 py-2 border border-primary rounded-full focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium"
-                                placeholder="Email"
+                                placeholder={t('contact.emailPlaceholder')}
                             />
                             {errors.email && (
                                 <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -93,7 +99,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                                 rows={5}
                                 {...register("message")}
                                 className="w-full px-3 py-2 border border-primary rounded-[20px] focus:outline-none focus:ring-1 focus:ring-highlight focus:border-highlight placeholder:text-primary placeholder:text-sm placeholder:font-medium"
-                                placeholder="Message"
+                                placeholder={t('contact.messagePlaceholder')}
                             />
                             {errors.message && (
                                 <p className="mt-1 text-sm text-red-600">{errors.message.message}</p>
@@ -134,10 +140,10 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                             ></path>
                                         </svg>
-                                        Sending...
+                                        {t('contact.sending')}
                                     </span>
                                 ) : (
-                                    "Send"
+                                    t('contact.send')
                                 )}
                             </button>
                         </div>
@@ -145,9 +151,9 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                 </div>
 
                 <p className="mx-auto mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]">
-                    We'll be happy to answer any questions you may have :) If you have a problem with your order, please give us your order number so that we can help you as quickly as possible!
+                    {t('contact.description')}
                     <br />
-                    Our email: <a href="mailto:bykiraperfume@gmail.com" className="text-primary underline">bykiraperfume@gmail.com</a>
+                    {t('contact.ourEmail')} <a href="mailto:bykiraperfume@gmail.com" className="text-primary underline">bykiraperfume@gmail.com</a>
                 </p>
             </Container>
         </section>
