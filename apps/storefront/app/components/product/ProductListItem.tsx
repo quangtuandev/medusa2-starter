@@ -11,6 +11,7 @@ export interface ProductListItemProps extends HTMLAttributes<HTMLElement> {
   product: StoreProduct;
   isTransitioning?: boolean;
   forcedZoom?: number;
+  isMobile?: boolean;
 }
 
 const metaOptions = {
@@ -22,10 +23,10 @@ export const ProductListItem: FC<ProductListItemProps> = ({
   className,
   isTransitioning,
   forcedZoom = 0.45,
+  isMobile = false,
   ...props
 }) => {
   const { region } = useRegion();
-
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const size = product.options?.find(
     (option) => option.title === metaOptions.SIZE
@@ -58,10 +59,10 @@ export const ProductListItem: FC<ProductListItemProps> = ({
         />
         <ProductThumbnail variant={selectedSize ? variant : undefined} isTransitioning={isTransitioning} product={product} forcedZoom={forcedZoom} />
       </div>
-      <h4 className="mt-4 overflow-hidden text-ellipsis font-extrabold font-title group-hover/product-card:text-[36px] transition-all duration-300 text-[28px] z-10">
+      <h4 className="my-4 overflow-hidden text-ellipsis font-extrabold font-title leading-none lg:group-hover/product-card:text-[36px] transition-all duration-300 text-sm lg:text-[28px] z-10">
         {product.title}
       </h4>
-      <div className="flex gap-2 justify-between items-center relative z-10">
+      <div className="flex gap-2 flex-col lg:flex-row justify-between items-center relative z-10">
         <div className="flex gap-2 justify-center items-center">
           {size?.values?.map((value) => (
             <span
@@ -86,6 +87,10 @@ export const ProductListItem: FC<ProductListItemProps> = ({
           selectedOptions={selectedOptions}
           disabled={!canAddToCart}
           variant="primary"
+          isFullText={!!isMobile}
+          className={clsx({
+            "w-full !p-1": isMobile,
+          })}
         />
       </div>
       <p className="mt-1 text-lg font-extrabold font-title leading-none tracking-normal hover:text-[]">

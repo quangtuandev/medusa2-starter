@@ -6,6 +6,6 @@ export const Container: FC<PropsWithChildren & HTMLAttributes<HTMLDivElement> & 
   ...props
 }) => {
   return (
-    <div className={clsx('mx-auto w-full max-w-screen-2xl px-4 sm:px-6 md:px-8 xl:px-[86px]', className)} {...props} />
+    <div className={clsx('mx-auto w-full max-w-screen-2xl px-2 sm:px-6 md:px-8 xl:px-[86px]', className)} {...props} />
   );
 };

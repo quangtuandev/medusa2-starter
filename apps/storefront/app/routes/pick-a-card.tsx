@@ -69,19 +69,19 @@ export default function PickACard() {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden xl:overflow-visible">
+    <div className="min-h-screen overflow-hidden lg:overflow-visible">
       <div className="z-10">
-        < div className="flex flex-col items-center justify-center mt-16 xl:mt-0" >
-          <h1 className="font-title xl:text-[110px] text-5xl text-center xl:text-left font-bold">{t('products.thisIsOur')}</h1>
-          <p className="font-centuryBook italic xl:text-[125px] text-5xl leading-[114px] text-center xl:text-left">{t('products.heartAndSoul')}</p>
+        < div className="flex flex-col items-center justify-center mt-16 lg:mt-0" >
+          <h1 className="font-title lg:text-[110px] text-5xl text-center lg:text-left font-bold">{t('products.thisIsOur')}</h1>
+          <p className="font-centuryBook italic lg:text-[125px] text-5xl leading-[114px] text-center lg:text-left">{t('products.heartAndSoul')}</p>
         </div >
       </div >
-      <div className="flex items-center justify-center bg-white px-10 flex-col xl:h-[60vh] h-[calc(100vh-206px)] z-0">
-        <div className="relative w-full hidden xl:flex justify-between items-center">
+      <div className="flex items-center justify-center bg-white px-10 flex-col lg:h-[60vh] h-[calc(100vh-206px)] z-0">
+        <div className="relative w-full hidden lg:flex justify-between items-center">
           <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-right" dangerouslySetInnerHTML={{ __html: t('products.pickA') }} />
           <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-left">{t('products.card')}</p>
         </div>
-        <div className="relative xl:left-[-10vw] xl:top-[-100px] left-[25%] -translate-x-1/2 top-0 w-full xl:w-auto">
+        <div className="relative lg:left-[-10vw] lg:top-[-100px] left-[25%] -translate-x-1/2 top-0 w-full lg:w-auto">
           <div className="relative w-full">
 
             {cards.map((card, i) => {

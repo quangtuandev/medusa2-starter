@@ -1,6 +1,6 @@
 import { StoreProduct } from "@medusajs/types";
 import clsx from "clsx";
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { NavLink, useNavigation } from "react-router";
 import { ProductGridSkeleton } from "./ProductGridSkeleton";
 import {
@@ -18,13 +18,23 @@ export const ProductGrid: FC<ProductListProps> = ({
   heading,
   actions,
   products,
-  className = "grid grid-cols-1 gap-y-6 @md:grid-cols-2 gap-x-[6vw] @2xl:!grid-cols-3 ",
+  className = "grid grid-cols-2 gap-2 lg:gap-y-6 @md:grid-cols-2 lg:gap-x-[6vw] @2xl:!grid-cols-3 ",
 }) => {
   const navigation = useNavigation();
   const isLoading = navigation.state !== "idle";
 
   if (!products) return <ProductGridSkeleton length={5} />;
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const isMobileDevice =
+      window.innerWidth <= 768 || // Tablet and below
+      'ontouchstart' in window || // Touch device
+      navigator.maxTouchPoints > 0 || // Touch device
+      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    setIsMobile(isMobileDevice);
+  }, []);
   return (
     <div
       className={clsx("@container", {
@@ -46,6 +56,8 @@ export const ProductGrid: FC<ProductListProps> = ({
               <ProductListItem
                 isTransitioning={isTransitioning}
                 product={product}
+                isMobile={isMobile}
+                forcedZoom={isMobile ? 0.2 : undefined}
               />
             )}
           </NavLink>

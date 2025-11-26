@@ -163,14 +163,13 @@ export default function IndexRoute() {
         </p>
         {activeComponent === 'main' &&
           <div ref={menuRef} className="flex flex-col gap-6">
-            <MenuToggle isOpen={isOpen} onClick={handleMenuToggle} className="shadow-[0px_4px_10px_0px_#00000040] z-[10000]"
-            />
+            <MenuToggle isOpen={isOpen} onClick={handleMenuToggle} className="shadow-[0px_4px_10px_0px_#00000040]" />
             <LanguageSwitcher />
           </div>
         }
       </div>
 
-      {activeComponent === 'main' && isOpen && <MainMenu />}
+      {activeComponent === 'main' && isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
 
       <div ref={logoRef} className="flex relative flex-col items-center gap-3">
         {activeComponent !== 'main' && <div className="z-10 h-[48px] lg:h-[80px]" />}

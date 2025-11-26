@@ -1,12 +1,15 @@
 import { CartDrawer } from "@app/components/cart/CartDrawer";
 import clsx from "clsx";
 import type { FC, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { useMatches } from "react-router";
 import { Footer } from "./footer/Footer";
 import { Header } from "./header/Header";
 import Cursor from "../common/Cursor";
 import { LiveChatIcon } from "../contact/livechat";
 import { useCart } from "@app/hooks/useCart";
+import { MainMenu } from "../common/menu/Main";
+import { MenuToggle } from "../common/MenuToggle/MenuToggle";
 export interface PageProps {
   className?: string;
   children: ReactNode;
@@ -14,12 +17,15 @@ export interface PageProps {
 
 export const Page: FC<PageProps> = ({ className, children }) => {
   const hiddenHeaderPaths = ["/", "/pick-a-card", "/stories"];
-  const hiddenFooterPaths = ["/", "/pick-a-card", "/", "/stories", "/products"];
+  const hiddenFooterPaths = ["/", "/pick-a-card", "/stories", "/products"];
+  const injectMenuPaths = ["/pick-a-card", "/stories"];
   const matches = useMatches();
   const currentMatch = matches[matches.length - 1];
   const isHiddenHeader = hiddenHeaderPaths.includes(currentMatch?.pathname || "");
   const isHiddenFooter = hiddenFooterPaths.includes(currentMatch?.pathname || "");
   const { toggleCartDrawer } = useCart();
+  const [isOpen, setIsOpen] = useState(false);
+  const isInjectMenu = injectMenuPaths.includes(currentMatch?.pathname || "");
 
   return (
     <div
@@ -31,6 +37,12 @@ export const Page: FC<PageProps> = ({ className, children }) => {
       <Cursor />
       <CartDrawer />
       {!isHiddenHeader && <Header />}
+      {isInjectMenu && (
+        <>
+          <MenuToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} className="fixed top-8 right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" />
+          {isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
+        </>
+      )}
       <main className="flex-auto">
         <div className="w-full">{children}</div>
       </main>

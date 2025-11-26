@@ -93,7 +93,7 @@ export const Header: FC<HeaderProps> = () => {
                               hasProducts &&
                               cart.items &&
                               cart.items.length > 0 && (
-                                <span className="absolute -top-1 left-full -ml-2 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-xs font-bold">
+                                <span className="absolute -top-2 -right-3 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-xs font-bold">
                                   <span>
                                     {cart.items.reduce(
                                       (acc, item) => acc + item.quantity,

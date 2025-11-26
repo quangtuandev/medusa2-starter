@@ -51,16 +51,16 @@ export default function ProductCollectionRoute() {
 
   return (
     <Container className="pb-16">
-      <h1 className="relative flex flex-col xl:flex-row items-center xl:items-end text-4xl xl:text-[110px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 after:hidden xl:after:block after:content-[''] after:block after:w-1/2 after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
-        <p className="flex-1 font-title font-bold uppercase leading-none relative top-[-18px]">
+      <div className="relative mb-2 lg:mb-14 flex flex-col xl:flex-row items-center xl:items-end text-4xl xl:text-[110px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 after:hidden xl:after:block after:content-[''] after:block after:w-1/2 after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
+        <p className="flex-1 font-title font-bold uppercase leading-none relative lg:top-[-18px] top-0">
           <span>This</span> <br className="hidden xl:block" />
           <span className="px-0 xl:pl-[14px] xl:pr-16 bg-white z-10 relative">is</span>
         </p>
-        <span className="flex-1 inline-block justify-center bg-white z-10 relative px-16 text-center font-centuryBook block italic">
-          {collection.title}
-        </span>
-        <div className="flex-1">
-          <div className="relative h-10 xl:h-20 w-10 xl:w-20 -top-10 xl:-top-16 -right-10 xl:-left-16 z-10">
+        <div className="flex-1 flex items-center justify-center">
+          <span className="flex-1 inline-block justify-center bg-white z-10 relative lg:pl-16 px-1 text-center font-centuryBook block italic">
+            {collection.title}
+          </span>
+          <div className="relative h-10 xl:h-20 w-10 xl:w-20 z-10 top-[-5px] left-[-5px]">
             <img
               className="animate-rotate-bounce absolute top-0 left-0"
               src="/assets/images/home/cup.svg"
@@ -73,7 +73,8 @@ export default function ProductCollectionRoute() {
             />
           </div>
         </div>
-      </h1>
+        <div className="flex-1" />
+      </div>
       {description && (
         <div className="flex gap-4 sm:flex-row max-w-3xl mx-auto h-[84px] mb-6">
           <p className="text-lg font-montserrat font-regular text-[15px] leading-[26px] text-center text-[#000] flex-1">{description}</p>

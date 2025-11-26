@@ -203,9 +203,9 @@
   },
   "menu": {
     "blog": "Blog",
-    "product": "Sản phẩm",
-    "story": "Câu chuyện",
-    "contact": "Liên hệ"
+    "product": "Product",
+    "story": "Story",
+    "contact": "Contact"
   },
   "products": {
     "newMagic": "PHÉP MÀU MỚI",
