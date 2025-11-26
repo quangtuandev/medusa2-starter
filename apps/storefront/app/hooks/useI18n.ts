@@ -6,6 +6,9 @@ export const useI18n = () => {
 
   const changeLanguage = (language: SupportedLanguage) => {
     i18n.changeLanguage(language);
+    const expires = new Date();
+    expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
+    document.cookie = `lng=${language};expires=${expires.toUTCString()};path=/`;
   };
 
   const currentLanguage = i18n.language as SupportedLanguage;
