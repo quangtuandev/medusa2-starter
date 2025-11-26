@@ -49,6 +49,11 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
 };
 
 export const ProductTemplate = ({ product }: ProductTemplateProps) => {
+  if (product.variants) {
+    product.variants = product.variants.sort(
+      (a: any, b: any) => b.calculated_price.calculated_amount - a.calculated_price.calculated_amount
+    );
+  }
   const { currentLanguage, t } = useI18n();
   const [description, setDescription] = useState<string>(product.description || '');
   const [notes, setNotes] = useState<string>(product.metadata?.notes as string || '');
@@ -370,7 +375,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
                       {customizationTitles[1] && (
-                        <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight">
+                        <h2 className="text-4xl xl:text-[85px] font-bold text-gray-900 leading-tight">
                           {customizationTitles[1]}
                         </h2>
                       )}

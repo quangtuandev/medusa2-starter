@@ -5,22 +5,25 @@ import type { ActionFunctionArgs } from 'react-router';
 import { data as remixData } from 'react-router';
 import { getValidatedFormData } from 'remix-hook-form';
 import { z } from 'zod';
+import { t } from 'i18next';
+
+const requiredFieldMessage = t('checkout.validation.requiredField', 'Fields is required');
 
 export const accountDetailsSchema = z.object({
   cartId: z.string(),
   customerId: z.string().optional(),
-  email: z.string().email('Please enter a valid email'),
+  email: z.string().email(t('checkout.validation.emailInvalid', 'Please enter a valid email')),
   shippingAddress: z.object({
-    firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
+    firstName: z.string().min(1, requiredFieldMessage),
+    lastName: z.string().min(1, requiredFieldMessage),
     company: z.string().optional(),
-    address1: z.string().min(1, 'Address is required'),
+    address1: z.string().min(1, requiredFieldMessage),
     address2: z.string().optional(),
-    city: z.string().min(1, 'City is required'),
-    province: z.string().min(1, 'Province is required'),
-    countryCode: z.string().min(1, 'Country is required'),
-    postalCode: z.string().min(1, 'Postal code is required'),
-    phone: z.string().optional(),
+    city: z.string().min(1, requiredFieldMessage),
+    province: z.string().min(1, requiredFieldMessage),
+    countryCode: z.string().min(1, requiredFieldMessage),
+    postalCode: z.string().min(1, requiredFieldMessage),
+    phone: z.string().min(1, requiredFieldMessage),
   }),
   shippingAddressId: z.string(),
   isExpressCheckout: z.boolean().optional(),

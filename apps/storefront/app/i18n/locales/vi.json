@@ -155,9 +155,13 @@
     "postalCodePlaceholder": "Mã bưu điện",
     "country": "Quốc gia",
     "countryPlaceholder": "Quốc gia",
-    "phone": "Điện thoại (Tùy chọn)",
+    "phone": "Điện thoại",
     "phonePlaceholder": "Điện thoại",
     "saving": "Đang lưu...",
+    "validation": {
+      "requiredField": "Trường này là bắt buộc",
+      "emailInvalid": "Vui lòng nhập email hợp lệ"
+    },
     "saveAndContinue": "Lưu và tiếp tục",
     "cancelEdit": "Hủy chỉnh sửa"
   },

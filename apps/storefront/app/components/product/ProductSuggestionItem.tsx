@@ -306,6 +306,7 @@ export const ProductSuggestionItem: FC<ProductSuggestionItemProps> = ({
         isTransitioning={isTransitioning}
         product={product}
         forcedZoom={0.25}
+        variant={selectedVariant ? selectedVariant : undefined}
         className="!aspect-square !w-[200px] !h-[200px]"
         classNameImage="!w-[200px] !h-[200px] !object-cover"
       />

@@ -89,11 +89,6 @@ const ProductSwiperBase: FC<ProductSwiperProps> = ({ className, heading, text, a
             <div>
               <ProductSuggestionItem isTransitioning={false} product={product} />
             </div>
-            {/* <NavLink prefetch="viewport" to={`/products/${product.handle}`} viewTransition>
-              {({ isTransitioning }) => (
-                <ProductSuggestionItem isTransitioning={isTransitioning} product={product} />
-              )}
-            </NavLink> */}
           </SwiperSlide>
         ))}
       </Swiper>

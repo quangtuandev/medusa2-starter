@@ -155,9 +155,13 @@
     "postalCodePlaceholder": "Postal Code",
     "country": "Country",
     "countryPlaceholder": "Country",
-    "phone": "Phone (Optional)",
+    "phone": "Phone",
     "phonePlaceholder": "Phone",
     "saving": "Saving...",
+    "validation": {
+      "requiredField": "Fields is required",
+      "emailInvalid": "Please enter a valid email"
+    },
     "saveAndContinue": "Save and continue",
     "cancelEdit": "Cancel edit"
   },

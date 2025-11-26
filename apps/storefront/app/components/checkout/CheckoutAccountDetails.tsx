@@ -18,7 +18,6 @@ import { FieldErrors } from 'react-hook-form';
 import { useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import { SubmitButton } from '../common/remix-hook-form/buttons/SubmitButton';
-import { FormError } from '../common/remix-hook-form/forms/FormError';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 import { AddressDisplay } from './address/AddressDisplay';
 import { selectInitialShippingAddress } from './checkout-form-helpers';
@@ -37,10 +36,6 @@ export const CheckoutAccountDetails = () => {
   const isActiveStep = step === CheckoutStep.ACCOUNT_DETAILS;
 
   if (!cart) return null;
-
-  const allowedCountries = (regions ?? []).flatMap(
-    (region: StoreRegion) => region.countries!.map((country: StoreRegionCountry) => country.iso_2) as string[],
-  );
 
   const initialShippingAddress = selectInitialShippingAddress(cart, customer!);
 

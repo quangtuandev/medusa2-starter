@@ -24,7 +24,7 @@ export const ProductRow: FC<{ products: StoreProduct[] }> = memo(({ products }) 
           className="xs:w-[31.2%] xs:snap-start mr-6 inline-block w-[100%] snap-center last:mr-0 sm:mr-6 sm:snap-start md:w-[31.2%] xl:mr-8 xl:w-[23%]"
         >
           <NavLink prefetch="viewport" to={`/products/${product.handle}`} viewTransition>
-            {({ isTransitioning }) => <ProductListItem isTransitioning={isTransitioning} product={product} />}
+            {({ isTransitioning }) => <ProductListItem isTransitioning={isTransitioning} product={product} forcedZoom={0.35} />}
           </NavLink>
         </div>
       ))}

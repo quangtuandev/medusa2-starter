@@ -10,6 +10,7 @@ import { ProductThumbnail } from "./ProductThumbnail";
 export interface ProductListItemProps extends HTMLAttributes<HTMLElement> {
   product: StoreProduct;
   isTransitioning?: boolean;
+  forcedZoom?: number;
 }
 
 const metaOptions = {
@@ -20,6 +21,7 @@ export const ProductListItem: FC<ProductListItemProps> = ({
   product,
   className,
   isTransitioning,
+  forcedZoom = 0.45,
   ...props
 }) => {
   const { region } = useRegion();
@@ -49,23 +51,23 @@ export const ProductListItem: FC<ProductListItemProps> = ({
       className={clsx(className, "group/product-card text-left rounded-[32px] p-4 pb-6 overflow-hidden bg-white shadow-[5px_5px_10px_0px_#00000040]")}
       {...props}
     >
-      <div className="relative">
+      <div className="relative z-0">
         <ProductBadges
           className="absolute right-2 top-2 z-10 flex gap-2"
           product={product}
         />
-        <ProductThumbnail isTransitioning={isTransitioning} product={product} />
+        <ProductThumbnail variant={selectedSize ? variant : undefined} isTransitioning={isTransitioning} product={product} forcedZoom={forcedZoom} />
       </div>
-      <h4 className="mt-4 overflow-hidden text-ellipsis font-extrabold font-title group-hover/product-card:text-[36px] transition-all duration-300 text-[28px]">
+      <h4 className="mt-4 overflow-hidden text-ellipsis font-extrabold font-title group-hover/product-card:text-[36px] transition-all duration-300 text-[28px] z-10">
         {product.title}
       </h4>
-      <div className="flex gap-2 justify-between items-center">
+      <div className="flex gap-2 justify-between items-center relative z-10">
         <div className="flex gap-2 justify-center items-center">
           {size?.values?.map((value) => (
             <span
               key={value.id}
               className={clsx(
-                "text-sm font-light  border border-[#716E6E] rounded-full px-2 py-1 hover:text-[#716E6E] hover:border-black text-[10px] font-display leading-none",
+                "text-sm font-light  border border-[#716E6E] rounded-full px-2 py-1 hover:text-[#716E6E] hover:border-black text-[10px] font-display leading-none hover:bg-highlight",
                 {
                   "!text-black !border-black bg-highlight": selectedSize === value.value,
                 }

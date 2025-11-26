@@ -1,7 +1,7 @@
 import { Image } from '@app/components/common/images/Image';
-import { StoreProduct } from '@medusajs/types';
+import { StoreProduct, StoreProductVariant } from '@medusajs/types';
 import clsx from 'clsx';
-import { FC, HTMLAttributes } from 'react';
+import { FC, HTMLAttributes, useEffect, useMemo } from 'react';
 import MorphingShape from '../generativeart/MorphingShape';
 import { randomAssetMorphingShape } from '@libs/util/random';
 
@@ -11,16 +11,18 @@ export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
   classNameImage?: string;
   isRemoveStyleDefault?: boolean;
   forcedZoom?: number;
+  variant?: StoreProductVariant;
 }
 
-export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, forcedZoom, ...props }) => {
-  const thumbnailImage = (product.images && product.images[0] && product.images[0].url) || product.thumbnail;
+export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, forcedZoom, variant, ...props }) => {
   const hoverImage = product.images && product.images[1] && product.images[1].url;
-
+  const thumbnailImage = useMemo(() => {
+    return variant?.thumbnail || (product.images && product.images[0] && product.images[0].url) || product.thumbnail;
+  }, [variant?.thumbnail]);
   return (
     <figure
       className={clsx(
-        'product-thumbnail overflow-hidden',
+        'product-thumbnail',
         !isRemoveStyleDefault && 'aspect-w-1 aspect-h-1 w-full',
         className,
       )}
@@ -32,6 +34,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
       {thumbnailImage ? (
         <Image
+          key={thumbnailImage}
           loading="lazy"
           src={thumbnailImage}
           alt={product.title}
