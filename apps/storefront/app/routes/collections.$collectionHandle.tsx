@@ -57,7 +57,7 @@ export default function ProductCollectionRoute() {
           <span className="px-0 xl:pl-[14px] xl:pr-16 bg-white z-10 relative">is</span>
         </p>
         <div className="flex-1 flex items-center justify-center">
-          <span className="flex-1 inline-block justify-center bg-white z-10 relative lg:pl-16 px-1 text-center font-centuryBook block italic">
+          <span className="inline-block justify-center bg-white z-10 relative lg:pl-16 px-1 text-center font-centuryBook block italic">
             {collection.title}
           </span>
           <div className="relative h-10 xl:h-20 w-10 xl:w-20 z-10 top-[-5px] left-[-5px]">
