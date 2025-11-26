@@ -68,3 +68,11 @@ export const setCartId = async (headers: Headers, cartId: string) => {
 export const removeCartId = async (headers: Headers) => {
   await destroyCookie(headers, '_medusa_cart_id');
 };
+
+export const setLanguage = async (headers: Headers, language: string) => {
+  await setCookie(headers, 'lng', language);
+};
+
+export const getLanguage = async (headers: Headers) => {
+  return await getCookie(headers, 'lng');
+};
