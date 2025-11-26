@@ -168,7 +168,7 @@ export default function HalfFanSlider() {
                       alt={t('products.cupAlt')}
                     />
                     <img
-                      className="animate-rotate-bounce-reverse absolute top-0 left-0"
+                      className="reverse-animate-rotate-bounce absolute top-0 left-0"
                       src="/assets/images/home/cup-bg.svg"
                       alt={t('products.cupAlt')}
                     />
