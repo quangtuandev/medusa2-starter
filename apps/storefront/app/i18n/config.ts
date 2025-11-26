@@ -52,8 +52,9 @@ if (!isBrowser) {
 if (isBrowser) {
   initOptions.detection = {
     order: ['localStorage', 'navigator', 'htmlTag'],
-    caches: ['localStorage'],
+    caches: ['localStorage', 'cookie'],
     lookupLocalStorage: 'i18nextLng',
+    lookupCookie: 'lng',
   };
 }
 
