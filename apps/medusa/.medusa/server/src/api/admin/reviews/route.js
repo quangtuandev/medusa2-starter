@@ -1,0 +1,57 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.POST = exports.GET = void 0;
+const validators_1 = require("./validators");
+// GET /admin/reviews - List all reviews with optional status filter
+const GET = async (req, res) => {
+    try {
+        const query = req.scope.resolve("query");
+        const { status } = req.query;
+        const filters = {};
+        if (status) {
+            filters.status = status;
+        }
+        const { data: reviews, metadata: { count, take, skip } = {}, } = await query.graph({
+            entity: "review",
+            fields: ["id", "product_id", "name", "content", "status", "stars", "created_at", "updated_at"],
+            pagination: {
+                order: {
+                    created_at: "DESC",
+                },
+                skip: parseInt(req.query.offset) ?? 0,
+                take: parseInt(req.query.limit) ?? 10,
+            },
+        });
+        res.status(200).json({
+            reviews,
+            count,
+            limit: take,
+            offset: skip,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            error: error.message || "Failed to fetch reviews"
+        });
+    }
+};
+exports.GET = GET;
+// POST /admin/reviews - Create a new review (admin only)
+const POST = async (req, res) => {
+    try {
+        const validatedData = validators_1.AdminCreateReview.parse(req.body);
+        const productReviewsModuleService = req.scope.resolve("productReviewsModuleService");
+        // @ts-ignore
+        const review = await productReviewsModuleService.createReviews(validatedData);
+        res.status(201).json({
+            review
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            error: error.message || "Failed to create review"
+        });
+    }
+};
+exports.POST = POST;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicm91dGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi9zcmMvYXBpL2FkbWluL3Jldmlld3Mvcm91dGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBRUEsNkNBQWdEO0FBSWhELG9FQUFvRTtBQUM3RCxNQUFNLEdBQUcsR0FBRyxLQUFLLEVBQUUsR0FBa0IsRUFBRSxHQUFtQixFQUFFLEVBQUU7SUFDbkUsSUFBSSxDQUFDO1FBQ0gsTUFBTSxLQUFLLEdBQUcsR0FBRyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsT0FBTyxDQUFDLENBQUE7UUFDeEMsTUFBTSxFQUFFLE1BQU0sRUFBRSxHQUFHLEdBQUcsQ0FBQyxLQUE0QixDQUFBO1FBRW5ELE1BQU0sT0FBTyxHQUFRLEVBQUUsQ0FBQTtRQUN2QixJQUFJLE1BQU0sRUFBRSxDQUFDO1lBQ1gsT0FBTyxDQUFDLE1BQU0sR0FBRyxNQUFNLENBQUE7UUFDekIsQ0FBQztRQUVELE1BQU0sRUFDSixJQUFJLEVBQUUsT0FBTyxFQUNiLFFBQVEsRUFBRSxFQUFFLEtBQUssRUFBRSxJQUFJLEVBQUUsSUFBSSxFQUFFLEdBQUcsRUFBRSxHQUNyQyxHQUFHLE1BQU0sS0FBSyxDQUFDLEtBQUssQ0FBQztZQUNwQixNQUFNLEVBQUUsUUFBUTtZQUNoQixNQUFNLEVBQUUsQ0FBQyxJQUFJLEVBQUUsWUFBWSxFQUFFLE1BQU0sRUFBRSxTQUFTLEVBQUUsUUFBUSxFQUFFLE9BQU8sRUFBRSxZQUFZLEVBQUUsWUFBWSxDQUFDO1lBQzlGLFVBQVUsRUFBRTtnQkFDVixLQUFLLEVBQUU7b0JBQ0wsVUFBVSxFQUFFLE1BQU07aUJBQ25CO2dCQUNELElBQUksRUFBRSxRQUFRLENBQUMsR0FBRyxDQUFDLEtBQUssQ0FBQyxNQUFnQixDQUFDLElBQUksQ0FBQztnQkFDL0MsSUFBSSxFQUFFLFFBQVEsQ0FBQyxHQUFHLENBQUMsS0FBSyxDQUFDLEtBQWUsQ0FBQyxJQUFJLEVBQUU7YUFDaEQ7U0FDRixDQUFDLENBQUE7UUFFRixHQUFHLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUFDLElBQUksQ0FBQztZQUNuQixPQUFPO1lBQ1AsS0FBSztZQUNMLEtBQUssRUFBRSxJQUFJO1lBQ1gsTUFBTSxFQUFFLElBQUk7U0FDYixDQUFDLENBQUE7SUFDSixDQUFDO0lBQUMsT0FBTyxLQUFVLEVBQUUsQ0FBQztRQUNwQixHQUFHLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUFDLElBQUksQ0FBQztZQUNuQixLQUFLLEVBQUUsS0FBSyxDQUFDLE9BQU8sSUFBSSx5QkFBeUI7U0FDbEQsQ0FBQyxDQUFBO0lBQ0osQ0FBQztBQUNILENBQUMsQ0FBQTtBQXBDWSxRQUFBLEdBQUcsT0FvQ2Y7QUFFRCx5REFBeUQ7QUFDbEQsTUFBTSxJQUFJLEdBQUcsS0FBSyxFQUN2QixHQUF5QyxFQUN6QyxHQUFtQixFQUNuQixFQUFFO0lBQ0YsSUFBSSxDQUFDO1FBQ0gsTUFBTSxhQUFhLEdBQUcsOEJBQWlCLENBQUMsS0FBSyxDQUFDLEdBQUcsQ0FBQyxJQUFJLENBQUMsQ0FBQTtRQUN2RCxNQUFNLDJCQUEyQixHQUFHLEdBQUcsQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLDZCQUE2QixDQUFDLENBQUE7UUFFcEYsYUFBYTtRQUNiLE1BQU0sTUFBTSxHQUFHLE1BQU0sMkJBQTJCLENBQUMsYUFBYSxDQUFDLGFBQWEsQ0FBQyxDQUFBO1FBRTdFLEdBQUcsQ0FBQyxNQUFNLENBQUMsR0FBRyxDQUFDLENBQUMsSUFBSSxDQUFDO1lBQ25CLE1BQU07U0FDUCxDQUFDLENBQUE7SUFDSixDQUFDO0lBQUMsT0FBTyxLQUFVLEVBQUUsQ0FBQztRQUNwQixHQUFHLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUFDLElBQUksQ0FBQztZQUNuQixLQUFLLEVBQUUsS0FBSyxDQUFDLE9BQU8sSUFBSSx5QkFBeUI7U0FDbEQsQ0FBQyxDQUFBO0lBQ0osQ0FBQztBQUNILENBQUMsQ0FBQTtBQW5CWSxRQUFBLElBQUksUUFtQmhCIn0=
