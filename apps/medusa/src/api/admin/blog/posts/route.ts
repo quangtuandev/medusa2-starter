@@ -32,6 +32,7 @@ export const GET = async (
   } = await query.graph({
     entity: "post",
     ...req.queryConfig,
+    fields: ['id', 'title', 'content', 'slug', 'thumbnail', 'published', 'language'],
   })
 
   res.json({
