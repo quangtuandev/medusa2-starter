@@ -290,6 +290,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
   useEffect(() => {
     // Initialize controlledOptions with defaultValues.options
     setControlledOptions(defaultValues.options);
+    form.setValue('quantity', '1');
   }, [defaultValues.options]);
 
   const soldOut = variantIsSoldOut(selectedVariant) || productSoldOut;
@@ -390,7 +391,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-6">
-                      {!soldOut && <QuantitySelector variant={selectedVariant} onChange={handleChange} />}
+                      {!soldOut && <QuantitySelector key={product.id} variant={selectedVariant} onChange={handleChange} />}
                       <div className="flex-1">
                         {!soldOut ? (
                           <SubmitButton
@@ -490,43 +491,6 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                             <div dangerouslySetInnerHTML={{ __html: notes ? notes : product.metadata?.notes as string }} />
                           </div>
                         )}
-
-                        {/* {product.categories && product.categories.length > 0 && (
-                              <nav aria-label="Categories" className="mt-4">
-                                <h3 className="mb-2">Categories</h3>
-
-                                <ol className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                                  {product.categories.map((category, categoryIndex) => (
-                                    <li key={categoryIndex}>
-                                      <Button
-                                        as={(buttonProps) => (
-                                          <Link to={`/categories/${category.handle}`} {...buttonProps} />
-                                        )}
-                                        className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold"
-                                      >
-                                        {category.name}
-                                      </Button>
-                                    </li>
-                                  ))}
-                                </ol>
-                              </nav>
-                            )}
-
-                            {product.tags && product.tags.length > 0 && (
-                              <nav aria-label="Tags" className="mt-4">
-                                <h3 className="mb-2">Tags</h3>
-
-                                <ol className="flex flex-wrap items-center gap-2 text-xs text-primary">
-                                  {product.tags.map((tag, tagIndex) => (
-                                    <li key={tagIndex}>
-                                      <Button className="!h-auto whitespace-nowrap !rounded !px-2 !py-1 !text-xs !font-bold bg-accent-900 cursor-default">
-                                        {tag.value}
-                                      </Button>
-                                    </li>
-                                  ))}
-                                </ol>
-                              </nav>
-                            )} */}
                       </div>
                     </div>
                     <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
