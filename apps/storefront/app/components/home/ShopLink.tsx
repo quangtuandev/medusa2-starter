@@ -26,7 +26,7 @@ export const ShopLink: FC<{ className?: string }> = ({ className }) => {
 
           <Link
             to="/collections"
-            className="text-4xl font-normal font-title text-white drop-shadow-4xl hover:font-black transition-all duration-300 ease-in-out hover:text-[#F4EB3C] hover:drop-shadow-none hover:rotate-bounce"
+            className="text-3xl lg:text-4xl whitespace-nowrap font-normal font-title text-white drop-shadow-4xl hover:font-black transition-all duration-300 ease-in-out hover:text-[#F4EB3C] hover:drop-shadow-none hover:rotate-bounce"
           >
             {t("shop")}
           </Link>

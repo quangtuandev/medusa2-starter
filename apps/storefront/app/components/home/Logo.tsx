@@ -122,7 +122,7 @@ export const Logo: FC<LogoProps> = memo(({
                     </svg>
                 </span>
                 <span
-                    className={` character-a transition-all duration-300`}
+                    className={` character-a transition-all duration-300 -ml-3  lg:ml-auto`}
                     onClick={handleAClick}
                     onMouseEnter={handleAMouseEnter}
                     onMouseLeave={handleMouseLeave}

@@ -11,7 +11,7 @@ export const Description: FC<DescriptionProps> = ({ className, description }) =>
 
     return (
         <div className={className}><div className="z-[99] min-h-[180px]">
-            <p className="max-w-4xl text-center font-body font-normal text-[#000] text-lg text-shadow-[0px_4px_4px_0px_#00000040]">
+            <p className="max-w-4xl text-center font-body font-normal text-[#000] lg:text-lg text-base text-shadow-[0px_4px_4px_0px_#00000040]">
                 {description || t('home.default.description')}
             </p>
         </div>

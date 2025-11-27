@@ -32,6 +32,43 @@ export const Header: FC<HeaderProps> = () => {
     setSubmenuOpen(true);
   };
 
+  const CartButton = ({ className }: { className?: string }) => {
+    return (
+      <IconButton
+        aria-label="open shopping cart"
+        className={clsx("hover:!bg-transparent sm:mr-0.5 sm:inline-flex", className)}
+        iconProps={{
+          className:
+            "hover:!bg-transparent hover:text-gray-700 focus:text-gray-700",
+        }}
+        icon={(iconProps) => (
+          <div className="relative">
+            <ShoppingCartIcon
+              {...iconProps}
+              className={clsx(iconProps.className)}
+            />
+            {!!cart &&
+              hasProducts &&
+              cart.items &&
+              cart.items.length > 0 && (
+                <span className="absolute -top-2 -right-3 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-xs font-bold">
+                  <span>
+                    {cart.items.reduce(
+                      (acc, item) => acc + item.quantity,
+                      0
+                    )}{" "}
+                    <span className="sr-only">
+                      items in cart, view bag
+                    </span>
+                  </span>
+                </span>
+              )}
+          </div>
+        )}
+        onClick={() => toggleCartDrawer(true)}
+      />
+    );
+  };
   return (
     <header className="sticky top-0 z-40 mkt-header bg-white mt-8">
       <nav aria-label="Top">
@@ -76,46 +113,15 @@ export const Header: FC<HeaderProps> = () => {
 
                   <div className="hidden xl:flex items-center justify-end">
                     <div className="flex items-center gap-x-3 text-sm">
-                      <IconButton
-                        aria-label="open shopping cart"
-                        className="hover:!bg-transparent hidden sm:mr-0.5 sm:inline-flex"
-                        iconProps={{
-                          className:
-                            "hover:!bg-transparent hover:text-gray-700 focus:text-gray-700",
-                        }}
-                        icon={(iconProps) => (
-                          <div className="relative">
-                            <ShoppingCartIcon
-                              {...iconProps}
-                              className={clsx(iconProps.className)}
-                            />
-                            {!!cart &&
-                              hasProducts &&
-                              cart.items &&
-                              cart.items.length > 0 && (
-                                <span className="absolute -top-2 -right-3 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-xs font-bold">
-                                  <span>
-                                    {cart.items.reduce(
-                                      (acc, item) => acc + item.quantity,
-                                      0
-                                    )}{" "}
-                                    <span className="sr-only">
-                                      items in cart, view bag
-                                    </span>
-                                  </span>
-                                </span>
-                              )}
-                          </div>
-                        )}
-                        onClick={() => toggleCartDrawer(true)}
-                      />
+                      <CartButton />
                     </div>
                   </div>
-                  <div className="flex items-center justify-end">
+                  <div className="flex items-center justify-end gap-x-3">
+                    <CartButton className="xl:hidden" />
                     <IconButton
                       aria-label="search"
                       onClick={() => setSearchOpen(true)}
-                      className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2 w-[64px]"
+                      className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2"
                       icon={MagnifyingGlassIcon}
                     />
                     {!!headerNavigationItems?.length && (
