@@ -36,7 +36,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
 
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full">
               <Transition.Child
                 as={Fragment}
                 enter="transform transition ease-in-out duration-200"
@@ -46,25 +46,31 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                <Dialog.Panel className="pointer-events-auto w-screen bg-[url('/assets/images/menu/bg-mobile.webp')]">
+                  <div className="flex h-full flex-col overflow-y-scroll shadow-xl">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <Dialog.Title className="text-lg font-bold text-gray-900">{t('navigation.title')}</Dialog.Title>
+                      <div className="flex justify-between">
+                        <Dialog.Title className="text-lg font-bold text-gray-900">
+                          <span className="font-title font-bold text-4xl uppercase text-black">This </span>
+                          <span className="flex gap-2">
+                            <span className="font-title font-bold text-4xl uppercase text-black leading-none ml-1">Is </span>
+                            <span className="font-centuryBook italic font-normal text-4xl text-white leading-none mt-1">Our</span>
+                          </span>
+                        </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <IconButton
                             icon={XMarkIcon}
                             onClick={() => setOpen(false)}
-                            className="-m-2"
+                            className="m-2  shadow-[0px_4px_10px_0px_#00000040]"
                             aria-label="Close panel"
                           />
                         </div>
                       </div>
 
                       {!!headerNavigationItems?.length && (
-                        <div className="flex flex-grow flex-col overflow-y-auto pb-4">
+                        <div className="flex flex-grow flex-col overflow-y-auto">
                           <div className="mt-5 flex flex-grow flex-col">
-                            <nav className="flex-1 space-y-1" aria-label="Sidebar">
+                            <nav className="flex-1 space-y-3" aria-label="Sidebar">
                               {headerNavigationItems.map(({ id, new_tab, ...navItemProps }) => (
                                 <URLAwareNavLink
                                   key={id}
@@ -83,7 +89,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                                   }
                                   prefetch="viewport"
                                 >
-                                  <span className="flex-1">{t(navItemProps.label)}</span>
+                                  <span className="flex-1 text-2xl font-title bold uppercase text-[#321D14] block text-center">{t(navItemProps.label)}</span>
                                 </URLAwareNavLink>
                               ))}
                             </nav>

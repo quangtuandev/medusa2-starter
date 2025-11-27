@@ -19,7 +19,7 @@ export const MenuToggle: FC<MenuToggleProps> = ({
         "inline-flex items-center justify-center w-[55px] h-[55px] rounded-full transition-all text-[#000000]",
         "duration-300 ease-in-out",
         {
-          "bg-[#FDCEF8]": isOpen,
+          "lg:bg-[#FDCEF8] bg-[#FFE977]": isOpen,
           "bg-[#FFFF00]": !isOpen,
         },
         className

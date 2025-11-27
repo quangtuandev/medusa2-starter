@@ -81,6 +81,16 @@ export const Header: FC<HeaderProps> = () => {
                 )}
               >
                 <div className="flex flex-wrap-reverse justify-between w-full items-center">
+                  {!!headerNavigationItems?.length && (
+                    <div className="w-[84px]">
+                      <IconButton
+                        aria-label="open navigation menu"
+                        onClick={() => setSideNavOpen(true)}
+                        className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white xl:hidden"
+                        icon={Bars3Icon}
+                      />
+                    </div>
+                  )}
                   <LogoStoreName className="h-8 lg:h-14" primary />
                   {headerNavigationItems && headerNavigationItems
                     .slice(0, 6)
@@ -124,14 +134,6 @@ export const Header: FC<HeaderProps> = () => {
                       className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2"
                       icon={MagnifyingGlassIcon}
                     />
-                    {!!headerNavigationItems?.length && (
-                      <IconButton
-                        aria-label="open navigation menu"
-                        onClick={() => setSideNavOpen(true)}
-                        className="hover:!bg-primary-50 focus:!bg-primary-50 sm:inline-flex text-white xl:hidden"
-                        icon={Bars3Icon}
-                      />
-                    )}
                   </div>
                 </div>
               </div>

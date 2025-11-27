@@ -104,13 +104,13 @@ export default function Stories() {
     >
 
       <div className="w-[100vw] lg:w-[15%] flex flex-col px-4 py-2 lg:px-[45px] lg:py-[32px]">
-        <p className="font-title font-bold text-8xl">
+        <p className="font-title font-bold lg:text-8xl text-4xl">
           <span>THIS</span> <br />
-          <span className="ml-[14px]">IS <span className="font-centuryBook italic font-normal">Our</span></span>
+          <span className="lg:ml-[14px] ml-1">IS <span className="font-centuryBook italic font-normal">Our</span></span>
         </p>
         <div className="flex flex-col gap-8 h-full flex-1 justify-center">
           {menu.map((item) => (
-            <span onClick={() => handleItemClick(item.id)} key={item.id} className="font-title font-bold text-[40px] rounded-full border border-black mx-6 py-2 text-center hover:bg-[#FFE977] hover:border-[#FFE977] transition-all duration-300 ease-in-out">
+            <span onClick={() => handleItemClick(item.id)} key={item.id} className="font-title font-bold lg:text-[40px] text-2xl rounded-full border border-black mx-6 py-2 text-center hover:bg-[#FFE977] hover:border-[#FFE977] transition-all duration-300 ease-in-out">
               {item.label}
             </span>
           ))}
