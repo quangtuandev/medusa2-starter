@@ -79,7 +79,7 @@ export const CheckoutAccountDetails = () => {
 
   useEffect(() => {
     if (isActiveStep && !isSubmitting && !hasErrors && isComplete) {
-      form.reset();
+      // form.reset();
       goToNextStep();
     }
   }, [isSubmitting, isComplete]);
@@ -95,7 +95,6 @@ export const CheckoutAccountDetails = () => {
       <CheckoutSectionHeader completed={showCompleted} setStep={setStep} step={CheckoutStep.ACCOUNT_DETAILS}>
         {t('checkout.accountDetails')}
       </CheckoutSectionHeader>
-
       {!isActiveStep && isComplete && (
         <AddressDisplay title={t('checkout.shippingAddress')} address={shippingAddress} countryOptions={countryOptions} />
       )}
