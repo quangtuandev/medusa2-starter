@@ -165,7 +165,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                         </Link>
                     ))}
                 </div>
-                <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
+                <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-4 lg:top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
             </div>
             <p className="absolute bottom-[14vh] w-full text-center z-[9999] pointer-events-none hidden lg:block">
                 <span className={clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>{t('home.thisIs')}</span>

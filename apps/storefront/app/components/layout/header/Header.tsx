@@ -114,6 +114,7 @@ export const Header: FC<HeaderProps> = () => {
                               e.preventDefault();
                               openSubmenu();
                             }}
+                            onMouseEnter={() => openSubmenu()}
                             className="hover:!bg-primary-50 focus:!bg-primary-50 text-white"
                             icon={ChevronDownIcon}
                           />

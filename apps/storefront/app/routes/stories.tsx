@@ -103,7 +103,7 @@ export default function Stories() {
       transition={{ type: "spring", stiffness: 70, damping: 20 }}
     >
 
-      <div className="w-[100vw] lg:w-[15%] flex flex-col px-4 py-2 lg:px-[45px] lg:py-[32px]">
+      <div className="w-[100vw] lg:w-[15%] flex flex-col px-4 py-6 lg:px-[45px] lg:py-[32px]">
         <p className="font-title font-bold lg:text-8xl text-4xl">
           <span>THIS</span> <br />
           <span className="lg:ml-[14px] ml-1">IS <span className="font-centuryBook italic font-normal">Our</span></span>

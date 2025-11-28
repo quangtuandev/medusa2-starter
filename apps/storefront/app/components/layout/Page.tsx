@@ -39,7 +39,7 @@ export const Page: FC<PageProps> = ({ className, children }) => {
       {!isHiddenHeader && <Header />}
       {isInjectMenu && (
         <>
-          <MenuToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} className="fixed top-8 right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" />
+          <MenuToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} className="fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" />
           {isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
         </>
       )}

@@ -126,7 +126,7 @@ export default function IndexRoute() {
   const containerRef = useClickOutside(handleClickOutside, [menuRef, logoRef]);
   const [descriptionClassName, setDescriptionClassName] = useState('z-10 mt-16');
   const [descriptionText, setDescriptionText] = useState('');
-  const { t } = useI18n();
+  const { t, currentLanguage } = useI18n();
   useEffect(() => {
     switch (activeComponent) {
       case 'K':
@@ -150,7 +150,7 @@ export default function IndexRoute() {
         setDescriptionText(t('home.default.description'));
         break;
     }
-  }, [activeComponent]);
+  }, [activeComponent, currentLanguage]);
   return (
     <div
       ref={containerRef}
@@ -181,7 +181,7 @@ export default function IndexRoute() {
           onMouseEnterLetter={handleMouseEnterLetter}
           onMouseLeaveLogo={handleMouseLeaveLogo}
         />
-        <Description className={clsx("z-10 mt-8", descriptionClassName)} description={descriptionText} />
+        <Description key={isMobile ? 'mobile' : 'desktop'} className={clsx("z-10 mt-8", descriptionClassName)} description={descriptionText} />
       </div>
       {activeComponent === 'main' && <Main />}
       {activeComponent === 'K' && <K isMobile={isMobile} />}
