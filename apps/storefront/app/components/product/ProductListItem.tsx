@@ -82,7 +82,6 @@ export const ProductListItem: FC<ProductListItemProps> = ({
             </span>
           ))}
         </div>
-        {JSON.stringify(isMobile)}
         <AddToCartButton
           product={product}
           selectedOptions={selectedOptions}
