@@ -2,7 +2,6 @@ import { Container } from '@app/components/common/container/Container';
 import ProductCarousel from '@app/components/product/ProductCarousel';
 import { ProductCategoryTabs } from '@app/components/product/ProductCategoryTabs';
 import { ProductCollectionTabs } from '@app/components/product/ProductCollectionTabs';
-import { ProductListHeader } from '@app/components/product/ProductListHeader';
 import type { CustomAction, ProductListFilter } from '@libs/types';
 import { buildSearchParamsFromObject } from '@libs/util/buildSearchParamsFromObject';
 import { StoreCollection, StoreProduct, StoreProductCategory } from '@medusajs/types';
@@ -16,7 +15,7 @@ export interface ProductListProps<TElement extends HTMLElement = HTMLDivElement>
   actions?: CustomAction[];
   className?: string;
 }
-const ProductListBase: FC<{}> = () => {
+const ProductListBase: FC<{ isMobile: boolean }> = ({ isMobile }) => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<number | undefined>(undefined);
   const fetcher = useFetcher<{
@@ -106,12 +105,28 @@ const ProductListBase: FC<{}> = () => {
         </div>
       )}
 
-      {!hasProducts && <ProductCarousel products={filteredProducts} />}
+      {!hasProducts && <ProductCarousel products={filteredProducts} isMobile={isMobile} />}
     </>
   );
 };
 
 export const ProductList: FC<ProductListProps> = memo(({ className, heading, text, actions, ...props }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice =
+        window.innerWidth <= 768 || // Tablet and below
+        'ontouchstart' in window || // Touch device
+        navigator.maxTouchPoints > 0 || // Touch device
+        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   return (
     <section className={clsx(`mkt-section relative overflow-x-hidden`, className)} {...props}>
       <div className="mkt-section__inner relative z-[2]">
@@ -121,7 +136,7 @@ export const ProductList: FC<ProductListProps> = memo(({ className, heading, tex
             <span className='text-4xl font-title font-extrabold xl:text-[64px] leading-normal xl:leading-[48px] uppercase'>Something</span>
             <span className='text-4xl font-centuryBook italic xl:text-[64px] leading-normal xl:leading-[48px] pl-2'>New?</span>
           </p>
-          <ProductListBase {...props} />
+          <ProductListBase {...props} isMobile={isMobile} />
         </Container>
       </div>
     </section>

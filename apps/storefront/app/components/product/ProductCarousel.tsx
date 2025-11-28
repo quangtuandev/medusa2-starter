@@ -12,19 +12,20 @@ export interface ProductCarouselProps {
   products?: StoreProduct[];
   className?: string;
   renderItem?: FC<ProductListItemProps>;
+  isMobile: boolean;
 }
 
-export const ProductRow: FC<{ products: StoreProduct[] }> = memo(({ products }) => {
+export const ProductRow: FC<{ products: StoreProduct[], isMobile: boolean }> = memo(({ products, isMobile }) => {
   return (
     <>
       {products.map((product) => (
         <div
           key={product.id}
           // Note: not sure if there is a better way to handle the width of these items, but these match closely to our grid layout
-          className="xs:w-[31.2%] xs:snap-start mr-6 inline-block w-[100%] snap-center last:mr-0 sm:mr-6 sm:snap-start md:w-[31.2%] xl:mr-8 xl:w-[23%]"
+          className="xs:w-[31.2%] xs:snap-start mr-6 inline-block w-1/2 snap-center last:mr-0 sm:mr-6 sm:snap-start md:w-[31.2%] xl:mr-8 xl:w-[23%]"
         >
           <NavLink prefetch="viewport" to={`/products/${product.handle}`} viewTransition>
-            {({ isTransitioning }) => <ProductListItem isTransitioning={isTransitioning} product={product} forcedZoom={0.35} />}
+            {({ isTransitioning }) => <ProductListItem isTransitioning={isTransitioning} product={product} forcedZoom={isMobile ? 0.2 : 0.35} isMobile={isMobile} />}
           </NavLink>
         </div>
       ))}
@@ -32,7 +33,7 @@ export const ProductRow: FC<{ products: StoreProduct[] }> = memo(({ products }) 
   );
 });
 
-export const ProductCarousel: FC<ProductCarouselProps> = ({ products, className }) => {
+export const ProductCarousel: FC<ProductCarouselProps> = ({ products, className, isMobile }) => {
   const { scrollableDivRef, ...scrollArrowProps } = useScrollArrows({
     buffer: 100,
     resetOnDepChange: [products],
@@ -46,7 +47,7 @@ export const ProductCarousel: FC<ProductCarouselProps> = ({ products, className 
         ref={scrollableDivRef}
         className="w-full snap-both snap-mandatory overflow-x-auto whitespace-nowrap pb-2 sm:snap-proximity"
       >
-        <ProductRow products={products} />
+        <ProductRow products={products} isMobile={isMobile} />
       </div>
       <ScrollArrowButtons className="-mt-12" {...scrollArrowProps} />
     </div>
