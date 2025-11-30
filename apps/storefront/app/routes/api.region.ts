@@ -23,7 +23,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     await retrieveRegion(regionId);
 
     const headers = new Headers();
-
+    console.log('regionId', regionId);
     await setSelectedRegionId(headers, regionId);
 
     const cartId = await getCartId(request.headers);
@@ -32,6 +32,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     return data({ success: true }, { headers });
   } catch (error: any) {
+    console.log('error', error);
     return data(error.response.data, {
       status: error.response.status,
     });

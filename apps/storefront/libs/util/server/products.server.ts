@@ -8,7 +8,7 @@ export const fetchProducts = async (request: Request, { ...query }: HttpTypes.St
   const region = await getSelectedRegion(request.headers);
 
   return await cachified({
-    key: `products-${JSON.stringify(query)}`,
+    key: `products-${JSON.stringify(query)}-${region.id}`,
     cache: sdkCache,
     staleWhileRevalidate: MILLIS.ONE_HOUR,
     ttl: MILLIS.TEN_SECONDS,
