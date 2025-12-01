@@ -351,3 +351,25 @@
 .reverse-animate-rotate-bounce {
   animation: reverse-rotate-bounce 1.6s infinite;
 }
+
+[cmdk-root] {
+  background-color: #fff;
+}
+
+[cmdk-input-wrapper] input {
+  border: 0px;
+}
+
+[cmdk-input-wrapper] input:focus {
+  border: 0px;
+  outline: none;
+  box-shadow: none;
+  background-color: #fff;
+}
+
+[cmdk-input-wrapper] input:active {
+  border: 0px;
+  outline: none;
+  box-shadow: none;
+  background-color: #fff;
+}

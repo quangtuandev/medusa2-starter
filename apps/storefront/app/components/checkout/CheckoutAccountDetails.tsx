@@ -9,11 +9,11 @@ import { accountDetailsSchema } from '@app/routes/api.checkout.account-details';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField } from '@lambdacurry/forms/remix-hook-form';
 import type { MedusaAddress } from '@libs/types';
-import { medusaAddressToAddress } from '@libs/util';
+import { convertToFormData, medusaAddressToAddress } from '@libs/util';
 import { checkAccountDetailsComplete } from '@libs/util/checkout';
 import { FetcherKeys } from '@libs/util/fetcher-keys';
 import type { StoreRegion, StoreRegionCountry } from '@medusajs/types';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FieldErrors } from 'react-hook-form';
 import { useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
@@ -22,16 +22,27 @@ import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 import { AddressDisplay } from './address/AddressDisplay';
 import { selectInitialShippingAddress } from './checkout-form-helpers';
 import { useI18n } from '@app/hooks/useI18n';
+import { Label, Select, type SelectOption } from '@lambdacurry/forms/ui';
+import { useRegion } from '@app/hooks/useRegion';
 
 const NEW_SHIPPING_ADDRESS_ID = 'new';
 
 export const CheckoutAccountDetails = () => {
+  const { regions } = useRegions();
+  const { region } = useRegion();
+  const contriesOptions = useMemo(() => regions?.flatMap((region: StoreRegion) => region.countries?.map((country: StoreRegionCountry) => ({
+    value: country.iso_2,
+    label: country.display_name,
+  }))) ?? [], [regions]);
+
+  console.log('contriesOptions', region);
+
   const { t } = useI18n();
   const checkoutAccountDetailsFormFetcher = useFetcher<{
     errors: FieldErrors;
   }>({ key: FetcherKeys.cart.accountDetails });
   const { customer } = useCustomer();
-  const { regions } = useRegions();
+
   const { step, setStep, goToNextStep, cart, isCartMutating } = useCheckout();
   const isActiveStep = step === CheckoutStep.ACCOUNT_DETAILS;
 
@@ -87,8 +98,26 @@ export const CheckoutAccountDetails = () => {
   const handleCancel = () => {
     goToNextStep();
   };
+  const fetcher = useFetcher();
+
+  const onRegionChange = (regionId: string) => {
+    fetcher.submit(
+      convertToFormData({
+        regionId,
+      }),
+      { method: 'post', action: '/api/region' },
+    );
+  };
 
   const showCompleted = isComplete && !isActiveStep;
+  const onCountryChange = (value: string) => {
+    const country = region.countries?.some((country: StoreRegionCountry) => country.iso_2 === value);
+    if (!country) {
+      const region = regions?.find((region: StoreRegion) => region.countries?.some((country: StoreRegionCountry) => country.iso_2 === value));
+      onRegionChange(region?.id ?? '');
+    }
+    form.setValue('shippingAddress.countryCode', value);
+  };
 
   return (
     <div className="checkout-account-details">
@@ -207,13 +236,15 @@ export const CheckoutAccountDetails = () => {
                 </div>
 
                 <div>
-                  <StyledTextField
-                    name="shippingAddress.countryCode"
-                    type="text"
-                    label={t('checkout.country')}
-                    placeholder={t('checkout.countryPlaceholder')}
-                  />
-
+                  <div className='form-item grid gap-2 w-full [&_input]:!h-12 [&_input]:border-gray-200 [&_input]:!bg-white [&_input]:text-[16px] [&_input]:shadow-sm [&_input]:!ring-0 [&_input:-webkit-autofill]:!transition-[background-color_5000s_ease-in-out_0s] [&_input:-webkit-autofill]:!shadow-[0_0_0_1000px_white_inset] [&_label]:text-[16px] [&_label]:text-gray-600'>
+                    <Label htmlFor="country">{t('checkout.country')}</Label>
+                    <Select
+                      className='h-12 w-full rounded-md border border-gray-300 text-sm shadow-sm outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500'
+                      options={contriesOptions ?? [] as SelectOption[]}
+                      value={shippingAddress?.countryCode}
+                      onValueChange={(value) => onCountryChange(value)}
+                    />
+                  </div>
                 </div>
               </div>
 

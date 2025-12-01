@@ -132,7 +132,8 @@ module.exports = {
   safelist: [
     'bg-item-story',
     'bg-item-mission',
-    'bg-item-packaging'
+    'bg-item-packaging',
+    'max-h-[300px]'
   ],
 
   plugins: [
