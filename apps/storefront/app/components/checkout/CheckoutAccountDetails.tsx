@@ -35,8 +35,6 @@ export const CheckoutAccountDetails = () => {
     label: country.display_name,
   }))) ?? [], [regions]);
 
-  console.log('contriesOptions', region);
-
   const { t } = useI18n();
   const checkoutAccountDetailsFormFetcher = useFetcher<{
     errors: FieldErrors;

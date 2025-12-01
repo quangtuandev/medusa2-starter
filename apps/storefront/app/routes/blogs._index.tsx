@@ -27,7 +27,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const language = await getCookie(request.headers, "lng");
   const data = await listPosts(language);
-  console.log(language, data);
   return {
     count: data?.length,
     limit: postsLimit,

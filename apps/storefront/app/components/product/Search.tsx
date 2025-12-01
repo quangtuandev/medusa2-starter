@@ -64,7 +64,6 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
                 }
 
                 const data = await response.json();
-                console.log(data);
 
                 setResults(data);
                 setIsOpen(data.length > 0);

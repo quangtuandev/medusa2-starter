@@ -72,7 +72,7 @@ export default function PickACard() {
     <div className="min-h-screen overflow-hidden lg:overflow-visible">
       <div className="z-10">
         < div className="flex flex-col items-center justify-center mt-16 lg:mt-0" >
-          <h1 className="font-title lg:text-[110px] text-5xl text-center lg:text-left font-bold">{t('products.thisIsOur')}</h1>
+          <h1 className="font-title lg:text-[110px] text-5xl text-center lg:text-left font-bold leading-tight">{t('products.thisIsOur')}</h1>
           <p className="font-centuryBook italic lg:text-[125px] text-5xl leading-[114px] text-center lg:text-left">{t('products.heartAndSoul')}</p>
         </div >
       </div >

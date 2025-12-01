@@ -86,7 +86,7 @@ export const LanguageSwitcher = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="absolute top-full mt-2 right-0 transform z-[1000]">
           <div className="bg-white rounded-lg shadow-lg overflow-hidden text-base min-w-[125px]">
             {regionOptions?.map((lang) => (
               <button

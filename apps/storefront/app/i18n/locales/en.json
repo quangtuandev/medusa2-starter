@@ -163,7 +163,35 @@
       "emailInvalid": "Please enter a valid email"
     },
     "saveAndContinue": "Save and continue",
-    "cancelEdit": "Cancel edit"
+    "cancelEdit": "Cancel edit",
+    "bankTransfer": {
+      "errorCartNotFound": "Cart not found",
+      "errorSelectBankAccount": "Please select a bank account",
+      "errorSelectBankTransferFailed": "Failed to select bank transfer payment",
+      "selectBankAccountDescription": "Select a bank account and then choose Bank Transfer to pay via bank wire. You'll receive payment instructions after placing the order.",
+      "selectBankAccountLabel": "Select bank account",
+      "selectBankTransferButton": "Select bank transfer",
+      "noBankAccounts": "No bank accounts available. Please contact support.",
+      "detailsTitle": "Bank transfer details",
+      "fieldBank": "Bank:",
+      "fieldAccountHolder": "Account holder:",
+      "fieldAccountNumber": "Account number:",
+      "fieldBankCode": "Bank code:",
+      "fieldContent": "Content:",
+      "fieldSwiftCode": "Swift code:",
+      "fieldAmountToPay": "Amount to pay:",
+      "qrTitle": "QR code",
+      "qrToggleShow": "Show",
+      "qrToggleHide": "Hide",
+      "qrAlt": "QR code",
+      "instructionsTitle": "Payment instructions:",
+      "instructions1": "Login to your bank account",
+      "instructions2": "Create a bank transfer order to the account information above",
+      "instructions3": "Use your phone number as the transfer content",
+      "instructions4": "Transfer the exact amount displayed",
+      "instructions5": "The administrator will check the payment and update the order status of your order",
+      "instructionsPendingNote": "Your order will be in a pending payment status until the administrator confirms the payment."
+    }
   },
   "shop": "EAU DE PARFUM",
   "home": {

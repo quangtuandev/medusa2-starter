@@ -43,7 +43,7 @@ export const Page: FC<PageProps> = ({ className, children }) => {
           {isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
         </>
       )}
-      <main className="flex-auto">
+      <main className={clsx("flex-auto", isOpen && "hidden")}>
         <div className="w-full">{children}</div>
       </main>
       {!isHiddenFooter && <Footer />}

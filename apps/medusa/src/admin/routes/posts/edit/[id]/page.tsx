@@ -93,7 +93,6 @@ const EditPostPage = () => {
 
     // Set form data when post is loaded
     useMemo(() => {
-        console.log(post)
         if (post) {
             setFormData({
                 language: post.language,

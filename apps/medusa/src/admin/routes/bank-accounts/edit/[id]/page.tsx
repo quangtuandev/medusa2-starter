@@ -64,7 +64,6 @@ const EditBankAccountPage = () => {
         queryKey: ["bank-account", id],
         enabled: !!id,
     })
-    console.log(bankAccount)
     // Set form data when bank account is loaded
     useMemo(() => {
         if (bankAccount?.bank_account) {

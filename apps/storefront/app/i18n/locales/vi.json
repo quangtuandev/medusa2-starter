@@ -163,7 +163,35 @@
       "emailInvalid": "Vui lòng nhập email hợp lệ"
     },
     "saveAndContinue": "Lưu và tiếp tục",
-    "cancelEdit": "Hủy chỉnh sửa"
+    "cancelEdit": "Hủy chỉnh sửa",
+    "bankTransfer": {
+      "errorCartNotFound": "Không tìm thấy giỏ hàng",
+      "errorSelectBankAccount": "Vui lòng chọn tài khoản ngân hàng",
+      "errorSelectBankTransferFailed": "Không thể chọn phương thức thanh toán chuyển khoản ngân hàng",
+      "selectBankAccountDescription": "Chọn một tài khoản ngân hàng sau đó chọn Chuyển khoản ngân hàng để thanh toán. Bạn sẽ nhận được hướng dẫn thanh toán sau khi đặt hàng.",
+      "selectBankAccountLabel": "Chọn tài khoản ngân hàng",
+      "selectBankTransferButton": "Chọn chuyển khoản ngân hàng",
+      "noBankAccounts": "Hiện chưa có tài khoản ngân hàng. Vui lòng liên hệ hỗ trợ.",
+      "detailsTitle": "Thông tin chuyển khoản ngân hàng",
+      "fieldBank": "Ngân hàng:",
+      "fieldAccountHolder": "Chủ tài khoản:",
+      "fieldAccountNumber": "Số tài khoản:",
+      "fieldBankCode": "Mã ngân hàng:",
+      "fieldContent": "Nội dung:",
+      "fieldSwiftCode": "Mã SWIFT:",
+      "fieldAmountToPay": "Số tiền cần thanh toán:",
+      "qrTitle": "Mã QR thanh toán",
+      "qrToggleShow": "Hiện",
+      "qrToggleHide": "Ẩn",
+      "qrAlt": "Mã QR thanh toán",
+      "instructionsTitle": "Hướng dẫn thanh toán:",
+      "instructions1": "Đăng nhập vào tài khoản ngân hàng của bạn",
+      "instructions2": "Tạo lệnh chuyển khoản tới thông tin tài khoản ở trên",
+      "instructions3": "Sử dụng số điện thoại của bạn làm nội dung chuyển khoản",
+      "instructions4": "Chuyển chính xác số tiền hiển thị",
+      "instructions5": "Quản trị viên sẽ kiểm tra thanh toán và cập nhật trạng thái đơn hàng của bạn",
+      "instructionsPendingNote": "Đơn hàng của bạn sẽ ở trạng thái chờ thanh toán cho đến khi được quản trị viên xác nhận."
+    }
   },
   "shop": "Cửa hàng nước hoa",
   "home": {

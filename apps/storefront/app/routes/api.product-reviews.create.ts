@@ -17,9 +17,7 @@ const schema = z.object({
 export async function action({ request }: { request: Request }) {
 
   const formData = await parseFormData(request);
-  console.log(formData);
   const { errors, data: parsedFormData } = await getValidatedFormData(formData, zodResolver(schema));
-  console.log(errors);
 
   if (errors) {
     return data({ errors }, { status: 400 });
