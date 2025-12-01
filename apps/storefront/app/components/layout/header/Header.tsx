@@ -82,7 +82,7 @@ export const Header: FC<HeaderProps> = () => {
               >
                 <div className="flex flex-wrap-reverse justify-between w-full items-center">
                   {!!headerNavigationItems?.length && (
-                    <div className="w-[84px]">
+                    <div className="w-[84px] lg:hidden">
                       <IconButton
                         aria-label="open navigation menu"
                         onClick={() => setSideNavOpen(true)}
