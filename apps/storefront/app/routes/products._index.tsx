@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { useEffect, useState, useMemo } from "react";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -52,11 +52,19 @@ export default function HalfFanSlider() {
   }, []);
 
   const next = () => {
-    handleClick(0);
+    // Move to next card (move first card to the end)
+    if (cards.length > 0) {
+      handleClick(0);
+    }
   };
 
   const prev = () => {
-    handleClick(0);
+    // Move to previous card (move last card to the beginning)
+    if (cards.length > 0) {
+      const lastCard = cards[cards.length - 1];
+      const newCards = cards.slice(0, -1);
+      setCards([lastCard, ...newCards]);
+    }
   };
 
   const handleClick = (clickedIndex: number) => {
@@ -92,6 +100,22 @@ export default function HalfFanSlider() {
     });
   };
 
+  const handleSwipe = (event: any, info: PanInfo) => {
+    if (!isMobile) return;
+
+    const swipeThreshold = 50; // Minimum distance to trigger swipe
+    const velocityThreshold = 500; // Minimum velocity to trigger swipe
+
+    // Swipe left (negative offset/velocity) = next card
+    if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
+      next();
+    }
+    // Swipe right (positive offset/velocity) = previous card
+    else if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
+      prev();
+    }
+  };
+
   return (
     <div className="min-h-[max(calc(100vh-144px),_900px)] flex flex-col">
       <Container className="flex items-center justify-between mt-4 xl:mt-16">
@@ -112,7 +136,13 @@ export default function HalfFanSlider() {
         </button>
       </Container>
       <div className="flex items-center justify-end bg-white px-10 flex-1 flex-col-reverse xl:flex-row">
-        <div className="relative xl:w-[535px] w-full mr-10 min-h-[310px] xl:min-h-0">
+        <motion.div
+          className="relative xl:w-[535px] w-full mr-10 min-h-[310px] xl:min-h-0"
+          drag={isMobile ? "x" : false}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={handleSwipe}
+        >
           {cards.map((card, i) => {
 
             const rotate = (i - (cards.length - 1)) * 18; // fan sang trái
@@ -141,7 +171,7 @@ export default function HalfFanSlider() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
         <div className="flex flex-col justify-center h-full items-center w-full xl:w-[650px] top-0 xl:top-[-100px] relative">
           <AnimatePresence mode="wait">
             <motion.div
