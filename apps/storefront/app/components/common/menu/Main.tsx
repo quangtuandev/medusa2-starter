@@ -136,7 +136,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
     }
 
     return (
-        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,2180px)_auto] lg:overflow-hidden">
+        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden">
             <div className="h-full w-full overflow-x-scroll lg:overflow-x-hidden">
                 <div className="lg:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <span className="font-title font-bold text-4xl uppercase text-black">This </span>
@@ -146,7 +146,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                     </span>
                 </div>
                 <div className="fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" />
-                <div className="lg:w-[1840px] z-[9999] justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 lg:h-[630px] lg:left-1/2 lg:-translate-x-1/2 items-center overflow-x-scroll lg:overflow-x-hidden">
+                <div className="lg:w-[1840px] z-[9999] justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 lg:h-[630px] lg:left-1/2 lg:-translate-x-1/2 items-center overflow-x-scroll lg:overflow-x-hidden lg:[zoom:0.8] xl:[zoom:1]">
                     {categoryItems.map((item) => (
                         <Link to={item.url} className={clsx('w-[100vw]', item.className)} key={item.id}
                             onClick={handleMenuToggle}

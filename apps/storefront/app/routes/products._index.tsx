@@ -137,7 +137,7 @@ export default function HalfFanSlider() {
       </Container>
       <div className="flex items-center justify-end bg-white px-10 flex-1 flex-col-reverse xl:flex-row">
         <motion.div
-          className="relative xl:w-[535px] w-full mr-10 min-h-[310px] xl:min-h-0"
+          className="relative ml-auto md:w-[535px] w-full mr-10 min-h-[310px] xl:min-h-0"
           drag={isMobile ? "x" : false}
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.2}

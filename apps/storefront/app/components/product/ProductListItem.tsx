@@ -22,7 +22,7 @@ export const ProductListItem: FC<ProductListItemProps> = ({
   product,
   className,
   isTransitioning,
-  forcedZoom = 0.45,
+  forcedZoom = 0.35,
   isMobile = false,
   ...props
 }) => {

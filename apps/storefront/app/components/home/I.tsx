@@ -8,15 +8,15 @@ export const I = ({ isMobile }: { isMobile: boolean }) => {
     const particles = [
         {
             id: 'tower',
-            className: 'w-0 xl:w-[142px]',
+            className: 'w-0 lg:w-[142px]',
             position: { x: '-547px', y: '-205px', rotate: '-22deg' },
             positionMobile: { x: '-50%', y: '-205px', rotate: '-22deg' },
             src: "assets/images/art/i/tower.webp",
         },
         {
             id: 'imagineative',
-            className: 'w-[395px] xl:w-[895px]',
-            position: { x: '-547px', y: '-663px' },
+            className: 'w-[395px] lg:w-[855px] z-10',
+            position: { x: '-30vw', y: '-70vh' },
             positionMobile: { x: '-50%', y: '-463px' },
             src: "assets/images/art/i/imagineative.webp",
         },

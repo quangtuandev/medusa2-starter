@@ -45,9 +45,9 @@ export const R = ({ isMobile }: { isMobile: boolean }) => {
         },
         {
             id: 'radiant',
-            className: 'w-[696px]',
-            position: { x: '-216px', y: '-714px' },
-            positionMobile: { x: '-50%', y: '-510px' },
+            className: 'w-[60vw] lg:w-[696px]',
+            position: { x: '-216px', y: '-684px' },
+            positionMobile: { x: '-50%', y: '-550px' },
             src: "assets/images/art/r/radiant.webp",
         },
         {

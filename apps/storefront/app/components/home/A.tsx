@@ -14,7 +14,7 @@ export const A = ({ isMobile }: { isMobile: boolean }) => {
         },
         {
             id: 'art',
-            className: 'w-[100vw] lg:w-[776px]',
+            className: 'w-[65vw] lg:w-[776px]',
             position: { x: '-432px', y: '-635px' },
             positionMobile: { x: '-50%', y: '-510px' },
             src: "assets/images/art/a/art.webp",

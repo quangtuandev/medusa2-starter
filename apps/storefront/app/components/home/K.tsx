@@ -35,8 +35,8 @@ export const K = ({ isMobile }: { isMobile: boolean }) => {
         },
         {
             id: 'kind',
-            className: 'w-[320px] xl:w-[520px]',
-            position: { x: '-100%', y: '-612px' },
+            className: 'w-[320px] lg:w-[520px] z-10',
+            position: { x: '-90%', y: '-70vh' },
             positionMobile: { x: '-50%', y: '-540px' },
             src: "assets/images/art/k/kind.webp",
         },
