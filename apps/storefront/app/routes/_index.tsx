@@ -15,13 +15,13 @@ import { I } from "@app/components/home/I";
 import { R } from "@app/components/home/R";
 import { A } from "@app/components/home/A";
 import { MainMenu } from "@app/components/common/menu/Main";
+import { HeaderSideNav } from "@app/components/layout/header/HeaderSideNav";
 
 export const loader = async (_args: LoaderFunctionArgs) => {
   return {};
 };
 
 export const meta: MetaFunction<typeof loader> = getMergedPageMeta;
-const MemoizedLogo = memo(Logo);
 
 // Custom hook để xử lý click outside
 function useClickOutside<T extends HTMLElement = HTMLDivElement>(
@@ -109,11 +109,14 @@ export default function IndexRoute() {
   }, []);
 
   const handleMenuToggle = useCallback(() => {
-    setIsOpen(prev => !prev);
-  }, []);
+    if (isMobile) {
+      setIsOpen(prev => !prev);
+    } else {
+      setIsOpen(prev => !prev);
+    }
+  }, [isMobile]);
 
   const handleClickOutside = useCallback(() => {
-    console.log('handleClickOutside', isOpen, activeComponent);
     if (isOpen) {
       setIsOpen(false);
     }
@@ -156,6 +159,12 @@ export default function IndexRoute() {
       ref={containerRef}
       className="relative h-screen w-screen px-11 py-8 flex flex-col items-center justify-center overflow-hidden"
     >
+      {isMobile && (
+        <HeaderSideNav
+          open={isOpen}
+          setOpen={setIsOpen}
+        />
+      )}
       <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-4 lg:px-11 pt-8 z-[100]">
         <p className="font-title font-bold text-6xl lg:text-8xl uppercase">
           <span>{t('home.this')}</span> <br />
@@ -169,7 +178,7 @@ export default function IndexRoute() {
         }
       </div>
 
-      {activeComponent === 'main' && isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
+      {activeComponent === 'main' && isOpen && !isMobile && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
 
       <div ref={logoRef} className="flex relative flex-col items-center gap-3">
         {activeComponent !== 'main' && <div className="z-10 h-[48px] lg:h-[80px]" />}

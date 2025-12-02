@@ -1,12 +1,7 @@
 import { Grid, GridColumn } from "@app/components/common/grid";
-import { MenuToggle } from "@app/components/common/MenuToggle/MenuToggle";
 import clsx from "clsx";
-import { isBrowser, motion, useScroll, useTransform } from "motion/react"
-import { useEffect, useMemo, useRef, useState } from "react";
-import { MainMenu } from "@app/components/common/menu/Main";
-import { IconButton } from "yet-another-react-lightbox";
-import { ArrowRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { href, Link } from "react-router-dom";
+import { motion } from "motion/react"
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 export default function Stories() {
   const menu = [

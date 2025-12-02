@@ -10,6 +10,7 @@ import { LiveChatIcon } from "../contact/livechat";
 import { useCart } from "@app/hooks/useCart";
 import { MainMenu } from "../common/menu/Main";
 import { MenuToggle } from "../common/MenuToggle/MenuToggle";
+import { HeaderSideNav } from "./header/HeaderSideNav";
 export interface PageProps {
   className?: string;
   children: ReactNode;
@@ -27,6 +28,20 @@ export const Page: FC<PageProps> = ({ className, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const isInjectMenu = injectMenuPaths.includes(currentMatch?.pathname || "");
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768 || // Tablet and below
+        "ontouchstart" in window || // Touch device
+        navigator.maxTouchPoints > 0 || // Touch device
+        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
       className={clsx(
@@ -40,7 +55,8 @@ export const Page: FC<PageProps> = ({ className, children }) => {
       {isInjectMenu && (
         <>
           <MenuToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} className="fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" />
-          {isOpen && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
+          {isOpen && !isMobile && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
+          {isMobile && <HeaderSideNav open={isOpen} setOpen={setIsOpen} />}
         </>
       )}
       <main className={clsx("flex-auto", isOpen && "hidden")}>
