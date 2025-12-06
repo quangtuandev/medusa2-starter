@@ -52,50 +52,48 @@ export const ProductListItem: FC<ProductListItemProps> = ({
       className={clsx(className, "group/product-card text-left rounded-[32px] p-4 pb-6 overflow-hidden bg-white shadow-[5px_5px_10px_0px_#00000040]")}
       {...props}
     >
-      <div className="relative z-0">
+      <div className="relative z-0 mb-4 lg:mb-2">
         <ProductBadges
           className="absolute right-2 top-2 z-10 flex gap-2"
           product={product}
         />
         <ProductThumbnail variant={selectedSize ? variant : undefined} isTransitioning={isTransitioning} product={product} forcedZoom={forcedZoom} />
       </div>
-      <h4 className="my-4 overflow-hidden text-ellipsis font-extrabold font-title leading-none lg:group-hover/product-card:text-[36px] transition-all duration-300 text-sm lg:text-[28px] z-10">
+      <h4 className="my-1 lg:my-4 overflow-hidden text-ellipsis font-extrabold font-title leading-none lg:group-hover/product-card:text-[36px] transition-all duration-300 text-sm lg:text-[28px] z-10">
         {product.title}
       </h4>
-      <div className="flex gap-2 flex-col lg:flex-row justify-between items-center relative z-10">
-        <div className="flex gap-2 justify-center items-center">
-          {size?.values?.map((value) => (
-            <span
-              key={value.id}
-              className={clsx(
-                "text-sm font-light  border border-[#716E6E] rounded-full px-2 py-1 hover:text-[#716E6E] hover:border-black text-[10px] font-display leading-none hover:bg-highlight",
-                {
-                  "!text-black !border-black bg-highlight": selectedSize === value.value,
-                }
-              )}
-              onClick={(e) => {
-                setSelectedSize(value.value);
-                e.preventDefault();
-              }}
-            >
-              {value.value}
-            </span>
-          ))}
+      <div className="flex flex-col-reverse lg:flex-col gap-1 ">
+        <div className="flex gap-2 justify-between items-center relative z-10">
+          <div className="flex gap-2 justify-center items-center">
+            {size?.values?.map((value) => (
+              <span
+                key={value.id}
+                className={clsx(
+                  "text-sm font-light  border border-[#716E6E] rounded-full px-2 py-1 hover:text-[#716E6E] hover:border-black text-[8px] lg:text-sm font-display leading-none hover:bg-highlight",
+                  {
+                    "!text-black !border-black bg-highlight": selectedSize === value.value,
+                  }
+                )}
+                onClick={(e) => {
+                  setSelectedSize(value.value);
+                  e.preventDefault();
+                }}
+              >
+                {value.value}
+              </span>
+            ))}
+          </div>
+          <AddToCartButton
+            product={product}
+            selectedOptions={selectedOptions}
+            disabled={!canAddToCart}
+            variant="primary"
+          />
         </div>
-        <AddToCartButton
-          product={product}
-          selectedOptions={selectedOptions}
-          disabled={!canAddToCart}
-          variant="primary"
-          isFullText={!!isMobile}
-          className={clsx({
-            "w-full !p-1": isMobile,
-          })}
-        />
+        <p className="mt-1 lg:text-lg text-[10px] font-extrabold font-title leading-none tracking-normal">
+          <ProductPrice product={product} variant={variant} currencyCode={region.currency_code} />
+        </p>
       </div>
-      <p className="mt-1 text-lg font-extrabold font-title leading-none tracking-normal hover:text-[]">
-        <ProductPrice product={product} variant={variant} currencyCode={region.currency_code} />
-      </p>
     </article>
   );
 };

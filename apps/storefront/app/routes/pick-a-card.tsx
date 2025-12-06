@@ -76,9 +76,9 @@ export default function PickACard() {
           <p className="font-centuryBook italic lg:text-[125px] text-5xl leading-[114px] text-center lg:text-left">{t('products.heartAndSoul')}</p>
         </div >
       </div >
-      <div className="flex items-center justify-center bg-white px-10 flex-col lg:h-[60vh] h-[calc(100vh-206px)] z-0">
+      <div className="pick-a-card-container flex items-center justify-center bg-white px-10 flex-col lg:h-[60vh] h-[calc(100vh-206px)] z-0">
         <div className="relative w-full hidden lg:flex justify-between items-center">
-          <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-right" dangerouslySetInnerHTML={{ __html: t('products.pickA') }} />
+          <p className="pick-a-card-title font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8]" dangerouslySetInnerHTML={{ __html: t('products.pickA') }} />
           <p className="font-title text-[194.91px] font-bold leading-[139px] text-[#F4C5D8] text-left">{t('products.card')}</p>
         </div>
         <div className="relative lg:left-[-10vw] lg:top-[-100px] left-[25%] -translate-x-1/2 top-0 w-full lg:w-auto">

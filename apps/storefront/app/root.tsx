@@ -21,11 +21,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useRootLoaderData } from "./hooks/useRootLoaderData";
+import { useI18n } from "./hooks/useI18n";
 
 export const getRootMeta: MetaFunction = ({ data }) => {
-  const title = "Barrio Store";
+  const title = "Kira Parfum";
   const description =
-    "Discover our artisan-roasted coffee, crafted with care and delivered to your door.";
+    "Kira Parfum is a luxury fragrance brand that offers a range of high-quality fragrances for men and women.";
   const ogTitle = title;
   const ogDescription = description;
   const ogImage = "";
@@ -69,12 +70,13 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 function App() {
   const headRef = useRef<HTMLHeadElement>(null);
   const data = useRootLoaderData();
+  const { currentLanguage } = useI18n();
 
   const { env = {}, siteDetails } = data || {};
 
   return (
     <RootProviders>
-      <html lang="en" className="min-h-screen">
+      <html lang={currentLanguage} className="min-h-screen">
         <head ref={headRef}>
           <meta charSet="UTF-8" />
           <Meta />

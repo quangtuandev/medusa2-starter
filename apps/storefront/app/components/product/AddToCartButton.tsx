@@ -45,7 +45,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
   const isDisabled = disabled || isLoading;
 
   const baseClasses =
-    "font-medium rounded-[100px] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center p-2";
+    "font-medium rounded-[100px] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center p-1 lg:p-2";
 
   const variantClasses = {
     primary: {

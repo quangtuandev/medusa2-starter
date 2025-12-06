@@ -2,7 +2,7 @@ import { FC, useState, useCallback, memo } from 'react'
 
 interface LiveChatConfig {
     facebook?: string
-    zalo?: string
+    instagram?: string
 }
 
 interface LiveChatIconProps {
@@ -11,8 +11,8 @@ interface LiveChatIconProps {
 }
 
 const DEFAULT_CONFIG: LiveChatConfig = {
-    facebook: 'https://www.facebook.com/your-page',
-    zalo: 'https://zalo.me/your-phone-number'
+    facebook: 'https://www.facebook.com/kiraparfum',
+    instagram: 'https://www.instagram.com/bykiraparfum'
 }
 
 export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
@@ -41,6 +41,17 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
             {/* Social Icons Menu */}
             {isOpen && (
                 <div className="absolute bottom-24 right-0 flex flex-col gap-3 mb-2 z-50">
+                    {/* Instagram Icon */}
+                    {mergedConfig.instagram && (
+                        <button
+                            onClick={() => handleSocialClick(mergedConfig.instagram)}
+                            className="transition-all duration-300 transform hover:scale-110 flex items-center justify-center"
+                            aria-label="Chat on Instagram"
+                            title="Chat on Instagram"
+                        >
+                            <img src="/assets/images/instagram.svg" alt="Instagram" className="w-16 h-16" />
+                        </button>
+                    )}
                     {/* Facebook Icon */}
                     {mergedConfig.facebook && (
                         <button
@@ -49,22 +60,12 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
                             aria-label="Chat on Facebook"
                             title="Chat on Facebook"
                         >
-                            <img src="/assets/images/facebook.png" alt="Facebook" className="w-16 h-16" />
+                            <img src="/assets/images/facebook.svg" alt="Facebook" className="w-16 h-16" />
 
                         </button>
                     )}
 
-                    {/* Zalo Icon */}
-                    {mergedConfig.zalo && (
-                        <button
-                            onClick={() => handleSocialClick(mergedConfig.zalo)}
-                            className="transition-all duration-300 transform hover:scale-110 flex items-center justify-center"
-                            aria-label="Chat on Zalo"
-                            title="Chat on Zalo"
-                        >
-                            <img src="/assets/images/zalo.png" alt="Zalo" className="w-16 h-16" />
-                        </button>
-                    )}
+
                 </div>
             )}
 
@@ -76,7 +77,7 @@ export const LiveChatIcon: FC<LiveChatIconProps> = memo(({
                 title="Open chat"
             >
                 <span>
-                    <img src="/assets/images/livechat.gif" alt="Chat" className="xl:w-20 xl:h-20 w-10 h-10" />
+                    <img src="/assets/images/livechat.gif" alt="Chat" className="xl:w-14 xl:h-14 w-10 h-10" />
                 </span>
             </button>
 

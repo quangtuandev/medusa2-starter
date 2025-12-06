@@ -373,3 +373,11 @@
   box-shadow: none;
   background-color: #fff;
 }
+
+:lang(vi) .pick-a-card-title {
+  text-align: right;
+}
+
+/* :lang(vi) .pick-a-card-container {
+  height: 85vh;
+} */
