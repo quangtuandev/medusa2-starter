@@ -26,7 +26,8 @@ export default function PaypalExpressCheckout() {
       clientId: "AUvtGlVenK_bQoUrek0Nl43oRCDETrBjP2ZlhRQcdBuJp1Pt16gSaitZV3aXAhUFIIQBGY29PqKhncLq",
       components: "buttons",
       intent: "capture",
-      currency: (currentCart.currency_code || "USD").toUpperCase(),
+      currency: 'USD',
+      // currency: (currentCart.currency_code || "USD").toUpperCase(),
     }),
     [currentCart.currency_code]
   );
