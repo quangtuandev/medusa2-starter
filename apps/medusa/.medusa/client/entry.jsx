@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import plugin0 from "@medusajs/draft-order/admin"
-import plugin1 from "@alphabite/medusa-paypal/admin"
 
 let root = null
 
@@ -15,7 +14,7 @@ if (!root) {
 
 root.render(
   <React.StrictMode>
-    <App plugins={[plugin0, plugin1]} />
+    <App plugins={[plugin0]} />
   </React.StrictMode>
 )
 

@@ -19,9 +19,11 @@ import { useNavigate, useParams } from "react-router-dom"
 import { sdk } from "../../../lib/sdk"
 import * as z from "zod"
 import slugify from "slugify"
+import ImageResizor from 'quill-image-resizor'
 
 // Import ReactQuill and CSS
-import ReactQuill from 'react-quill'
+import ReactQuill, { Quill } from 'react-quill'
+
 import 'react-quill/dist/quill.snow.css'
 
 // Define the Post type
@@ -66,6 +68,8 @@ const languages = [
 ] as const;
 
 const CreatePostPage = () => {
+    Quill.register('modules/imageResize', ImageResizor);
+
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
     const [isCreate, setIsCreate] = useState(!id)

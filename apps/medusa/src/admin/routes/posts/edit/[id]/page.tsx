@@ -19,9 +19,11 @@ import { useNavigate, useParams } from "react-router-dom"
 import { sdk } from "../../../../lib/sdk"
 import * as z from "zod"
 import slugify from "slugify"
+import ImageResize from 'quill-image-resize-module-react';
+
 
 // Import ReactQuill and CSS
-import ReactQuill from "react-quill"
+import ReactQuill, { Quill } from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
 // Define the Post type
@@ -66,6 +68,8 @@ const languages = [
 ] as const
 
 const EditPostPage = () => {
+    Quill.register('modules/imageResize', ImageResize);
+
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
@@ -240,6 +244,13 @@ const EditPostPage = () => {
                     image: imageHandler,
                 },
             },
+            clipboard: {
+                matchVisual: false
+            },
+            imageResize: {
+                parchment: Quill.import('parchment'),
+                modules: ['Resize', 'DisplaySize', 'Toolbar']
+            }
         }),
         [imageHandler]
     )
@@ -410,7 +421,7 @@ const EditPostPage = () => {
                                         formats={formats}
                                         theme="snow"
                                         placeholder="Write your post content here..."
-                                        style={{ height: "400px" }}
+                                        style={{ height: "600px" }}
                                     />
                                 </div>
                             </div>
