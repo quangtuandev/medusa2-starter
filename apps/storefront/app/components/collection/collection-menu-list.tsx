@@ -58,7 +58,7 @@ export const CollectionMenuList = ({ open, setOpen }: { open: boolean, setOpen: 
                         <div className="relative flex-col hidden xl:flex">
                             {collections.map((collection) => (
                                 <div key={collection.id} className="flex items-center p-2 rounded-md last:font-bold">
-                                    <Link to={`/collections/${collection.handle}`} onClick={() => setOpen(false)}>
+                                    <Link to={`/collections/${collection.handle}`} className="flex-1" onClick={() => setOpen(false)}>
                                         {collection.title}
                                     </Link>
                                 </div>

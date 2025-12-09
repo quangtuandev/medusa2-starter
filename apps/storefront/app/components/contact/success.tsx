@@ -8,8 +8,8 @@ export default function ContactSuccess() {
     return (
         <Container>
             <div className="contact-success-message text-center mt-8">
-                <p className="text-[65px] xl:text-[150px] font-centuryBook italic text-64px leading-48px pl-2">{t('success.okay')}</p>
-                <p className="text-[30px] xl:text-[110px] font-title font-bold text-64px leading-48px pl-2">{t('success.weGotUContact')}</p>
+                <p className="text-[65px] xl:text-[120px] font-centuryBook italic text-64px leading-48px pl-2">{t('success.okay')}</p>
+                <p className="text-[30px] xl:text-[70px] font-title font-bold text-64px leading-48px pl-2">{t('success.weGotUContact')}</p>
                 <p className="text-[18px] font-title font-light xl:text-[30px] leading-30px pl-2">{t('success.replyingSoon')}</p>
                 <p className="text-[18px] font-title font-light xl:text-[30px] leading-30px pl-2">{t('success.inTheMeantime')}</p>
             </div>
