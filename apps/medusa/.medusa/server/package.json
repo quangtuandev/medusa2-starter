@@ -48,6 +48,8 @@
     "contentful-management": "^11.63.0",
     "pg": "^8.13.0",
     "quill": "^2.0.3",
+    "quill-image-resize-module-react": "^3.0.0",
+    "quill-image-resizor": "^3.0.1",
     "react-quill": "^2.0.0",
     "slugify": "^1.6.6"
   },

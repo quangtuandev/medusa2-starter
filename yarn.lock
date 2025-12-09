@@ -21,7 +21,7 @@ __metadata:
 
 "@alphabite/medusa-paypal@file:../medusa-paypal::locator=medusa%40workspace%3Aapps%2Fmedusa":
   version: 0.2.5
-  resolution: "@alphabite/medusa-paypal@file:../medusa-paypal#../medusa-paypal::hash=d0ce78&locator=medusa%40workspace%3Aapps%2Fmedusa"
+  resolution: "@alphabite/medusa-paypal@file:../medusa-paypal#../medusa-paypal::hash=1530bf&locator=medusa%40workspace%3Aapps%2Fmedusa"
   dependencies:
     "@paypal/paypal-server-sdk": "npm:1.0.0"
     libphonenumber-js: "npm:^1.12.9"
@@ -41,7 +41,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/f4d5f43d6cb4948b18f695d3fb75de29160c35ee9f029579f87b32566239062103d3c4f6d14bc12050241b608893a8c688070e6a8b2b8a7a9f2ebbc31c5a2b26
+  checksum: 10c0/01341ed8dfeaa90365cf95633c959b1ae423b85f9b47afee3f60eb7eb41441f5fcef6d368bdb20547fec7a66a4c0181c2889f8b5fb082e49adc6061c1a6ecbb1
   languageName: node
   linkType: hard
 
@@ -24458,6 +24458,8 @@ __metadata:
     pg: "npm:^8.13.0"
     prop-types: "npm:^15.8.1"
     quill: "npm:^2.0.3"
+    quill-image-resize-module-react: "npm:^3.0.0"
+    quill-image-resizor: "npm:^3.0.1"
     react-quill: "npm:^2.0.0"
     slugify: "npm:^1.6.6"
     ts-node: "npm:^10.9.2"
@@ -26679,7 +26681,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quill@npm:^1.3.7":
+"quill-image-resize-module-react@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "quill-image-resize-module-react@npm:3.0.0"
+  dependencies:
+    lodash: "npm:^4.17.4"
+    quill: "npm:^1.2.2"
+    raw-loader: "npm:^0.5.1"
+  checksum: 10c0/7f2036aaa461edbebd3a8c44c73584be74362b5d43aaf7e4568491e9020e5616f30fb9899fc10dc7956e921bb2900187952ab5f85398a8a379b6098bfeb4bb91
+  languageName: node
+  linkType: hard
+
+"quill-image-resizor@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "quill-image-resizor@npm:3.0.1"
+  peerDependencies:
+    quill: ^2.0.0
+  checksum: 10c0/8aad5ec9d64015d9a3bb9cfdf8d779664ae2e0f35d5a99bffc1dfc76919b0f2c6dd63aa37291c6137ed5d6f08ec510a336d2a664321dfc6f3013c92e92b0500a
+  languageName: node
+  linkType: hard
+
+"quill@npm:^1.2.2, quill@npm:^1.3.7":
   version: 1.3.7
   resolution: "quill@npm:1.3.7"
   dependencies:
@@ -26807,6 +26829,13 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10c0/b201c4b66049369a60e766318caff5cb3cc5a900efd89bdac431463822d976ad0670912c931fdbdcf5543207daf6f6833bca57aa116e1661d2ea91e12ca692c4
+  languageName: node
+  linkType: hard
+
+"raw-loader@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "raw-loader@npm:0.5.1"
+  checksum: 10c0/0961d64c0c21c25f8a1ecddd5bf17a4308e5d82addff11044a42c28dde35f14b34c6dbf4665adda7ce3a64922a3132785276c25e1f33c0c62689ff366ab8fb6e
   languageName: node
   linkType: hard
 
