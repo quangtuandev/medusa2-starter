@@ -32,7 +32,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@alphabite/medusa-paypal": "^0.2.4",
+    "@alphabite/medusa-paypal": "../medusa-paypal",
     "@medusajs/admin-sdk": "^2.7.0",
     "@medusajs/cli": "^2.7.0",
     "@medusajs/framework": "^2.7.0",
