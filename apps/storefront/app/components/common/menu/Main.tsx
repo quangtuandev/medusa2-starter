@@ -203,13 +203,13 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                 }}
                             >
 
-                                <div className={clsx('font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]', item.positionTitleClass, isHovering && hoveredItemId === item.id && 'hidden')}>
+                                <div className={clsx('pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]', item.positionTitleClass, isHovering && hoveredItemId === item.id && 'hidden')}>
                                     <span className="relative z-[2]">{item.label}</span>
                                 </div>
                                 <div className="flex flex-col-reverse lg:flex-col items-center justify-center z-[9999]">
-                                    <div id={`menu-image-${item.id}`} className={clsx("shadow-frame object-contain menu-image z-[-2] hidden lg:block relative", item.imageClass)}>
+                                    <div id={`menu-image-${item.id}`} className={clsx("object-contain menu-image z-[-2] hidden lg:block relative", item.imageClass)}>
                                         <img className="" src={item.image} alt={item.label} />
-                                        <img src={item.imageInFrame} alt={item.label} className="absolute inset-0 z-[-1] object-fill w-full h-full" />
+                                        <img src={item.imageInFrame} alt={item.label} className="shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]" />
                                     </div>
                                     <FancyText id={`fancy-text-${item.id}`} className="text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]" text={item.label} />
                                 </div>
