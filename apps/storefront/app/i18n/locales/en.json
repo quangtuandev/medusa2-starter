@@ -60,6 +60,7 @@
     "logout": "Logout",
     "register": "Register",
     "blog": "Blog",
+    "store": "Store",
     "letsTalk": "Let's talk",
     "faqs": "FAQs",
     "documentation": "Documentation",
@@ -233,6 +234,7 @@
     "blog": "Blog",
     "product": "Product",
     "story": "Story",
+    "store": "Stores",
     "contact": "Contact"
   },
   "products": {

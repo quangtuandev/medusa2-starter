@@ -1,16 +1,17 @@
 
 import clsx from "clsx";
 import { animate, spring } from "animejs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useI18n } from "@app/hooks/useI18n";
 import { MenuToggle } from "../MenuToggle/MenuToggle";
+import { px } from "motion/react";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
-        <p id={id} className={clsx('font-centuryBook font-bold uppercase lg:hidden block pointer-events-none', className)}>
-            <span className="italic lg:text-[150px] text-[50px]">{text.slice(0, 1)}</span>
-            <span className="font-title lg:text-[95px] text-[40px]">{text.slice(1)}</span>
+        <p id={id} className={clsx('font-centuryBook font-bold uppercase lg:hidden block pointer-events-none absolute bottom-0', className)}>
+            <span className="italic lg:text-[100px] text-[50px]">{text.slice(0, 1)}</span>
+            <span className="font-title lg:text-[65px] text-[40px]">{text.slice(1)}</span>
         </p>
     );
 }
@@ -24,49 +25,91 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
         {
             id: 'blog',
             label: t('menu.blog'),
-            image: '/assets/images/menu/blog.webp',
+            image: '/assets/images/menu/frame2.webp',
+            imageInFrame: '/assets/images/menu/blog.webp',
             url: '/blogs',
-            className: 'max-w-[100vw] xl:max-w-[400px] left-0 lg:aspect-square ',
-            imagePosition: { x: '5%' },
+            className: 'left-[160px] top-[35vh]',
+            imageClass: ' w-[244px]',
+            positionTitleClass: 'right-0 -top-[85px]',
             position: {
-                x: '100%',
-                y: 0
+                x: '110%',
+                y: '-122px'
+            },
+            positionImage: {
+                x: '20%',
+                y: '-20%'
             }
         },
         {
             id: 'product',
             label: t('menu.product'),
-            image: '/assets/images/menu/product.webp',
+            image: '/assets/images/menu/frame3.webp',
+            imageInFrame: '/assets/images/menu/product.webp',
             url: '/pick-a-card',
-            className: 'max-w-[100vw] xl:max-w-[580px] left-[366px] lg:aspect-square ',
-            imagePosition: { x: '4%' },
+            className: 'left-[460px] top-[9vh]',
+            imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[290px]  [rotate:-15deg]',
+            positionTitleClass: 'left-1/2 top-[calc(100%+30px)]',
             position: {
-                x: '80%',
-                y: 0
+                x: '200px',
+                y: '122px'
+            },
+            positionImage: {
+                x: '10%',
+                y: '10%'
             }
         },
         {
             id: 'story',
             label: t('menu.story'),
-            image: '/assets/images/menu/story.webp',
+            image: '/assets/images/menu/frame2.webp',
+            imageInFrame: '/assets/images/menu/story.webp',
             url: '/stories',
-            className: 'max-w-[100vw] xl:max-w-[370px] left-[864px] lg:aspect-square ',
-            imagePosition: { x: '4%' },
+            className: 'left-[860px] top-[21vh]',
+            imageClass: 'w-[240px]',
+            positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
             position: {
-                x: '-70%',
-                y: 0
+                x: '0',
+                y: '120px'
+            },
+            positionImage: {
+                x: '0',
+                y: '10%'
             }
         },
         {
             id: 'contact',
             label: t('menu.contact'),
-            image: '/assets/images/menu/contact.webp',
+            image: '/assets/images/menu/frame1.webp',
+            imageInFrame: '/assets/images/menu/contact.webp',
             url: '/contact',
-            className: 'max-w-[100vw] xl:max-w-[620px] right-0',
-            imagePosition: { x: '-7%' },
+            className: 'left-[1130px] top-[40vh]',
+            imageClass: 'w-[400px]',
+            positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
+            position: {
+                x: '-10%',
+                y: '-300px'
+            },
+            positionImage: {
+                x: '-10%',
+                y: '-10%'
+            }
+        },
+        {
+            id: 'store',
+            label: t('menu.store'),
+            image: '/assets/images/menu/frame2.webp',
+            imageInFrame: '/assets/images/menu/store.webp',
+            url: '/store',
+            className: 'right-[160px] top-[17vh]',
+            imageClass: 'w-[170px]',
+            positionTitleClass: '-left-full bottom-0',
             position: {
                 x: '-90%',
                 y: 0
+            },
+            positionImage: {
+                x: '-20%',
+                y: '0'
             }
         },
     ];
@@ -95,8 +138,9 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             }),
         });
         animate(`#menu-image-${item.id}`, {
-            x: item.imagePosition?.x,
-            scale: 1.1,
+            scale: 1.2,
+            ...(item.positionImage?.y ? { y: item.positionImage.y } : { y: 0 }),
+            ...(item.positionImage?.x ? { x: item.positionImage.x } : { x: 0 }),
             ease: spring({
                 bounce: 0.65,
                 duration: 400
@@ -134,9 +178,8 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
         setIsHovering(false);
         setHoveredItemId(null);
     }
-
     return (
-        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden">
+        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden">
             <div className="h-full w-full overflow-x-scroll lg:overflow-x-hidden">
                 <div className="lg:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <span className="font-title font-bold text-4xl uppercase text-black">This </span>
@@ -146,30 +189,40 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                     </span>
                 </div>
                 <div className="fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" />
-                <div className="lg:w-[1840px] z-[9999] justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 lg:h-[630px] lg:left-1/2 lg:-translate-x-1/2 items-center overflow-x-scroll lg:overflow-x-hidden lg:[zoom:0.8] xl:[zoom:1]">
+                <div className="lg:w-[1840px] z-[9999] h-full justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 items-center overflow-x-scroll lg:overflow-hidden lg:[zoom:0.8] xl:[zoom:1] lg:left-1/2 lg:top-1/2 lg:translate-x-[-50%] lg:translate-y-[-50%]">
                     {categoryItems.map((item) => (
-                        <Link to={item.url} className={clsx('w-[100vw]', item.className)} key={item.id}
-                            onClick={handleMenuToggle}
-                            id={item.id}
-                            onMouseEnter={() => {
-                                handleMouseEnter(item);
-                            }}
-                            onMouseLeave={() => {
-                                handleMouseLeave(item);
-                            }}
-                        >
-                            <div className="flex flex-col-reverse lg:flex-col items-center justify-center z-[9999]">
-                                <img id={`menu-image-${item.id}`} src={item.image} alt={item.label} className={clsx("w-full object-contain menu-image z-[-2] hidden lg:block", isHovering && hoveredItemId !== item.id && '[filter:brightness(0.5)]')} />
-                                <FancyText id={`fancy-text-${item.id}`} className="text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]" text={item.label} />
-                            </div>
-                        </Link>
+                        <div>
+                            <Link to={item.url} className={clsx('absolute', item.className, isHovering && hoveredItemId !== item.id && '[filter:brightness(0.5)]')} key={item.id}
+                                onClick={handleMenuToggle}
+                                id={item.id}
+                                onMouseEnter={() => {
+                                    handleMouseEnter(item);
+                                }}
+                                onMouseLeave={() => {
+                                    handleMouseLeave(item);
+                                }}
+                            >
+
+                                <div className={clsx('font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]', item.positionTitleClass, isHovering && hoveredItemId === item.id && 'hidden')}>
+                                    <span className="relative z-[2]">{item.label}</span>
+                                </div>
+                                <div className="flex flex-col-reverse lg:flex-col items-center justify-center z-[9999]">
+                                    <div id={`menu-image-${item.id}`} className={clsx("shadow-frame object-contain menu-image z-[-2] hidden lg:block relative", item.imageClass)}>
+                                        <img className="" src={item.image} alt={item.label} />
+                                        <img src={item.imageInFrame} alt={item.label} className="absolute inset-0 z-[-1] object-fill w-full h-full" />
+                                    </div>
+                                    <FancyText id={`fancy-text-${item.id}`} className="text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]" text={item.label} />
+                                </div>
+                            </Link>
+                        </div>
+
                     ))}
                 </div>
                 <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
             </div>
-            <p className="absolute bottom-[14vh] w-full text-center z-[9999] pointer-events-none hidden lg:block">
-                <span className={clsx("font-title font-bold text-[40px] xl:text-[95px] uppercase z-[2] relative", isHovering && 'text-white')}>{t('home.thisIs')}</span>
-                <span className="font-centuryBook font-italic text-[100px] xl:text-[200px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{t('home.our')}</span>
+            <p className="absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block">
+                <span className={clsx("font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative", isHovering && 'text-white')}>{t('home.thisIs')}</span>
+                <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{t('home.our')}</span>
             </p>
         </div>
     );
