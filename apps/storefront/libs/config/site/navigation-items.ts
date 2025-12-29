@@ -18,8 +18,17 @@ export const headerNavigationItems: NavigationCollection = [
     location: NavigationItemLocation.header,
     new_tab: false,
   },
+
   {
     id: 3,
+    label: 'navigation.store', // i18n key
+    url: '/store',
+    sort_order: 1,
+    location: NavigationItemLocation.header,
+    new_tab: false,
+  },
+  {
+    id: 4,
     label: 'navigation.blog', // i18n key
     url: '/blogs',
     sort_order: 1,
@@ -27,7 +36,7 @@ export const headerNavigationItems: NavigationCollection = [
     new_tab: false,
   },
   {
-    id: 4,
+    id: 5,
     label: 'navigation.letsTalk', // i18n key
     url: '/contact',
     sort_order: 1,

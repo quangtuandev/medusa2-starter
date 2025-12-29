@@ -127,6 +127,9 @@ module.exports = {
         'item-mission': "url('/assets/images/stories/background-mission.webp')",
         'item-packaging': "url('/assets/images/stories/background-packaging.webp')",
       },
+      boxShadow: {
+        'frame': '3px 4px 11px 0px #67301E7D, 12px 17px 21px 0px #67301E6E, 28px 37px 28px 0px #67301E40, 49px 67px 33px 0px #67301E12, 77px 104px 36px 0px #67301E03',
+      },
     },
   },
   safelist: [
