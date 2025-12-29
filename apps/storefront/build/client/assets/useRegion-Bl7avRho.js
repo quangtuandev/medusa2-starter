@@ -1,0 +1,1 @@
+import{f as r}from"./chunk-OIYGIGL5-Bs1wg85I.js";const t=()=>r()[0].data,n=()=>{const o=t();if(!(o!=null&&o.region))throw new Error("No region data found, this should be provided in the root loader");return{region:o==null?void 0:o.region}};export{n as a,t as u};
