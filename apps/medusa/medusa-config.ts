@@ -70,6 +70,9 @@ module.exports = defineConfig({
   ],
   modules: [
     {
+      resolve: "./src/modules/location",
+    },
+    {
       resolve: "./src/modules/blog",
     },
     {

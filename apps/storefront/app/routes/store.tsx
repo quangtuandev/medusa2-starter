@@ -1,73 +1,65 @@
 import { Container } from '@app/components/common/container';
 import Hero from '@app/components/sections/Hero';
 import { getMergedPageMeta } from '@libs/util/page';
-import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { listLocations } from '@libs/util/server/data/locations.server';
+import { useLoaderData, type LoaderFunctionArgs, type MetaFunction } from 'react-router';
 
-const locations: LocationProps[] = [
-  {
-    country: 'Viet Nam',
-    items: [
-      {
-        title: 'SOMEWHERE',
-        addressLines: '1105 S. Lamar Blvd, Austin, TX 78704',
-        infor: [
-          {
-            name: 'Phone',
-            value: '0909090909'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    country: 'FRANCE',
-    items: [
-      {
-        title: 'SOMEWHERE',
-        addressLines: '1105 S. Lamar Blvd, Austin, TX 78704',
-        infor: [
-          {
-            name: 'Phone',
-            value: '0909090909'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    country: 'USA',
-    items: [
-      {
-        title: 'SOMEWHERE',
-        addressLines: '1105 S. Lamar Blvd, Austin, TX 78704',
-        infor: [
-          {
-            name: 'Phone',
-            value: '0909090909'
-          }
-        ]
-      }
-    ]
-  }
-];
-
-export const loader = async (args: LoaderFunctionArgs) => {
-  return {};
+export const loader = async () => {
+  const locations = await listLocations();
+  return locations;
 };
 
 export const meta: MetaFunction<typeof loader> = getMergedPageMeta;
 
 type LocationProps = {
+  iso_country_code: string;
   country: string;
   items: {
-    title: string;
-    addressLines: string;
-    infor: {
+    address_lines: string;
+    name: string;
+    options: {
       name: string;
       value: string;
-    }[];
+      type: string;
+    }[]
   }[];
 };
+// const types = [
+//   {
+//       value: "phone",
+//       label: "Phone",
+//   },
+//   {
+//       value: "email",
+//       label: "Email",
+//   },
+//   {
+//       value: "sms",
+//       label: "SMS",
+//   },
+//   {
+//       value: "text",
+//       label: "Text",
+//   },
+//   {
+//       value: "url",
+//       label: "URL",
+//   }
+// ]
+const mapTypeToLink = (type: string) => {
+  switch (type) {
+    case 'email':
+      return 'mailto:';
+    case 'phone':
+      return 'tel:';
+    case 'sms':
+      return 'sms:';
+    case 'text':
+    case 'url':
+    default:
+      return '';
+  }
+}
 
 const Location = ({ country, items }: LocationProps) => {
   return (
@@ -78,16 +70,18 @@ const Location = ({ country, items }: LocationProps) => {
         </div>
         <div className="flex flex-col gap-4">
           {items.map((item) => (
-            <div key={item.title}>
-              <p className='font-title font-extrabold text-[24px] leading-[53px] uppercase'>{item.title}</p>
-              <p className='font-title font-normal text-[#716E6E] text-[18px] leading-[53px] uppercase'>{item.addressLines}</p>
-              <p>
-                {item.infor.map((infor) =>
-                  <a href={infor.value} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21]">
-                    <span className='font-title font-normal text-[#716E6E] text-[10px] leading-[53px]'>{infor.name}</span>
+            <div key={item.address_lines}>
+              <p className='font-title font-extrabold text-[24px] leading-[53px] uppercase'>{item.name}</p>
+              <p className='font-title font-normal text-[#716E6E] text-[18px] leading-[53px] uppercase'>{item.address_lines}</p>
+              <div className='gap-2 flex flex-wrap'>
+                {/* <p> */}
+                {item.options.map((option) =>
+                  <a target={option.type === 'url' ? '_blank' : '_self'} href={`${mapTypeToLink(option.type)}${option.value}`} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21] flex items-center">
+                    <span className='font-title font-normal text-[#716E6E] text-[10px]'>{option.name}</span>
                   </a>
                 )}
-              </p>
+                {/* </p> */}
+              </div>
             </div>
           ))}
         </div>
@@ -97,7 +91,8 @@ const Location = ({ country, items }: LocationProps) => {
 };
 
 export default function IndexRoute() {
-
+  const { locations } = useLoaderData<typeof loader>();
+  console.log(locations);
   return (
     <Container className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-12">
       <div className="flex flex-col gap-2 xl:gap-4">
@@ -107,8 +102,8 @@ export default function IndexRoute() {
           Please check with each store on stock availability before your visit.</p>
       </div>
       <div className="flex flex-col gap-6 xl:gap-12">
-        {locations.map((location) => (
-          <Location key={location.country} country={location.country} items={location.items} />
+        {locations && locations.map((location) => (
+          <Location key={location.id} country={location.country} items={location.items} />
         ))}
 
       </div>

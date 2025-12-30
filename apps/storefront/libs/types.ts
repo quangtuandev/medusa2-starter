@@ -148,3 +148,19 @@ export interface BankAccount {
   display_order: number;
   [key: string]: any;
 }
+export interface Location {
+  id: string;
+  iso_country_code: string;
+  address_lines: string[];
+  items: Array<{
+    address_lines: string;
+    options: Array<{
+      name: string;
+      value: string;
+      type: string;
+    }>;
+  }>;
+  created_at: Date;
+  updated_at: Date;
+  country: string;
+}
