@@ -24,28 +24,7 @@ type LocationProps = {
     }[]
   }[];
 };
-// const types = [
-//   {
-//       value: "phone",
-//       label: "Phone",
-//   },
-//   {
-//       value: "email",
-//       label: "Email",
-//   },
-//   {
-//       value: "sms",
-//       label: "SMS",
-//   },
-//   {
-//       value: "text",
-//       label: "Text",
-//   },
-//   {
-//       value: "url",
-//       label: "URL",
-//   }
-// ]
+
 const mapTypeToLink = (type: string) => {
   switch (type) {
     case 'email':
@@ -63,24 +42,22 @@ const mapTypeToLink = (type: string) => {
 
 const Location = ({ country, items }: LocationProps) => {
   return (
-    <div className='rounded-[76px] shadow-[7px_8px_15px_0px_#F4C5D854] px-[90px] py-[45px]'>
+    <div className='xl:rounded-[76px] rounded-3xl shadow-[7px_8px_15px_0px_#F4C5D854] xl:px-[90px] px-6 xl:py-[45px] py-6'>
       <div className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-0 ">
         <div className="w-full h-full flex">
-          <h3 className="text-[40px] font-extrabold leading-[53px] uppercase font-title">{country}</h3>
+          <h3 className="xl:text-[40px] text-[24px] font-extrabold xl:leading-[53px] leading-[26px] uppercase font-title">{country}</h3>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {items.map((item) => (
-            <div key={item.address_lines}>
-              <p className='font-title font-extrabold text-[24px] leading-[53px] uppercase'>{item.name}</p>
-              <p className='font-title font-normal text-[#716E6E] text-[18px] leading-[53px] uppercase'>{item.address_lines}</p>
+            <div key={item.address_lines} className='flex flex-col gap-2 xl:gap-4'>
+              <p className='font-title font-extrabold xl:text-[24px] text-[18px] xl:leading-[53px] leading-[26px] uppercase'>{item.name}</p>
+              <p className='font-title font-normal text-[#716E6E] xl:text-[18px] text-[14px] xl:leading-[53px] leading-[26px] uppercase'>{item.address_lines}</p>
               <div className='gap-2 flex flex-wrap'>
-                {/* <p> */}
                 {item.options.map((option) =>
                   <a target={option.type === 'url' ? '_blank' : '_self'} href={`${mapTypeToLink(option.type)}${option.value}`} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21] flex items-center">
                     <span className='font-title font-normal text-[#716E6E] text-[10px]'>{option.name}</span>
                   </a>
                 )}
-                {/* </p> */}
               </div>
             </div>
           ))}
@@ -95,9 +72,9 @@ export default function IndexRoute() {
   console.log(locations);
   return (
     <Container className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-12">
-      <div className="flex flex-col gap-2 xl:gap-4">
-        <h1 className="text-4xl font-title font-extrabold xl:text-[110px] leading-normal xl:leading-[114px] tracking-0% text-center">THIS IS OUR</h1>
-        <p className="text-4xl font-centuryBook italic xl:text-[125px] leading-normal xl:leading-[114px] text-center">Stores</p>
+      <div className="flex flex-col gap-4 xl:gap-6">
+        <h1 className="text-3xl font-title font-extrabold xl:text-[110px] leading-normal xl:leading-[114px] tracking-0% text-center">THIS IS OUR</h1>
+        <p className="text-3xl font-centuryBook italic xl:text-[125px] leading-normal xl:leading-[114px] text-center">Stores</p>
         <p className="text-base font-montserrat font-normal text-sm xl:text-[15px] leading-normal xl:leading-[26px] text-center max-w-3xl mx-auto">KIRA fragrances are available at our partner stockists below.
           Please check with each store on stock availability before your visit.</p>
       </div>
