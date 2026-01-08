@@ -42,16 +42,16 @@ const mapTypeToLink = (type: string) => {
 
 const Location = ({ country, items }: LocationProps) => {
   return (
-    <div className='xl:rounded-[76px] rounded-3xl shadow-[7px_8px_15px_0px_#F4C5D854] xl:px-[90px] px-6 xl:py-[45px] py-6'>
-      <div className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-0 ">
+    <div className='xl:rounded-[76px] rounded-3xl shadow-lg border border-[#F4C5D854] xl:px-[90px] px-6 xl:py-[45px] py-6'>
+      <div className="flex flex-col gap-6 pb-12 xl:pb-0 ">
         <div className="w-full h-full flex">
-          <h3 className="xl:text-[40px] text-[24px] font-extrabold xl:leading-[53px] leading-[26px] uppercase font-title">{country}</h3>
+          <h3 className="xl:text-[40px] text-[24px] font-extrabold uppercase font-title">{country}</h3>
         </div>
         <div className="flex flex-col gap-6">
           {items.map((item) => (
             <div key={item.address_lines} className='flex flex-col gap-2 xl:gap-4'>
-              <p className='font-title font-extrabold xl:text-[24px] text-[18px] xl:leading-[53px] leading-[26px] uppercase'>{item.name}</p>
-              <p className='font-title font-normal text-[#716E6E] xl:text-[18px] text-[14px] xl:leading-[53px] leading-[26px] uppercase'>{item.address_lines}</p>
+              <p className='font-title font-extrabold xl:text-[24px] text-[18px] uppercase'>{item.name}</p>
+              <p className='font-title font-normal text-[#716E6E] xl:text-[18px] text-[14px] uppercase'>{item.address_lines}</p>
               <div className='gap-2 flex flex-wrap'>
                 {item.options.map((option) =>
                   <a target={option.type === 'url' ? '_blank' : '_self'} href={`${mapTypeToLink(option.type)}${option.value}`} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21] flex items-center">
