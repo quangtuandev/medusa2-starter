@@ -1,1 +1,0 @@
-import{j as r}from"./chunk-OIYGIGL5-bjIwwHmk.js";import{B as o}from"./Button-Dvm2JZYC.js";import{u as s}from"./index-QeRkCLWE.js";const a=({children:i,...m})=>{const{formState:t}=s();return r.jsx(o,{variant:"primary",type:"submit",disabled:t.isSubmitting,...m,children:i||(t.isSubmitting?"Submitting...":"Submit")})};export{a as S};
