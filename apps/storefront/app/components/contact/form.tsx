@@ -153,7 +153,7 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
                 <p className="mx-auto mb-6 xl:mb-0 font-title font-light text-base xl:text-[20px] leading-normal xl:leading-[30px] tracking-normal text-center text-primary xl:absolute bottom-6 xl:bottom-[150px] right-0 w-full xl:w-1/2 max-w-[720px] ml-auto xl:mr-[170px]">
                     {t('contact.description')}
                     <br />
-                    {t('contact.ourEmail')} <a href="mailto:bykiraperfume@gmail.com" className="text-primary underline">bykiraperfume@gmail.com</a>
+                    {t('contact.ourEmail')} <a href="mailto:hello.kira@aryak.vn" className="text-primary underline">hello.kira@aryak.vn</a>
                 </p>
             </Container>
         </section>
