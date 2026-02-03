@@ -61,7 +61,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
       region,
       siteDetails: {
         store: {
-          name: 'BARRIO',
+          name: 'KIRAPARFUMS',
         },
         settings: siteSettings,
         headerNavigationItems,
