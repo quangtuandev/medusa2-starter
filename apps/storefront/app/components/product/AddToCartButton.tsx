@@ -81,10 +81,10 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
         <PlusIcon className="size-1" />
       </i>
       <span className={clsx(
-        "text-nowrap btn-add text-xs lg:text-base hidden",
+        "text-nowrap btn-add text-xs lg:text-base",
         {
           "text-center": isFullText,
-          "opacity-0 w-0 h-0 transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto group-hover/product-card:block": !isFullText,
+          "opacity-0 w-0 h-0 hidden transition-all duration-300 group-hover/product-card:opacity-100 group-hover/product-card:w-auto group-hover/product-card:h-auto group-hover/product-card:block": !isFullText,
         }
       )}> {t('common.addToCart')}</span>
     </button>

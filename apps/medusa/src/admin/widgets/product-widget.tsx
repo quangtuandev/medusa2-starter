@@ -30,7 +30,7 @@ const ProductMetadataWidget = ({ data }) => {
         toast.success("Product metadata saved successfully");
     };
     return (
-        <Container className="bg-white p-4 rounded-lg space-y-6">
+        <Container className="bg-ui-bg-base p-4 rounded-lg space-y-6">
             <QuillEditor
                 id="description"
                 label="Description"

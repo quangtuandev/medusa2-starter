@@ -18,7 +18,6 @@ export const headerNavigationItems: NavigationCollection = [
     location: NavigationItemLocation.header,
     new_tab: false,
   },
-
   {
     id: 3,
     label: 'navigation.store', // i18n key

@@ -93,16 +93,15 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   return (
     <div className="space-y-2">
       {label && (
-        <Label htmlFor={editorId} className="block text-sm font-medium text-gray-700">
+        <Label htmlFor={editorId} className="block text-sm font-medium">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </Label>
       )}
 
       <div
-        className={`border rounded-lg overflow-hidden ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
+        className={`border rounded-lg overflow-hidden ${error ? 'border-red-500' : 'border-gray-300'
+          }`}
       >
         <ReactQuill
           id={editorId}

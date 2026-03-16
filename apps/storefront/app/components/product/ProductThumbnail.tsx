@@ -17,7 +17,8 @@ export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
 export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className, isTransitioning, classNameImage, isRemoveStyleDefault = false, forcedZoom, variant, ...props }) => {
   const hoverImage = product.images && product.images[1] && product.images[1].url;
   const thumbnailImage = useMemo(() => {
-    return variant?.thumbnail || (product.images && product.images[0] && product.images[0].url) || product.thumbnail;
+    return variant?.thumbnail || (product.images && product.images[0] && product.images[0].url)
+      || product.thumbnail || product.variants?.[0]?.thumbnail || '';
   }, [variant?.thumbnail]);
   return (
     <figure
