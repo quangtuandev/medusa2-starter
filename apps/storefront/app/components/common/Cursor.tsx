@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+import { useIsMobile } from '@app/hooks/useIsMobile';
 
 const cursorImg = '/assets/images/cursor.svg';
 
@@ -6,25 +7,7 @@ const Cursor = () => {
     const cursorRef = useRef<HTMLDivElement>(null);
     const shadowRef = useRef<HTMLDivElement>(null);
     const rippleRef = useRef<HTMLDivElement>(null);
-    const [isMobile, setIsMobile] = useState(false);
-
-    // Check if device is mobile
-    useEffect(() => {
-        const checkMobile = () => {
-            const isMobileDevice =
-                window.innerWidth <= 768 || // Tablet and below
-                'ontouchstart' in window || // Touch device
-                navigator.maxTouchPoints > 0 || // Touch device
-                /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            setIsMobile(isMobileDevice);
-        };
-
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+    const isMobile = useIsMobile();
 
     // Track mouse position and animation
     const mousePosition = useRef({ x: 0, y: 0 });

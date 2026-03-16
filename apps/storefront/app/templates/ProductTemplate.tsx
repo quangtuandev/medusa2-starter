@@ -481,7 +481,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                         {!!product.description && (
                           <div className="mt-4">
                             <div className="whitespace-pre-wrap text-base text-primary-800">
-                              {description ? description : product.description}
+                              <div dangerouslySetInnerHTML={{ __html: description ? description : product.description }} />
                             </div>
                           </div>
                         )}

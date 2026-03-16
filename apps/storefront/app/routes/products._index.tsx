@@ -9,6 +9,7 @@ import { ThirstyCollection } from "@app/components/collection/items/thirsty-coll
 import { IcyCollection } from "@app/components/collection/items/icy-collection";
 import { ComingCollection } from "@app/components/collection/items/coming-collection";
 import { useI18n } from "@app/hooks/useI18n";
+import { useIsMobile } from "@app/hooks/useIsMobile";
 
 export default function HalfFanSlider() {
   const { t } = useI18n();
@@ -21,7 +22,7 @@ export default function HalfFanSlider() {
   ], [t]);
 
   const [cards, setCards] = useState(initialCards);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   // Update cards when language changes
   useEffect(() => {
@@ -33,23 +34,6 @@ export default function HalfFanSlider() {
     ];
     setCards(updatedCards);
   }, [t]);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const isMobileDevice =
-        window.innerWidth <= 768 || // Tablet and below
-        'ontouchstart' in window || // Touch device
-        navigator.maxTouchPoints > 0 || // Touch device
-        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-      setIsMobile(isMobileDevice);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const next = () => {
     // Move to next card (move first card to the end)

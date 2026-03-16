@@ -1,7 +1,7 @@
 import { CartDrawer } from "@app/components/cart/CartDrawer";
 import clsx from "clsx";
 import type { FC, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMatches } from "react-router";
 import { Footer } from "./footer/Footer";
 import { Header } from "./header/Header";
@@ -11,6 +11,7 @@ import { useCart } from "@app/hooks/useCart";
 import { MainMenu } from "../common/menu/Main";
 import { MenuToggle } from "../common/MenuToggle/MenuToggle";
 import { HeaderSideNav } from "./header/HeaderSideNav";
+import { useIsMobile } from "@app/hooks/useIsMobile";
 export interface PageProps {
   className?: string;
   children: ReactNode;
@@ -28,19 +29,7 @@ export const Page: FC<PageProps> = ({ className, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const isInjectMenu = injectMenuPaths.includes(currentMatch?.pathname || "");
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => {
-      const isMobileDevice = window.innerWidth <= 768 || // Tablet and below
-        "ontouchstart" in window || // Touch device
-        navigator.maxTouchPoints > 0 || // Touch device
-        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobile(isMobileDevice);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <div

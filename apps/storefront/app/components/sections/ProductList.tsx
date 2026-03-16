@@ -8,6 +8,7 @@ import { StoreCollection, StoreProduct, StoreProductCategory } from '@medusajs/t
 import clsx from 'clsx';
 import { type FC, HTMLAttributes, memo, useEffect, useState } from 'react';
 import { useFetcher, useParams } from 'react-router';
+import { useIsMobile } from '@app/hooks/useIsMobile';
 
 export interface ProductListProps<TElement extends HTMLElement = HTMLDivElement> extends HTMLAttributes<TElement> {
   heading?: string;
@@ -111,22 +112,7 @@ const ProductListBase: FC<{ isMobile: boolean }> = ({ isMobile }) => {
 };
 
 export const ProductList: FC<ProductListProps> = memo(({ className, heading, text, actions, ...props }) => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => {
-      const isMobileDevice =
-        window.innerWidth <= 768 || // Tablet and below
-        'ontouchstart' in window || // Touch device
-        navigator.maxTouchPoints > 0 || // Touch device
-        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobile(isMobileDevice);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
   return (
     <section className={clsx(`mkt-section relative overflow-x-hidden`, className)} {...props}>
       <div className="mkt-section__inner relative z-[2]">
