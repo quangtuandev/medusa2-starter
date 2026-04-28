@@ -10,6 +10,11 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 export const CollectionMenuList = ({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) => {
     const collections = [
         {
+            id: '0',
+            title: 'Savour collection',
+            handle: 'savour',
+        },
+        {
             id: '1',
             title: 'Thirsty collection',
             handle: 'thirsty',

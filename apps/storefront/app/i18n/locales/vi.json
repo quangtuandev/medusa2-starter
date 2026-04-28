@@ -100,7 +100,8 @@
     "ingredients": "THÀNH PHẦN",
     "precautionsOfUse": "LƯU Ý KHI SỬ DỤNG",
     "applicationTips": "MẸO SỬ DỤNG",
-    "addToCart": "Thêm vào giỏ"
+    "addToCart": "Thêm vào giỏ",
+    "unavailable": "Chưa có giá"
   },
   "cart": {
     "title": "Giỏ hàng",

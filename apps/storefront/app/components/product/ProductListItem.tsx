@@ -40,12 +40,14 @@ export const ProductListItem: FC<ProductListItemProps> = ({
 
   // Check if product requires size selection
   const requiresSize = size && size.values && size.values.length > 0;
-  const canAddToCart = !requiresSize || selectedSize;
 
   const variant = product.variants?.find((variant) => {
     return Object.entries(selectedOptions).every(([optionId, value]) => variant.options?.some((v) => v.option_id === optionId && v.value === value));
   });
   if (!variant) return null;
+
+  const hasNoPrice = !variant?.calculated_price?.calculated_amount;
+  const canAddToCart = (!requiresSize || selectedSize) && !hasNoPrice;
 
   return (
     <article
@@ -83,12 +85,14 @@ export const ProductListItem: FC<ProductListItemProps> = ({
               </span>
             ))}
           </div>
-          <AddToCartButton
-            product={product}
-            selectedOptions={selectedOptions}
-            disabled={!canAddToCart}
-            variant="primary"
-          />
+          {!hasNoPrice && (
+            <AddToCartButton
+              product={product}
+              selectedOptions={selectedOptions}
+              disabled={!canAddToCart}
+              variant="primary"
+            />
+          )}
         </div>
         <p className="mt-1 lg:text-lg text-[10px] font-extrabold font-title leading-none tracking-normal">
           <ProductPrice product={product} variant={variant} currencyCode={region.currency_code} />

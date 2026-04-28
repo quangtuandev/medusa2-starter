@@ -100,7 +100,8 @@
     "ingredients": "INGREDIENTS",
     "precautionsOfUse": "PRECAUTIONS OF USE",
     "applicationTips": "APPLICATION TIPS",
-    "addToCart": "Add to cart"
+    "addToCart": "Add to cart",
+    "unavailable": "Unavailable"
   },
   "cart": {
     "title": "Shopping Cart",

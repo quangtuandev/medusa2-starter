@@ -51,7 +51,8 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
 export const ProductTemplate = ({ product }: ProductTemplateProps) => {
   if (product.variants) {
     product.variants = product.variants.sort(
-      (a: any, b: any) => b.calculated_price.calculated_amount - a.calculated_price.calculated_amount
+      (a: any, b: any) =>
+        (b.calculated_price?.calculated_amount ?? 0) - (a.calculated_price?.calculated_amount ?? 0)
     );
   }
   const { currentLanguage, t } = useI18n();
@@ -294,6 +295,8 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
   }, [defaultValues.options]);
 
   const soldOut = variantIsSoldOut(selectedVariant) || productSoldOut;
+  const hasNoPrice = !selectedVariant?.calculated_price?.calculated_amount;
+  const isUnavailable = soldOut || hasNoPrice;
 
   // Use useCallback for the form submission handler
   const handleAddToCart = useCallback(() => {
@@ -391,9 +394,9 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-6">
-                      {!soldOut && <QuantitySelector key={product.id} variant={selectedVariant} onChange={handleChange} />}
+                      {!isUnavailable && <QuantitySelector key={product.id} variant={selectedVariant} onChange={handleChange} />}
                       <div className="flex-1">
-                        {!soldOut ? (
+                        {!isUnavailable ? (
                           <SubmitButton
                             variant="ghost"
                             size='image'
@@ -406,7 +409,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                             disabled
                             className="pointer-events-none !h-12 w-full !text-base !font-bold opacity-50"
                           >
-                            {t('product.soldOut')}
+                            {soldOut ? t('product.soldOut') : t('product.unavailable') || 'Unavailable'}
                           </SubmitButton>
                         )}
                       </div>
@@ -419,7 +422,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                     <div className="px-0 sm:px-6 md:p-10 md:pt-0">
                       <div className="flex items-center gap-4 py-2">
                         <div className="flex-1">
-                          {!soldOut ? (
+                          {!isUnavailable ? (
                             <Button
                               variant="primary"
                               onClick={handleBuyNow}
@@ -433,7 +436,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                               disabled
                               className="pointer-events-none !h-12 !text-base !font-bold opacity-50 bg-gray-300 text-gray-500"
                             >
-                              {t('product.soldOut')}
+                              {soldOut ? t('product.soldOut') : t('product.unavailable') || 'Unavailable'}
                             </Button>
                           )}
                         </div>
