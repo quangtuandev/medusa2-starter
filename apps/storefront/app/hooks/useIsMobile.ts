@@ -13,9 +13,7 @@ export function useIsMobile(): boolean {
       const isMobileDevice =
         window.innerWidth <= 768 || // Tablet and below
         'ontouchstart' in window || // Touch device
-        navigator.maxTouchPoints > 0 || // Touch device
-        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
+        navigator.maxTouchPoints > 0 // Touch device
       setIsMobile(isMobileDevice);
     };
 

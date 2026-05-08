@@ -1,0 +1,1 @@
+import{r as t}from"./chunk-OIYGIGL5-Bs1wg85I.js";function r(){const[i,o]=t.useState(!1);return t.useEffect(()=>{const e=()=>{const n=window.innerWidth<=768||"ontouchstart"in window||navigator.maxTouchPoints>0;o(n)};return e(),window.addEventListener("resize",e),()=>window.removeEventListener("resize",e)},[]),i}export{r as u};
