@@ -1,4 +1,6 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { FeatureFlag } from "@medusajs/framework/utils"
+import { runtimeFeatureFlags } from "../../admin/feature-flags/runtime-store"
 import { z } from "zod"
 
 const CreateReviewSchema = z.object({
@@ -15,6 +17,12 @@ export const POST = async (
   req: MedusaRequest<CreateReviewType>,
   res: MedusaResponse
 ) => {
+  const reviewsEnabled = runtimeFeatureFlags.get("customer_reviews") 
+    ?? FeatureFlag.isFeatureEnabled("customer_reviews")
+  if (!reviewsEnabled) {
+    return res.sendStatus(404)
+  }
+
   try {
     // Validate request body
     const validatedData = CreateReviewSchema.parse(req.body)

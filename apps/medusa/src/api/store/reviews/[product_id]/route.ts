@@ -1,7 +1,15 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { FeatureFlag } from "@medusajs/framework/utils"
+import { runtimeFeatureFlags } from "../../../admin/feature-flags/runtime-store"
 
 // GET /store/reviews/:product_id - Get approved reviews for a product
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+  const reviewsEnabled = runtimeFeatureFlags.get("customer_reviews") 
+    ?? FeatureFlag.isFeatureEnabled("customer_reviews")
+  if (!reviewsEnabled) {
+    return res.sendStatus(404)
+  }
+
   try {
     const query = req.scope.resolve("query")
     const { product_id } = req.params

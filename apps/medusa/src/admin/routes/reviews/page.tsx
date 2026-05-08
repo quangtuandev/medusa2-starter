@@ -11,6 +11,8 @@ import {
     toast,
     Button,
     FocusModal,
+    Switch,
+    Label,
 } from "@medusajs/ui"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
@@ -37,6 +39,12 @@ type ReviewsResponse = {
     offset: number
 }
 
+type FeatureFlagsResponse = {
+    feature_flags: {
+        customer_reviews: boolean
+    }
+}
+
 const columnHelper = createColumnHelper<Review>()
 
 const ReviewsPage = () => {
@@ -50,6 +58,35 @@ const ReviewsPage = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+
+    // Feature flags
+    const { data: flagsData } = useQuery<FeatureFlagsResponse>({
+        queryFn: () => sdk.client.fetch(`/admin/feature-flags`),
+        queryKey: ["feature-flags"],
+    })
+
+    const toggleReviewsMutation = useMutation({
+        mutationFn: (enabled: boolean) =>
+            sdk.client.fetch(`/admin/feature-flags`, {
+                method: "POST",
+                body: {
+                    feature_flags: { customer_reviews: enabled },
+                },
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["feature-flags"] })
+            toast.success("Settings updated", {
+                description: "Customer reviews setting has been updated",
+            })
+        },
+        onError: (error: any) => {
+            toast.error("Error", {
+                description: error.message || "Failed to update feature flags",
+            })
+        },
+    })
+
+    const reviewsEnabled = flagsData?.feature_flags?.customer_reviews ?? true
 
     const offset = useMemo(() => {
         return pagination.pageIndex * limit
@@ -262,11 +299,24 @@ const ReviewsPage = () => {
             <div className="p-6 border-b">
                 <div className="flex justify-between items-center mb-4">
                     <Heading level="h1">Product Reviews</Heading>
-                    {pendingCount > 0 && (
-                        <Badge color="orange" className="text-sm">
-                            {pendingCount} pending review{pendingCount !== 1 ? "s" : ""}
-                        </Badge>
-                    )}
+                    <div className="flex items-center gap-4">
+                        {pendingCount > 0 && (
+                            <Badge color="orange" className="text-sm">
+                                {pendingCount} pending review{pendingCount !== 1 ? "s" : ""}
+                            </Badge>
+                        )}
+                        <div className="flex items-center gap-2">
+                            <Label htmlFor="reviews-toggle" className="text-sm text-gray-600">
+                                {reviewsEnabled ? "Enabled" : "Disabled"}
+                            </Label>
+                            <Switch
+                                id="reviews-toggle"
+                                checked={reviewsEnabled}
+                                onCheckedChange={(checked) => toggleReviewsMutation.mutate(checked)}
+                                disabled={toggleReviewsMutation.isPending}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex gap-2">

@@ -69,7 +69,6 @@ const Location = ({ country, items }: LocationProps) => {
 
 export default function IndexRoute() {
   const { locations } = useLoaderData<typeof loader>();
-  console.log(locations);
   return (
     <Container className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-12">
       <div className="flex flex-col gap-4 xl:gap-6">
@@ -82,7 +81,6 @@ export default function IndexRoute() {
         {locations && locations.map((location) => (
           <Location key={location.id} country={location.country} items={location.items} />
         ))}
-
       </div>
     </Container>
   );

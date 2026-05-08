@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, Module } from '@medusajs/framework/utils';
 import { initializeContentful, createContentTypes, enableLocales } from './src/modules/contentful/loaders';
+import CustomerReviewsFeatureFlag from './src/feature-flags/customer-reviews';
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
@@ -40,6 +41,9 @@ const workflowEngineModule = IS_TEST
   };
 
 module.exports = defineConfig({
+  featureFlags: {
+    [CustomerReviewsFeatureFlag.key]: true,
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     databaseDriverOptions: {

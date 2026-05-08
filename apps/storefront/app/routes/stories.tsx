@@ -120,7 +120,7 @@ export default function Stories() {
                 <div className="group">
                   <img src={item.image} alt={item.alt} className={clsx(item.className)} />
                   <div className={clsx(
-                    "w-full absolute lg:opacity-0 opacity-100 group-hover:opacity-100 transition-all duration-300 ease-in-out",
+                    "w-full absolute opacity-100 transition-all duration-300 ease-in-out",
                     item.classNameTextWrapper
                   )}>
                     <p className={clsx(

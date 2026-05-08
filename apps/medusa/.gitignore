@@ -33,3 +33,4 @@ demo-values.yaml
 yalc.lock
 
 static/*
+.feature-flags.json

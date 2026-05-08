@@ -10,6 +10,9 @@ export const ProductReviewSection = () => {
 
   if (!data) return null;
 
+  // Check feature flag - hide reviews section if disabled
+  if (!data.featureFlags?.customer_reviews) return null;
+
   const { product, productReviews } = data;
   const [showForm, setShowForm] = useState(false);
 

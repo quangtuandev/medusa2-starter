@@ -55,7 +55,7 @@ export const GET = async (
                 ...location,
                 country: countries.find((country) => country.iso_2 === location.iso_country_code.toLowerCase())?.display_name,
             }
-        })
+        }).sort((a, b) => (a.country ?? '').localeCompare(b.country ?? ''))
         res.status(200).json({
             locations: locationsMapping
         })
