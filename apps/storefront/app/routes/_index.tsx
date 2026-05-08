@@ -154,7 +154,7 @@ export default function IndexRoute() {
           setOpen={setIsOpen}
         />
       )}
-      <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-4 lg:px-11 pt-8 z-[0]">
+      <div className="flex gap-11 justify-between absolute top-0 left-0 w-full px-4 lg:px-11 pt-8 z-[100] lg:z-[0]">
         <p className="font-title font-bold text-6xl lg:text-8xl uppercase">
           <span>{t('home.this')}</span> <br />
           <span className="ml-[8px] lg:ml-[14px]">{t('home.is')}</span>
