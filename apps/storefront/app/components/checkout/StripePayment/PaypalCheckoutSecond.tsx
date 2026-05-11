@@ -75,7 +75,7 @@ export default function PaypalCheckoutSecond({ cart }: { cart: StoreCart }) {
   useEffect(() => {
     const initPayPal = async () => {
       const paypal = await loadScript({
-        "client-id": "AUvtGlVenK_bQoUrek0Nl43oRCDETrBjP2ZlhRQcdBuJp1Pt16gSaitZV3aXAhUFIIQBGY29PqKhncLq",
+        "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID || process.env.PAYPAL_CLIENT_ID || "",
         currency: "USD",
         intent: "capture",
       });

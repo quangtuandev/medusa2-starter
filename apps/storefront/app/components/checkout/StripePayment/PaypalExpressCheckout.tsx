@@ -23,7 +23,7 @@ export default function PaypalExpressCheckout() {
 
   const initialOptions: ReactPayPalScriptOptions = useMemo(
     () => ({
-      clientId: "AUvtGlVenK_bQoUrek0Nl43oRCDETrBjP2ZlhRQcdBuJp1Pt16gSaitZV3aXAhUFIIQBGY29PqKhncLq",
+      clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID || process.env.PAYPAL_CLIENT_ID || "",
       components: "buttons",
       intent: "capture",
       currency: 'USD',

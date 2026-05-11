@@ -10,7 +10,7 @@ interface PaymentProvidersProps {
 }
 
 const base =
-  process.env.PAYPAL_SANDBOX === "true"
+  process.env.PAYPAL_IS_SANDBOX === "true"
     ? "https://api-m.sandbox.paypal.com"
     : "https://api-m.paypal.com";
 
