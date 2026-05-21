@@ -1,0 +1,72 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DELETE = exports.POST = exports.GET = void 0;
+const email_settings_1 = require("../../../../modules/email-settings");
+const zod_1 = require("zod");
+const updateEmailSettingSchema = zod_1.z.object({
+    is_enabled: zod_1.z.boolean().optional(),
+    subject: zod_1.z.string().optional(),
+    body_html: zod_1.z.string().optional(),
+    recipients: zod_1.z.string().optional().nullable(),
+});
+// GET /admin/email-settings/:id
+const GET = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const emailSettingsService = req.scope.resolve(email_settings_1.EMAIL_SETTINGS_MODULE);
+        const setting = await emailSettingsService.retrieveEmailSetting(id);
+        res.status(200).json({ email_setting: setting });
+    }
+    catch (error) {
+        res.status(404).json({
+            message: error.message || "Email setting not found",
+        });
+    }
+};
+exports.GET = GET;
+// POST /admin/email-settings/:id (update)
+const POST = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).json({
+                message: "Email setting ID is required",
+            });
+        }
+        const emailSettingsService = req.scope.resolve(email_settings_1.EMAIL_SETTINGS_MODULE);
+        const validatedData = updateEmailSettingSchema.parse(req.body);
+        const setting = await emailSettingsService.updateEmailSettings({
+            id,
+            ...validatedData,
+        });
+        res.status(200).json({ email_setting: setting });
+    }
+    catch (error) {
+        if (error.name === "ZodError") {
+            return res.status(400).json({
+                message: "Validation error",
+                errors: error.errors,
+            });
+        }
+        res.status(400).json({
+            message: error.message || "Failed to update email setting",
+        });
+    }
+};
+exports.POST = POST;
+// DELETE /admin/email-settings/:id
+const DELETE = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const emailSettingsService = req.scope.resolve(email_settings_1.EMAIL_SETTINGS_MODULE);
+        await emailSettingsService.deleteEmailSettings(id);
+        res.status(200).json({ id, deleted: true });
+    }
+    catch (error) {
+        res.status(400).json({
+            message: error.message || "Failed to delete email setting",
+        });
+    }
+};
+exports.DELETE = DELETE;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicm91dGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi9zcmMvYXBpL2FkbWluL2VtYWlsLXNldHRpbmdzL1tpZF0vcm91dGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBSUEsdUVBQTBFO0FBQzFFLDZCQUF1QjtBQUV2QixNQUFNLHdCQUF3QixHQUFHLE9BQUMsQ0FBQyxNQUFNLENBQUM7SUFDdEMsVUFBVSxFQUFFLE9BQUMsQ0FBQyxPQUFPLEVBQUUsQ0FBQyxRQUFRLEVBQUU7SUFDbEMsT0FBTyxFQUFFLE9BQUMsQ0FBQyxNQUFNLEVBQUUsQ0FBQyxRQUFRLEVBQUU7SUFDOUIsU0FBUyxFQUFFLE9BQUMsQ0FBQyxNQUFNLEVBQUUsQ0FBQyxRQUFRLEVBQUU7SUFDaEMsVUFBVSxFQUFFLE9BQUMsQ0FBQyxNQUFNLEVBQUUsQ0FBQyxRQUFRLEVBQUUsQ0FBQyxRQUFRLEVBQUU7Q0FDL0MsQ0FBQyxDQUFBO0FBSUYsZ0NBQWdDO0FBQ3pCLE1BQU0sR0FBRyxHQUFHLEtBQUssRUFDcEIsR0FBa0IsRUFDbEIsR0FBbUIsRUFDckIsRUFBRTtJQUNBLElBQUksQ0FBQztRQUNELE1BQU0sRUFBRSxFQUFFLEVBQUUsR0FBRyxHQUFHLENBQUMsTUFBTSxDQUFBO1FBQ3pCLE1BQU0sb0JBQW9CLEdBQUcsR0FBRyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsc0NBQXFCLENBQUMsQ0FBQTtRQUNyRSxNQUFNLE9BQU8sR0FBRyxNQUFNLG9CQUFvQixDQUFDLG9CQUFvQixDQUFDLEVBQUUsQ0FBQyxDQUFBO1FBRW5FLEdBQUcsQ0FBQyxNQUFNLENBQUMsR0FBRyxDQUFDLENBQUMsSUFBSSxDQUFDLEVBQUUsYUFBYSxFQUFFLE9BQU8sRUFBRSxDQUFDLENBQUE7SUFDcEQsQ0FBQztJQUFDLE9BQU8sS0FBVSxFQUFFLENBQUM7UUFDbEIsR0FBRyxDQUFDLE1BQU0sQ0FBQyxHQUFHLENBQUMsQ0FBQyxJQUFJLENBQUM7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

@@ -1,1 +1,0 @@
-const o=(n,i=new FormData,c="")=>n==null?i:typeof n=="object"&&!(n instanceof Date)&&!(n instanceof File)?(Object.entries(n).forEach(([e,r])=>{o(r,i,c?n[e]instanceof File?c:`${c}.${e}`:e)}),i):Array.isArray(n)?(n.forEach((e,r)=>{o(e,i,`${c}.${r}`)}),i):(i.append(c,n),i);export{o as c};
