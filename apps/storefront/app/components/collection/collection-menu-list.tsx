@@ -1,35 +1,36 @@
 import clsx from "clsx";
 import { motion } from "motion/react";
 import { Container } from "../common/container";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router";
 import { IconButton } from "../common/buttons/IconButton";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 
+interface CollectionItem {
+    id: string;
+    title: string;
+    handle: string;
+}
 
 export const CollectionMenuList = ({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) => {
-    const collections = [
-        {
-            id: '0',
-            title: 'Savour collection',
-            handle: 'savour',
-        },
-        {
-            id: '1',
-            title: 'Thirsty collection',
-            handle: 'thirsty',
-        },
-        {
-            id: '2',
-            title: 'Icy collection',
-            handle: 'icy',
-        },
-        {
-            id: '3',
+    const rootData = useRootLoaderData();
+
+    const collections = useMemo<CollectionItem[]>(() => {
+        const items: CollectionItem[] = (rootData?.collections || []).map((c: any) => ({
+            id: c.id,
+            title: c.title + ' Collection',
+            handle: c.handle,
+        }));
+        // Push "All of US" at the end
+        items.push({
+            id: 'all',
             title: 'All of US',
             handle: '',
-        },
-    ]
+        });
+        return items;
+    }, [rootData?.collections]);
+
     const collectionMenuListRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

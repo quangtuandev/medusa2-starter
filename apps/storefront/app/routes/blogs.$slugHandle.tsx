@@ -52,8 +52,8 @@ export default function BlogsIndexRoute() {
         {post && (
           <>
             <div className="flex flex-col gap-4">
-              <h1 className="text-[40px] xl:text-[110px] font-bold xl:leading-[114px] tracking-0% text-center">{post.title}</h1>
-              <p className="font-centuryBook italic text-[30px] xl:text-[125px] xl:leading-[114px] text-center">{post.sub_title}</p>
+              <h1 className="text-[40px] xl:text-[90px] font-bold xl:leading-[95px] tracking-0% text-center">{post.title}</h1>
+              <p className="font-centuryBook italic text-[30px] xl:text-[85px] xl:leading-[90px] text-center">{post.sub_title}</p>
               <p className="text-lg font-montserrat font-normal text-sm xl:text-[15px] xl:leading-[26px] text-center max-w-3xl mx-auto">
                 {post.description}
               </p>

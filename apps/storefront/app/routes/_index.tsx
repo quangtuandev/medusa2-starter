@@ -186,11 +186,6 @@ export default function IndexRoute() {
       {activeComponent === 'I' && <I isMobile={isMobile} />}
       {activeComponent === 'R' && <R isMobile={isMobile} />}
       {activeComponent === 'A' && <A isMobile={isMobile} />}
-
-      <div className="flex gap-11 justify-between absolute bottom-4 left-0 w-full px-4 lg:px-11">
-        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">{t('home.est')}</p>
-        <p className="font-title font-medium text-4xl lg:text-[65px] uppercase">{t('home.year')}</p>
-      </div>
     </div>
   );
 }

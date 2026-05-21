@@ -86,6 +86,31 @@ module.exports = defineConfig({
       resolve: "./src/modules/bank-account",
     },
     {
+      resolve: "./src/modules/email-settings",
+    },
+    {
+      resolve: "./src/modules/page",
+    },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/email-notification",
+            id: "nodemailer",
+            options: {
+              channels: ["email"],
+              host: process.env.SMTP_HOST || "smtp.gmail.com",
+              port: Number(process.env.SMTP_PORT) || 587,
+              auth_user: process.env.SMTP_USER || "",
+              auth_pass: process.env.SMTP_PASS || "",
+              from: process.env.SMTP_FROM || process.env.SMTP_USER || "",
+            },
+          },
+        ],
+      },
+    },
+    {
       resolve: "@medusajs/medusa/file",
       options: {
         providers: [

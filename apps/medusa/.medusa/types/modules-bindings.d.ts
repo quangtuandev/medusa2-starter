@@ -27,6 +27,8 @@ import type Location from '../../src/modules/location'
 import type BlogModuleService from '../../src/modules/blog'
 import type ProductReviewsModuleService from '../../src/modules/product-reviews'
 import type BankAccount from '../../src/modules/bank-account'
+import type EmailSettings from '../../src/modules/email-settings'
+import type PageModuleService from '../../src/modules/page'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
@@ -58,6 +60,8 @@ declare module '@medusajs/framework/types' {
     'location': InstanceType<(typeof Location)['service']>,
     'blogModuleService': InstanceType<(typeof BlogModuleService)['service']>,
     'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>,
-    'bankAccount': InstanceType<(typeof BankAccount)['service']>
+    'bankAccount': InstanceType<(typeof BankAccount)['service']>,
+    'emailSettings': InstanceType<(typeof EmailSettings)['service']>,
+    'pageModuleService': InstanceType<(typeof PageModuleService)['service']>
   }
 }

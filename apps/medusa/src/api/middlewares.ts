@@ -4,10 +4,12 @@ import {
     validateAndTransformQuery,
 } from "@medusajs/framework/http"
 import { PostAdminCreatePost } from "./admin/blog/posts/validators"
+import { PostAdminCreatePage } from "./admin/pages/validators"
 import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 import { z } from "zod"
 
 export const GetPostsSchema = createFindParams()
+export const GetPagesSchema = createFindParams()
 
 // Contentful validation schemas
 const SyncProductSchema = z.object({
@@ -36,6 +38,23 @@ export default defineMiddlewares({
                 validateAndTransformQuery(
                     GetPostsSchema,
                     { isList: true, defaults: ["id", "title", "content", "slug", "thumbnail", "published"] }
+                ),
+            ],
+        },
+        {
+            matcher: "/admin/pages",
+            method: "POST",
+            middlewares: [
+                validateAndTransformBody(PostAdminCreatePage),
+            ],
+        },
+        {
+            matcher: "/admin/pages",
+            method: "GET",
+            middlewares: [
+                validateAndTransformQuery(
+                    GetPagesSchema,
+                    { isList: true, defaults: ["id", "title", "slug", "content", "language", "meta_title", "meta_description", "published"] }
                 ),
             ],
         },

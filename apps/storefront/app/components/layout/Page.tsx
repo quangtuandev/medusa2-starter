@@ -18,7 +18,7 @@ export interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ className, children }) => {
-  const hiddenHeaderPaths = ["/", "/pick-a-card"];
+  const hiddenHeaderPaths = ["/", "/pick-a-card", "/store"];
   const hiddenFooterPaths = ["/", "/pick-a-card", "/stories", "/products"];
   const injectMenuPaths = ["/pick-a-card", "/stories"];
   const matches = useMatches();

@@ -32,7 +32,7 @@ export const SocialIcons: FC<{ siteSettings?: SiteSettings }> = ({ siteSettings 
         <IconButton
           key={url}
           as={(props) => <a href={url} rel="noopener noreferrer" target="_blank" {...props} />}
-          className="text-white hover:text-black"
+          className="text-white hover:text-black hover:bg-transparent hover:border-transparent !hover:text-white"
           iconProps={{ fill: '#FFFFFF80', width: '24' }}
           icon={icon}
         />

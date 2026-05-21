@@ -1,13 +1,16 @@
 import type { SiteDetailsRootData } from '@libs/types';
 
-import { footerNavigationItems, headerNavigationItems } from '@libs/config/site/navigation-items';
+import { headerNavigationItems } from '@libs/config/site/navigation-items';
 import { siteSettings } from '@libs/config/site/site-settings';
+import { NavigationItemLocation } from '@libs/types';
+import { listPublishedPages } from '@libs/util/server/pages.server';
 import type { HttpTypes } from '@medusajs/types';
 import { type LoaderFunctionArgs, data as remixData } from 'react-router';
 import { RemixLoaderResponse } from 'types/remix';
 import { config } from './config.server';
-import { getSelectedRegionId, setSelectedRegionId } from './cookies.server';
+import { getCookie, getSelectedRegionId, setSelectedRegionId } from './cookies.server';
 import { enrichLineItems, retrieveCart } from './data/cart.server';
+import { fetchCollections } from './data/collections.server';
 import { getCustomer } from './data/customer.server';
 import { getSelectedRegion, listRegions } from './data/regions.server';
 import { fetchProducts } from './products.server';
@@ -19,11 +22,15 @@ const fetchHasProducts = async (request: Request) => {
 export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
   const region = await getSelectedRegion(request.headers);
 
-  const [cart, regions, customer, hasPublishedProducts] = await Promise.all([
+  const language = await getCookie(request.headers, 'lng') || 'en';
+
+  const [cart, regions, customer, hasPublishedProducts, publishedPages, collectionsData] = await Promise.all([
     retrieveCart(request),
     listRegions(),
     getCustomer(request),
     fetchHasProducts(request),
+    listPublishedPages(language),
+    fetchCollections(),
   ]);
 
   const headers = new Headers();
@@ -65,8 +72,28 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
         },
         settings: siteSettings,
         headerNavigationItems,
-        footerNavigationItems,
+        footerNavigationItems: [
+          // Static "About Us" — always first
+          {
+            id: 1,
+            label: 'navigation.aboutUs',
+            url: '/stories',
+            location: NavigationItemLocation.footer,
+            sort_order: 0,
+            new_tab: false,
+          },
+          // Dynamic pages from CMS
+          ...publishedPages.map((page, index) => ({
+            id: 100 + index,
+            label: page.title,
+            url: `/pages/${page.slug}`,
+            new_tab: false,
+            location: NavigationItemLocation.footer,
+            sort_order: index + 1,
+          })),
+        ],
       } as SiteDetailsRootData,
+      collections: collectionsData?.collections || [],
       cart: cart,
     },
     { headers },

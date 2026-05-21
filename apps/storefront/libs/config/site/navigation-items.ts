@@ -56,7 +56,7 @@ export const footerNavigationItems: NavigationCollection = [
   {
     id: 2,
     label: 'navigation.faqs', // i18n key
-    url: '/faqs',
+    url: '/pages/faqs',
     location: NavigationItemLocation.footer,
     sort_order: 1,
     new_tab: false,
@@ -64,7 +64,7 @@ export const footerNavigationItems: NavigationCollection = [
   {
     id: 3,
     label: 'navigation.documentation', // i18n key
-    url: '/docs',
+    url: '/pages/docs',
     location: NavigationItemLocation.footer,
     sort_order: 1,
     new_tab: false,
@@ -72,7 +72,7 @@ export const footerNavigationItems: NavigationCollection = [
   {
     id: 4,
     label: 'navigation.termsOfService', // i18n key
-    url: '/terms-of-service',
+    url: '/pages/terms-of-service',
     location: NavigationItemLocation.footer,
     sort_order: 1,
     new_tab: false,

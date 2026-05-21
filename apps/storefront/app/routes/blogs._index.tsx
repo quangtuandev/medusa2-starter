@@ -54,7 +54,7 @@ export default function BlogsIndexRoute() {
               <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
             </div>
             <div className="w-full xl:w-[30%] flex flex-col gap-2 xl:gap-6 items-start justify-center">
-              <h3 className="font-alexandria font-extrabold text-2xl xl:text-[49.62px] leading-normal xl:leading-[54.27px] tracking-0%">{post.title}</h3>
+              <h3 className="font-alexandria font-extrabold text-2xl xl:text-[30px] leading-normal xl:leading-[35px] tracking-0%">{post.title}</h3>
               <div dangerouslySetInnerHTML={{ __html: post.description }}></div>
               <Link
                 to={`/blogs/${post.slug}`}
