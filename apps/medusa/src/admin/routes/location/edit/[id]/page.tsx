@@ -87,18 +87,31 @@ const EditLocationPage = () => {
         if (locationData?.location) {
             const loc = locationData.location
             setFormData({
-                iso_country_code: loc.iso_country_code || "",
+                // iso_2 from region module is lowercase, but stored data may be uppercase
+                iso_country_code: (loc.iso_country_code || "").toLowerCase(),
                 name: loc.name || "",
                 address_lines: loc.address_lines || "",
             })
 
-            // Handle options — could be an array or an old-format object
+            // Handle options — could be an array, an old-format object, or empty
             if (Array.isArray(loc.options) && loc.options.length > 0) {
                 setOptions(loc.options.map((opt: any) => ({
                     type: opt.type || "",
                     name: opt.name || "",
                     value: opt.value || "",
                 })))
+            } else if (loc.options && typeof loc.options === 'object' && !Array.isArray(loc.options)) {
+                // Old format: plain object {key: value}
+                const entries = Object.entries(loc.options)
+                if (entries.length > 0) {
+                    setOptions(entries.map(([key, val]) => ({
+                        type: "text",
+                        name: key,
+                        value: String(val),
+                    })))
+                } else {
+                    setOptions([{ name: "", value: "", type: "" }])
+                }
             } else {
                 setOptions([{ name: "", value: "", type: "" }])
             }
