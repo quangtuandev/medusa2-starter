@@ -29,6 +29,7 @@ import type ProductReviewsModuleService from '../../src/modules/product-reviews'
 import type BankAccount from '../../src/modules/bank-account'
 import type EmailSettings from '../../src/modules/email-settings'
 import type PageModuleService from '../../src/modules/page'
+import type ProductSliderModuleService from '../../src/modules/product-slider'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
@@ -62,6 +63,7 @@ declare module '@medusajs/framework/types' {
     'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>,
     'bankAccount': InstanceType<(typeof BankAccount)['service']>,
     'emailSettings': InstanceType<(typeof EmailSettings)['service']>,
-    'pageModuleService': InstanceType<(typeof PageModuleService)['service']>
+    'pageModuleService': InstanceType<(typeof PageModuleService)['service']>,
+    'productSliderModuleService': InstanceType<(typeof ProductSliderModuleService)['service']>
   }
 }

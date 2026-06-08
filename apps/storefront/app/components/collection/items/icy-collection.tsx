@@ -113,7 +113,7 @@ export const IcyCollection = ({ className, isActive }: { className?: string, isA
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
-            className={clsx("collection-item  flex overflow-hidden rounded-[30px] shadow-[1px_4px_10px_0px_rgba(83,39,39,0.39)] shadow-[3px_18px_18px_0px_rgba(83,39,39,0.34)] shadow-[6px_40px_24px_0px_rgba(83,39,39,0.20)] shadow-[12px_70px_28px_0px_rgba(83,39,39,0.06)] shadow-[18px_110px_31px_0px_rgba(83,39,39,0.01)] border-8 border-white ", className)} to="/collections">
+            className={clsx("collection-item flex overflow-hidden w-full h-full", className)} to="/collections">
             <img src="/assets/images/home/icy-collection.gif" className="scale-110 object-cover icymain-image" alt="Icy Collection" />
             <img src="/assets/images/home/icy-collection.webp" className="scale-110 object-cover icy-second-image opacity-0" alt="Icy Collection Text" />
             <div ref={hoverActiveRef}>

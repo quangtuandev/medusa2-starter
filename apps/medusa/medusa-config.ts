@@ -92,6 +92,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/page",
     },
     {
+      resolve: "./src/modules/product-slider",
+    },
+    {
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [
