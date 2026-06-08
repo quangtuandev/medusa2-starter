@@ -28,29 +28,40 @@ export const GET = async (
             ],
         })
 
-        const result = Object.values(
-            locations.reduce((acc, cur) => {
-                const key = cur.iso_country_code;
+        // Group by country, then by business name within each country
+        const byCountry: Record<string, any> = {}
 
-                if (!acc[key]) {
-                    acc[key] = {
-                        id: cur.id,
-                        iso_country_code: key,
-                        items: []
-                    };
+        for (const cur of locations) {
+            const countryKey = cur.iso_country_code
+            if (!byCountry[countryKey]) {
+                byCountry[countryKey] = {
+                    id: cur.id,
+                    iso_country_code: countryKey,
+                    items: {},
                 }
+            }
 
-                acc[key].items.push({
+            const nameKey = cur.name || ''
+            if (!byCountry[countryKey].items[nameKey]) {
+                byCountry[countryKey].items[nameKey] = {
                     name: cur.name,
-                    address_lines: cur.address_lines,
-                    options: cur.options
-                });
+                    branches: [],
+                }
+            }
 
-                return acc;
-            }, {})
-        );
+            byCountry[countryKey].items[nameKey].branches.push({
+                address_lines: cur.address_lines,
+                options: cur.options || [],
+            })
+        }
 
-        const locationsMapping = result.map((location) => {
+        // Convert the nested objects to arrays
+        const result = Object.values(byCountry).map((group: any) => ({
+            ...group,
+            items: Object.values(group.items),
+        }))
+
+        const locationsMapping = result.map((location: any) => {
             return {
                 ...location,
                 country: countries.find((country) => country.iso_2 === location.iso_country_code.toLowerCase())?.display_name,

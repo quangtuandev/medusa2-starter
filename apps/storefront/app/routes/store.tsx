@@ -11,18 +11,24 @@ export const loader = async () => {
 
 export const meta: MetaFunction<typeof loader> = getMergedPageMeta;
 
+type BranchProps = {
+  address_lines: string;
+  options: {
+    name: string;
+    value: string;
+    type: string;
+  }[];
+};
+
+type LocationItemProps = {
+  name: string;
+  branches: BranchProps[];
+};
+
 type LocationProps = {
   iso_country_code: string;
   country: string;
-  items: {
-    address_lines: string;
-    name: string;
-    options: {
-      name: string;
-      value: string;
-      type: string;
-    }[]
-  }[];
+  items: LocationItemProps[];
 };
 
 const mapTypeToLink = (type: string) => {
@@ -47,17 +53,25 @@ const Location = ({ country, items }: LocationProps) => {
         <div className="w-full h-full flex">
           <h3 className="xl:text-[40px] text-[24px] font-extrabold uppercase font-title">{country}</h3>
         </div>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           {items.map((item) => (
-            <div key={item.address_lines} className='flex flex-col gap-2 xl:gap-4'>
+            <div key={item.name} className='flex flex-col gap-4'>
               <p className='font-title font-extrabold xl:text-[24px] text-[18px] uppercase'>{item.name}</p>
-              <p className='font-title font-normal text-[#716E6E] xl:text-[18px] text-[14px] uppercase'>{item.address_lines}</p>
-              <div className='gap-2 flex flex-wrap'>
-                {item.options.map((option) =>
-                  <a target={option.type === 'url' ? '_blank' : '_self'} href={`${mapTypeToLink(option.type)}${option.value}`} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21] flex items-center">
-                    <span className='font-title font-normal text-[#716E6E] text-[10px]'>{option.name}</span>
-                  </a>
-                )}
+              <div className="flex flex-col gap-4">
+                {item.branches.map((branch, branchIdx) => (
+                  <div key={`${branch.address_lines}-${branchIdx}`} className='flex flex-col gap-2 xl:gap-3 pl-4 border-l-2 border-[#F4C5D854]'>
+                    <p className='font-title font-normal text-[#716E6E] xl:text-[18px] text-[14px] uppercase'>{branch.address_lines}</p>
+                    {branch.options && branch.options.length > 0 && (
+                      <div className='gap-2 flex flex-wrap'>
+                        {branch.options.map((option, optIdx) =>
+                          <a key={`${option.name}-${optIdx}`} target={option.type === 'url' ? '_blank' : '_self'} href={`${mapTypeToLink(option.type)}${option.value}`} className="rounded-[38px] gap-2 py-[6px] px-[20px] bg-[#FCEE21] flex items-center">
+                            <span className='font-title font-normal text-[#716E6E] text-[10px]'>{option.name}</span>
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -70,6 +84,7 @@ const Location = ({ country, items }: LocationProps) => {
 export default function IndexRoute() {
   const { locations } = useLoaderData<typeof loader>();
   return (
+    // <div className="bg-[url('/assets/images/city.png')] bg-no-repeat bg-bottom bg-[length:100%_auto]">
     <Container className="flex flex-col gap-6 xl:gap-12 pb-12 xl:pb-12">
       <div className="flex flex-col gap-4 xl:gap-6">
         <h1 className="text-3xl font-title font-extrabold xl:text-[110px] leading-normal xl:leading-[114px] tracking-0% text-center">THIS IS OUR</h1>
@@ -83,5 +98,6 @@ export default function IndexRoute() {
         ))}
       </div>
     </Container>
+    // </div>
   );
 }

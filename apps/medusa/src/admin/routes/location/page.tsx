@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import React, { useMemo, useState, useCallback } from "react"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
-import { MapPin, Plus, Trash } from "@medusajs/icons"
+import { MapPin, PencilSquare, Plus, Trash } from "@medusajs/icons"
 import {
     Heading,
     Container,
@@ -78,6 +78,10 @@ const LocationsPage = () => {
         navigate("/location/create")
     }, [navigate])
 
+    const handleEditLocation = useCallback((id: string) => {
+        navigate(`/location/edit/${id}`)
+    }, [navigate])
+
 
     const handleDeleteLocation = useCallback((id: string) => {
         if (confirm(`Are you sure you want to delete this location? This action cannot be undone.`)) {
@@ -127,6 +131,13 @@ const LocationsPage = () => {
                         <Button
                             size="small"
                             variant="transparent"
+                            onClick={() => handleEditLocation(location.id)}
+                        >
+                            <PencilSquare className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="transparent"
                             onClick={() => handleDeleteLocation(location.id)}
                             disabled={deleteMutation.isPending}
                         >
@@ -136,7 +147,7 @@ const LocationsPage = () => {
                 )
             },
         }),
-    ], [handleDeleteLocation, deleteMutation.isPending])
+    ], [handleEditLocation, handleDeleteLocation, deleteMutation.isPending])
 
     const table = useReactTable({
         columns: columns as ColumnDef<Location>[],

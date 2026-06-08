@@ -4,8 +4,13 @@ import { z } from 'zod'
 
 const updateLocationSchema = z.object({
     iso_country_code: z.string().min(2).max(2).optional(),
+    name: z.string().min(1).optional(),
     address_lines: z.string().min(1).optional(),
-    options: z.record(z.any()).optional(),
+    options: z.array(z.object({
+        name: z.string(),
+        value: z.string(),
+        type: z.string(),
+    })).optional(),
 })
 
 type UpdateLocationInput = z.infer<typeof updateLocationSchema>
