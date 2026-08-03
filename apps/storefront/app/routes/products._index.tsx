@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { LoaderFunctionArgs, useLoaderData, NavLink } from "react-router";
@@ -15,6 +15,7 @@ import { ThirstyCollection } from "@app/components/collection/items/thirsty-coll
 import { SavouringCollection } from "@app/components/collection/items/savouring-collection";
 import { IcyCollection } from "@app/components/collection/items/icy-collection";
 import { ComingCollection } from "@app/components/collection/items/coming-collection";
+import { isOutsideElement } from "./products/active-card-pointer";
 
 export interface SliderCardItem {
   id: string;
@@ -161,6 +162,20 @@ export default function HalfFanSlider() {
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const activeCardRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (activeIndex === null) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (isOutsideElement(activeCardRef.current, event.target)) {
+        setActiveIndex(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [activeIndex]);
 
   // The "effective" active index - either clicked or hovered
   const effectiveIndex = activeIndex ?? hoveredIndex;
@@ -296,6 +311,7 @@ export default function HalfFanSlider() {
           return (
             <motion.div
               key={card.id}
+              ref={isCardActive ? activeCardRef : undefined}
               onClick={() => handleClick(i)}
               className={clsx(
                 "absolute cursor-pointer collection-card-item",
