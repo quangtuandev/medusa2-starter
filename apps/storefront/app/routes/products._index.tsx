@@ -242,10 +242,10 @@ export default function HalfFanSlider() {
     if (isActive) {
       return {
         x: 0, // Put active card exactly at the center!
-        y: -(isMobile ? 30 : 40), // pop up
+        y: -(isMobile ? 30 : 50), // pop up
         rotate: 0,
-        scale: isMobile ? 1.15 : 1.25,
-        zIndex: 50,
+        scale: isMobile ? 1.15 : 1.2,
+        zIndex: 40,
       };
     }
 
@@ -253,7 +253,7 @@ export default function HalfFanSlider() {
       // When there's an active card, push other cards down and scale them down
       return {
         x: baseX,
-        y: baseY + (isMobile ? 30 : 50),
+        y: baseY + (isMobile ? 30 : 0),
         rotate: baseRotate,
         scale: isMobile ? 0.75 : 0.82,
         zIndex: 10 - Math.abs(virtualIndex),
@@ -374,13 +374,11 @@ export default function HalfFanSlider() {
                 />
               </div>
             ) : (
-              displayCard.handle === "all" && (
-                <div className="flex justify-center mb-4">
-                  <svg width="42" height="40" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19.8813 4.1458C21.6774 -1.38207 29.4979 -1.38206 31.294 4.1458L33.2211 10.0769C34.0244 12.5491 36.3281 14.2228 38.9275 14.2228H45.1638C50.9762 14.2228 53.3928 21.6605 48.6905 25.0769L43.6452 28.7425C41.5423 30.2704 40.6623 32.9786 41.4656 35.4508L43.3927 41.3819C45.1888 46.9097 38.8619 51.5065 34.1597 48.0901L29.1144 44.4244C27.0114 42.8966 24.1639 42.8966 22.0609 44.4244L17.0156 48.0901C12.3133 51.5065 5.98646 46.9097 7.78257 41.3819L9.70971 35.4508C10.513 32.9786 9.63301 30.2704 7.53008 28.7425L2.48477 25.0769C-2.21751 21.6605 0.199145 14.2228 6.01149 14.2228H12.2478C14.8472 14.2228 17.1509 12.5491 17.9542 10.0769L19.8813 4.1458Z" fill="#FFE977" />
-                  </svg>
-                </div>
-              )
+              <div className={clsx('flex justify-center mb-4', displayCard.handle === "all" ? 'opacity-100' : 'opacity-100')}>
+                <svg width="42" height="40" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19.8813 4.1458C21.6774 -1.38207 29.4979 -1.38206 31.294 4.1458L33.2211 10.0769C34.0244 12.5491 36.3281 14.2228 38.9275 14.2228H45.1638C50.9762 14.2228 53.3928 21.6605 48.6905 25.0769L43.6452 28.7425C41.5423 30.2704 40.6623 32.9786 41.4656 35.4508L43.3927 41.3819C45.1888 46.9097 38.8619 51.5065 34.1597 48.0901L29.1144 44.4244C27.0114 42.8966 24.1639 42.8966 22.0609 44.4244L17.0156 48.0901C12.3133 51.5065 5.98646 46.9097 7.78257 41.3819L9.70971 35.4508C10.513 32.9786 9.63301 30.2704 7.53008 28.7425L2.48477 25.0769C-2.21751 21.6605 0.199145 14.2228 6.01149 14.2228H12.2478C14.8472 14.2228 17.1509 12.5491 17.9542 10.0769L19.8813 4.1458Z" fill="#FFE977" />
+                </svg>
+              </div>
             )}
 
             <div className="flex items-center justify-center">
@@ -403,38 +401,30 @@ export default function HalfFanSlider() {
                 </div>
               )}
             </div>
-
-            {displayCard.handle !== "coming" && (
-              <p className={clsx(
-                "font-title font-medium text-2xl xl:text-[65px] leading-normal xl:leading-[85px] text-center",
-                {
-                  "text-[#FFE977]": displayCard.handle === "all",
-                  "text-[#A2D4FD]": displayCard.handle !== "all",
-                }
-              )}>
-                {t('products.collection')}
-              </p>
-            )}
-
-            {displayCard.subtitle && (
-              <p className="font-montserrat font-regular text-[15px] leading-normal xl:leading-[26px] text-center text-[#000] max-w-[430px] mt-2 xl:mt-4">
-                {displayCard.subtitle}
-              </p>
-            )}
           </motion.div>
         </AnimatePresence>
 
         {/* Navigation arrows */}
-        <div className="flex items-center gap-6 mt-4 xl:mt-6">
+        <div className="flex items-center gap-6">
           <button
             onClick={prev}
             className="p-2 xl:p-3 bg-yellow-300 rounded-full hover:scale-105 active:scale-95 transition-transform"
           >
             <ChevronLeft size={isMobile ? 18 : 24} />
           </button>
-          <span className="font-title text-lg font-bold select-none min-w-[120px] text-center">
+          {/* <span className="font-title text-lg font-bold select-none min-w-[120px] text-center">
             {initialCards[activeIndex ?? 0]?.title}
-          </span>
+          </span> */}
+
+          <p className={clsx(
+            "font-title font-medium text-2xl xl:text-[65px] leading-normal xl:leading-[85px] text-center",
+            {
+              "text-[#FFE977]": displayCard.handle === "all",
+              "text-[#A2D4FD]": displayCard.handle !== "all",
+            }
+          )}>
+            {displayCard.handle !== "coming" ? t('products.collection') : t('products.coming')}
+          </p>
           <button
             onClick={next}
             className="p-2 xl:p-3 bg-yellow-300 rounded-full hover:scale-105 active:scale-95 transition-transform"
