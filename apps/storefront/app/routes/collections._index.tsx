@@ -8,7 +8,7 @@ import { CollectionsHeading } from "@app/components/sections/CollectionsHeading"
 import { useI18n } from "@app/hooks/useI18n";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { collections } = await fetchCollections();
+  const { collections } = await fetchCollections(request);
 
   if (!collections.length) throw redirect("/products");
 

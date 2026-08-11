@@ -6,6 +6,8 @@ import { withAuthHeaders } from '../auth.server';
 import { getCartId } from '../cookies.server';
 import { getProductsById } from './products.server';
 import { getSelectedRegion } from './regions.server';
+import { getLanguage } from '../cookies.server';
+import { toMedusaLocale } from '../../locale';
 
 export const retrieveCart = withAuthHeaders(async (request, authHeaders) => {
   const cartId = await getCartId(request.headers);
@@ -23,25 +25,28 @@ export const retrieveCart = withAuthHeaders(async (request, authHeaders) => {
 });
 
 export const createCart = withAuthHeaders(async (request, authHeaders, data: HttpTypes.StoreCreateCart) => {
-  return await sdk.store.cart.create({ ...data }, {}, authHeaders);
+  const locale = toMedusaLocale(await getLanguage(request.headers));
+  return await sdk.store.cart.create({ ...data, locale }, {}, authHeaders);
 });
 
 export const getOrCreateCart = withAuthHeaders(async (request, authHeaders) => {
   let cart = await retrieveCart(request);
 
   const region = await getSelectedRegion(request.headers);
+  const locale = toMedusaLocale(await getLanguage(request.headers));
 
   if (!region) {
     throw new Error(`Selected Region not found`);
   }
 
   if (!cart) {
-    const cartResp = await sdk.store.cart.create({ region_id: region.id });
+    const cartResp = await sdk.store.cart.create({ region_id: region.id, locale });
     cart = cartResp.cart;
   }
 
-  if (cart && cart?.region_id !== region.id) {
-    await sdk.store.cart.update(cart.id, { region_id: region.id }, {}, authHeaders);
+  if (cart && (cart.region_id !== region.id || (cart as StoreCart & { locale?: string }).locale !== locale)) {
+    const cartResp = await sdk.store.cart.update(cart.id, { region_id: region.id, locale }, {}, authHeaders);
+    cart = cartResp.cart;
   }
 
   return cart;
@@ -160,7 +165,7 @@ export const deleteLineItem = withAuthHeaders(async (request, authHeaders, lineI
     throw new Error('Missing cart ID when deleting line item');
   }
 
-  return await sdk.store.cart.deleteLineItem(cartId, lineId, authHeaders).catch(medusaError);
+  return await sdk.store.cart.deleteLineItem(cartId, lineId, {}, authHeaders).catch(medusaError);
 });
 
 export async function enrichLineItems(

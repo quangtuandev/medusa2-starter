@@ -7,6 +7,9 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const flags = {
     customer_reviews: runtimeFeatureFlags.get("customer_reviews") 
       ?? FeatureFlag.isFeatureEnabled("customer_reviews"),
+    translation: runtimeFeatureFlags.get("translation") 
+      ?? FeatureFlag.isFeatureEnabled("translation")
+      ?? true,
   }
 
   res.json({ feature_flags: flags })
@@ -30,6 +33,9 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const updatedFlags = {
     customer_reviews: runtimeFeatureFlags.get("customer_reviews")
       ?? FeatureFlag.isFeatureEnabled("customer_reviews"),
+    translation: runtimeFeatureFlags.get("translation") 
+      ?? FeatureFlag.isFeatureEnabled("translation")
+      ?? true,
   }
 
   res.json({ 

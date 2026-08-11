@@ -4,6 +4,7 @@ import { ProductTemplate } from '@app/templates/ProductTemplate';
 import { getMergedProductMeta } from '@libs/util/products';
 import { fetchProductReviews } from '@libs/util/server/data/product-reviews.server';
 import { fetchFeatureFlags } from '@libs/util/server/data/feature-flags.server';
+import { fetchProductContent } from '@libs/util/server/data/product-content.server';
 import { fetchProducts } from '@libs/util/server/products.server';
 import { withPaginationParams } from '@libs/util/withPaginationParams';
 import { type LoaderFunctionArgs, type MetaFunction, redirect } from 'react-router';
@@ -27,6 +28,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   if (!products.length) throw redirect('/404');
 
   const product = products[0];
+  const productContent = await fetchProductContent(args.request, product.id);
 
   // Only fetch reviews if the feature flag is enabled
   const productReviews = featureFlags.customer_reviews
@@ -38,6 +40,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   return {
     product,
+    productContent,
     productReviews,
     featureFlags,
   };
@@ -48,12 +51,13 @@ export type ProductPageLoaderData = typeof loader;
 export const meta: MetaFunction<ProductPageLoaderData> = getMergedProductMeta;
 
 export default function ProductDetailRoute() {
-  const { product } = useLoaderData<ProductPageLoaderData>();
+  const { product, productContent } = useLoaderData<ProductPageLoaderData>();
   const { t } = useI18n();
   return (
     <>
       <ProductTemplate
         product={product}
+        productContent={productContent}
       />
       <ProductList className="!pb-[100px] xl:px-9" heading={t('success.youMayAlsoLike')} />
     </>

@@ -31,7 +31,7 @@ export interface SliderCardItem {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { collections } = await fetchCollections();
+  const { collections } = await fetchCollections(request);
 
   // Map products into their respective collections
   const collectionsWithProducts = await Promise.all(

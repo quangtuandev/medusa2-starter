@@ -1,5 +1,6 @@
 import { Cookie } from 'react-router';
 import { authCookie } from './auth.server';
+import { toStorefrontLanguage, type StorefrontLanguage } from '../locale';
 
 export async function setCookie(headers: Headers, cookie: Cookie | string, value: string) {
   return headers.append(
@@ -69,10 +70,10 @@ export const removeCartId = async (headers: Headers) => {
   await destroyCookie(headers, '_medusa_cart_id');
 };
 
-export const setLanguage = async (headers: Headers, language: string) => {
+export const setLanguage = async (headers: Headers, language: StorefrontLanguage) => {
   await setCookie(headers, 'lng', language);
 };
 
-export const getLanguage = async (headers: Headers) => {
-  return await getCookie(headers, 'lng');
+export const getLanguage = async (headers: Headers): Promise<StorefrontLanguage> => {
+  return toStorefrontLanguage(await getCookie(headers, 'lng'));
 };

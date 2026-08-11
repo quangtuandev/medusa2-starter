@@ -18,6 +18,7 @@ import { ColumnDef, createColumnHelper, PaginationState, useReactTable, getCoreR
 // Define the Location type
 type Location = {
     id: string
+    name?: string
     iso_country_code: string
     address_lines: string
     options: Record<string, any>

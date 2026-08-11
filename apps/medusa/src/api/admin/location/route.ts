@@ -26,7 +26,7 @@ export const POST = async (
         const locationService = req.scope.resolve(LOCATION_MODULE)
         const validatedData = createLocationSchema.parse(req.body)
 
-        const location = await locationService.createLocations(validatedData)
+        const location = await locationService.createLocations(validatedData as any)
 
         res.status(201).json({ location: location })
     } catch (error: any) {
@@ -111,4 +111,3 @@ export const GET = async (
         })
     }
 }
-

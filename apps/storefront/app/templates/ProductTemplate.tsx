@@ -33,10 +33,12 @@ import { Link, useFetcher } from 'react-router';
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form';
 import Collasape from '@app/components/common/collasape/Collasape';
 import { useI18n } from '@app/hooks/useI18n';
+import type { ProductContent } from '@libs/util/server/data/product-content.server';
 
 
 export interface ProductTemplateProps {
   product: StoreProduct;
+  productContent: ProductContent | null;
 }
 
 /**
@@ -48,34 +50,19 @@ const variantIsSoldOut: (variant: StoreProductVariant | undefined) => boolean = 
   return !!(variant?.manage_inventory && variant?.inventory_quantity! < 1);
 };
 
-export const ProductTemplate = ({ product }: ProductTemplateProps) => {
+export const ProductTemplate = ({ product, productContent }: ProductTemplateProps) => {
   if (product.variants) {
     product.variants = product.variants.sort(
       (a: any, b: any) =>
         (b.calculated_price?.calculated_amount ?? 0) - (a.calculated_price?.calculated_amount ?? 0)
     );
   }
-  const { currentLanguage, t } = useI18n();
-  const [description, setDescription] = useState<string>(product.description || '');
-  const [notes, setNotes] = useState<string>(product.metadata?.notes as string || '');
-  const [ingredients, setIngredients] = useState<string>(product.metadata?.ingredients as string || '');
-  const [precautionsOfUse, setPrecautionsOfUse] = useState<string>(product.metadata?.precautions_of_use as string || '');
-  const [applicationTips, setApplicationTips] = useState<string>(product.metadata?.application_tips as string || '');
-  useEffect(() => {
-    if (currentLanguage === 'vi') {
-      setDescription(product.metadata?.description_vi as string || '');
-      setNotes(product.metadata?.notes_vi as string || '');
-      setIngredients(product.metadata?.ingredients_vi as string || '');
-      setPrecautionsOfUse(product.metadata?.precautions_of_use_vi as string || '');
-      setApplicationTips(product.metadata?.application_tips_vi as string || '');
-    } else {
-      setDescription(product.metadata?.description as string || '');
-      setNotes(product.metadata?.notes as string || '');
-      setIngredients(product.metadata?.ingredients as string || '');
-      setPrecautionsOfUse(product.metadata?.precautions_of_use as string || '');
-      setApplicationTips(product.metadata?.application_tips as string || '');
-    }
-  }, [currentLanguage, product.metadata]);
+  const { t } = useI18n();
+  const description = product.description || '';
+  const notes = productContent?.notes || '';
+  const ingredients = productContent?.ingredients || '';
+  const precautionsOfUse = productContent?.precautions_of_use || '';
+  const applicationTips = productContent?.application_tips || '';
 
   const formRef = useRef<HTMLFormElement>(null);
   const addToCartFetcher = useFetcher<any>({ key: FetcherKeys.cart.createLineItem });
@@ -160,7 +147,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
 
           return {
             title: option.title,
-            product_id: option.product_id as string,
+            product_id: product.id,
             id: option.id,
             values: optionValuesWithPrices,
           };
@@ -184,7 +171,7 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
 
         return {
           title: option.title,
-          product_id: option.product_id as string,
+          product_id: product.id,
           id: option.id,
           values: optionValuesWithPrices,
         };
@@ -481,17 +468,17 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       )}
 
                       <div className="my-2 flex flex-col gap-2">
-                        {!!product.description && (
+                        {!!description && (
                           <div className="mt-4">
                             <div className="whitespace-pre-wrap text-base text-primary-800">
-                              <div dangerouslySetInnerHTML={{ __html: description ? description : product.description }} />
+                              <div dangerouslySetInnerHTML={{ __html: description }} />
                             </div>
                           </div>
                         )}
 
-                        {(product.metadata?.notes as string) && (
+                        {!!notes && (
                           <div className="mt-4">
-                            <div dangerouslySetInnerHTML={{ __html: notes ? notes : product.metadata?.notes as string }} />
+                            <div dangerouslySetInnerHTML={{ __html: notes }} />
                           </div>
                         )}
                       </div>
@@ -500,32 +487,29 @@ export const ProductTemplate = ({ product }: ProductTemplateProps) => {
                       <hr className='col-span-8 border-t-[1px] border-primary' />
                     </div>
                     <div className="container mx-auto my-6 xl:my-12 grid grid-cols-12 xl:px-8 p-4 gap-[20px]">
-                      {product.metadata?.ingredients as string && (
+                      {!!ingredients && (
                         <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.ingredients')} initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: ingredients ? ingredients : product.metadata?.ingredients as string }} />
+                          <div dangerouslySetInnerHTML={{ __html: ingredients }} />
                         </Collasape>
                       )}
 
-                      {product.metadata?.precautions_of_use as string && (
+                      {!!precautionsOfUse && (
                         <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.precautionsOfUse')} initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: precautionsOfUse ? precautionsOfUse : product.metadata?.precautions_of_use as string }} />
+                          <div dangerouslySetInnerHTML={{ __html: precautionsOfUse }} />
                         </Collasape>
                       )}
 
-                      {product.metadata?.application_tips as string && (
+                      {!!applicationTips && (
                         <Collasape className='col-span-12 p-4 rounded-[32px] shadow-[0px_4px_6px_0px_#00000040]' title={t('product.applicationTips')} initiallyOpen={false}>
-                          <div dangerouslySetInnerHTML={{ __html: applicationTips ? applicationTips : product.metadata?.application_tips as string }} />
+                          <div dangerouslySetInnerHTML={{ __html: applicationTips }} />
                         </Collasape>
                       )}
                     </div>
-                    {!!(ingredients ? ingredients : product.metadata?.ingredients as string)
-                      || !!(precautionsOfUse ? precautionsOfUse : product.metadata?.precautions_of_use as string)
-                      || !!(applicationTips ? applicationTips : product.metadata?.application_tips as string)
-                      && (
+                    {(!!ingredients || !!precautionsOfUse || !!applicationTips) && (
                         <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
                           <hr className='col-span-8 border-t-[1px] border-primary' />
                         </div>
-                      )}
+                    )}
                   </div>
                 </GridColumn>
               </Grid>

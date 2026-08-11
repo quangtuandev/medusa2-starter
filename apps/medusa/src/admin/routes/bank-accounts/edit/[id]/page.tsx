@@ -120,7 +120,7 @@ const EditBankAccountPage = () => {
             })
         } catch (error) {
             if (error instanceof z.ZodError) {
-                toast.error("Validation failed: " + error.errors[0]?.message)
+                toast.error("Validation failed: " + (error.issues[0]?.message || (error as any).errors?.[0]?.message))
             }
         } finally {
             setIsLoading(false)
@@ -136,7 +136,7 @@ const EditBankAccountPage = () => {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b">
                 <div className="flex items-center space-x-4">
-                    <Button variant="ghost" onClick={handleBack}>
+                    <Button variant="transparent" onClick={handleBack}>
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Bank Accounts
                     </Button>

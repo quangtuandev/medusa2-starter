@@ -70,7 +70,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL || '/'}/admin/uploads`,
+        `${(process.env as any).VITE_BACKEND_URL || '/'}/admin/uploads`,
         {
           method: 'POST',
           body: formData,
@@ -129,7 +129,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 
               try {
                 const imageUrl = await handleImageUpload(file)
-                const quill = ReactQuill.Quill.getInstance(
+                const quill = (ReactQuill as any).Quill?.getInstance?.(
                   document.getElementById(editorId) as HTMLDivElement
                 )
 
@@ -149,7 +149,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
             id={`${editorId}-upload`}
           />
           <Button
-            variant="ghost"
+            variant="transparent"
             size="small"
             onClick={() =>
               document.getElementById(`${editorId}-upload`)?.click()

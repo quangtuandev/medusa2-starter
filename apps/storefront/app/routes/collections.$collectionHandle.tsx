@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Container } from "@app/components/common/container";
 import { ProductListWithPagination } from "@app/components/product/ProductListWithPagination";
 import { PageHeading } from "@app/components/sections/PageHeading";
@@ -7,13 +6,12 @@ import { fetchProducts } from "@libs/util/server/products.server";
 import clsx from "clsx";
 import { LoaderFunctionArgs, redirect } from "react-router";
 import { NavLink, useLoaderData } from "react-router";
-import { useI18n } from '@app/hooks/useI18n';
 
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const handle = params.collectionHandle as string;
 
-  const { collections } = await fetchCollections();
+  const { collections } = await fetchCollections(request);
 
   const collection = collections?.find(
     (collection) => collection.handle === handle
@@ -38,15 +36,7 @@ export default function ProductCollectionRoute() {
 
   const { products, count, limit, offset, collection } = data;
 
-  const [description, setDescription] = useState<string>('');
-  const { currentLanguage } = useI18n();
-  useEffect(() => {
-    if (currentLanguage === 'vi') {
-      setDescription(collection.metadata?.description_vi as string || '');
-    } else {
-      setDescription(collection.metadata?.description_en as string || '');
-    }
-  }, [currentLanguage, data.collection.metadata]);
+  const description = collection.metadata?.description as string || '';
 
 
   return (

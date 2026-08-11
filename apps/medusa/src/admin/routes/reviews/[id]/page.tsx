@@ -49,7 +49,7 @@ const ReviewDetailPage = () => {
         enabled: !!id,
     })
 
-    const review = reviewData?.review as Review | undefined
+    const review = (reviewData as any)?.review as Review | undefined
 
     // Initialize form data when review loads
     useState(() => {

@@ -20,7 +20,7 @@ type CreateLineItemFormData = z.infer<typeof createLineItemSchema>;
 export async function action({ request }: ActionFunctionArgs) {
   const { errors, data: validatedFormData } = await getValidatedFormData<CreateLineItemFormData>(
     request,
-    zodResolver(createLineItemSchema),
+    zodResolver(createLineItemSchema) as any,
   );
 
   if (errors) {
@@ -40,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return data({ errors: { root: { message: 'Product not found.' } } as FieldErrors }, { status: 400 });
   }
 
-  const variant = getVariantBySelectedOptions(product.variants || [], options);
+  const variant = getVariantBySelectedOptions(product.variants || [], options as Record<string, string>);
 
   if (!variant) {
     return data(

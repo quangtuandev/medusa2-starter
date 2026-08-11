@@ -49,7 +49,7 @@ export interface ExpressCheckoutResponse {
 export async function action(actionArgs: ActionFunctionArgs) {
   const { errors, data } = await getValidatedFormData<ExpressCheckoutFormData>(
     actionArgs.request,
-    zodResolver(expressCheckoutSchema),
+    zodResolver(expressCheckoutSchema) as any,
   );
 
   if (errors) return Response.json({ errors }, { status: 400 });

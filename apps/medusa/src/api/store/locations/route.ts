@@ -3,6 +3,24 @@ import {
     MedusaResponse,
 } from "@medusajs/framework/http"
 import { Modules } from "@medusajs/framework/utils"
+
+type StoreLocation = {
+    id: string
+    name: string
+    iso_country_code: string
+    address_lines: string
+    options: unknown
+}
+
+type GroupedLocation = {
+    id: string
+    iso_country_code: string
+    items: Array<{
+        name: string
+        address_lines: string
+        options: unknown
+    }>
+}
 export const GET = async (
     req: MedusaRequest,
     res: MedusaResponse
@@ -29,7 +47,7 @@ export const GET = async (
         })
 
         const result = Object.values(
-            locations.reduce((acc, cur) => {
+            (locations as StoreLocation[]).reduce<Record<string, GroupedLocation>>((acc, cur) => {
                 const key = cur.iso_country_code;
 
                 if (!acc[key]) {
@@ -65,4 +83,3 @@ export const GET = async (
         })
     }
 }
-

@@ -13,7 +13,8 @@ import type { ITaxModuleService } from '@medusajs/framework/types'
 import type { ICurrencyModuleService } from '@medusajs/framework/types'
 import type { IPaymentModuleService } from '@medusajs/framework/types'
 import type { IOrderModuleService } from '@medusajs/framework/types'
-import type Settings from '@medusajs/medusa/settings'
+import type { ISettingsModuleService } from '@medusajs/framework/types'
+import type { ITranslationModuleService } from '@medusajs/framework/types'
 import type { IAuthModuleService } from '@medusajs/framework/types'
 import type { IUserModuleService } from '@medusajs/framework/types'
 import type { IFulfillmentModuleService } from '@medusajs/framework/types'
@@ -23,6 +24,7 @@ import type { IEventBusModuleService } from '@medusajs/framework/types'
 import type { IWorkflowEngineService } from '@medusajs/framework/types'
 import type { ILockingModule } from '@medusajs/framework/types'
 import type { IFileModuleService } from '@medusajs/framework/types'
+import type ProductContent from '../../src/modules/product-content'
 import type Location from '../../src/modules/location'
 import type BlogModuleService from '../../src/modules/blog'
 import type ProductReviewsModuleService from '../../src/modules/product-reviews'
@@ -48,7 +50,8 @@ declare module '@medusajs/framework/types' {
     'currency': ICurrencyModuleService,
     'payment': IPaymentModuleService,
     'order': IOrderModuleService,
-    'settings': InstanceType<(typeof Settings)['service']>,
+    'settings': ISettingsModuleService,
+    'translation': ITranslationModuleService,
     'auth': IAuthModuleService,
     'user': IUserModuleService,
     'fulfillment': IFulfillmentModuleService,
@@ -58,6 +61,7 @@ declare module '@medusajs/framework/types' {
     'workflows': IWorkflowEngineService,
     'locking': ILockingModule,
     'file': IFileModuleService,
+    'product_content': InstanceType<(typeof ProductContent)['service']>,
     'location': InstanceType<(typeof Location)['service']>,
     'blogModuleService': InstanceType<(typeof BlogModuleService)['service']>,
     'productReviewsModuleService': InstanceType<(typeof ProductReviewsModuleService)['service']>,

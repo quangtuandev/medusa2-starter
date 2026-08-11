@@ -293,12 +293,12 @@ export const getProductMeta: MetaFunction = ({ data, matches }) => {
     { property: 'og:image', content: ogImage },
     { property: 'og:image:alt', content: ogImageAlt },
     { property: 'og:type', content: 'product' },
-    { property: 'product:price:currency', content: region.currency_code },
+    { property: 'product:price:currency', content: region?.currency_code },
     {
       property: 'product:price:amount',
-      content: formatPrice(getVariantFinalPrice(defaultVariant), {
+      content: region?.currency_code ? formatPrice(getVariantFinalPrice(defaultVariant), {
         currency: region.currency_code,
-      }),
+      }) : '',
     },
   ];
 };

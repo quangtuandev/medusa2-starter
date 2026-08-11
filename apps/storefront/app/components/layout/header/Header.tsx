@@ -18,7 +18,7 @@ export type HeaderProps = {};
 
 export const Header: FC<HeaderProps> = () => {
   const [sideNavOpen, setSideNavOpen] = useState<boolean>(false);
-  const { headerNavigationItems } = useSiteDetails();
+  const { headerNavigationItems } = useSiteDetails() as any;
   const { cart, toggleCartDrawer } = useCart();
   const { t } = useI18n();
   const { activeSection } = useActiveSection(headerNavigationItems);

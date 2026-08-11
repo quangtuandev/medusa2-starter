@@ -12,7 +12,8 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   if (!order) throw redirect('/');
 
-  const { product_reviews } = await fetchProductReviews({ order_id: order.id }, { forceFresh: true });
+  const reviewsResult: any = await fetchProductReviews({ order_id: order.id } as any, { forceFresh: true } as any);
+  const product_reviews = reviewsResult?.product_reviews || reviewsResult?.reviews || [];
 
   return { order, product_reviews };
 };

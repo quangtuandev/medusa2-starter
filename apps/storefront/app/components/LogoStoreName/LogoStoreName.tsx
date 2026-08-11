@@ -18,7 +18,7 @@ export const LogoStoreName: FC<{ primary?: boolean; className?: string, theme?: 
   theme = 'light',
   className,
 }) => {
-  const { store, settings } = useSiteDetails();
+  const { store, settings } = useSiteDetails() as any;
 
   if (!store || !settings) return null;
 

@@ -30,7 +30,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
     getCustomer(request),
     fetchHasProducts(request),
     listPublishedPages(language),
-    fetchCollections(),
+    fetchCollections(request),
   ]);
 
   const headers = new Headers();

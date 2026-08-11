@@ -27,11 +27,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const language = await getCookie(request.headers, "lng");
   const data = await listPosts(language);
+  const postsList = data?.posts || [];
   return {
-    count: data?.length,
+    count: postsList.length,
     limit: postsLimit,
     offset: postsOffset,
-    posts: data,
+    posts: postsList,
   };
 };
 
@@ -48,7 +49,7 @@ export default function BlogsIndexRoute() {
         <p className="text-base font-montserrat font-normal text-sm xl:text-[15px] leading-normal xl:leading-[26px] text-center max-w-3xl mx-auto">Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.</p>
       </div>
       <div className="flex flex-col gap-6 xl:gap-12">
-        {data.posts.map((post, index) => (
+        {data.posts && data.posts.map((post, index) => (
           <div key={post.id} className={clsx("flex gap-4 flex-col", index % 2 === 0 ? "xl:flex-row" : "xl:flex-row-reverse")}>
             <div className="w-full xl:w-[70%] h-full aspect-[2/1] overflow-hidden rounded-lg mb-4">
               <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />

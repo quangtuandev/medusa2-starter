@@ -5,7 +5,7 @@ import { fetchProducts } from './products.server';
 export const getProductListData = async (request: Request) => {
   const region = await getSelectedRegion(request.headers);
 
-  const productsQuery: HttpTypes.StoreProductParams = {
+  const productsQuery: HttpTypes.StoreProductParams & { limit?: number; offset?: number } = {
     limit: 10,
     offset: 0,
   };

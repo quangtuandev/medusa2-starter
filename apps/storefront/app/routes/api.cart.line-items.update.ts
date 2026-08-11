@@ -14,7 +14,7 @@ type UpdateLineItemFormData = z.infer<typeof updateLineItemSchema>;
 export async function action({ request }: ActionFunctionArgs) {
   const { errors, data: validatedFormData } = await getValidatedFormData<UpdateLineItemFormData>(
     request,
-    zodResolver(updateLineItemSchema),
+    zodResolver(updateLineItemSchema) as any,
   );
 
   if (errors) {

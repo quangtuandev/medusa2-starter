@@ -1,174 +1,145 @@
-import { defineWidgetConfig } from "@medusajs/admin-sdk";
-import { useState } from "react";
-import { Button, Container } from "@medusajs/ui";
-import { sdk } from "../lib/sdk";
-import QuillEditor from "../components/QuillEditor";
-import { toast } from "@medusajs/ui";
-import { ContentfulSyncButton } from "./contentful-sync-button";
+import { defineWidgetConfig } from "@medusajs/admin-sdk"
+import type { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types"
+import { Button, Container, Heading, Text, toast } from "@medusajs/ui"
+import { useEffect, useState } from "react"
+import QuillEditor from "../components/QuillEditor"
+import { sdk } from "../lib/sdk"
 
-const ProductMetadataWidget = ({ data }) => {
-    const [customField, setCustomField] = useState({
-        description: "",
-        description_vi: "",
-        notes: "",
-        notes_vi: "",
-        ingredients: "",
-        ingredients_vi: "",
-        precautions_of_use: "",
-        precautions_of_use_vi: "",
-        application_tips: "",
-        application_tips_vi: "",
-    });
+type ProductContentFields = {
+  notes: string
+  ingredients: string
+  precautions_of_use: string
+  application_tips: string
+}
 
-    const handleSave = async () => {
-        sdk.admin.product.update(data.id, {
-            metadata: {
-                ...data.metadata,
-                ...customField,
-            },
-        });
-        toast.success("Product metadata saved successfully");
-    };
-    return (
-        <Container className="bg-ui-bg-base p-4 rounded-lg space-y-6">
-            <QuillEditor
-                id="description"
-                label="Description"
-                value={customField.description || data.metadata?.description || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        description: value,
-                    });
-                }}
-                placeholder="Enter product description..."
-                height="200px"
-            />
-            <QuillEditor
-                id="description-vi"
-                label="Description in Vietnamese"
-                value={customField.description_vi || data.metadata?.description_vi || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        description_vi: value,
-                    });
-                }}
-                placeholder="Enter product description in Vietnamese..."
-                height="200px"
-            />
-            <QuillEditor
-                id="notes"
-                label="Notes"
-                value={customField.notes || data.metadata?.notes || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        notes: value,
-                    });
-                }}
-                placeholder="Enter product notes..."
-                height="200px"
-            />
-            <QuillEditor
-                id="notes-vi"
-                label="Notes in Vietnamese"
-                value={customField.notes_vi || data.metadata?.notes_vi || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        notes_vi: value,
-                    });
-                }}
-                placeholder="Enter product notes in Vietnamese..."
-                height="200px"
-            />
+type ProductContent = ProductContentFields & {
+  id: string
+  product_id: string
+}
 
-            <QuillEditor
-                id="ingredients"
-                label="Ingredients"
-                value={customField.ingredients || data.metadata?.ingredients || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        ingredients: value,
-                    });
-                }}
-                placeholder="Enter product ingredients..."
-                height="200px"
-            />
-            <QuillEditor
-                id="ingredients-vi"
-                label="Ingredients in Vietnamese"
-                value={customField.ingredients_vi || data.metadata?.ingredients_vi || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        ingredients_vi: value,
-                    });
-                }}
-                placeholder="Enter product ingredients in Vietnamese..."
-                height="200px"
-            />
-            <QuillEditor
-                id="precautions"
-                label="Precautions of use"
-                value={customField.precautions_of_use || data.metadata?.precautions_of_use || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        precautions_of_use: value,
-                    });
-                }}
-                placeholder="Enter usage precautions..."
-                height="200px"
-            />
-            <QuillEditor
-                id="precautions-vi"
-                label="Precautions of use in Vietnamese"
-                value={customField.precautions_of_use_vi || data.metadata?.precautions_of_use_vi || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        precautions_of_use_vi: value,
-                    });
-                }}
-                placeholder="Enter usage precautions in Vietnamese..."
-                height="200px"
-            />
-            <QuillEditor
-                id="application-tips"
-                label="Application tips"
-                value={customField.application_tips || data.metadata?.application_tips || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        application_tips: value,
-                    });
-                }}
-                placeholder="Enter application tips..."
-                height="200px"
-            />
-            <QuillEditor
-                id="application-tips-vi"
-                label="Application tips in Vietnamese"
-                value={customField.application_tips_vi || data.metadata?.application_tips_vi || ""}
-                onChange={(value: string) => {
-                    setCustomField({
-                        ...customField,
-                        application_tips_vi: value,
-                    });
-                }}
-                placeholder="Enter application tips in Vietnamese..."
-                height="200px"
-            />
-            <Button onClick={handleSave}>Save</Button>
-        </Container>
-    );
-};
+const emptyContent: ProductContentFields = {
+  notes: "",
+  ingredients: "",
+  precautions_of_use: "",
+  application_tips: "",
+}
+
+const ProductContentWidget = ({
+  data: product,
+}: DetailWidgetProps<AdminProduct>) => {
+  const [content, setContent] = useState<ProductContentFields>(emptyContent)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isCurrent = true
+
+    sdk.client
+      .fetch<{ product_content: ProductContent | null }>(
+        `/admin/product-content?product_id=${encodeURIComponent(product.id)}`,
+      )
+      .then(({ product_content }) => {
+        if (!isCurrent || !product_content) return
+        setContent({
+          notes: product_content.notes,
+          ingredients: product_content.ingredients,
+          precautions_of_use: product_content.precautions_of_use,
+          application_tips: product_content.application_tips,
+        })
+      })
+      .catch((loadError) => {
+        if (isCurrent) {
+          setError(loadError instanceof Error ? loadError.message : "Unable to load product content")
+        }
+      })
+      .finally(() => {
+        if (isCurrent) setIsLoading(false)
+      })
+
+    return () => {
+      isCurrent = false
+    }
+  }, [product.id])
+
+  const updateField = (field: keyof ProductContentFields, value: string) => {
+    setContent((current) => ({ ...current, [field]: value }))
+  }
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    setError(null)
+
+    try {
+      await sdk.client.fetch("/admin/product-content", {
+        method: "POST",
+        body: { product_id: product.id, ...content },
+      })
+      toast.success("Product content saved")
+    } catch (saveError) {
+      const message = saveError instanceof Error ? saveError.message : "Unable to save product content"
+      setError(message)
+      toast.error(message)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  return (
+    <Container className="space-y-6 p-6">
+      <div>
+        <Heading level="h2">Localized product content</Heading>
+        <Text className="text-ui-fg-subtle mt-1" size="small">
+          Edit the original English content here. Add Vietnamese values from Settings → Translations.
+        </Text>
+      </div>
+
+      {isLoading ? <Text size="small">Loading product content…</Text> : null}
+      {error ? <Text className="text-ui-fg-error" size="small">{error}</Text> : null}
+
+      {!isLoading ? (
+        <>
+          <QuillEditor
+            id="product-content-notes"
+            label="Notes"
+            value={content.notes}
+            onChange={(value: string) => updateField("notes", value)}
+            placeholder="Enter product notes…"
+            height="200px"
+          />
+          <QuillEditor
+            id="product-content-ingredients"
+            label="Ingredients"
+            value={content.ingredients}
+            onChange={(value: string) => updateField("ingredients", value)}
+            placeholder="Enter product ingredients…"
+            height="200px"
+          />
+          <QuillEditor
+            id="product-content-precautions"
+            label="Precautions of use"
+            value={content.precautions_of_use}
+            onChange={(value: string) => updateField("precautions_of_use", value)}
+            placeholder="Enter usage precautions…"
+            height="200px"
+          />
+          <QuillEditor
+            id="product-content-application-tips"
+            label="Application tips"
+            value={content.application_tips}
+            onChange={(value: string) => updateField("application_tips", value)}
+            placeholder="Enter application tips…"
+            height="200px"
+          />
+          <Button isLoading={isSaving} onClick={handleSave}>Save content</Button>
+        </>
+      ) : null}
+    </Container>
+  )
+}
 
 export const config = defineWidgetConfig({
-    zone: "product.details.after",
-});
+  zone: "product.details.after",
+})
 
-export default ProductMetadataWidget;
+export default ProductContentWidget

@@ -56,20 +56,20 @@ const CreateLocationPage = () => {
     const { data: countriesData, isLoading: isLoadingCountries } = useQuery({
         queryKey: ["countries"],
         queryFn: async () => {
-            const response = await sdk.client.fetch(`/admin/location/countries`)
-            console.error(response.countries)
-            return response.countries as Country[]
+            const response = await sdk.client.fetch<any>(`/admin/location/countries`)
+            console.error(response?.countries)
+            return (response?.countries || []) as Country[]
         },
     })
 
     // Handlers for options array
     const handleAddOption = () => {
-        setOptions([...options, { name: "", value: "" }])
+        setOptions([...options, { name: "", value: "", type: "" }])
     }
 
     const handleRemoveOption = (index: number) => {
         const newOptions = options.filter((_, i) => i !== index)
-        setOptions(newOptions.length > 0 ? newOptions : [{ name: "", value: "" }])
+        setOptions(newOptions.length > 0 ? newOptions : [{ name: "", value: "", type: "" }])
     }
 
     const handleOptionChange = (index: number, field: "name" | "value" | "type", value: string) => {
@@ -118,7 +118,7 @@ const CreateLocationPage = () => {
             await createMutation.mutateAsync(validatedData)
         } catch (error) {
             if (error instanceof z.ZodError) {
-                toast.error("Validation failed: " + error.errors[0]?.message)
+                toast.error("Validation failed: " + (error.issues[0]?.message || (error as any).errors?.[0]?.message))
             }
         } finally {
             setIsLoading(false)
@@ -157,7 +157,7 @@ const CreateLocationPage = () => {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b">
                 <div className="flex items-center space-x-4">
-                    <Button variant="ghost" onClick={handleBack}>
+                    <Button variant="transparent" onClick={handleBack}>
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Locations
                     </Button>

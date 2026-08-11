@@ -13,7 +13,7 @@ export interface HeaderSideNavProps {
 }
 
 export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSection }) => {
-  const { headerNavigationItems } = useSiteDetails();
+  const { headerNavigationItems } = useSiteDetails() as any;
   const { t } = useI18n();
 
   return (

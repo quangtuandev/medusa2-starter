@@ -5,20 +5,20 @@ export interface Review {
   name: string;
   content: string;
   stars: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
+  status?: string;
+  created_at?: string | Date;
+  updated_at?: string | Date;
 }
 
 export interface ProductReviewListProps {
-  productId: string;
+  productId?: string;
   productReviews?: Review[];
   className?: string;
 }
 
 export const ProductReviewList = ({
   productReviews,
-}) => {
+}: ProductReviewListProps) => {
 
   return (
     <div>

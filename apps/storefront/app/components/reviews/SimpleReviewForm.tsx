@@ -33,6 +33,7 @@ export const SimpleReviewForm: FC<SimpleReviewFormProps> = ({
 
   // Handle form response
   useEffect(() => {
+    let cleanup: (() => void) | undefined;
     if (fetcher.data?.success) {
       setSuccess(true);
       setName('');
@@ -48,16 +49,16 @@ export const SimpleReviewForm: FC<SimpleReviewFormProps> = ({
         }
       }, 2000);
 
-      return () => clearTimeout(timer);
+      cleanup = () => clearTimeout(timer);
     } else if (fetcher.data?.error) {
       setError(fetcher.data.error);
     } else if (fetcher.data?.errors) {
       const errorMessages = Object.entries(fetcher.data.errors)
-        .filter(([_, messages]) => messages && (messages as any[]).length > 0)
-        .map(([field, messages]) => `${field}: ${(messages as any[])?.[0] || 'Invalid'}`)
-        .join(', ');
-      setError(errorMessages || 'Validation failed');
+        .map(([key, msgs]) => `${key}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+        .join('; ');
+      setError(errorMessages);
     }
+    return cleanup;
   }, [fetcher.data, onSubmitSuccess]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

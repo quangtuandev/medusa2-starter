@@ -27,10 +27,11 @@ export const LanguageSwitcher = () => {
   };
   const fetcher = useFetcher();
 
-  const onRegionChange = (regionId: string) => {
+  const onRegionChange = (regionId: string, language: 'en' | 'vi') => {
     fetcher.submit(
       convertToFormData({
         regionId,
+        language,
       }),
       { method: 'post', action: '/api/region' },
     );
@@ -38,7 +39,7 @@ export const LanguageSwitcher = () => {
   const handleSelect = (value: { label: string, value: string }) => {
     const lang = value.label === 'V' ? 'vi' : 'en';
     changeLanguage(lang);
-    onRegionChange(value.value);
+    onRegionChange(value.value, lang);
     setIsOpen(false);
   };
   const regionOptions = useMemo(() => {

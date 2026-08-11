@@ -43,6 +43,7 @@ const workflowEngineModule = IS_TEST
 module.exports = defineConfig({
   featureFlags: {
     [CustomerReviewsFeatureFlag.key]: true,
+    translation: true,
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -73,6 +74,12 @@ module.exports = defineConfig({
     },
   ],
   modules: [
+    {
+      resolve: "@medusajs/medusa/translation",
+    },
+    {
+      resolve: "./src/modules/product-content",
+    },
     {
       resolve: "./src/modules/location",
     },

@@ -119,7 +119,7 @@ const BankAccountsPage = () => {
             cell: ({ getValue }) => {
                 const isActive = getValue()
                 return (
-                    <Badge color={isActive ? "green" : "gray"}>
+                    <Badge color={isActive ? "green" : "grey"}>
                         {isActive ? "Active" : "Inactive"}
                     </Badge>
                 )

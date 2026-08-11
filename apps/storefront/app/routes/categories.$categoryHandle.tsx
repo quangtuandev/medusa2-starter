@@ -10,7 +10,7 @@ import { NavLink, useLoaderData } from 'react-router';
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const handle = params.categoryHandle as string;
 
-  const categories = await listCategories();
+  const categories = await listCategories(request);
 
   const category = categories.find((c) => c.handle === handle);
 

@@ -18,21 +18,7 @@ declare const optionsSchema: z.ZodObject<{
     webhookId: z.ZodOptional<z.ZodString>;
     includeShippingData: z.ZodDefault<z.ZodBoolean>;
     includeCustomerData: z.ZodDefault<z.ZodBoolean>;
-}, "strip", z.ZodTypeAny, {
-    clientId: string;
-    clientSecret: string;
-    isSandbox: boolean;
-    includeShippingData: boolean;
-    includeCustomerData: boolean;
-    webhookId?: string | undefined;
-}, {
-    clientId: string;
-    clientSecret: string;
-    isSandbox?: boolean | undefined;
-    webhookId?: string | undefined;
-    includeShippingData?: boolean | undefined;
-    includeCustomerData?: boolean | undefined;
-}>;
+}, z.core.$strip>;
 export type AlphabitePaypalPluginOptionsType = z.infer<typeof optionsSchema>;
 export type AlphabitePaypalPluginOptions = {
     /**

@@ -16,7 +16,7 @@ type LocationProps = {
   country: string;
   items: {
     address_lines: string;
-    name: string;
+    name?: string;
     options: {
       name: string;
       value: string;
@@ -79,7 +79,7 @@ export default function IndexRoute() {
       </div>
       <div className="flex flex-col gap-6 xl:gap-12">
         {locations && locations.map((location) => (
-          <Location key={location.id} country={location.country} items={location.items} />
+          <Location key={location.id} iso_country_code={location.iso_country_code} country={location.country} items={location.items} />
         ))}
       </div>
     </Container>

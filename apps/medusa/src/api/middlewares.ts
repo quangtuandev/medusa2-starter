@@ -14,12 +14,12 @@ export const GetPagesSchema = createFindParams()
 // Contentful validation schemas
 const SyncProductSchema = z.object({
     product_id: z.string().min(1),
-    locales: z.record(z.any()).optional(),
+    locales: z.record(z.string(), z.any()).optional(),
 })
 
 const SyncBulkProductsSchema = z.object({
     product_ids: z.array(z.string()).min(1),
-    locales: z.record(z.any()).optional(),
+    locales: z.record(z.string(), z.any()).optional(),
 })
 
 export default defineMiddlewares({
