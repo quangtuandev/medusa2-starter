@@ -12,15 +12,18 @@ import { MainMenu } from "../common/menu/Main";
 import { MenuToggle } from "../common/MenuToggle/MenuToggle";
 import { HeaderSideNav } from "./header/HeaderSideNav";
 import { useIsMobile } from "@app/hooks/useIsMobile";
+import { PopupDialog } from "../common/PopupDialog";
+import { CountryRegionModal } from "../common/CountryRegionModal";
+
 export interface PageProps {
   className?: string;
   children: ReactNode;
 }
 
 export const Page: FC<PageProps> = ({ className, children }) => {
-  const hiddenHeaderPaths = ["/", "/pick-a-card", "/store"];
-  const hiddenFooterPaths = ["/", "/pick-a-card", "/stories", "/products"];
-  const injectMenuPaths = ["/pick-a-card", "/stories"];
+  const hiddenHeaderPaths = ["/", "/store"];
+  const hiddenFooterPaths = ["/", "/stories", "/products"];
+  const injectMenuPaths = ["/stories"];
   const matches = useMatches();
   const currentMatch = matches[matches.length - 1];
   const isHiddenHeader = hiddenHeaderPaths.includes(currentMatch?.pathname || "");
@@ -40,6 +43,8 @@ export const Page: FC<PageProps> = ({ className, children }) => {
     >
       <Cursor />
       <CartDrawer />
+      <PopupDialog />
+      <CountryRegionModal autoShowOnFirstVisit={true} />
       {!isHiddenHeader && <Header />}
       {isInjectMenu && (
         <>

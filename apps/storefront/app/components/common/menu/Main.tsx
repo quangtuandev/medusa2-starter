@@ -4,6 +4,7 @@ import { animate, spring } from "animejs";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useI18n } from "@app/hooks/useI18n";
+import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { MenuToggle } from "../MenuToggle/MenuToggle";
 import { px } from "motion/react";
 
@@ -18,9 +19,18 @@ function FancyText({ id, text, className }: { id: string, text: string, classNam
 
 
 export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void }) => {
-    const { t } = useI18n();
+    const { t, currentLanguage } = useI18n();
+    const rootData = useRootLoaderData();
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+
+    const menuThisIs = currentLanguage === 'vi'
+        ? (rootData?.siteDetails?.settings?.menu_this_is_vi || t('home.thisIs'))
+        : (rootData?.siteDetails?.settings?.menu_this_is_en || t('home.thisIs'));
+
+    const menuOur = currentLanguage === 'vi'
+        ? (rootData?.siteDetails?.settings?.menu_our_vi || t('home.our'))
+        : (rootData?.siteDetails?.settings?.menu_our_en || t('home.our'));
     const categoryItems = [
         {
             id: 'blog',
@@ -222,8 +232,8 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
             </div>
             <p className="absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block">
-                <span className={clsx("font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative", isHovering && 'text-white')}>{t('home.thisIs')}</span>
-                <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{t('home.our')}</span>
+                <span className={clsx("font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative", isHovering && 'text-white')}>{menuThisIs}</span>
+                <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{menuOur}</span>
             </p>
         </div>
     );

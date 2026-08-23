@@ -19,18 +19,37 @@ const fetchHasProducts = async (request: Request) => {
   return await fetchProducts(request, { limit: 1, offset: 999_999 }).then((res) => res.count > 0);
 };
 
+const fetchSiteSettings = async (): Promise<Record<string, any>> => {
+  try {
+    const baseUrl = config.INTERNAL_MEDUSA_API_URL || config.PUBLIC_MEDUSA_API_URL || "http://localhost:7901";
+    const res = await fetch(`${baseUrl}/store/site-settings`, {
+      headers: {
+        "x-publishable-api-key": config.MEDUSA_PUBLISHABLE_KEY || "",
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.settings || {};
+    }
+  } catch (e) {
+    // Graceful fallback
+  }
+  return {};
+};
+
 export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
   const region = await getSelectedRegion(request.headers);
 
   const language = await getCookie(request.headers, 'lng') || 'en';
 
-  const [cart, regions, customer, hasPublishedProducts, publishedPages, collectionsData] = await Promise.all([
+  const [cart, regions, customer, hasPublishedProducts, publishedPages, collectionsData, dynamicSettings] = await Promise.all([
     retrieveCart(request),
     listRegions(),
     getCustomer(request),
     fetchHasProducts(request),
     listPublishedPages(language),
     fetchCollections(request),
+    fetchSiteSettings(),
   ]);
 
   const headers = new Headers();
@@ -70,7 +89,10 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
         store: {
           name: 'KIRAPARFUMS',
         },
-        settings: siteSettings,
+        settings: {
+          ...siteSettings,
+          ...dynamicSettings,
+        },
         headerNavigationItems,
         footerNavigationItems: [
           // Static "About Us" — always first

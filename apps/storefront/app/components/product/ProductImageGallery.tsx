@@ -8,7 +8,7 @@ import { StoreProduct } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC, memo, useEffect, useState } from 'react';
 import MorphingShape from '../generativeart/MorphingShape';
-import { randomAssetMorphingShape } from '@libs/util/random';
+import { getProductMorphingShape } from '@libs/util/random';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'motion/react';
 export interface ProductGalleryImage {
@@ -146,7 +146,7 @@ export const ProductImageGallery: FC<ProductImageGalleryProps> = ({ product, var
 
       <TabPanels className="h-[320px] xl:h-[380px]">
         <div className="relative rounded-2xl h-full">
-          <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={0.5} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
+          <MorphingShape {...getProductMorphingShape(product)} zoom={0.5} classNameWrapper='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 !h-auto' />
 
           {gallery.length > 0 ? (
             gallery.map((image, imageIndex) => (

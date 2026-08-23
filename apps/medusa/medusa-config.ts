@@ -102,6 +102,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/product-slider",
     },
     {
+      resolve: "./src/modules/popup",
+    },
+    {
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [
@@ -128,7 +131,7 @@ module.exports = defineConfig({
             resolve: "@medusajs/medusa/file-local",
             id: "local",
             options: {
-              backend_url: process.env.ADMIN_BACKEND_URL + '/static' || "http://localhost:7901/static",
+              backend_url: `${(process.env.ADMIN_BACKEND_URL || process.env.MEDUSA_BACKEND_URL || "http://localhost:7901").replace(/\/$/, "")}/static`,
             },
           },
         ],

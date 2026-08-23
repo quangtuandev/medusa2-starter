@@ -3,7 +3,7 @@ import { StoreProduct, StoreProductVariant } from '@medusajs/types';
 import clsx from 'clsx';
 import { FC, HTMLAttributes, useEffect, useMemo } from 'react';
 import MorphingShape from '../generativeart/MorphingShape';
-import { randomAssetMorphingShape } from '@libs/util/random';
+import { getProductMorphingShape } from '@libs/util/random';
 
 export interface ProductThumbnailProps extends HTMLAttributes<HTMLElement> {
   product: StoreProduct;
@@ -32,7 +32,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       }}
       {...props}
     >
-      <MorphingShape {...randomAssetMorphingShape(product.subtitle)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
+      <MorphingShape {...getProductMorphingShape(product)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
       {thumbnailImage ? (
         <Image
           key={thumbnailImage}

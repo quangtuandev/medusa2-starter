@@ -80,10 +80,14 @@ const Cursor = () => {
             const shouldBeHovering = cursor === 'pointer' ||
                 target.tagName === 'A' ||
                 target.tagName === 'BUTTON' ||
+                target.tagName === 'SELECT' ||
+                target.tagName === 'OPTION' ||
+                target.tagName === 'INPUT' ||
                 typeof target.onclick === 'function' ||
                 target.getAttribute('role') === 'button' ||
                 target.closest('a') !== null ||
-                target.closest('button') !== null;
+                target.closest('button') !== null ||
+                target.closest('select') !== null;
 
             if (shouldBeHovering !== isHovering.current) {
                 isHovering.current = shouldBeHovering;
@@ -167,7 +171,7 @@ const Cursor = () => {
                     height: 32,
                     transform: 'translate3d(-100px, -100px, 0) scale(1)',
                     willChange: 'transform, opacity, filter',
-                    zIndex: 99999,
+                    zIndex: 2147483646,
                     opacity: 0.8,
                     filter: 'blur(8px)',
                     transition: 'opacity 0.3s cubic-bezier(.25,.46,.45,.94), filter 0.2s ease-out',
@@ -199,7 +203,7 @@ const Cursor = () => {
                     height: 32,
                     transform: 'translate3d(-100px, -100px, 0) scale(1)',
                     willChange: 'transform, filter',
-                    zIndex: 100000,
+                    zIndex: 2147483647,
                     transition: 'filter 0.2s ease-out',
                 }}
             >
@@ -227,7 +231,7 @@ const Cursor = () => {
                     pointerEvents: 'none',
                     width: 0,
                     height: 0,
-                    zIndex: 99999,
+                    zIndex: 2147483645,
                 }}
                 className="cursor-ripple"
             ></div>

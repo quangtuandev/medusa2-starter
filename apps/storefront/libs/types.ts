@@ -89,6 +89,10 @@ export interface SiteSettings {
   social_tiktok?: string;
   social_snapchat?: string;
   storefront_url?: string;
+  menu_this_is_en?: string;
+  menu_this_is_vi?: string;
+  menu_our_en?: string;
+  menu_our_vi?: string;
 }
 
 export interface Address {
