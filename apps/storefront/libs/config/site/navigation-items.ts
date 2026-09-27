@@ -5,7 +5,7 @@ export const headerNavigationItems: NavigationCollection = [
   {
     id: 1,
     label: 'navigation.products', // i18n key
-    url: '/pick-a-card',
+    url: '/products',
     sort_order: 0,
     location: NavigationItemLocation.header,
     new_tab: false,

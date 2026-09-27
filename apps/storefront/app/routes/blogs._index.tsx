@@ -25,9 +25,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     defaultPageSize: 2,
   });
 
-  const language = await getCookie(request.headers, "lng");
+  const language = (await getCookie(request.headers, "lng")) || "en";
   const data = await listPosts(language);
-  const postsList = data?.posts || [];
+  const postsList = Array.isArray(data) ? data : (data?.posts || []);
   return {
     count: postsList.length,
     limit: postsLimit,
@@ -51,10 +51,10 @@ export default function BlogsIndexRoute() {
       <div className="flex flex-col gap-6 xl:gap-12">
         {data.posts && data.posts.map((post, index) => (
           <div key={post.id} className={clsx("flex gap-4 flex-col", index % 2 === 0 ? "xl:flex-row" : "xl:flex-row-reverse")}>
-            <div className="w-full xl:w-[70%] h-full aspect-[2/1] overflow-hidden rounded-lg mb-4">
+            <div className="w-full xl:w-[65%] h-full aspect-[2/1] overflow-hidden rounded-lg mb-4">
               <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
             </div>
-            <div className="w-full xl:w-[30%] flex flex-col gap-2 xl:gap-6 items-start justify-center">
+            <div className="w-full xl:w-[35%] flex flex-col gap-2 xl:gap-6 items-start justify-center">
               <h3 className="font-alexandria font-extrabold text-2xl xl:text-[30px] leading-normal xl:leading-[35px] tracking-0%">{post.title}</h3>
               <div dangerouslySetInnerHTML={{ __html: post.description }}></div>
               <Link

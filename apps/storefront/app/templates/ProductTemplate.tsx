@@ -366,12 +366,12 @@ export const ProductTemplate = ({ product, productContent }: ProductTemplateProp
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
                       {customizationTitles[1] && (
-                        <h2 className="text-4xl xl:text-[85px] font-bold text-gray-900 leading-tight">
+                        <h2 className="text-4xl xl:text-[65px] font-bold text-gray-900 leading-tight">
                           {customizationTitles[1]}
                         </h2>
                       )}
                       <p className="text-gray-900 font-bold flex gap-3">
-                        <span className="text-3xl xl:text-5xl">
+                        <span className="text-2xl xl:text-4xl">
                           {selectedVariant ? (
                             <ProductPrice product={product} variant={selectedVariant} currencyCode={currencyCode} />
                           ) : (
@@ -506,9 +506,9 @@ export const ProductTemplate = ({ product, productContent }: ProductTemplateProp
                       )}
                     </div>
                     {(!!ingredients || !!precautionsOfUse || !!applicationTips) && (
-                        <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
-                          <hr className='col-span-8 border-t-[1px] border-primary' />
-                        </div>
+                      <div className="container mx-auto grid grid-cols-12 px-8 gap-[20px]">
+                        <hr className='col-span-8 border-t-[1px] border-primary' />
+                      </div>
                     )}
                   </div>
                 </GridColumn>

@@ -77,7 +77,7 @@ export const Header: FC<HeaderProps> = () => {
             <Container>
               <div
                 className={clsx(
-                  "flex sm:h-[var(--mkt-header-height-desktop)] flex-nowrap items-center justify-between gap-2 py-2 px-4 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
+                  "flex flex-nowrap items-center justify-between gap-2 py-2 px-4 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
                 )}
               >
                 <div className="flex flex-wrap-reverse justify-between w-full items-center">

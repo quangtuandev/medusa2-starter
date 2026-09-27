@@ -93,6 +93,22 @@ export interface SiteSettings {
   menu_this_is_vi?: string;
   menu_our_en?: string;
   menu_our_vi?: string;
+  stories_title_top_en?: string;
+  stories_title_top_vi?: string;
+  stories_title_bottom_en?: string;
+  stories_title_bottom_vi?: string;
+  stories_story_label_en?: string;
+  stories_story_label_vi?: string;
+  stories_mission_label_en?: string;
+  stories_mission_label_vi?: string;
+  stories_packaging_label_en?: string;
+  stories_packaging_label_vi?: string;
+  stories_story_text_en?: string;
+  stories_story_text_vi?: string;
+  stories_mission_text_en?: string;
+  stories_mission_text_vi?: string;
+  stories_packaging_text_en?: string;
+  stories_packaging_text_vi?: string;
 }
 
 export interface Address {

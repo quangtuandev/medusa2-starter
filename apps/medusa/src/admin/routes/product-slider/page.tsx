@@ -12,6 +12,7 @@ import {
   Table,
   FocusModal,
   Textarea,
+  Select,
 } from "@medusajs/ui"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { useMemo, useState, useRef } from "react"
@@ -69,6 +70,39 @@ const ProductSliderPage = () => {
     queryFn: () => sdk.client.fetch(`/admin/slider-cards`),
     queryKey: [["slider-cards"]],
   })
+
+  // Fetch available collections for navigation route selector
+  const { data: collectionsData, isLoading: isLoadingCollections } = useQuery({
+    queryKey: [["admin-collections"]],
+    queryFn: () => sdk.admin.productCollection.list({ limit: 100 }),
+  })
+
+  // Predefined special routes + live collections
+  const routeOptions = useMemo(() => {
+    const options: { value: string; label: string }[] = [
+      { value: "ALL", label: "All Collections" },
+      { value: "COMING_SOON", label: "Coming Soon" },
+    ]
+
+    const collections = (collectionsData as any)?.collections || []
+    collections.forEach((col: any) => {
+      const path = `/collections/${col.handle}`
+      options.push({
+        value: path,
+        label: `${col.title} (${path})`,
+      })
+    })
+
+    // If current linkto is set and not yet in options, preserve it as an option
+    if (formData.linkto && !options.some((opt) => opt.value === formData.linkto)) {
+      options.push({
+        value: formData.linkto,
+        label: `Custom (${formData.linkto})`,
+      })
+    }
+
+    return options
+  }, [collectionsData, formData.linkto])
 
   // Create card mutation
   const createMutation = useMutation({
@@ -287,7 +321,7 @@ const ProductSliderPage = () => {
               <FocusModal.Title>{selectedCard ? "Edit Slider Card" : "Add Slider Card"}</FocusModal.Title>
             </FocusModal.Header>
             <FocusModal.Body className="p-6 space-y-6 overflow-y-auto max-h-[80vh]">
-              
+
               {/* Row 1: English & Vietnamese titles */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -440,15 +474,24 @@ const ProductSliderPage = () => {
               {/* Row 4: LinkTo Route and Rank */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="linkto" className="block text-sm font-medium mb-1">Navigation Route / Link *</Label>
-                  <Input
-                    id="linkto"
+                  <Label htmlFor="linkto" className="block text-sm font-medium mb-1">Navigation Route / Collection *</Label>
+                  <Select
                     value={formData.linkto}
-                    onChange={(e) => setFormData({ ...formData, linkto: e.target.value })}
-                    placeholder="e.g. /collections/thirsty or /collections/icy"
-                    required
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Storefront handle is determined from the end of this route.</p>
+                    onValueChange={(val) => setFormData({ ...formData, linkto: val })}
+                    disabled={isLoadingCollections}
+                  >
+                    <Select.Trigger id="linkto">
+                      <Select.Value placeholder={isLoadingCollections ? "Loading collections..." : "Select a collection route..."} />
+                    </Select.Trigger>
+                    <Select.Content>
+                      {routeOptions.map((opt) => (
+                        <Select.Item key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select>
+                  <p className="text-xs text-gray-500 mt-1">Select from available collections, All Collections, or Coming Soon.</p>
                 </div>
                 <div>
                   <Label htmlFor="rank" className="block text-sm font-medium mb-1">Order Rank</Label>

@@ -19,7 +19,8 @@ interface BlogPost {
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const slugHandle = params.slugHandle as string;
   const response = await getPostBySlug(slugHandle);
-  const postData = response ? ((response as any).post || response) as BlogPost : null;
+  const rawPost = response ? ((response as any).post || response) : null;
+  const postData = (Array.isArray(rawPost) ? rawPost[0] : rawPost) as BlogPost | null;
 
   return {
     post: postData,

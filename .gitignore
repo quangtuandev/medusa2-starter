@@ -24,10 +24,10 @@ coverage
 .vercel
 
 # Build Outputs
-# .next/
-# out/
-# build
-# dist
+.next/
+out/
+build
+dist
 
 
 # Debug
