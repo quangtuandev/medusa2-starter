@@ -26,7 +26,7 @@ const DEFAULT_CATEGORY_ITEMS = [
         imageInFrame: '/assets/images/menu/blog.webp',
         url: '/blogs',
         className: 'left-[160px] top-[35vh]',
-        imageClass: ' w-[244px]',
+        imageClass: 'w-[26vh]',
         positionTitleClass: 'right-0 -top-[85px]',
         position: {
             x: '110%',
@@ -44,11 +44,11 @@ const DEFAULT_CATEGORY_ITEMS = [
         imageInFrame: '/assets/images/menu/product.webp',
         url: '/products',
         className: 'left-[460px] top-[9vh]',
-        imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[290px]  [rotate:-15deg]',
+        imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[30vh] [rotate:-15deg]',
         positionTitleClass: 'left-1/2 top-[calc(100%+30px)]',
         position: {
             x: '200px',
-            y: '122px'
+            y: '75px'
         },
         positionImage: {
             x: '10%',
@@ -62,11 +62,11 @@ const DEFAULT_CATEGORY_ITEMS = [
         imageInFrame: '/assets/images/menu/story.webp',
         url: '/stories',
         className: 'left-[860px] top-[21vh]',
-        imageClass: 'w-[240px]',
+        imageClass: 'w-[25vh]',
         positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
         position: {
             x: '0',
-            y: '120px'
+            y: '80px'
         },
         positionImage: {
             x: '0',
@@ -80,7 +80,7 @@ const DEFAULT_CATEGORY_ITEMS = [
         imageInFrame: '/assets/images/menu/contact.webp',
         url: '/contact',
         className: 'left-[1130px] top-[40vh]',
-        imageClass: 'w-[400px]',
+        imageClass: 'w-[38vh]',
         positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
         position: {
             x: '-10%',
@@ -98,7 +98,7 @@ const DEFAULT_CATEGORY_ITEMS = [
         imageInFrame: '/assets/images/menu/store.webp',
         url: '/store',
         className: 'right-[160px] top-[17vh]',
-        imageClass: 'w-[170px]',
+        imageClass: 'w-[18vh]',
         positionTitleClass: '-left-full bottom-0',
         position: {
             x: '-90%',
@@ -186,7 +186,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             }),
         });
         animate(`#menu-image-${item.id}`, {
-            scale: 1.2,
+            scale: 1.15,
             ...(item.positionImage?.y ? { y: item.positionImage.y } : { y: 0 }),
             ...(item.positionImage?.x ? { x: item.positionImage.x } : { x: 0 }),
             ease: spring({
@@ -267,8 +267,11 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 </div>
                 <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
             </div>
-            <p className="absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block">
-                <span className={clsx("font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative", isHovering && 'text-white')}>{menuThisIs}</span>
+            <p className={clsx(
+                "absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block transition-all duration-300 ease-in-out",
+                isHovering ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+            )}>
+                <span className="font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative">{menuThisIs}</span>
                 <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{menuOur}</span>
             </p>
         </div>
