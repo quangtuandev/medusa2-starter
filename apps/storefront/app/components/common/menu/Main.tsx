@@ -269,7 +269,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             </div>
             <p className={clsx(
                 "absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block transition-all duration-300 ease-in-out",
-                isHovering ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                "opacity-100 translate-y-0"
             )}>
                 <span className="font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative">{menuThisIs}</span>
                 <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{menuOur}</span>

@@ -1,0 +1,1 @@
+import{u as r}from"./useI18n-BhG4dgOd.js";const n=()=>{const o=r();if(!(o!=null&&o.region))throw new Error("No region data found, this should be provided in the root loader");return{region:o==null?void 0:o.region}};export{n as u};

@@ -249,9 +249,9 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     if (isActive) {
       return {
         x: 0, // Put active card exactly at the center!
-        y: -(isMobile ? 30 : 50), // pop up
+        y: -(isMobile ? 15 : 25), // pop up smoothly without overshooting
         rotate: 0,
-        scale: isMobile ? 1.15 : 1.2,
+        scale: isMobile ? 1.12 : 1.15,
         zIndex: 30,
       };
     }
@@ -285,10 +285,10 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     <div className={clsx("flex flex-col items-center w-full", className)}>
       {/* Card fan area */}
       <motion.div
-        className="relative flex items-end justify-center mt-8 xl:mt-16"
+        className="relative flex items-end justify-center mt-16 xl:mt-24"
         style={{
           width: isMobile ? 360 : 750,
-          height: isMobile ? 320 : 320,
+          height: isMobile ? 250 : 350,
         }}
         drag={isMobile ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
