@@ -18,6 +18,99 @@ function FancyText({ id, text, className }: { id: string, text: string, classNam
 }
 
 
+const DEFAULT_CATEGORY_ITEMS = [
+    {
+        id: 'blog',
+        defaultLabelKey: 'menu.blog',
+        image: '/assets/images/menu/frame2.webp',
+        imageInFrame: '/assets/images/menu/blog.webp',
+        url: '/blogs',
+        className: 'left-[160px] top-[35vh]',
+        imageClass: ' w-[244px]',
+        positionTitleClass: 'right-0 -top-[85px]',
+        position: {
+            x: '110%',
+            y: '-122px'
+        },
+        positionImage: {
+            x: '20%',
+            y: '-20%'
+        }
+    },
+    {
+        id: 'product',
+        defaultLabelKey: 'menu.product',
+        image: '/assets/images/menu/frame3.webp',
+        imageInFrame: '/assets/images/menu/product.webp',
+        url: '/products',
+        className: 'left-[460px] top-[9vh]',
+        imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[290px]  [rotate:-15deg]',
+        positionTitleClass: 'left-1/2 top-[calc(100%+30px)]',
+        position: {
+            x: '200px',
+            y: '122px'
+        },
+        positionImage: {
+            x: '10%',
+            y: '10%'
+        }
+    },
+    {
+        id: 'story',
+        defaultLabelKey: 'menu.story',
+        image: '/assets/images/menu/frame2.webp',
+        imageInFrame: '/assets/images/menu/story.webp',
+        url: '/stories',
+        className: 'left-[860px] top-[21vh]',
+        imageClass: 'w-[240px]',
+        positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
+        position: {
+            x: '0',
+            y: '120px'
+        },
+        positionImage: {
+            x: '0',
+            y: '10%'
+        }
+    },
+    {
+        id: 'contact',
+        defaultLabelKey: 'menu.contact',
+        image: '/assets/images/menu/frame1.webp',
+        imageInFrame: '/assets/images/menu/contact.webp',
+        url: '/contact',
+        className: 'left-[1130px] top-[40vh]',
+        imageClass: 'w-[400px]',
+        positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
+        position: {
+            x: '-10%',
+            y: '-300px'
+        },
+        positionImage: {
+            x: '-10%',
+            y: '-10%'
+        }
+    },
+    {
+        id: 'store',
+        defaultLabelKey: 'menu.store',
+        image: '/assets/images/menu/frame2.webp',
+        imageInFrame: '/assets/images/menu/store.webp',
+        url: '/store',
+        className: 'right-[160px] top-[17vh]',
+        imageClass: 'w-[170px]',
+        positionTitleClass: '-left-full bottom-0',
+        position: {
+            x: '-90%',
+            y: 0
+        },
+        positionImage: {
+            x: '-20%',
+            y: '0'
+        }
+    },
+];
+
 export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void }) => {
     const { t, currentLanguage } = useI18n();
     const rootData = useRootLoaderData();
@@ -31,99 +124,43 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
     const menuOur = currentLanguage === 'vi'
         ? (rootData?.siteDetails?.settings?.menu_our_vi || t('home.our'))
         : (rootData?.siteDetails?.settings?.menu_our_en || t('home.our'));
-    const categoryItems = [
-        {
-            id: 'blog',
-            label: t('menu.blog'),
-            image: '/assets/images/menu/frame2.webp',
-            imageInFrame: '/assets/images/menu/blog.webp',
-            url: '/blogs',
-            className: 'left-[160px] top-[35vh]',
-            imageClass: ' w-[244px]',
-            positionTitleClass: 'right-0 -top-[85px]',
-            position: {
-                x: '110%',
-                y: '-122px'
-            },
-            positionImage: {
-                x: '20%',
-                y: '-20%'
-            }
-        },
-        {
-            id: 'product',
-            label: t('menu.product'),
-            image: '/assets/images/menu/frame3.webp',
-            imageInFrame: '/assets/images/menu/product.webp',
-            // url: '/pick-a-card',
-            url: '/products',
-            className: 'left-[460px] top-[9vh]',
-            imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[290px]  [rotate:-15deg]',
-            positionTitleClass: 'left-1/2 top-[calc(100%+30px)]',
-            position: {
-                x: '200px',
-                y: '122px'
-            },
-            positionImage: {
-                x: '10%',
-                y: '10%'
-            }
-        },
-        {
-            id: 'story',
-            label: t('menu.story'),
-            image: '/assets/images/menu/frame2.webp',
-            imageInFrame: '/assets/images/menu/story.webp',
-            url: '/stories',
-            className: 'left-[860px] top-[21vh]',
-            imageClass: 'w-[240px]',
-            positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
-            position: {
-                x: '0',
-                y: '120px'
-            },
-            positionImage: {
-                x: '0',
-                y: '10%'
-            }
-        },
-        {
-            id: 'contact',
-            label: t('menu.contact'),
-            image: '/assets/images/menu/frame1.webp',
-            imageInFrame: '/assets/images/menu/contact.webp',
-            url: '/contact',
-            className: 'left-[1130px] top-[40vh]',
-            imageClass: 'w-[400px]',
-            positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
-            position: {
-                x: '-10%',
-                y: '-300px'
-            },
-            positionImage: {
-                x: '-10%',
-                y: '-10%'
-            }
-        },
-        {
-            id: 'store',
-            label: t('menu.store'),
-            image: '/assets/images/menu/frame2.webp',
-            imageInFrame: '/assets/images/menu/store.webp',
-            url: '/store',
-            className: 'right-[160px] top-[17vh]',
-            imageClass: 'w-[170px]',
-            positionTitleClass: '-left-full bottom-0',
-            position: {
-                x: '-90%',
-                y: 0
-            },
-            positionImage: {
-                x: '-20%',
-                y: '0'
-            }
-        },
-    ];
+
+    const configuredItems = rootData?.siteDetails?.settings?.menu_category_items;
+    const hasConfig = Array.isArray(configuredItems) && configuredItems.length > 0;
+
+    const categoryItems = DEFAULT_CATEGORY_ITEMS.map((defaultItem) => {
+        const defaultLabel = t(defaultItem.defaultLabelKey);
+        if (!hasConfig) {
+            return {
+                ...defaultItem,
+                label: defaultLabel,
+            };
+        }
+
+        const config = configuredItems.find((ci) => ci.id === defaultItem.id);
+        if (!config) {
+            return {
+                ...defaultItem,
+                label: defaultLabel,
+            };
+        }
+
+        if (config.enabled === false) {
+            return null;
+        }
+
+        const label = currentLanguage === 'vi'
+            ? (config.label_vi?.trim() || config.label_en?.trim() || defaultLabel)
+            : (config.label_en?.trim() || defaultLabel);
+
+        return {
+            ...defaultItem,
+            label,
+            url: config.url?.trim() || defaultItem.url,
+            image: config.image?.trim() || defaultItem.image,
+            imageInFrame: config.imageInFrame?.trim() || defaultItem.imageInFrame,
+        };
+    }).filter(Boolean) as (typeof DEFAULT_CATEGORY_ITEMS[0] & { label: string })[];
 
     const handleMouseEnter = (item: any) => {
         const el = document.getElementById(`fancy-text-${item.id}`);
@@ -193,16 +230,15 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
         <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden">
             <div className="h-full w-full overflow-x-scroll lg:overflow-x-hidden">
                 <div className="lg:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                    <span className="font-title font-bold text-4xl uppercase text-black">This </span>
+                    <span className="font-title font-bold text-4xl uppercase text-black">{menuThisIs} </span>
                     <span className="flex gap-2">
-                        <span className="font-title font-bold text-4xl uppercase text-black leading-none ml-1">Is </span>
-                        <span className="font-centuryBook italic font-normal text-4xl text-white leading-none mt-1">Our</span>
+                        <span className="font-centuryBook italic font-normal text-4xl text-white leading-none mt-1">{menuOur}</span>
                     </span>
                 </div>
                 <div className="fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" />
                 <div className="lg:w-[1840px] z-[9999] h-full justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 items-center overflow-x-scroll lg:overflow-hidden lg:[zoom:0.8] xl:[zoom:1] lg:left-1/2 lg:top-1/2 lg:translate-x-[-50%] lg:translate-y-[-50%]">
                     {categoryItems.map((item) => (
-                        <div>
+                        <div key={item.id}>
                             <Link to={item.url} className={clsx('absolute', item.className, isHovering && hoveredItemId !== item.id && '[filter:brightness(0.5)]')} key={item.id}
                                 onClick={handleMenuToggle}
                                 id={item.id}

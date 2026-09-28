@@ -109,6 +109,22 @@ export interface SiteSettings {
   stories_mission_text_vi?: string;
   stories_packaging_text_en?: string;
   stories_packaging_text_vi?: string;
+  menu_category_items?: CategoryMenuItemConfig[];
+}
+
+export interface CategoryMenuItemConfig {
+  id: string;
+  label_en?: string;
+  label_vi?: string;
+  url?: string;
+  image?: string;
+  imageInFrame?: string;
+  enabled?: boolean;
+  className?: string;
+  imageClass?: string;
+  positionTitleClass?: string;
+  position?: { x: string | number; y: string | number };
+  positionImage?: { x: string | number; y: string | number };
 }
 
 export interface Address {

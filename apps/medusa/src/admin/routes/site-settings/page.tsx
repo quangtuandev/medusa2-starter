@@ -11,9 +11,68 @@ import {
   toast,
   Text,
   Textarea,
+  Switch,
 } from "@medusajs/ui"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { sdk } from "../../lib/sdk.js"
+
+export interface FormCategoryItem {
+  id: string
+  label_en: string
+  label_vi: string
+  url: string
+  imageInFrame: string
+  image: string
+  enabled: boolean
+}
+
+const DEFAULT_MENU_CATEGORY_ITEMS = [
+  {
+    id: "blog",
+    title: "Blog",
+    defaultLabelEn: "Blog",
+    defaultLabelVi: "Bài viết",
+    defaultUrl: "/blogs",
+    defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/blog.webp",
+    defaultImage: "/assets/images/menu/frame2.webp",
+  },
+  {
+    id: "product",
+    title: "Product",
+    defaultLabelEn: "Product",
+    defaultLabelVi: "Sản phẩm",
+    defaultUrl: "/products",
+    defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/product.webp",
+    defaultImage: "/assets/images/menu/frame3.webp",
+  },
+  {
+    id: "story",
+    title: "Story",
+    defaultLabelEn: "Story",
+    defaultLabelVi: "Câu chuyện",
+    defaultUrl: "/stories",
+    defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/story.webp",
+    defaultImage: "/assets/images/menu/frame2.webp",
+  },
+  {
+    id: "contact",
+    title: "Contact",
+    defaultLabelEn: "Contact",
+    defaultLabelVi: "Liên hệ",
+    defaultUrl: "/contact",
+    defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/contact.webp",
+    defaultImage: "/assets/images/menu/frame1.webp",
+  },
+  {
+    id: "store",
+    title: "Store",
+    defaultLabelEn: "Stores",
+    defaultLabelVi: "Cửa hàng",
+    defaultUrl: "/store",
+    defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/store.webp",
+    defaultImage: "/assets/images/menu/frame2.webp",
+  },
+]
 
 const SiteSettingsPage = () => {
   const queryClient = useQueryClient()
@@ -49,10 +108,50 @@ const SiteSettingsPage = () => {
     stories_mission_text_vi: "",
     stories_packaging_text_en: "",
     stories_packaging_text_vi: "",
+    menu_category_items: DEFAULT_MENU_CATEGORY_ITEMS.map((item) => ({
+      id: item.id,
+      label_en: "",
+      label_vi: "",
+      url: "",
+      imageInFrame: "",
+      image: "",
+      enabled: true,
+    })) as FormCategoryItem[],
   })
 
   useEffect(() => {
     if (data?.settings) {
+      const savedCategoryItems = Array.isArray(data.settings.menu_category_items)
+        ? data.settings.menu_category_items
+        : []
+
+      const mergedCategoryItems: FormCategoryItem[] = DEFAULT_MENU_CATEGORY_ITEMS.map((def) => {
+        const found = savedCategoryItems.find((ci: any) => ci.id === def.id)
+        return {
+          id: def.id,
+          label_en: found?.label_en || "",
+          label_vi: found?.label_vi || "",
+          url: found?.url || "",
+          imageInFrame: found?.imageInFrame || "",
+          image: found?.image || "",
+          enabled: found?.enabled !== false,
+        }
+      })
+
+      savedCategoryItems.forEach((ci: any) => {
+        if (!mergedCategoryItems.some((m) => m.id === ci.id)) {
+          mergedCategoryItems.push({
+            id: ci.id,
+            label_en: ci.label_en || "",
+            label_vi: ci.label_vi || "",
+            url: ci.url || "",
+            imageInFrame: ci.imageInFrame || "",
+            image: ci.image || "",
+            enabled: ci.enabled !== false,
+          })
+        }
+      })
+
       setForm({
         menu_this_is_en: data.settings.menu_this_is_en || "THIS IS",
         menu_this_is_vi: data.settings.menu_this_is_vi || "ĐÂY LÀ",
@@ -74,9 +173,49 @@ const SiteSettingsPage = () => {
         stories_mission_text_vi: data.settings.stories_mission_text_vi || "",
         stories_packaging_text_en: data.settings.stories_packaging_text_en || "",
         stories_packaging_text_vi: data.settings.stories_packaging_text_vi || "",
+        menu_category_items: mergedCategoryItems,
       })
     }
   }, [data])
+
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null)
+
+  const handleCategoryItemChange = (
+    index: number,
+    field: keyof FormCategoryItem,
+    value: any
+  ) => {
+    setForm((prev) => {
+      const updated = [...prev.menu_category_items]
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      }
+      return {
+        ...prev,
+        menu_category_items: updated,
+      }
+    })
+  }
+
+  const handleFileUpload = async (index: number, file: File) => {
+    setUploadingIndex(index)
+    try {
+      const response = await sdk.admin.upload.create({
+        files: [file],
+      })
+      const fileUrl = response.files[0]?.url
+      if (fileUrl) {
+        handleCategoryItemChange(index, "imageInFrame", fileUrl)
+        toast.success("Tải ảnh lên thành công!")
+      }
+    } catch (error: any) {
+      console.error("Upload failed", error)
+      toast.error(error?.message || "Tải ảnh thất bại")
+    } finally {
+      setUploadingIndex(null)
+    }
+  }
 
   const mutation = useMutation({
     mutationFn: async (payload: typeof form) => {
@@ -193,6 +332,158 @@ const SiteSettingsPage = () => {
                 placeholder="e.g. CỦA CHÚNG TÔI"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Main Menu Category Items */}
+        <div className="bg-ui-bg-subtle p-6 rounded-xl border border-ui-border-base space-y-6">
+          <div>
+            <Heading level="h2" className="text-base font-semibold">
+              Main Menu Category Items ("Các mục Menu điều hướng")
+            </Heading>
+            <Text className="text-ui-fg-muted text-xs mt-0.5">
+              Tùy chỉnh tên hiển thị song ngữ, liên kết URL và ảnh nội dung bên trong khung tranh (hỗ trợ upload file ảnh hoặc điền link ảnh trực tiếp). Nếu để trống trường nào, hệ thống sẽ sử dụng giá trị mặc định của trường đó.
+            </Text>
+          </div>
+
+          <div className="space-y-4">
+            {form.menu_category_items.map((catItem, idx) => {
+              const defaultMeta = DEFAULT_MENU_CATEGORY_ITEMS.find((d) => d.id === catItem.id)
+              return (
+                <div
+                  key={catItem.id}
+                  className="p-4 bg-ui-bg-base rounded-lg border border-ui-border-base space-y-4"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-ui-border-base">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm capitalize">
+                        {defaultMeta?.title || catItem.id}
+                      </span>
+                      <span className="text-xs bg-ui-bg-subtle px-2 py-0.5 rounded text-ui-fg-muted font-mono">
+                        id: {catItem.id}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor={`enabled-${catItem.id}`} className="text-xs font-medium cursor-pointer">
+                        {catItem.enabled ? "Đang bật" : "Đã tắt"}
+                      </Label>
+                      <Switch
+                        id={`enabled-${catItem.id}`}
+                        checked={catItem.enabled}
+                        onCheckedChange={(checked) =>
+                          handleCategoryItemChange(idx, "enabled", checked)
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">
+                        Tên hiển thị (English)
+                      </Label>
+                      <Input
+                        value={catItem.label_en}
+                        onChange={(e) =>
+                          handleCategoryItemChange(idx, "label_en", e.target.value)
+                        }
+                        placeholder={`Mặc định: ${defaultMeta?.defaultLabelEn || catItem.id}`}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">
+                        Tên hiển thị (Tiếng Việt)
+                      </Label>
+                      <Input
+                        value={catItem.label_vi}
+                        onChange={(e) =>
+                          handleCategoryItemChange(idx, "label_vi", e.target.value)
+                        }
+                        placeholder={`Mặc định: ${defaultMeta?.defaultLabelVi || catItem.id}`}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label className="text-xs font-semibold">
+                        Đường dẫn liên kết (URL)
+                      </Label>
+                      <Input
+                        value={catItem.url}
+                        onChange={(e) =>
+                          handleCategoryItemChange(idx, "url", e.target.value)
+                        }
+                        placeholder={`Mặc định: ${defaultMeta?.defaultUrl || "/"}`}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label className="text-xs font-semibold">
+                        Ảnh nội dung trong khung (Image in frame)
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          id={`upload-file-${catItem.id}`}
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              handleFileUpload(idx, file)
+                            }
+                            e.target.value = ""
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="small"
+                          isLoading={uploadingIndex === idx}
+                          onClick={() => {
+                            document.getElementById(`upload-file-${catItem.id}`)?.click()
+                          }}
+                          className="shrink-0"
+                        >
+                          Upload ảnh
+                        </Button>
+                        <Input
+                          value={catItem.imageInFrame}
+                          onChange={(e) =>
+                            handleCategoryItemChange(idx, "imageInFrame", e.target.value)
+                          }
+                          placeholder={`Hoặc điền URL / đường dẫn ảnh (Mặc định: ${defaultMeta?.defaultImageInFrame || ""})`}
+                        />
+                        {catItem.imageInFrame && (
+                          <Button
+                            type="button"
+                            variant="transparent"
+                            size="small"
+                            onClick={() => handleCategoryItemChange(idx, "imageInFrame", "")}
+                            className="text-xs text-ui-fg-muted hover:text-ui-fg-danger shrink-0"
+                          >
+                            Xóa tùy chỉnh
+                          </Button>
+                        )}
+                      </div>
+                      {/* Preview thumbnail */}
+                      <div className="flex items-center gap-3 pt-1">
+                        <img
+                          src={catItem.imageInFrame || defaultMeta?.defaultImageInFrame}
+                          alt={catItem.id}
+                          className="w-12 h-12 object-contain bg-ui-bg-subtle border border-ui-border-base rounded p-1"
+                        />
+                        <span className="text-[11px] text-ui-fg-muted">
+                          {catItem.imageInFrame
+                            ? "Đang dùng ảnh tùy chỉnh (upload hoặc URL)"
+                            : `Đang dùng ảnh mặc định (${defaultMeta?.defaultImageInFrame || ""})`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
 
