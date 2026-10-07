@@ -18908,6 +18908,7 @@ const getProductMorphingShape = (product2) => {
 };
 const getCustomizationTitles = (title) => {
   let str = title.trim();
+  if (str.length < 5) return [str];
   if (str.includes(" ")) {
     const [first2, ...rest] = str.split(/\s+/);
     return [first2, "_" + rest.join(" ")];
@@ -19668,7 +19669,7 @@ const HeaderSideNav = ({ open, setOpen, activeSection }) => {
         leave: "transform transition ease-in-out duration-200",
         leaveFrom: "translate-x-0",
         leaveTo: "translate-x-full",
-        children: /* @__PURE__ */ jsx(Dialog.Panel, { className: "pointer-events-auto w-screen bg-[url('/assets/images/menu/bg-mobile.webp')]", children: /* @__PURE__ */ jsx("div", { className: "flex h-full flex-col shadow-xl", children: /* @__PURE__ */ jsxs("div", { className: "flex-1 px-4 py-6 sm:px-6", children: [
+        children: /* @__PURE__ */ jsx(Dialog.Panel, { className: "pointer-events-auto w-screen bg-[url('/assets/images/menu/bg-mobile.webp')]", children: /* @__PURE__ */ jsx("div", { className: "flex h-full flex-col shadow-xl", children: /* @__PURE__ */ jsxs("div", { className: "flex-1 overflow-y-auto px-4 py-6 sm:px-6", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
             /* @__PURE__ */ jsxs(Dialog.Title, { className: "text-lg font-bold text-gray-900", children: [
               /* @__PURE__ */ jsx("span", { className: "font-title font-bold text-4xl uppercase text-black", children: "This " }),
@@ -20434,11 +20435,16 @@ const MenuToggle = ({
   );
 };
 function FancyText({ id, text, className }) {
-  return /* @__PURE__ */ jsxs("p", { id, className: clsx("font-centuryBook font-bold uppercase lg:hidden block pointer-events-none absolute bottom-0", className), children: [
-    /* @__PURE__ */ jsx("span", { className: "italic lg:text-[100px] text-[50px]", children: text.slice(0, 1) }),
-    /* @__PURE__ */ jsx("span", { className: "font-title lg:text-[65px] text-[40px]", children: text.slice(1) })
+  return /* @__PURE__ */ jsxs("p", { id, className: clsx("font-centuryBook font-bold uppercase desk:hidden block pointer-events-none absolute bottom-0", className), children: [
+    /* @__PURE__ */ jsx("span", { className: "italic desk:text-[100px] text-[50px]", children: text.slice(0, 1) }),
+    /* @__PURE__ */ jsx("span", { className: "font-title desk:text-[65px] text-[40px]", children: text.slice(1) })
   ] });
 }
+const MENU_ARTBOARD_WIDTH = 1840;
+const MENU_CONTENT_WIDTH = 1520;
+const MENU_EDGE_GAP = 24;
+const MENU_MAX_SCALE = 1.12;
+const MENU_DESKTOP_MIN_WIDTH = 769;
 const DEFAULT_CATEGORY_ITEMS = [
   {
     id: "blog",
@@ -20505,7 +20511,7 @@ const DEFAULT_CATEGORY_ITEMS = [
     positionTitleClass: "left-1/2 top-[calc(100%+30px)] translate-x-[-50%]",
     position: {
       x: "-10%",
-      y: "-300px"
+      y: "-220px"
     },
     positionImage: {
       x: "-10%",
@@ -20537,6 +20543,17 @@ const MainMenu = ({ handleMenuToggle }) => {
   const rootData = useRootLoaderData();
   const [isHovering, setIsHovering] = useState(false);
   const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [viewportWidth, setViewportWidth] = useState(
+    () => typeof document === "undefined" ? 0 : document.documentElement.clientWidth || window.innerWidth
+  );
+  useEffect(() => {
+    const updateViewportWidth = () => setViewportWidth(document.documentElement.clientWidth || window.innerWidth);
+    updateViewportWidth();
+    window.addEventListener("resize", updateViewportWidth);
+    return () => window.removeEventListener("resize", updateViewportWidth);
+  }, []);
+  const isDesktopMenu = !viewportWidth || viewportWidth >= MENU_DESKTOP_MIN_WIDTH;
+  const menuZoom = viewportWidth ? Math.min(MENU_MAX_SCALE, (viewportWidth - MENU_EDGE_GAP * 2) / MENU_CONTENT_WIDTH) : 1;
   const menuThisIs = currentLanguage === "vi" ? ((_b = (_a = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _a.settings) == null ? void 0 : _b.menu_this_is_vi) || t2("home.thisIs") : ((_d = (_c = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _c.settings) == null ? void 0 : _d.menu_this_is_en) || t2("home.thisIs");
   const menuOur = currentLanguage === "vi" ? ((_f = (_e = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _e.settings) == null ? void 0 : _f.menu_our_vi) || t2("home.our") : ((_h = (_g = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _g.settings) == null ? void 0 : _h.menu_our_en) || t2("home.our");
   const configuredItems = (_j = (_i = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _i.settings) == null ? void 0 : _j.menu_category_items;
@@ -20633,51 +20650,65 @@ const MainMenu = ({ handleMenuToggle }) => {
     setIsHovering(false);
     setHoveredItemId(null);
   };
-  return /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden", children: [
-    /* @__PURE__ */ jsxs("div", { className: "h-full w-full overflow-x-scroll lg:overflow-x-hidden", children: [
-      /* @__PURE__ */ jsxs("div", { className: "lg:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] desk:overflow-hidden", children: [
+    /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" }),
+    /* @__PURE__ */ jsxs("div", { className: "h-full w-full overflow-x-scroll desk:overflow-x-hidden", children: [
+      /* @__PURE__ */ jsxs("div", { className: "desk:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6", children: [
         /* @__PURE__ */ jsxs("span", { className: "font-title font-bold text-4xl uppercase text-black", children: [
           menuThisIs,
           " "
         ] }),
         /* @__PURE__ */ jsx("span", { className: "flex gap-2", children: /* @__PURE__ */ jsx("span", { className: "font-centuryBook italic font-normal text-4xl text-white leading-none mt-1", children: menuOur }) })
       ] }),
-      /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" }),
-      /* @__PURE__ */ jsx("div", { className: "lg:w-[1840px] z-[9999] h-full justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 items-center overflow-x-scroll lg:overflow-hidden lg:[zoom:0.8] xl:[zoom:1] lg:left-1/2 lg:top-1/2 lg:translate-x-[-50%] lg:translate-y-[-50%]", children: categoryItems.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(
-        Link$1,
+      /* @__PURE__ */ jsx(
+        "div",
         {
-          to: item.url,
-          className: clsx("absolute", item.className, isHovering && hoveredItemId !== item.id && "[filter:brightness(0.5)]"),
-          onClick: handleMenuToggle,
-          id: item.id,
-          onMouseEnter: () => {
-            handleMouseEnter(item);
-          },
-          onMouseLeave: () => {
-            handleMouseLeave(item);
-          },
-          children: [
-            /* @__PURE__ */ jsx("div", { className: clsx("pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]", item.positionTitleClass, isHovering && hoveredItemId === item.id && "hidden"), children: /* @__PURE__ */ jsx("span", { className: "relative z-[2]", children: item.label }) }),
-            /* @__PURE__ */ jsxs("div", { className: "flex flex-col-reverse lg:flex-col items-center justify-center z-[9999]", children: [
-              /* @__PURE__ */ jsxs("div", { id: `menu-image-${item.id}`, className: clsx("object-contain menu-image z-[-2] hidden lg:block relative", item.imageClass), children: [
-                /* @__PURE__ */ jsx("img", { className: "", src: item.image, alt: item.label }),
-                /* @__PURE__ */ jsx("img", { src: item.imageInFrame, alt: item.label, className: "shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]" })
-              ] }),
-              /* @__PURE__ */ jsx(FancyText, { id: `fancy-text-${item.id}`, className: "text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]", text: item.label })
-            ] })
-          ]
-        },
-        item.id
-      ) }, item.id)) }),
-      /* @__PURE__ */ jsx(MenuToggle, { isOpen: true, onClick: handleMenuToggle, className: clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && "z-[9999]") })
+          className: "z-[9999] h-full justify-center desk:absolute flex flex-col desk:flex-row items-center overflow-x-scroll desk:overflow-hidden desk:left-1/2 desk:top-1/2",
+          style: isDesktopMenu ? { width: MENU_ARTBOARD_WIDTH, transform: `translate(-50%, -50%) scale(${menuZoom})` } : void 0,
+          children: categoryItems.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(
+            Link$1,
+            {
+              to: item.url,
+              className: clsx("absolute", item.className, isHovering && hoveredItemId !== item.id && "[filter:brightness(0.5)]"),
+              onClick: handleMenuToggle,
+              id: item.id,
+              onMouseEnter: () => {
+                handleMouseEnter(item);
+              },
+              onMouseLeave: () => {
+                handleMouseLeave(item);
+              },
+              children: [
+                /* @__PURE__ */ jsx("div", { className: clsx("pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]", item.positionTitleClass, isHovering && hoveredItemId === item.id && "hidden"), children: /* @__PURE__ */ jsx("span", { className: "relative z-[2]", children: item.label }) }),
+                /* @__PURE__ */ jsxs("div", { className: "flex flex-col-reverse desk:flex-col items-center justify-center z-[9999]", children: [
+                  /* @__PURE__ */ jsxs("div", { id: `menu-image-${item.id}`, className: clsx("object-contain menu-image z-[-2] hidden desk:block relative", item.imageClass), children: [
+                    /* @__PURE__ */ jsx("img", { className: "", src: item.image, alt: item.label }),
+                    /* @__PURE__ */ jsx("img", { src: item.imageInFrame, alt: item.label, className: "shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]" })
+                  ] }),
+                  /* @__PURE__ */ jsx(FancyText, { id: `fancy-text-${item.id}`, className: "text-center desk:absolute text-black desk:text-[#FFE977] desk:text-white desk:leading-[0] z-[9]", text: item.label })
+                ] })
+              ]
+            },
+            item.id
+          ) }, item.id))
+        }
+      ),
+      /* @__PURE__ */ jsx(MenuToggle, { isOpen: true, onClick: handleMenuToggle, className: clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 desk:right-11", !isHovering && "z-[9999]") })
     ] }),
-    /* @__PURE__ */ jsxs("p", { className: clsx(
-      "absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block transition-all duration-300 ease-in-out",
-      "opacity-100 translate-y-0"
-    ), children: [
-      /* @__PURE__ */ jsx("span", { className: "font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative", children: menuThisIs }),
-      /* @__PURE__ */ jsx("span", { className: "font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]", children: menuOur })
-    ] })
+    /* @__PURE__ */ jsxs(
+      "p",
+      {
+        className: clsx(
+          "absolute bottom-[14vh] w-full text-center z-[9999] pointer-events-none hidden desk:block transition-all duration-300 ease-in-out",
+          "opacity-100 translate-y-0"
+        ),
+        style: isDesktopMenu ? { transform: `scale(${menuZoom})`, transformOrigin: "bottom center" } : void 0,
+        children: [
+          /* @__PURE__ */ jsx("span", { className: "font-title font-bold text-[90px] uppercase z-[2] relative", children: menuThisIs }),
+          /* @__PURE__ */ jsx("span", { className: "font-centuryBook font-italic text-[180px] italic text-[#FFE977] -ml-[100px] z-[1]", children: menuOur })
+        ]
+      }
+    )
   ] });
 };
 const PopupDialog = () => {
@@ -20686,6 +20717,7 @@ const PopupDialog = () => {
   const navigate = useNavigate();
   const [activePopup, setActivePopup] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   useEffect(() => {
     let isMounted = true;
     let timer = null;
@@ -20736,6 +20768,7 @@ const PopupDialog = () => {
         const delay = (matched.delay_seconds || 0) * 1e3;
         timer = setTimeout(() => {
           if (isMounted) {
+            setImageFailed(false);
             setActivePopup(matched);
             setIsVisible(true);
             if (matched.display_frequency === "once_per_session") {
@@ -20790,7 +20823,7 @@ const PopupDialog = () => {
         animate: { opacity: 1, scale: 1, y: 0 },
         exit: { opacity: 0, scale: 0.9, y: 20 },
         transition: { type: "spring", stiffness: 350, damping: 25 },
-        className: "relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl z-10",
+        className: "relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white shadow-2xl",
         children: [
           /* @__PURE__ */ jsx(
             "button",
@@ -20801,15 +20834,16 @@ const PopupDialog = () => {
               children: /* @__PURE__ */ jsx(X, { size: 18 })
             }
           ),
-          activePopup.image && /* @__PURE__ */ jsx("div", { className: "relative w-full h-48 sm:h-56 overflow-hidden", children: /* @__PURE__ */ jsx(
+          activePopup.image && !imageFailed && /* @__PURE__ */ jsx("div", { className: "relative flex w-full shrink-0 items-center justify-center overflow-hidden bg-gray-100", children: /* @__PURE__ */ jsx(
             "img",
             {
               src: activePopup.image,
               alt: title,
-              className: "w-full h-full object-cover"
+              onError: () => setImageFailed(true),
+              className: "max-h-[45vh] w-full object-contain"
             }
           ) }),
-          /* @__PURE__ */ jsxs("div", { className: "p-6 sm:p-8 text-center space-y-4", children: [
+          /* @__PURE__ */ jsxs("div", { className: "min-h-0 flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "font-title font-extrabold text-2xl sm:text-3xl text-gray-900 leading-tight", children: title }),
             description && /* @__PURE__ */ jsx("p", { className: "font-montserrat text-sm sm:text-base text-gray-600 leading-relaxed max-w-md mx-auto whitespace-pre-line", children: description }),
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2.5 pt-4", children: [
@@ -21060,7 +21094,7 @@ const CountryRegionModal = ({
   ] }) });
 };
 const Page = ({ className, children }) => {
-  const hiddenHeaderPaths = ["/", "/store"];
+  const hiddenHeaderPaths = ["/"];
   const hiddenFooterPaths = ["/", "/stories", "/products"];
   const injectMenuPaths = ["/stories"];
   const matches = useMatches();
@@ -21070,12 +21104,14 @@ const Page = ({ className, children }) => {
   const { toggleCartDrawer } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const isInjectMenu = injectMenuPaths.includes((currentMatch == null ? void 0 : currentMatch.pathname) || "");
+  const isSingleScreenPage = isInjectMenu;
   const isMobile = useIsMobile();
   return /* @__PURE__ */ jsxs(
     "div",
     {
       className: clsx(
-        "page-layout flex min-h-screen flex-col bg-white",
+        "page-layout flex flex-col bg-white",
+        isSingleScreenPage ? "h-[100dvh] overflow-hidden" : "min-h-screen",
         className
       ),
       children: [
@@ -21085,11 +21121,18 @@ const Page = ({ className, children }) => {
         /* @__PURE__ */ jsx(CountryRegionModal, { autoShowOnFirstVisit: true }),
         !isHiddenHeader && /* @__PURE__ */ jsx(Header, {}),
         isInjectMenu && /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx(MenuToggle, { isOpen, onClick: () => setIsOpen(!isOpen), className: "fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" }),
+          /* @__PURE__ */ jsx(
+            MenuToggle,
+            {
+              isOpen,
+              onClick: () => setIsOpen(!isOpen),
+              className: "fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040] hidden lg:inline-flex"
+            }
+          ),
           isOpen && !isMobile && /* @__PURE__ */ jsx(MainMenu, { handleMenuToggle: () => setIsOpen(false) }),
           isMobile && /* @__PURE__ */ jsx(HeaderSideNav, { open: isOpen, setOpen: setIsOpen })
         ] }),
-        /* @__PURE__ */ jsx("main", { className: clsx("flex-auto", isOpen && "hidden"), children: /* @__PURE__ */ jsx("div", { className: "w-full", children }) }),
+        /* @__PURE__ */ jsx("main", { className: clsx(isSingleScreenPage ? "relative min-h-0 flex-auto" : "flex-auto", isOpen && "hidden"), children: /* @__PURE__ */ jsx("div", { className: "w-full", children }) }),
         !isHiddenFooter && /* @__PURE__ */ jsx(Footer, {}),
         !isHiddenHeader && /* @__PURE__ */ jsxs(Fragment, { children: [
           /* @__PURE__ */ jsx(
@@ -22859,25 +22902,15 @@ const DynamicCollection = ({
   image,
   imageActive,
   title,
-  linkto,
   isActive,
   isAnyActive,
   className
 }) => {
-  const navigate = useNavigate();
   const showActiveDirectly = Boolean(imageActive) && isActive;
   const isHoverEnabled = Boolean(imageActive) && !isActive && !isAnyActive;
-  const handleClick = (e) => {
-    if (!isActive) return;
-    if (linkto) {
-      e.stopPropagation();
-      navigate(linkto);
-    }
-  };
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      onClick: handleClick,
       className: clsx(
         "group relative flex overflow-hidden w-full h-full select-none",
         isActive ? "cursor-pointer" : "",
@@ -22916,11 +22949,13 @@ function isOutsideElement(element, target) {
 const HalfFanSlider = ({
   sliderCards,
   activeHandle,
+  collectionHandles,
   onDisplayCardChange,
   className
 }) => {
   const { t: t2, currentLanguage } = useI18n();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
   const initialCards = useMemo(() => {
     if (sliderCards && sliderCards.length > 0) {
       return sliderCards.map((card) => {
@@ -22949,7 +22984,6 @@ const HalfFanSlider = ({
               image: card.image,
               imageActive: card.image_active || void 0,
               title,
-              linkto: card.linkto,
               isActive,
               isAnyActive
             }
@@ -23051,10 +23085,44 @@ const HalfFanSlider = ({
     });
     setHoveredIndex(null);
   };
-  const handleClick = useCallback((index) => {
+  const resolveCardTarget = (card) => {
+    var _a;
+    const linkto = (card.linkto || "").trim();
+    const handle = (card.handle || "").toLowerCase();
+    if (!linkto) return {};
+    if (/^https?:\/\//i.test(linkto)) return { href: linkto, external: true };
+    if (handle === "all" || /^all$/i.test(linkto)) return { href: "/collections" };
+    const isPath = linkto.startsWith("/");
+    const target = ((_a = /^\/collections\/([^/?#]+)/.exec(linkto)) == null ? void 0 : _a[1]) ?? (isPath ? null : linkto);
+    if (target) {
+      if (Array.isArray(collectionHandles) && !collectionHandles.includes(target)) {
+        return { comingSoon: true };
+      }
+      return { href: isPath ? linkto : `/collections/${target}` };
+    }
+    return isPath ? { href: linkto } : {};
+  };
+  const isComingSoonCard = (card) => card.handle === "coming" || !!resolveCardTarget(card).comingSoon;
+  const handleCardClick = (index) => {
+    const card = initialCards[index];
+    if (!card) return;
+    if (isComingSoonCard(card)) {
+      setActiveIndex(index);
+      setHoveredIndex(null);
+      return;
+    }
+    const { href, external } = resolveCardTarget(card);
+    if (href) {
+      if (external) {
+        window.location.href = href;
+      } else {
+        navigate(href);
+      }
+      return;
+    }
     setActiveIndex((prev2) => prev2 === index ? null : index);
     setHoveredIndex(null);
-  }, []);
+  };
   const handleSwipe = (event, info) => {
     if (!isMobile) return;
     const swipeThreshold = 50;
@@ -23138,11 +23206,12 @@ const HalfFanSlider = ({
           const transform = getCardTransform(i);
           const isCardActive = i === effectiveIndex;
           const isAnyActive = effectiveIndex !== null;
+          const showComingSoonBadge = !!resolveCardTarget(card).comingSoon;
           return /* @__PURE__ */ jsx(
             motion$1.div,
             {
               ref: isCardActive ? activeCardRef : void 0,
-              onClick: () => handleClick(i),
+              onClick: () => handleCardClick(i),
               className: clsx(
                 "absolute cursor-pointer collection-card-item",
                 {
@@ -23175,11 +23244,11 @@ const HalfFanSlider = ({
                 scale: isMobile ? 0.95 : 1.05,
                 transition: { type: "spring", stiffness: 300, damping: 18 }
               } : void 0,
-              children: /* @__PURE__ */ jsx(
+              children: /* @__PURE__ */ jsxs(
                 "div",
                 {
                   className: clsx(
-                    "w-full h-full rounded-[20px] xl:rounded-[30px] overflow-hidden border-[6px] xl:border-8 border-white ",
+                    "relative w-full h-full rounded-[20px] xl:rounded-[30px] overflow-hidden border-[6px] xl:border-8 border-white ",
                     {
                       "shadow-[1px_4px_10px_#53272763,3px_18px_18px_0px_#53272757,6px_40px_24px_0px_#53272733,12px_70px_28px_0px_#5327270F,18px_110px_31px_0px_#53272703]": isCardActive,
                       "border-0": !isCardActive
@@ -23188,7 +23257,10 @@ const HalfFanSlider = ({
                   style: {
                     transform: isCardActive ? "perspective(1000px) rotateX(17deg)" : void 0
                   },
-                  children: card.component(isCardActive, isAnyActive)
+                  children: [
+                    card.component(isCardActive, isAnyActive),
+                    showComingSoonBadge && /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-3", children: /* @__PURE__ */ jsx("span", { className: "rounded-full bg-black/70 px-3 py-1 font-title text-[10px] xl:text-xs font-bold uppercase tracking-wider text-white", children: t2("products.coming") }) })
+                  ]
                 }
               )
             },
@@ -23261,7 +23333,7 @@ const HalfFanSlider = ({
             "text-[#FFE977]": displayCard.handle === "all",
             "text-[#A2D4FD]": displayCard.handle !== "all"
           }
-        ), children: displayCard.subtitle ? displayCard.subtitle : t2("products.collection") }),
+        ), children: isComingSoonCard(displayCard) ? t2("products.comingSoon") : displayCard.subtitle ? displayCard.subtitle : t2("products.collection") }),
         /* @__PURE__ */ jsx(
           "button",
           {
@@ -23318,7 +23390,9 @@ const loader$p = async ({
     limit,
     offset,
     collection,
-    slider_cards
+    slider_cards,
+    // Lets the slider tell which cards point at a collection that exists.
+    collectionHandles: collections.map((item) => item.handle)
   };
 };
 const collections_$collectionHandle = UNSAFE_withComponentProps(function ProductCollectionRoute() {
@@ -23331,14 +23405,16 @@ const collections_$collectionHandle = UNSAFE_withComponentProps(function Product
     limit,
     offset,
     collection,
-    slider_cards
+    slider_cards,
+    collectionHandles
   } = data2;
   const description = ((_a = collection.metadata) == null ? void 0 : _a.description) || "";
   return /* @__PURE__ */ jsxs("div", {
     className: "min-h-[max(calc(100vh-144px),_900px)] flex flex-col items-center w-full",
     children: [/* @__PURE__ */ jsx(HalfFanSlider, {
       sliderCards: slider_cards,
-      activeHandle: collection.handle
+      activeHandle: collection.handle,
+      collectionHandles
     }), /* @__PURE__ */ jsxs(Container, {
       className: "w-full pb-16 mt-8 xl:mt-16",
       children: [/* @__PURE__ */ jsxs("div", {
@@ -26484,7 +26560,12 @@ const blogs_$slugHandle = UNSAFE_withComponentProps(function BlogsIndexRoute() {
     }), /* @__PURE__ */ jsx("button", {
       id: "back-to-top",
       onClick: scrollToTop,
-      className: clsx("fixed bottom-8 right-8 z-50 transition-all duration-300 hover:scale-110 cursor-pointer", showBackToTop ? "opacity-100 visible" : "opacity-0 invisible"),
+      className: clsx(
+        // Sits above the floating cart button (bottom-6, 80px tall on mobile
+        // and 128px from xl) instead of being hidden behind it.
+        "fixed bottom-28 right-6 z-40 xl:bottom-44 transition-all duration-300 hover:scale-110 cursor-pointer",
+        showBackToTop ? "opacity-100 visible" : "opacity-0 invisible"
+      ),
       "aria-label": "Back to top",
       children: /* @__PURE__ */ jsxs("svg", {
         width: "56",
@@ -28068,6 +28149,7 @@ const products__index = UNSAFE_withComponentProps(function ProductsPage() {
     className: "min-h-[max(calc(100vh-144px),_900px)] flex flex-col items-center",
     children: [/* @__PURE__ */ jsx(HalfFanSlider, {
       sliderCards: slider_cards,
+      collectionHandles: collectionsWithProducts.map((collection) => collection.handle),
       onDisplayCardChange: setDisplayCard
     }), /* @__PURE__ */ jsx(Container, {
       className: "w-full pb-32 mt-12 xl:mt-24",
@@ -28423,7 +28505,12 @@ const pages_$slug = UNSAFE_withComponentProps(function PagesRoute() {
     }), /* @__PURE__ */ jsx("button", {
       id: "back-to-top",
       onClick: scrollToTop,
-      className: clsx("fixed bottom-8 right-8 z-50 transition-all duration-300 hover:scale-110 cursor-pointer", showBackToTop ? "opacity-100 visible" : "opacity-0 invisible"),
+      className: clsx(
+        // Sits above the floating cart button (bottom-6, 80px tall on mobile
+        // and 128px from xl) instead of being hidden behind it.
+        "fixed bottom-28 right-6 z-40 xl:bottom-44 transition-all duration-300 hover:scale-110 cursor-pointer",
+        showBackToTop ? "opacity-100 visible" : "opacity-0 invisible"
+      ),
       "aria-label": "Back to top",
       children: /* @__PURE__ */ jsxs("svg", {
         width: "56",
@@ -28848,11 +28935,11 @@ const route42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
 const DEFAULT_STORIES = {
   titleTop: {
     en: "THIS",
-    vi: "ĐÂY LÀ"
+    vi: "THIS"
   },
   titleBottom: {
     en: "IS Our",
-    vi: "CỦA CHÚNG TÔI"
+    vi: "IS Our"
   },
   storyLabel: {
     en: "STORY",
@@ -28879,6 +28966,7 @@ const DEFAULT_STORIES = {
     vi: "Điểm đặc biệt ở Kira là bao bì hoàn toàn từ giấy và bã mía, áp dụng phương pháp tái chế và bảo tồn tài nguyên vô cùng thân thiện để bảo vệ môi trường. Cụ thể, bao bì cho những chai nước hoa trong bộ sưu tập đầu tiên là chiếc cốc giấy dùng cho cà phê hằng ngày, thứ mà bạn thường bỏ đi ngay sau khi dùng. Tuy nhiên, tại Kira, chiếc cốc giấy này sẽ lưu giữ những kỷ niệm và niềm vui dài lâu mà không hề mang lại cảm giác lãng phí."
   }
 };
+const TEXT_CARD_CLASS = "absolute z-10 bg-center bg-repeat text-center border border-[#000000] rounded-xl shadow-[0px_4px_10px_0px_#00000040] font-montserrat font-medium text-xs leading-[16px] px-5 py-3 max-h-[80%] overflow-y-auto";
 const stories = UNSAFE_withComponentProps(function Stories() {
   var _a;
   const {
@@ -28887,6 +28975,7 @@ const stories = UNSAFE_withComponentProps(function Stories() {
   const rootData = useRootLoaderData();
   const settings = ((_a = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _a.settings) || {};
   const isVi = currentLanguage === "vi";
+  const [activeIndex, setActiveIndex] = useState(0);
   const getText = (viVal, enVal, defaultVi = "", defaultEn = "") => {
     if (isVi) {
       return (viVal == null ? void 0 : viVal.trim()) || ((enVal == null ? void 0 : enVal.trim()) ? enVal.trim() : defaultVi);
@@ -28928,193 +29017,165 @@ const stories = UNSAFE_withComponentProps(function Stories() {
     id: "item-story",
     alt: "Story",
     image: "/assets/images/stories/stories.webp",
-    className: "w-full h-[85vh] object-contain",
-    classNameWrapper: "items-end",
-    background: "/assets/images/stories/background-story.webp",
+    className: "w-full h-[85%] object-contain",
     text: storyText,
-    classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[630px] w-[90vw] px-5 py-2 rotate-[-6deg]",
-    classNameTextWrapper: "lg:left-[20%] left-[0%] lg:top-[30vh] top-[40vh]",
+    classNameText: clsx("top-[16%] left-[6%] w-[88vw] rotate-[-6deg]", "lg:top-[6%] lg:left-[20%] lg:w-[60%] lg:max-h-[88%] lg:text-[18px] lg:leading-[28.24px]"),
     items: [{
       src: "/assets/images/stories/items/story-1.webp",
-      className: "top-1/2 -translate-y-1/2 left-0 h-[16vh] object-contain"
+      className: "top-1/2 -translate-y-1/2 left-0 h-[16%] object-contain"
     }, {
       src: "/assets/images/stories/items/story-2.webp",
-      className: "top-[30vh] left-[10%] h-[20vh] object-contain"
+      className: "top-[30%] left-[10%] h-[20%] object-contain"
     }, {
       src: "/assets/images/stories/items/story-3.webp",
-      className: "top-[25vh] right-[10%] h-[19vh] object-contain"
+      className: "top-[25%] right-[10%] h-[19%] object-contain"
     }, {
       src: "/assets/images/stories/items/story-4.webp",
-      className: "top-[75vh] right-[10%] h-[25vh] object-contain"
+      className: "top-[75%] right-[10%] h-[25%] object-contain"
     }, {
       src: "/assets/images/stories/items/story-5.webp",
-      className: "top-[65vh] right-[3%] h-[18vh] object-contain"
+      className: "top-[65%] right-[3%] h-[18%] object-contain"
     }, {
       src: "/assets/images/stories/items/story-6.webp",
-      className: "top-[55vh] right-[-5%] h-[20vh] object-contain"
+      className: "top-[55%] right-[-5%] h-[20%] object-contain"
     }]
   }, {
     id: "item-mission",
     alt: "Mission",
     image: "/assets/images/stories/mission.webp",
-    className: "w-full h-[85vh] object-contain",
-    classNameWrapper: "",
-    background: "/assets/images/stories/background-mission.webp",
+    className: "w-full h-[85%] object-contain",
     text: missionText,
-    classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[630px] w-[90vw] px-5 py-2 rotate-[3deg]",
-    classNameTextWrapper: "lg:left-[20%] left-[0%] lg:bottom-[10vh] bottom-[0vh]",
+    classNameText: clsx("top-[20%] left-[6%] w-[88vw] rotate-[3deg]", "lg:top-[62%] lg:left-[20%] lg:w-[62%] lg:max-h-[36%] lg:text-[18px] lg:leading-[28.24px]"),
     items: [{
       src: "/assets/images/stories/items/mission-1.webp",
-      className: "top-[55vh] left-0 h-[20vh] object-contain"
+      className: "top-[55%] left-0 h-[20%] object-contain"
     }, {
       src: "/assets/images/stories/items/mission-2.webp",
-      className: "top-[52vh] left-[10%] h-[12vh] object-contain"
+      className: "top-[52%] left-[10%] h-[12%] object-contain"
     }, {
       src: "/assets/images/stories/items/mission-3.webp",
-      className: "top-[45vh] left-[17%] h-[18vh] object-contain"
+      className: "top-[45%] left-[17%] h-[18%] object-contain"
     }, {
       src: "/assets/images/stories/items/mission-4.webp",
-      className: "top-[5vh] left-[28%] h-[20vh] object-contain"
+      className: "top-[5%] left-[28%] h-[20%] object-contain"
     }, {
       src: "/assets/images/stories/items/mission-5.webp",
-      className: "top-[55vh] right-[15%] h-[18vh] object-contain"
+      className: "top-[55%] right-[15%] h-[18%] object-contain"
     }, {
       src: "/assets/images/stories/items/mission-6.webp",
-      className: "top-[30vh] right-0 h-[18vh] object-contain"
+      className: "top-[30%] right-0 h-[18%] object-contain"
     }]
   }, {
     id: "item-packaging",
     alt: "Packaging",
     image: "/assets/images/stories/packaging.webp",
-    className: "w-full h-[80vh] object-contain",
-    background: "/assets/images/stories/background-packaging.webp",
-    classNameWrapper: "items-end",
+    className: "w-full h-[80%] object-contain",
     text: packagingText,
-    classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[830px] w-[90vw] text-white px-5 py-2 rotate-[-5deg]",
-    classNameTextWrapper: "lg:right-[12vh] right-[2%] lg:top-[40vh] top-[50vh]",
+    classNameText: clsx("top-[12%] left-[6%] w-[88vw] text-white rotate-[-5deg]", "lg:top-[9%] lg:left-[22%] lg:w-[74%] lg:max-h-[87%] lg:text-[18px] lg:leading-[28.24px]"),
     items: [{
       src: "/assets/images/stories/items/pack-1.webp",
-      className: "top-[60vh] left-[-10%] h-[20vh] object-contain"
+      className: "top-[60%] left-[-10%] h-[20%] object-contain"
     }, {
       src: "/assets/images/stories/items/pack-2.webp",
-      className: "top-[55vh] left-[3%] h-[12vh] object-contain"
+      className: "top-[55%] left-[3%] h-[12%] object-contain"
     }, {
       src: "/assets/images/stories/items/pack-3.webp",
-      className: "top-[46vh] left-[17%] h-[11vh] object-contain"
+      className: "top-[46%] left-[17%] h-[11%] object-contain"
     }, {
       src: "/assets/images/stories/items/pack-4.webp",
-      className: "top-[31vh] left-[25%] h-[15vh] object-contain"
+      className: "top-[31%] left-[25%] h-[15%] object-contain"
     }, {
       src: "/assets/images/stories/items/pack-5.webp",
-      className: "top-[7vh] left-1/2 h-[18vh] object-contain"
+      className: "top-[7%] left-1/2 h-[18%] object-contain"
     }, {
       src: "/assets/images/stories/items/pack-6.webp",
-      className: "top-[33vh] right-[7%] h-[23vh] object-contain"
+      className: "top-[33%] right-[7%] h-[23%] object-contain"
     }]
   }];
-  const handleItemClick = (id) => {
-    const element = document.getElementById(`item-${id}`);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center"
-      });
-    }
+  const total = items.length;
+  const goToSlide = (index) => {
+    setActiveIndex(Math.min(Math.max(index, 0), total - 1));
   };
-  const handleBackClick = () => {
-    const element = document.getElementById(`stories-container`);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "start"
-      });
-    }
-  };
-  return /* @__PURE__ */ jsxs(motion.div, {
+  return /* @__PURE__ */ jsxs("div", {
     id: "stories-container",
-    className: clsx("min-h-screen w-[400vw] lg:w-auto lg:aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"),
-    style: {
-      overflow: "hidden"
-    },
-    initial: {
-      x: 0
-    },
-    animate: {
-      x: 0
-    },
-    transition: {
-      type: "spring",
-      stiffness: 70,
-      damping: 20
-    },
+    className: "absolute inset-0 flex flex-col overflow-hidden bg-white lg:flex-row",
     children: [/* @__PURE__ */ jsxs("div", {
-      className: "w-[100vw] lg:w-[15%] flex flex-col px-4 py-6 lg:px-[45px] lg:py-[32px]",
+      className: "flex w-full shrink-0 flex-col px-4 py-4 lg:h-full lg:w-[35%] lg:px-[45px] lg:py-[32px] compact:flex-row compact:items-center compact:gap-3 compact:py-2",
       children: [/* @__PURE__ */ jsxs("p", {
-        className: "font-title font-bold lg:text-8xl text-4xl",
+        className: "font-title font-bold leading-none text-4xl lg:text-[min(6.7vw,96px)] compact:text-2xl",
         children: [/* @__PURE__ */ jsx("span", {
           children: titleTop
         }), " ", /* @__PURE__ */ jsx("br", {}), /* @__PURE__ */ jsx("span", {
-          className: "lg:ml-[14px] ml-1",
+          className: "ml-1 lg:ml-[14px]",
           children: renderBottomTitle(titleBottom)
         })]
-      }), /* @__PURE__ */ jsx("div", {
-        className: "flex flex-col gap-8 h-full flex-1 justify-center",
-        children: menu2.map((item) => /* @__PURE__ */ jsx("span", {
-          onClick: () => handleItemClick(item.id),
-          className: "font-title font-bold lg:text-[40px] text-2xl rounded-full border border-black mx-6 py-2 text-center hover:bg-[#FFE977] hover:border-[#FFE977] transition-all duration-300 ease-in-out cursor-pointer",
+      }), /* @__PURE__ */ jsx("nav", {
+        className: "flex flex-col gap-3 lg:h-full lg:flex-1 lg:justify-center lg:gap-8 compact:flex-1 compact:flex-row compact:items-center compact:justify-end compact:gap-2",
+        children: menu2.map((item, index) => /* @__PURE__ */ jsx("button", {
+          type: "button",
+          onClick: () => goToSlide(index),
+          "aria-current": activeIndex === index ? "true" : void 0,
+          className: clsx("font-title font-bold text-2xl lg:text-[min(2.8vw,40px)] rounded-full border border-black mx-6 py-2 text-center cursor-pointer transition-all duration-300 ease-in-out whitespace-nowrap compact:mx-0 compact:px-3 compact:py-1 compact:text-base", activeIndex === index ? "bg-[#FFE977] border-[#FFE977]" : "hover:bg-[#FFE977] hover:border-[#FFE977]"),
           children: item.label
         }, item.id))
       })]
-    }), /* @__PURE__ */ jsx("div", {
-      className: "w-[300vw] lg:w-[85%] bg-white",
-      children: /* @__PURE__ */ jsxs("div", {
-        className: "w-full h-full bg-cover bg-center overflow-hidden relative",
-        children: [/* @__PURE__ */ jsx(Grid, {
-          className: "h-[100vh] bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center",
-          children: items.map((item) => /* @__PURE__ */ jsxs(GridColumn, {
-            id: item.id,
-            className: clsx("col-span-4 flex relative", item.classNameWrapper),
-            children: [/* @__PURE__ */ jsxs("div", {
-              className: "group",
-              children: [/* @__PURE__ */ jsx("img", {
-                src: item.image,
-                alt: item.alt,
-                className: clsx(item.className)
-              }), /* @__PURE__ */ jsx("div", {
-                className: clsx("w-full absolute opacity-100 transition-all duration-300 ease-in-out", item.classNameTextWrapper),
-                children: /* @__PURE__ */ jsx("p", {
-                  className: clsx("m-6 text-center z-10 absolute bottom-0 bg-center bg-repeat border border-[#000000] rounded-xl shadow-[0px_4px_10px_0px_#00000040] p-5", item.classNameText, `bg-${item.id}`),
-                  children: item.text
-                })
-              })]
-            }), item.items.map((icon) => /* @__PURE__ */ jsx(motion.img, {
-              animate: {
-                y: [0, 50, 0]
-              },
-              transition: {
-                duration: Math.random() * 2 + 1,
-                repeat: Infinity,
-                ease: "easeInOut"
-              },
-              src: icon.src,
-              alt: item.alt,
-              className: clsx("absolute", icon.className)
-            }))]
-          }, item.alt))
-        }), /* @__PURE__ */ jsx("div", {
-          className: "fixed bottom-8 right-11",
-          children: /* @__PURE__ */ jsx("button", {
-            className: "w-10 h-10 bg-black rounded-full flex items-center justify-center",
-            onClick: () => handleBackClick(),
-            children: /* @__PURE__ */ jsx(ChevronLeftIcon$1, {
-              color: "white",
-              className: "w-6 h-6"
-            })
+    }), /* @__PURE__ */ jsxs("div", {
+      className: "relative min-h-0 flex-1 overflow-hidden",
+      children: [/* @__PURE__ */ jsx(motion.div, {
+        className: "flex h-full bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center",
+        style: {
+          width: `${total * 100}%`
+        },
+        animate: {
+          x: `-${activeIndex * 100 / total}%`
+        },
+        transition: {
+          type: "spring",
+          stiffness: 70,
+          damping: 20
+        },
+        children: items.map((item) => /* @__PURE__ */ jsxs("div", {
+          id: item.id,
+          className: "relative h-full shrink-0 overflow-hidden",
+          style: {
+            width: `${100 / total}%`
+          },
+          children: [/* @__PURE__ */ jsx("img", {
+            src: item.image,
+            alt: item.alt,
+            className: clsx("absolute bottom-0 left-0", item.className)
+          }), /* @__PURE__ */ jsx("p", {
+            className: clsx(TEXT_CARD_CLASS, item.classNameText, `bg-${item.id}`),
+            children: item.text
+          }), item.items.map((icon) => /* @__PURE__ */ jsx(motion.img, {
+            animate: {
+              y: [0, 50, 0]
+            },
+            transition: {
+              duration: Math.random() * 2 + 1,
+              repeat: Infinity,
+              ease: "easeInOut"
+            },
+            src: icon.src,
+            alt: "",
+            className: clsx("absolute", icon.className)
+          }, icon.src))]
+        }, item.alt))
+      }), activeIndex > 0 && // Kept clear of the floating cart button, which is 80px tall on mobile
+      // and 128px from xl up (hence the extra lift on xl).
+      /* @__PURE__ */ jsx("div", {
+        className: "absolute bottom-28 right-6 z-20 xl:bottom-44",
+        children: /* @__PURE__ */ jsx("button", {
+          type: "button",
+          "aria-label": "Previous slide",
+          onClick: () => goToSlide(activeIndex - 1),
+          className: "w-10 h-10 bg-black rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-105",
+          children: /* @__PURE__ */ jsx(ChevronLeftIcon$1, {
+            color: "white",
+            className: "w-6 h-6"
           })
-        })]
-      })
+        })
+      })]
     })]
   });
 });
@@ -30120,7 +30181,7 @@ const route46 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-BO8B8SAW.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/index-BUOCQjab.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": true, "module": "/assets/root-D9TbQj1R.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/index-BUOCQjab.js", "/assets/meta-DdeOJusI.js", "/assets/Button-lW38XeZL.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/IconButton-CQ86PjIo.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/useRegion-CKuOBAtM.js", "/assets/i18next-whK4Q39a.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-CkVCZ-03.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-B1R5igFp.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Main-B6Xt8Rms.js", "/assets/Container-jDNApzzf.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/react-CrdxeKbP.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-CjKkkuSq.js", "/assets/proxy-xT_YKHeN.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/coerce-DM8wCQIO.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/debounce-CVzWsWQm.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-DQbL9F4I.js"], "css": ["/assets/root-C7u4HuTN.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-7JUfC42Z.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductListWithPagination-C-yege5_.js", "/assets/HalfFanSlider-BxlnlBGv.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductGrid-4qq6yycZ.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-DQbL9F4I.js", "/assets/proxy-xT_YKHeN.js", "/assets/index-CjKkkuSq.js", "/assets/createLucideIcon-87PuhP4-.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-UTtrGD68.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductListWithPagination-C-yege5_.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductGrid-4qq6yycZ.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-ByYhE3YA.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Button-lW38XeZL.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/Container-jDNApzzf.js", "/assets/Image-CkVCZ-03.js", "/assets/clsx-B-dksMZM.js", "/assets/FormError-Dbjv6ZY-.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/LightboxGallery-CRmjoEvq.js", "/assets/IconButton-CQ86PjIo.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/index-BUOCQjab.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/debounce-CVzWsWQm.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._productHandle-odJpyVGi.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-BfQkqZCM.js", "/assets/Button-lW38XeZL.js", "/assets/Container-jDNApzzf.js", "/assets/GridColumn-lElWsUrY.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/coerce-DM8wCQIO.js", "/assets/Image-CkVCZ-03.js", "/assets/LightboxGallery-CRmjoEvq.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/clsx-B-dksMZM.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-BUOCQjab.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/index-CNWoU6LU.js", "/assets/ProductPriceRange-B1R5igFp.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/zod-CdgDB01A.js", "/assets/useI18n-BhG4dgOd.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/IconButton-CQ86PjIo.js", "/assets/debounce-CVzWsWQm.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._index-nFZkZ88u.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductGrid-4qq6yycZ.js", "/assets/useI18n-BhG4dgOd.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-DVo9mJHM.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout.success-_2Ed2Y4B.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-BfQkqZCM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout._index-OeD3Pl-m.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/FormError-Dbjv6ZY-.js", "/assets/useI18n-BhG4dgOd.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Button-lW38XeZL.js", "/assets/clsx-B-dksMZM.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/i18next-whK4Q39a.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/index-BUOCQjab.js", "/assets/useRegion-CKuOBAtM.js", "/assets/Image-CkVCZ-03.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/tabs-DUCtQp96.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/coerce-DM8wCQIO.js", "/assets/debounce-CVzWsWQm.js", "/assets/use-is-mounted-D4NmMw55.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._index-CXBogUcM.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/ProductGrid-4qq6yycZ.js", "/assets/HalfFanSlider-BxlnlBGv.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-DQbL9F4I.js", "/assets/proxy-xT_YKHeN.js", "/assets/index-CjKkkuSq.js", "/assets/createLucideIcon-87PuhP4-.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.locations": { "id": "routes/api.locations", "parentId": "root", "path": "api/locations", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.locations-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._index-ZVIbAJHY.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/carts-empty-9iY3l_ME.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-BfQkqZCM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pages.$slug": { "id": "routes/pages.$slug", "parentId": "root", "path": "pages/:slug", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/pages._slug-ZAl-dCOz.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.popups": { "id": "routes/api.popups", "parentId": "root", "path": "api/popups", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.popups-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/about-us-z7EaKoco.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/Button-lW38XeZL.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/contact-DHQGGT9E.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/zod-CdgDB01A.js", "/assets/Container-jDNApzzf.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductList-BfQkqZCM.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CZ-jj1ss.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-BYASYW7Q.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/stories-CGuScALS.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/GridColumn-lElWsUrY.js", "/assets/clsx-B-dksMZM.js", "/assets/react-CrdxeKbP.js", "/assets/useI18n-BhG4dgOd.js", "/assets/proxy-xT_YKHeN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/_index-4ooac3YQ.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/useRegion-CKuOBAtM.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/Main-B6Xt8Rms.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/index-DQbL9F4I.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/meta-DdeOJusI.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-BUOCQjab.js"], "css": ["/assets/_index-DOJQyo6B.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/store": { "id": "routes/store", "parentId": "root", "path": "store", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/store-BaVDWjH4.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-ead8686f.js", "version": "ead8686f", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-BO8B8SAW.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/index-BUOCQjab.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": true, "module": "/assets/root-Bpw1ZPjK.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/index-BUOCQjab.js", "/assets/meta-DdeOJusI.js", "/assets/Button-lW38XeZL.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/IconButton-CQ86PjIo.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/useRegion-CKuOBAtM.js", "/assets/i18next-whK4Q39a.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-CkVCZ-03.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-Cx_7NpII.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Main-DTjf3WzY.js", "/assets/Container-jDNApzzf.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/react-CrdxeKbP.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-CjKkkuSq.js", "/assets/proxy-xT_YKHeN.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/coerce-DM8wCQIO.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/debounce-CVzWsWQm.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-DQbL9F4I.js"], "css": ["/assets/root-BumbbLGU.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-CbhgTN9i.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductListWithPagination-CIo8FCIk.js", "/assets/HalfFanSlider-BOMaFQ-d.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductGrid-CXSjQ7U6.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-DQbL9F4I.js", "/assets/proxy-xT_YKHeN.js", "/assets/index-CjKkkuSq.js", "/assets/createLucideIcon-87PuhP4-.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-BRcU6EF1.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductListWithPagination-CIo8FCIk.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductGrid-CXSjQ7U6.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-ByYhE3YA.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Button-lW38XeZL.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/Container-jDNApzzf.js", "/assets/Image-CkVCZ-03.js", "/assets/clsx-B-dksMZM.js", "/assets/FormError-Dbjv6ZY-.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/LightboxGallery-CRmjoEvq.js", "/assets/IconButton-CQ86PjIo.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/index-BUOCQjab.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/debounce-CVzWsWQm.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._productHandle-aALOyuaI.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-Df2aQHBx.js", "/assets/Button-lW38XeZL.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/coerce-DM8wCQIO.js", "/assets/Image-CkVCZ-03.js", "/assets/LightboxGallery-CRmjoEvq.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/tabs-DUCtQp96.js", "/assets/ChevronLeftIcon-CXc01kyB.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-BUOCQjab.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/index-CNWoU6LU.js", "/assets/ProductPriceRange-Cx_7NpII.js", "/assets/pagination-with-context-DxYH2FzC.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/zod-CdgDB01A.js", "/assets/useI18n-BhG4dgOd.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/IconButton-CQ86PjIo.js", "/assets/debounce-CVzWsWQm.js", "/assets/meta-DdeOJusI.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._index-BtmcW4ah.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/ProductGrid-CXSjQ7U6.js", "/assets/useI18n-BhG4dgOd.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-CgYaG9yu.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout.success-ab7se27-.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-Df2aQHBx.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout._index-OeD3Pl-m.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/FormError-Dbjv6ZY-.js", "/assets/useI18n-BhG4dgOd.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Button-lW38XeZL.js", "/assets/clsx-B-dksMZM.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/i18next-whK4Q39a.js", "/assets/zod-CdgDB01A.js", "/assets/index-CNWoU6LU.js", "/assets/SubmitButton-D7mnLhS_.js", "/assets/index-BUOCQjab.js", "/assets/useRegion-CKuOBAtM.js", "/assets/Image-CkVCZ-03.js", "/assets/ButtonLink-DMMj-edF.js", "/assets/tabs-DUCtQp96.js", "/assets/createLucideIcon-87PuhP4-.js", "/assets/coerce-DM8wCQIO.js", "/assets/debounce-CVzWsWQm.js", "/assets/use-is-mounted-D4NmMw55.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._index-DqluwTlV.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/ProductGrid-CXSjQ7U6.js", "/assets/HalfFanSlider-BOMaFQ-d.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/Image-CkVCZ-03.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/index-DQbL9F4I.js", "/assets/proxy-xT_YKHeN.js", "/assets/index-CjKkkuSq.js", "/assets/createLucideIcon-87PuhP4-.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.locations": { "id": "routes/api.locations", "parentId": "root", "path": "api/locations", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.locations-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._index-ZVIbAJHY.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/carts-empty-BBpcra3x.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/ProductList-Df2aQHBx.js", "/assets/useI18n-BhG4dgOd.js", "/assets/Container-jDNApzzf.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pages.$slug": { "id": "routes/pages.$slug", "parentId": "root", "path": "pages/:slug", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/pages._slug-BMxM7ez8.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.popups": { "id": "routes/api.popups", "parentId": "root", "path": "api/popups", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.popups-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/about-us-z7EaKoco.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/Button-lW38XeZL.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/clsx-B-dksMZM.js", "/assets/page-BN0zaAAq.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/contact-swGLuaK3.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/zod-CdgDB01A.js", "/assets/Container-jDNApzzf.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ProductList-Df2aQHBx.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-BRreUPEC.js", "/assets/ArrowRightIcon-c5FBiBm7.js", "/assets/IconButton-CQ86PjIo.js", "/assets/Button-lW38XeZL.js", "/assets/debounce-CVzWsWQm.js", "/assets/Image-CkVCZ-03.js", "/assets/ProductListItem-CdBPpd9v.js", "/assets/useRegion-CKuOBAtM.js", "/assets/ProductThumbnail-DoTMxb7X.js", "/assets/PlusIcon-D18LZj3a.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/tabs-DUCtQp96.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-ijEq_fwi.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/stories-COWYMFqz.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/clsx-B-dksMZM.js", "/assets/react-CrdxeKbP.js", "/assets/useI18n-BhG4dgOd.js", "/assets/ChevronLeftIcon-CXc01kyB.js", "/assets/proxy-xT_YKHeN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/_index-COpjJycp.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/useI18n-BhG4dgOd.js", "/assets/useRegion-CKuOBAtM.js", "/assets/objectToFormData-CvNE61FR.js", "/assets/Main-DTjf3WzY.js", "/assets/MorphingShape-CO1AP_ti.js", "/assets/index-DQbL9F4I.js", "/assets/useIsMobile-ijEq_fwi.js", "/assets/meta-DdeOJusI.js", "/assets/URLAwareNavLink-v6bUa-Ce.js", "/assets/use-is-mounted-D4NmMw55.js", "/assets/description-bkozP6hS.js", "/assets/index-BUOCQjab.js"], "css": ["/assets/_index-DOJQyo6B.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/store": { "id": "routes/store", "parentId": "root", "path": "store", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/store-BaVDWjH4.js", "imports": ["/assets/chunk-62JRHF6Z-Cbc6esix.js", "/assets/Container-jDNApzzf.js", "/assets/page-BN0zaAAq.js", "/assets/clsx-B-dksMZM.js", "/assets/meta-DdeOJusI.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-540e6926.js", "version": "540e6926", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "unstable_optimizeDeps": false, "v8_passThroughRequests": false, "v8_trailingSlashAwareDataRequests": false, "unstable_previewServerPrerendering": false, "v8_middleware": false, "v8_splitRouteModules": false, "v8_viteEnvironmentApi": false };
