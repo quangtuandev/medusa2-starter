@@ -1,18 +1,18 @@
-import { Grid, GridColumn } from "@app/components/common/grid";
 import clsx from "clsx";
-import { motion } from "motion/react"
+import { motion } from "motion/react";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { useI18n } from "@app/hooks/useI18n";
 
 const DEFAULT_STORIES = {
   titleTop: {
     en: "THIS",
-    vi: "ĐÂY LÀ",
+    vi: "THIS",
   },
   titleBottom: {
     en: "IS Our",
-    vi: "CỦA CHÚNG TÔI",
+    vi: "IS Our",
   },
   storyLabel: {
     en: "STORY",
@@ -40,11 +40,20 @@ const DEFAULT_STORIES = {
   },
 };
 
+/**
+ * Shared text card styling.
+ * Below `lg` the card is capped in height and scrollable so a long paragraph can
+ * never push the composition out of its screen; from `lg` up it grows freely.
+ */
+const TEXT_CARD_CLASS =
+  "absolute z-10 bg-center bg-repeat text-center border border-[#000000] rounded-xl shadow-[0px_4px_10px_0px_#00000040] font-montserrat font-medium text-xs leading-[16px] px-5 py-3 max-h-[80%] overflow-y-auto";
+
 export default function Stories() {
   const { currentLanguage } = useI18n();
   const rootData = useRootLoaderData();
   const settings = rootData?.siteDetails?.settings || {};
   const isVi = currentLanguage === 'vi';
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const getText = (viVal?: string, enVal?: string, defaultVi: string = "", defaultEn: string = "") => {
     if (isVi) {
@@ -129,149 +138,164 @@ export default function Stories() {
     { label: packagingLabel, id: 'packaging' },
   ]
 
+  /**
+   * Every offset and size is expressed relative to its slide box, so the whole
+   * composition always scales down into a single screen instead of overflowing it.
+   */
   const items = [
     {
       id: 'item-story',
       alt: "Story",
       image: "/assets/images/stories/stories.webp",
-      className: "w-full h-[85vh] object-contain",
-      classNameWrapper: "items-end",
-      background: "/assets/images/stories/background-story.webp",
+      className: "w-full h-[85%] object-contain",
       text: storyText,
-      classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[630px] w-[90vw] px-5 py-2 rotate-[-6deg]",
-      classNameTextWrapper: "lg:left-[20%] left-[0%] lg:top-[30vh] top-[40vh]",
+      classNameText: clsx(
+        "top-[16%] left-[6%] w-[88vw] rotate-[-6deg]",
+        "lg:top-[6%] lg:left-[20%] lg:w-[60%] lg:max-h-[88%] lg:text-[18px] lg:leading-[28.24px]"
+      ),
       items: [
-        { src: '/assets/images/stories/items/story-1.webp', className: 'top-1/2 -translate-y-1/2 left-0 h-[16vh] object-contain' },
-        { src: '/assets/images/stories/items/story-2.webp', className: 'top-[30vh] left-[10%] h-[20vh] object-contain' },
-        { src: '/assets/images/stories/items/story-3.webp', className: 'top-[25vh] right-[10%] h-[19vh] object-contain' },
-        { src: '/assets/images/stories/items/story-4.webp', className: 'top-[75vh] right-[10%] h-[25vh] object-contain' },
-        { src: '/assets/images/stories/items/story-5.webp', className: 'top-[65vh] right-[3%] h-[18vh] object-contain' },
-        { src: '/assets/images/stories/items/story-6.webp', className: 'top-[55vh] right-[-5%] h-[20vh] object-contain' },
+        { src: '/assets/images/stories/items/story-1.webp', className: 'top-1/2 -translate-y-1/2 left-0 h-[16%] object-contain' },
+        { src: '/assets/images/stories/items/story-2.webp', className: 'top-[30%] left-[10%] h-[20%] object-contain' },
+        { src: '/assets/images/stories/items/story-3.webp', className: 'top-[25%] right-[10%] h-[19%] object-contain' },
+        { src: '/assets/images/stories/items/story-4.webp', className: 'top-[75%] right-[10%] h-[25%] object-contain' },
+        { src: '/assets/images/stories/items/story-5.webp', className: 'top-[65%] right-[3%] h-[18%] object-contain' },
+        { src: '/assets/images/stories/items/story-6.webp', className: 'top-[55%] right-[-5%] h-[20%] object-contain' },
       ]
     },
     {
       id: 'item-mission',
       alt: "Mission",
       image: "/assets/images/stories/mission.webp",
-      className: "w-full h-[85vh] object-contain",
-      classNameWrapper: "",
-      background: "/assets/images/stories/background-mission.webp",
+      className: "w-full h-[85%] object-contain",
       text: missionText,
-      classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[630px] w-[90vw] px-5 py-2 rotate-[3deg]",
-      classNameTextWrapper: "lg:left-[20%] left-[0%] lg:bottom-[10vh] bottom-[0vh]",
+      classNameText: clsx(
+        "top-[20%] left-[6%] w-[88vw] rotate-[3deg]",
+        "lg:top-[62%] lg:left-[20%] lg:w-[62%] lg:max-h-[36%] lg:text-[18px] lg:leading-[28.24px]"
+      ),
       items: [
-        { src: '/assets/images/stories/items/mission-1.webp', className: 'top-[55vh] left-0 h-[20vh] object-contain' },
-        { src: '/assets/images/stories/items/mission-2.webp', className: 'top-[52vh] left-[10%] h-[12vh] object-contain' },
-        { src: '/assets/images/stories/items/mission-3.webp', className: 'top-[45vh] left-[17%] h-[18vh] object-contain' },
-        { src: '/assets/images/stories/items/mission-4.webp', className: 'top-[5vh] left-[28%] h-[20vh] object-contain' },
-        { src: '/assets/images/stories/items/mission-5.webp', className: 'top-[55vh] right-[15%] h-[18vh] object-contain' },
-        { src: '/assets/images/stories/items/mission-6.webp', className: 'top-[30vh] right-0 h-[18vh] object-contain' },
+        { src: '/assets/images/stories/items/mission-1.webp', className: 'top-[55%] left-0 h-[20%] object-contain' },
+        { src: '/assets/images/stories/items/mission-2.webp', className: 'top-[52%] left-[10%] h-[12%] object-contain' },
+        { src: '/assets/images/stories/items/mission-3.webp', className: 'top-[45%] left-[17%] h-[18%] object-contain' },
+        { src: '/assets/images/stories/items/mission-4.webp', className: 'top-[5%] left-[28%] h-[20%] object-contain' },
+        { src: '/assets/images/stories/items/mission-5.webp', className: 'top-[55%] right-[15%] h-[18%] object-contain' },
+        { src: '/assets/images/stories/items/mission-6.webp', className: 'top-[30%] right-0 h-[18%] object-contain' },
       ]
     },
     {
       id: 'item-packaging',
       alt: "Packaging",
       image: "/assets/images/stories/packaging.webp",
-      className: "w-full h-[80vh] object-contain",
-      background: "/assets/images/stories/background-packaging.webp",
-      classNameWrapper: "items-end",
+      className: "w-full h-[80%] object-contain",
       text: packagingText,
-      classNameText: "font-montserrat font-medium text-xs lg:text-[18px] leading-[28.24px] text-center lg:w-[830px] w-[90vw] text-white px-5 py-2 rotate-[-5deg]",
-      classNameTextWrapper: "lg:right-[12vh] right-[2%] lg:top-[40vh] top-[50vh]",
+      classNameText: clsx(
+        "top-[12%] left-[6%] w-[88vw] text-white rotate-[-5deg]",
+        "lg:top-[9%] lg:left-[22%] lg:w-[74%] lg:max-h-[87%] lg:text-[18px] lg:leading-[28.24px]"
+      ),
       items: [
-        { src: '/assets/images/stories/items/pack-1.webp', className: 'top-[60vh] left-[-10%] h-[20vh] object-contain' },
-        { src: '/assets/images/stories/items/pack-2.webp', className: 'top-[55vh] left-[3%] h-[12vh] object-contain' },
-        { src: '/assets/images/stories/items/pack-3.webp', className: 'top-[46vh] left-[17%] h-[11vh] object-contain' },
-        { src: '/assets/images/stories/items/pack-4.webp', className: 'top-[31vh] left-[25%] h-[15vh] object-contain' },
-        { src: '/assets/images/stories/items/pack-5.webp', className: 'top-[7vh] left-1/2 h-[18vh] object-contain' },
-        { src: '/assets/images/stories/items/pack-6.webp', className: 'top-[33vh] right-[7%] h-[23vh] object-contain' },
+        { src: '/assets/images/stories/items/pack-1.webp', className: 'top-[60%] left-[-10%] h-[20%] object-contain' },
+        { src: '/assets/images/stories/items/pack-2.webp', className: 'top-[55%] left-[3%] h-[12%] object-contain' },
+        { src: '/assets/images/stories/items/pack-3.webp', className: 'top-[46%] left-[17%] h-[11%] object-contain' },
+        { src: '/assets/images/stories/items/pack-4.webp', className: 'top-[31%] left-[25%] h-[15%] object-contain' },
+        { src: '/assets/images/stories/items/pack-5.webp', className: 'top-[7%] left-1/2 h-[18%] object-contain' },
+        { src: '/assets/images/stories/items/pack-6.webp', className: 'top-[33%] right-[7%] h-[23%] object-contain' },
       ]
     },
   ]
-  const handleItemClick = (id: string) => {
-    const element = document.getElementById(`item-${id}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-    }
-  };
 
-  const handleBackClick = () => {
-    const element = document.getElementById(`stories-container`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
-    }
+  const total = items.length;
+
+  const goToSlide = (index: number) => {
+    setActiveIndex(Math.min(Math.max(index, 0), total - 1));
   };
 
   return (
-    <motion.div
+    <div
       id="stories-container"
-      className={
-        clsx(
-          'min-h-screen w-[400vw] lg:w-auto lg:aspect-[1071/256] flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]',
-        )
-      }
-
-      style={{ overflow: "hidden" }}
-      initial={{ x: 0 }}
-      animate={{ x: 0 }}
-      transition={{ type: "spring", stiffness: 70, damping: 20 }}
+      className="absolute inset-0 flex flex-col overflow-hidden bg-white lg:flex-row"
     >
-
-      <div className="w-[100vw] lg:w-[15%] flex flex-col px-4 py-6 lg:px-[45px] lg:py-[32px]">
-        <p className="font-title font-bold lg:text-8xl text-4xl">
+      {/* Navigation panel. On narrow *and* short screens (phones in landscape) it
+          collapses into a compact bar so the slide keeps most of the screen. */}
+      <div className="flex w-full shrink-0 flex-col px-4 py-4 lg:h-full lg:w-[35%] lg:px-[45px] lg:py-[32px] compact:flex-row compact:items-center compact:gap-3 compact:py-2">
+        <p className="font-title font-bold leading-none text-4xl lg:text-[min(6.7vw,96px)] compact:text-2xl">
           <span>{titleTop}</span> <br />
-          <span className="lg:ml-[14px] ml-1">{renderBottomTitle(titleBottom)}</span>
+          <span className="ml-1 lg:ml-[14px]">{renderBottomTitle(titleBottom)}</span>
         </p>
-        <div className="flex flex-col gap-8 h-full flex-1 justify-center">
-          {menu.map((item) => (
-            <span onClick={() => handleItemClick(item.id)} key={item.id} className="font-title font-bold lg:text-[40px] text-2xl rounded-full border border-black mx-6 py-2 text-center hover:bg-[#FFE977] hover:border-[#FFE977] transition-all duration-300 ease-in-out cursor-pointer">
+        <nav className="flex flex-col gap-3 lg:h-full lg:flex-1 lg:justify-center lg:gap-8 compact:flex-1 compact:flex-row compact:items-center compact:justify-end compact:gap-2">
+          {menu.map((item, index) => (
+            <button
+              type="button"
+              key={item.id}
+              onClick={() => goToSlide(index)}
+              aria-current={activeIndex === index ? "true" : undefined}
+              className={clsx(
+                "font-title font-bold text-2xl lg:text-[min(2.8vw,40px)] rounded-full border border-black mx-6 py-2 text-center cursor-pointer transition-all duration-300 ease-in-out whitespace-nowrap compact:mx-0 compact:px-3 compact:py-1 compact:text-base",
+                activeIndex === index
+                  ? "bg-[#FFE977] border-[#FFE977]"
+                  : "hover:bg-[#FFE977] hover:border-[#FFE977]"
+              )}
+            >
               {item.label}
-            </span>
+            </button>
           ))}
-        </div>
+        </nav>
       </div>
 
-      <div className="w-[300vw] lg:w-[85%] bg-white">
-        <div className="w-full h-full bg-cover bg-center overflow-hidden relative">
-          <Grid className="h-[100vh] bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center">
-            {items.map((item) => (
-              <GridColumn id={item.id} key={item.alt} className={clsx('col-span-4 flex relative', item.classNameWrapper)}>
-                <div className="group">
-                  <img src={item.image} alt={item.alt} className={clsx(item.className)} />
-                  <div className={clsx(
-                    "w-full absolute opacity-100 transition-all duration-300 ease-in-out",
-                    item.classNameTextWrapper
-                  )}>
-                    <p className={clsx(
-                      'm-6 text-center z-10 absolute bottom-0 bg-center bg-repeat border border-[#000000] rounded-xl shadow-[0px_4px_10px_0px_#00000040] p-5',
-                      item.classNameText,
-                      `bg-${item.id}`
-                    )}>{item.text}</p>
-                  </div>
-                </div>
-                {item.items.map((icon) => (
-                  <motion.img
-                    animate={{
-                      y: [0, 50, 0],
-                    }}
-                    transition={{
-                      duration: Math.random() * 2 + 1,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    src={icon.src} alt={item.alt} className={clsx('absolute', icon.className)} />
-                ))}
-              </GridColumn>
-            ))}
-          </Grid>
+      {/* Slide viewport: exactly one slide per screen */}
+      <div className="relative min-h-0 flex-1 overflow-hidden">
+        <motion.div
+          className="flex h-full bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center"
+          style={{ width: `${total * 100}%` }}
+          animate={{ x: `-${(activeIndex * 100) / total}%` }}
+          transition={{ type: "spring", stiffness: 70, damping: 20 }}
+        >
+          {items.map((item) => (
+            <div
+              id={item.id}
+              key={item.alt}
+              className="relative h-full shrink-0 overflow-hidden"
+              style={{ width: `${100 / total}%` }}
+            >
+              <img
+                src={item.image}
+                alt={item.alt}
+                className={clsx("absolute bottom-0 left-0", item.className)}
+              />
+              <p className={clsx(TEXT_CARD_CLASS, item.classNameText, `bg-${item.id}`)}>
+                {item.text}
+              </p>
+              {item.items.map((icon) => (
+                <motion.img
+                  key={icon.src}
+                  animate={{
+                    y: [0, 50, 0],
+                  }}
+                  transition={{
+                    duration: Math.random() * 2 + 1,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  src={icon.src}
+                  alt=""
+                  className={clsx('absolute', icon.className)}
+                />
+              ))}
+            </div>
+          ))}
+        </motion.div>
 
-          <div className="fixed bottom-8 right-11">
-            <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center" onClick={() => handleBackClick()}>
+        {activeIndex > 0 && (
+          <div className="absolute bottom-28 right-6 z-20">
+            <button
+              type="button"
+              aria-label="Previous slide"
+              onClick={() => goToSlide(activeIndex - 1)}
+              className="w-10 h-10 bg-black rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-105"
+            >
               <ChevronLeftIcon color="white" className="w-6 h-6" />
             </button>
           </div>
-        </div>
+        )}
       </div>
-    </motion.div>
+    </div>
   )
 }

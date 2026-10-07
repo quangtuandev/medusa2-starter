@@ -96,6 +96,12 @@ module.exports = {
         'mobile': '640px',
         '2xl': '1440px',
         'h-sm': { 'raw': '(max-height: 790px)' },
+        // Narrow AND short viewports (phones in landscape): the stories page swaps
+        // its stacked navigation panel for a compact bar.
+        'compact': { 'raw': '(max-width: 1023px) and (max-height: 790px)' },
+        // The main menu overlay is only mounted above 768px, so its desktop
+        // composition starts there instead of at `lg`.
+        'desk': { 'raw': '(min-width: 769px)' },
       },
       fontSize: {
         '2xs': '.65rem',

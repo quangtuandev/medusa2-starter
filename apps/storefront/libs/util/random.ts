@@ -41,7 +41,7 @@ export const getProductMorphingShape = (product?: any) => {
 
 export const getCustomizationTitles = (title: string) => {
   let str = title.trim()
-
+  if (str.length < 5) return [str]
   if (str.includes(' ')) {
     const [first, ...rest] = str.split(/\s+/)
     return [first, '_' + rest.join(' ')]

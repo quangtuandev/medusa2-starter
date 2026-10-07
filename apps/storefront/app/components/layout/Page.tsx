@@ -31,13 +31,17 @@ export const Page: FC<PageProps> = ({ className, children }) => {
   const { toggleCartDrawer } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const isInjectMenu = injectMenuPaths.includes(currentMatch?.pathname || "");
+  // The stories page is a single-screen layout: it must never scroll the page,
+  // so it is pinned to the viewport height and its content fills <main>.
+  const isSingleScreenPage = isInjectMenu;
 
   const isMobile = useIsMobile();
 
   return (
     <div
       className={clsx(
-        "page-layout flex min-h-screen flex-col bg-white",
+        "page-layout flex flex-col bg-white",
+        isSingleScreenPage ? "h-[100dvh] overflow-hidden" : "min-h-screen",
         className
       )}
     >
@@ -53,7 +57,7 @@ export const Page: FC<PageProps> = ({ className, children }) => {
           {isMobile && <HeaderSideNav open={isOpen} setOpen={setIsOpen} />}
         </>
       )}
-      <main className={clsx("flex-auto", isOpen && "hidden")}>
+      <main className={clsx(isSingleScreenPage ? "relative min-h-0 flex-auto" : "flex-auto", isOpen && "hidden")}>
         <div className="w-full">{children}</div>
       </main>
       {!isHiddenFooter && <Footer />}

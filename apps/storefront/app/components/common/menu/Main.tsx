@@ -10,12 +10,31 @@ import { px } from "motion/react";
 
 function FancyText({ id, text, className }: { id: string, text: string, className?: string }) {
     return (
-        <p id={id} className={clsx('font-centuryBook font-bold uppercase lg:hidden block pointer-events-none absolute bottom-0', className)}>
-            <span className="italic lg:text-[100px] text-[50px]">{text.slice(0, 1)}</span>
-            <span className="font-title lg:text-[65px] text-[40px]">{text.slice(1)}</span>
+        <p id={id} className={clsx('font-centuryBook font-bold uppercase desk:hidden block pointer-events-none absolute bottom-0', className)}>
+            <span className="italic desk:text-[100px] text-[50px]">{text.slice(0, 1)}</span>
+            <span className="font-title desk:text-[65px] text-[40px]">{text.slice(1)}</span>
         </p>
     );
 }
+
+/**
+ * Menu artboard. The frames are laid out on a fixed 1840px wide canvas, and the
+ * outermost ones span from x=160 (BLOG) to x=1680 (STORES) — see the `className`
+ * of DEFAULT_CATEGORY_ITEMS below.
+ */
+const MENU_ARTBOARD_WIDTH = 1840;
+const MENU_CONTENT_WIDTH = 1520;
+/** Gap kept between the outer frames and the screen edges. */
+const MENU_EDGE_GAP = 24;
+/**
+ * Vertical ceiling: the composition is centred on the viewport, so its topmost
+ * point (the rotated PRODUCT frame, at ~5.8% of the viewport height) reaches the
+ * top edge around scale 1.13. Stopping at 1.12 keeps every frame fully visible —
+ * on wider screens the composition simply stops growing and the gaps widen.
+ */
+const MENU_MAX_SCALE = 1.12;
+/** The overlay is only mounted above this width, so its desktop layout starts here. */
+const MENU_DESKTOP_MIN_WIDTH = 769;
 
 
 const DEFAULT_CATEGORY_ITEMS = [
@@ -84,7 +103,7 @@ const DEFAULT_CATEGORY_ITEMS = [
         positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
         position: {
             x: '-10%',
-            y: '-300px'
+            y: '-220px'
         },
         positionImage: {
             x: '-10%',
@@ -116,6 +135,25 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
     const rootData = useRootLoaderData();
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+    const [viewportWidth, setViewportWidth] = useState<number>(() =>
+        typeof document === 'undefined' ? 0 : document.documentElement.clientWidth || window.innerWidth
+    );
+
+    useEffect(() => {
+        const updateViewportWidth = () => setViewportWidth(document.documentElement.clientWidth || window.innerWidth);
+        updateViewportWidth();
+        window.addEventListener('resize', updateViewportWidth);
+        return () => window.removeEventListener('resize', updateViewportWidth);
+    }, []);
+
+    // The menu is drawn on a fixed-width artboard, so the whole composition is
+    // scaled to the viewport: the outer frames (BLOG / STORES) keep a small gap to
+    // the screen edges, and the scale never grows past the point where the topmost
+    // frame would be cut (wider screens just get bigger gaps).
+    const isDesktopMenu = !viewportWidth || viewportWidth >= MENU_DESKTOP_MIN_WIDTH;
+    const menuZoom = viewportWidth
+        ? Math.min(MENU_MAX_SCALE, (viewportWidth - MENU_EDGE_GAP * 2) / MENU_CONTENT_WIDTH)
+        : 1;
 
     const menuThisIs = currentLanguage === 'vi'
         ? (rootData?.siteDetails?.settings?.menu_this_is_vi || t('home.thisIs'))
@@ -227,16 +265,21 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
         setHoveredItemId(null);
     }
     return (
-        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] lg:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] lg:overflow-hidden">
-            <div className="h-full w-full overflow-x-scroll lg:overflow-x-hidden">
-                <div className="lg:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+        <div className="absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] desk:overflow-hidden">
+            <div className="fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" />
+            <div className="h-full w-full overflow-x-scroll desk:overflow-x-hidden">
+                <div className="desk:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <span className="font-title font-bold text-4xl uppercase text-black">{menuThisIs} </span>
                     <span className="flex gap-2">
                         <span className="font-centuryBook italic font-normal text-4xl text-white leading-none mt-1">{menuOur}</span>
                     </span>
                 </div>
-                <div className="fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" />
-                <div className="lg:w-[1840px] z-[9999] h-full justify-center lg:absolute flex flex-col lg:flex-row lg:top-0 items-center overflow-x-scroll lg:overflow-hidden lg:[zoom:0.8] xl:[zoom:1] lg:left-1/2 lg:top-1/2 lg:translate-x-[-50%] lg:translate-y-[-50%]">
+                <div
+                    className="z-[9999] h-full justify-center desk:absolute flex flex-col desk:flex-row items-center overflow-x-scroll desk:overflow-hidden desk:left-1/2 desk:top-1/2"
+                    style={isDesktopMenu
+                        ? { width: MENU_ARTBOARD_WIDTH, transform: `translate(-50%, -50%) scale(${menuZoom})` }
+                        : undefined}
+                >
                     {categoryItems.map((item) => (
                         <div key={item.id}>
                             <Link to={item.url} className={clsx('absolute', item.className, isHovering && hoveredItemId !== item.id && '[filter:brightness(0.5)]')} key={item.id}
@@ -253,26 +296,31 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                 <div className={clsx('pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]', item.positionTitleClass, isHovering && hoveredItemId === item.id && 'hidden')}>
                                     <span className="relative z-[2]">{item.label}</span>
                                 </div>
-                                <div className="flex flex-col-reverse lg:flex-col items-center justify-center z-[9999]">
-                                    <div id={`menu-image-${item.id}`} className={clsx("object-contain menu-image z-[-2] hidden lg:block relative", item.imageClass)}>
+                                <div className="flex flex-col-reverse desk:flex-col items-center justify-center z-[9999]">
+                                    <div id={`menu-image-${item.id}`} className={clsx("object-contain menu-image z-[-2] hidden desk:block relative", item.imageClass)}>
                                         <img className="" src={item.image} alt={item.label} />
                                         <img src={item.imageInFrame} alt={item.label} className="shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]" />
                                     </div>
-                                    <FancyText id={`fancy-text-${item.id}`} className="text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]" text={item.label} />
+                                    <FancyText id={`fancy-text-${item.id}`} className="text-center desk:absolute text-black desk:text-[#FFE977] desk:text-white desk:leading-[0] z-[9]" text={item.label} />
                                 </div>
                             </Link>
                         </div>
 
                     ))}
                 </div>
-                <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11", !isHovering && 'z-[9999]')} />
+                <MenuToggle isOpen={true} onClick={handleMenuToggle} className={clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 desk:right-11", !isHovering && 'z-[9999]')} />
             </div>
-            <p className={clsx(
-                "absolute bottom-[11vh] w-full text-center z-[9999] pointer-events-none hidden lg:block transition-all duration-300 ease-in-out",
-                "opacity-100 translate-y-0"
-            )}>
-                <span className="font-title font-bold text-[40px] xl:text-[90px] uppercase z-[2] relative">{menuThisIs}</span>
-                <span className="font-centuryBook font-italic text-[100px] xl:text-[180px] italic text-[#FFE977] -ml-[50px] xl:-ml-[100px] z-[1]">{menuOur}</span>
+            <p
+                className={clsx(
+                    "absolute bottom-[14vh] w-full text-center z-[9999] pointer-events-none hidden desk:block transition-all duration-300 ease-in-out",
+                    "opacity-100 translate-y-0"
+                )}
+                // Same scale as the frames above, anchored to the bottom centre so the
+                // title keeps sitting on the bench while staying in proportion with them.
+                style={isDesktopMenu ? { transform: `scale(${menuZoom})`, transformOrigin: 'bottom center' } : undefined}
+            >
+                <span className="font-title font-bold text-[90px] uppercase z-[2] relative">{menuThisIs}</span>
+                <span className="font-centuryBook font-italic text-[180px] italic text-[#FFE977] -ml-[100px] z-[1]">{menuOur}</span>
             </p>
         </div>
     );
