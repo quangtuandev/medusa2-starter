@@ -45,7 +45,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
               >
                 <Dialog.Panel className="pointer-events-auto w-screen bg-[url('/assets/images/menu/bg-mobile.webp')]">
                   <div className="flex h-full flex-col shadow-xl">
-                    <div className="flex-1 px-4 py-6 sm:px-6">
+                    <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex justify-between">
                         <Dialog.Title className="text-lg font-bold text-gray-900">
                           <span className="font-title font-bold text-4xl uppercase text-black">This </span>

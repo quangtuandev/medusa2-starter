@@ -26,7 +26,16 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const { products, count, limit, offset } = productsData;
 
-  return { products, count, limit, offset, collection, slider_cards };
+  return {
+    products,
+    count,
+    limit,
+    offset,
+    collection,
+    slider_cards,
+    // Lets the slider tell which cards point at a collection that exists.
+    collectionHandles: collections.map((item) => item.handle),
+  };
 };
 
 export type ProductCollectionRouteLoader = typeof loader;
@@ -36,7 +45,7 @@ export default function ProductCollectionRoute() {
 
   if (!data) return null;
 
-  const { products, count, limit, offset, collection, slider_cards } = data;
+  const { products, count, limit, offset, collection, slider_cards, collectionHandles } = data;
   const description = (collection.metadata?.description as string) || "";
 
   return (
@@ -44,6 +53,7 @@ export default function ProductCollectionRoute() {
       <HalfFanSlider
         sliderCards={slider_cards}
         activeHandle={collection.handle}
+        collectionHandles={collectionHandles}
       />
 
       <Container className="w-full pb-16 mt-8 xl:mt-16">

@@ -30,6 +30,7 @@ export const PopupDialog = () => {
 
   const [activePopup, setActivePopup] = useState<PopupData | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -96,6 +97,7 @@ export const PopupDialog = () => {
         const delay = (matched.delay_seconds || 0) * 1000;
         timer = setTimeout(() => {
           if (isMounted) {
+            setImageFailed(false);
             setActivePopup(matched);
             setIsVisible(true);
 
@@ -170,7 +172,7 @@ export const PopupDialog = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl z-10"
+            className="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white shadow-2xl"
           >
             {/* Close Button */}
             <button
@@ -181,19 +183,21 @@ export const PopupDialog = () => {
               <X size={18} />
             </button>
 
-            {/* Banner Image */}
-            {activePopup.image && (
-              <div className="relative w-full h-48 sm:h-56 overflow-hidden">
+            {/* Banner image — shown whole (never cropped), and dropped entirely if it
+                cannot be loaded so a broken thumbnail never shows up. */}
+            {activePopup.image && !imageFailed && (
+              <div className="relative flex w-full shrink-0 items-center justify-center overflow-hidden bg-gray-100">
                 <img
                   src={activePopup.image}
                   alt={title}
-                  className="w-full h-full object-cover"
+                  onError={() => setImageFailed(true)}
+                  className="max-h-[45vh] w-full object-contain"
                 />
               </div>
             )}
 
             {/* Text & CTAs */}
-            <div className="p-6 sm:p-8 text-center space-y-4">
+            <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-4">
               <h2 className="font-title font-extrabold text-2xl sm:text-3xl text-gray-900 leading-tight">
                 {title}
               </h2>

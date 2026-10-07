@@ -77,7 +77,9 @@ export default function BlogsIndexRoute() {
         id="back-to-top"
         onClick={scrollToTop}
         className={clsx(
-          "fixed bottom-8 right-8 z-50 transition-all duration-300 hover:scale-110 cursor-pointer",
+          // Sits above the floating cart button (bottom-6, 80px tall on mobile
+          // and 128px from xl) instead of being hidden behind it.
+          "fixed bottom-28 right-6 z-40 xl:bottom-44 transition-all duration-300 hover:scale-110 cursor-pointer",
           showBackToTop ? "opacity-100 visible" : "opacity-0 invisible"
         )}
         aria-label="Back to top"

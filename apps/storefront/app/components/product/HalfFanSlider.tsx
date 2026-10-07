@@ -1,5 +1,6 @@
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useI18n } from "@app/hooks/useI18n";
@@ -29,6 +30,12 @@ export interface SliderCardItem {
 export interface HalfFanSliderProps {
   sliderCards?: any[];
   activeHandle?: string;
+  /**
+   * Handles of the collections that currently exist on the backend. Cards pointing
+   * to any other collection are treated as "coming soon" and do not navigate.
+   * Leave it undefined to skip the check (legacy behaviour).
+   */
+  collectionHandles?: string[];
   onDisplayCardChange?: (card: SliderCardItem) => void;
   className?: string;
 }
@@ -36,11 +43,13 @@ export interface HalfFanSliderProps {
 export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
   sliderCards,
   activeHandle,
+  collectionHandles,
   onDisplayCardChange,
   className,
 }) => {
   const { t, currentLanguage } = useI18n();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const initialCards = useMemo((): SliderCardItem[] => {
     if (sliderCards && sliderCards.length > 0) {
@@ -74,7 +83,6 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
               image={card.image}
               imageActive={card.image_active || undefined}
               title={title}
-              linkto={card.linkto}
               isActive={isActive}
               isAnyActive={isAnyActive}
             />
@@ -194,10 +202,64 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     setHoveredIndex(null);
   };
 
-  const handleClick = useCallback((index: number) => {
+  /**
+   * A card's `linkto` is free text coming from the admin, so it can be a path
+   * ("/collections/icy"), a full URL or a bare keyword ("ALL", "thirsty").
+   * Returns where the card should lead, or flags it as coming soon when the
+   * collection it advertises does not exist on the backend yet.
+   */
+  const resolveCardTarget = (
+    card: SliderCardItem
+  ): { href?: string; external?: boolean; comingSoon?: boolean } => {
+    const linkto = (card.linkto || "").trim();
+    const handle = (card.handle || "").toLowerCase();
+
+    if (!linkto) return {};
+    if (/^https?:\/\//i.test(linkto)) return { href: linkto, external: true };
+    // "ALL" (or the built-in all card) means the complete collection list.
+    if (handle === "all" || /^all$/i.test(linkto)) return { href: "/collections" };
+
+    const isPath = linkto.startsWith("/");
+    const target = /^\/collections\/([^/?#]+)/.exec(linkto)?.[1] ?? (isPath ? null : linkto);
+
+    if (target) {
+      // Without the collection list we cannot tell, so keep the previous behaviour.
+      if (Array.isArray(collectionHandles) && !collectionHandles.includes(target)) {
+        return { comingSoon: true };
+      }
+      return { href: isPath ? linkto : `/collections/${target}` };
+    }
+
+    return isPath ? { href: linkto } : {};
+  };
+
+  const isComingSoonCard = (card: SliderCardItem) =>
+    card.handle === "coming" || !!resolveCardTarget(card).comingSoon;
+
+  const handleCardClick = (index: number) => {
+    const card = initialCards[index];
+    if (!card) return;
+
+    // Not live yet: bring the card forward and let the info panel explain it.
+    if (isComingSoonCard(card)) {
+      setActiveIndex(index);
+      setHoveredIndex(null);
+      return;
+    }
+
+    const { href, external } = resolveCardTarget(card);
+    if (href) {
+      if (external) {
+        window.location.href = href;
+      } else {
+        navigate(href);
+      }
+      return;
+    }
+
     setActiveIndex((prev) => prev === index ? null : index);
     setHoveredIndex(null);
-  }, []);
+  };
 
   const handleSwipe = (event: any, info: PanInfo) => {
     if (!isMobile) return;
@@ -299,12 +361,15 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
           const transform = getCardTransform(i);
           const isCardActive = i === effectiveIndex;
           const isAnyActive = effectiveIndex !== null;
+          // Only cards advertising a collection we don't have yet need the badge; the
+          // explicit "coming" placeholder already ships its own artwork.
+          const showComingSoonBadge = !!resolveCardTarget(card).comingSoon;
 
           return (
             <motion.div
               key={card.id}
               ref={isCardActive ? activeCardRef : undefined}
-              onClick={() => handleClick(i)}
+              onClick={() => handleCardClick(i)}
               className={clsx(
                 "absolute cursor-pointer collection-card-item",
                 {
@@ -344,7 +409,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
             >
               <div
                 className={clsx(
-                  "w-full h-full rounded-[20px] xl:rounded-[30px] overflow-hidden border-[6px] xl:border-8 border-white ",
+                  "relative w-full h-full rounded-[20px] xl:rounded-[30px] overflow-hidden border-[6px] xl:border-8 border-white ",
                   {
                     "shadow-[1px_4px_10px_#53272763,3px_18px_18px_0px_#53272757,6px_40px_24px_0px_#53272733,12px_70px_28px_0px_#5327270F,18px_110px_31px_0px_#53272703]": isCardActive,
                     "border-0": !isCardActive
@@ -355,6 +420,14 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                 }}
               >
                 {card.component(isCardActive, isAnyActive)}
+
+                {showComingSoonBadge && (
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-3">
+                    <span className="rounded-full bg-black/70 px-3 py-1 font-title text-[10px] xl:text-xs font-bold uppercase tracking-wider text-white">
+                      {t('products.coming')}
+                    </span>
+                  </div>
+                )}
               </div>
             </motion.div>
           );
@@ -426,7 +499,9 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
               "text-[#A2D4FD]": displayCard.handle !== "all",
             }
           )}>
-            {displayCard.subtitle ? displayCard.subtitle : t('products.collection')}
+            {isComingSoonCard(displayCard)
+              ? t('products.comingSoon')
+              : displayCard.subtitle ? displayCard.subtitle : t('products.collection')}
           </p>
           <button
             onClick={next}

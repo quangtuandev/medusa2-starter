@@ -284,7 +284,9 @@ export default function Stories() {
         </motion.div>
 
         {activeIndex > 0 && (
-          <div className="absolute bottom-28 right-6 z-20">
+          // Kept clear of the floating cart button, which is 80px tall on mobile
+          // and 128px from xl up (hence the extra lift on xl).
+          <div className="absolute bottom-28 right-6 z-20 xl:bottom-44">
             <button
               type="button"
               aria-label="Previous slide"

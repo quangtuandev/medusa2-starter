@@ -21,7 +21,9 @@ export interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ className, children }) => {
-  const hiddenHeaderPaths = ["/", "/store"];
+  // `/store` keeps the header: without it the page has no way to reach the rest
+  // of the site (especially on mobile, where the header holds the nav drawer).
+  const hiddenHeaderPaths = ["/"];
   const hiddenFooterPaths = ["/", "/stories", "/products"];
   const injectMenuPaths = ["/stories"];
   const matches = useMatches();
@@ -52,7 +54,13 @@ export const Page: FC<PageProps> = ({ className, children }) => {
       {!isHiddenHeader && <Header />}
       {isInjectMenu && (
         <>
-          <MenuToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} className="fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040]" />
+          {/* On mobile the header already carries the menu button, so the floating
+              one is desktop-only — otherwise it sits on top of the header icons. */}
+          <MenuToggle
+            isOpen={isOpen}
+            onClick={() => setIsOpen(!isOpen)}
+            className="fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040] hidden lg:inline-flex"
+          />
           {isOpen && !isMobile && <MainMenu handleMenuToggle={() => setIsOpen(false)} />}
           {isMobile && <HeaderSideNav open={isOpen} setOpen={setIsOpen} />}
         </>

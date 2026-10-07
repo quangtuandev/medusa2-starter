@@ -39,6 +39,7 @@ export default function ProductsPage() {
       {/* Half Fan Slider */}
       <HalfFanSlider
         sliderCards={slider_cards}
+        collectionHandles={collectionsWithProducts.map((collection) => collection.handle)}
         onDisplayCardChange={setDisplayCard}
       />
 

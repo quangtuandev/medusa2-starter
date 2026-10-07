@@ -1,44 +1,35 @@
 import clsx from "clsx";
 import React from "react";
-import { useNavigate } from "react-router";
 
 export interface DynamicCollectionProps {
   image?: string;
   imageActive?: string;
   title: string;
-  linkto?: string;
   isActive: boolean;
   isAnyActive?: boolean;
   className?: string;
 }
 
+/**
+ * Purely presentational collection card: opening a collection is decided by the
+ * slider that owns the cards (see HalfFanSlider), so a card whose collection does
+ * not exist yet can stay inert instead of bouncing the visitor around.
+ */
 export const DynamicCollection: React.FC<DynamicCollectionProps> = ({
   image,
   imageActive,
   title,
-  linkto,
   isActive,
   isAnyActive,
   className,
 }) => {
-  const navigate = useNavigate();
-
   // If card is active, automatically show the active image
   const showActiveDirectly = Boolean(imageActive) && isActive;
   // If card is not active and no card is active (fanned out), allow hover to reveal active image
   const isHoverEnabled = Boolean(imageActive) && !isActive && !isAnyActive;
 
-  const handleClick = (e: React.MouseEvent) => {
-    if (!isActive) return;
-    if (linkto) {
-      e.stopPropagation();
-      navigate(linkto);
-    }
-  };
-
   return (
     <div
-      onClick={handleClick}
       className={clsx(
         "group relative flex overflow-hidden w-full h-full select-none",
         isActive ? "cursor-pointer" : "",
