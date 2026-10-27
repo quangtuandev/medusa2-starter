@@ -116,10 +116,106 @@ const DEFAULT_TEMPLATES = [
 `.trim(),
         recipients: "",
     },
+    {
+        type: "contact_us_notification",
+        is_enabled: true,
+        subject: "[Liên hệ mới] Từ {{name}} - {{email}}",
+        body_html: `
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+  <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #2563eb;">
+    <h1 style="color: #2563eb; margin: 0; font-size: 24px;">📬 Tin nhắn liên hệ mới!</h1>
+  </div>
+
+  <div style="padding: 30px 0;">
+    <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+      <p style="margin: 0; font-size: 16px; color: #1e3a8a;">
+        Bạn nhận được một tin nhắn liên hệ mới từ website.
+      </p>
+    </div>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <h3 style="margin: 0 0 15px 0; color: #333;">Thông tin người gửi:</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px 0; color: #666; width: 120px;">Họ và tên:</td>
+          <td style="padding: 8px 0; font-weight: bold; color: #333;">{{name}}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #666;">Email:</td>
+          <td style="padding: 8px 0; color: #2563eb;"><a href="mailto:{{email}}" style="color: #2563eb; text-decoration: none;">{{email}}</a></td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #666;">Thời gian gửi:</td>
+          <td style="padding: 8px 0; color: #666;">{{date}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <h3 style="margin: 0 0 10px 0; color: #333;">Nội dung tin nhắn:</h3>
+      <div style="font-size: 15px; color: #374151; line-height: 1.6; white-space: pre-wrap; background-color: #f9fafb; padding: 15px; border-radius: 6px;">
+{{message}}
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 20px 0; border-top: 2px solid #f0f0f0; color: #999; font-size: 12px;">
+    <p>Thông báo tự động từ hệ thống website {{store_name}}.</p>
+  </div>
+</div>
+`.trim(),
+        recipients: "hello.kira@aryak.vn",
+    },
+    {
+        type: "contact_us_confirmation",
+        is_enabled: true,
+        subject: "Cảm ơn bạn đã liên hệ với {{store_name}}",
+        body_html: `
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+  <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #f0f0f0;">
+    <h1 style="color: #333; margin: 0; font-size: 24px;">Cảm ơn bạn đã liên hệ!</h1>
+  </div>
+
+  <div style="padding: 30px 0;">
+    <p style="font-size: 16px; color: #333;">Xin chào <strong>{{name}}</strong>,</p>
+
+    <p style="font-size: 15px; color: #555; line-height: 1.6;">
+      Chúng tôi đã nhận được thông tin liên hệ của bạn gửi tới <strong>{{store_name}}</strong>. Đội ngũ của chúng tôi sẽ phản hồi trong thời gian sớm nhất.
+    </p>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <h3 style="margin: 0 0 10px 0; color: #333; font-size: 15px;">Nội dung tin nhắn bạn đã gửi:</h3>
+      <div style="font-size: 14px; color: #555; line-height: 1.6; font-style: italic; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb;">
+{{message}}
+      </div>
+    </div>
+
+    <p style="font-size: 15px; color: #555; line-height: 1.6;">
+      Nếu bạn có bất kỳ câu hỏi khẩn cấp nào, vui lòng liên hệ lại với chúng tôi qua email này.
+    </p>
+
+    <p style="font-size: 15px; color: #555;">
+      Trân trọng,<br/>
+      <strong>Đội ngũ {{store_name}}</strong>
+    </p>
+  </div>
+
+  <div style="text-align: center; padding: 20px 0; border-top: 2px solid #f0f0f0; color: #999; font-size: 12px;">
+    <p>Email này được gửi tự động để xác nhận đã tiếp nhận thông tin liên hệ của bạn.</p>
+  </div>
+</div>
+`.trim(),
+        recipients: null,
+    },
 ]
 
 const createEmailSettingSchema = z.object({
-    type: z.enum(["customer_order_confirmation", "internal_order_notification"]),
+    type: z.enum([
+        "customer_order_confirmation",
+        "internal_order_notification",
+        "contact_us_notification",
+        "contact_us_confirmation",
+    ]),
     is_enabled: z.boolean().optional().default(false),
     subject: z.string().optional().default(""),
     body_html: z.string().optional().default(""),

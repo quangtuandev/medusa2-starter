@@ -35,7 +35,7 @@ type EmailSettingsResponse = {
     seeded?: number
 }
 
-const TEMPLATE_VARIABLES = [
+const ORDER_TEMPLATE_VARIABLES = [
     { key: "{{order_id}}", desc: "ID đơn hàng" },
     { key: "{{display_id}}", desc: "Mã đơn hàng hiển thị" },
     { key: "{{customer_name}}", desc: "Tên khách hàng" },
@@ -46,14 +46,26 @@ const TEMPLATE_VARIABLES = [
     { key: "{{store_name}}", desc: "Tên cửa hàng" },
 ]
 
+const CONTACT_TEMPLATE_VARIABLES = [
+    { key: "{{name}}", desc: "Họ và tên khách gửi liên hệ" },
+    { key: "{{email}}", desc: "Email của khách gửi liên hệ" },
+    { key: "{{message}}", desc: "Nội dung lời nhắn" },
+    { key: "{{date}}", desc: "Thời gian gửi (Ngày/giờ)" },
+    { key: "{{store_name}}", desc: "Tên cửa hàng" },
+]
+
 const EmailSettingForm = ({
     setting,
     onSave,
     isSaving,
+    variables = ORDER_TEMPLATE_VARIABLES,
+    description,
 }: {
     setting: EmailSetting
     onSave: (id: string, data: Partial<EmailSetting>) => void
     isSaving: boolean
+    variables?: { key: string; desc: string }[]
+    description?: string
 }) => {
     const [isEnabled, setIsEnabled] = useState(setting.is_enabled)
     const [subject, setSubject] = useState(setting.subject)
@@ -61,7 +73,7 @@ const EmailSettingForm = ({
     const [recipients, setRecipients] = useState(setting.recipients || "")
     const [testEmail, setTestEmail] = useState("")
     const [isSendingTest, setIsSendingTest] = useState(false)
-    const isInternal = setting.type === "internal_order_notification"
+    const isInternal = setting.type === "internal_order_notification" || setting.type === "contact_us_notification"
 
     // Sync state when setting changes (e.g. after save)
     useEffect(() => {
@@ -122,7 +134,7 @@ const EmailSettingForm = ({
                     </Text>
                     <Text className="text-ui-fg-subtle" size="small">
                         {isEnabled
-                            ? "Email sẽ được gửi tự động khi có đơn hàng mới"
+                            ? (description || "Email sẽ được gửi tự động")
                             : "Email sẽ không được gửi"}
                     </Text>
                 </div>
@@ -184,7 +196,7 @@ const EmailSettingForm = ({
                     📋 Biến template có sẵn:
                 </Text>
                 <div className="grid grid-cols-2 gap-2">
-                    {TEMPLATE_VARIABLES.map((v) => (
+                    {variables.map((v) => (
                         <div key={v.key} className="flex items-center gap-2">
                             <Badge size="2xsmall" className="font-mono">
                                 {v.key}
@@ -300,10 +312,20 @@ const EmailSettingsPage = () => {
         [updateMutation]
     )
 
-    // Auto-seed on first load if no settings exist
+    // Auto-seed if any required templates are missing
     useEffect(() => {
-        if (data && data.email_settings.length === 0) {
-            seedMutation.mutate()
+        if (data) {
+            const existingTypes = data.email_settings.map((s) => s.type)
+            const requiredTypes = [
+                "customer_order_confirmation",
+                "internal_order_notification",
+                "contact_us_notification",
+                "contact_us_confirmation",
+            ]
+            const hasMissing = requiredTypes.some((t) => !existingTypes.includes(t))
+            if (hasMissing) {
+                seedMutation.mutate()
+            }
         }
     }, [data])
 
@@ -312,6 +334,12 @@ const EmailSettingsPage = () => {
     )
     const internalSetting = data?.email_settings.find(
         (s) => s.type === "internal_order_notification"
+    )
+    const contactNotificationSetting = data?.email_settings.find(
+        (s) => s.type === "contact_us_notification"
+    )
+    const contactConfirmationSetting = data?.email_settings.find(
+        (s) => s.type === "contact_us_confirmation"
     )
 
     if (isLoading) {
@@ -332,13 +360,13 @@ const EmailSettingsPage = () => {
             <div className="p-6 border-b">
                 <Heading level="h1">Quản lý Email</Heading>
                 <Text className="text-ui-fg-subtle mt-1">
-                    Cấu hình email tự động gửi khi có đơn hàng mới
+                    Cấu hình email tự động gửi khi có đơn hàng mới hoặc khách hàng gửi form liên hệ
                 </Text>
             </div>
 
             {/* Tabs */}
             <Tabs defaultValue="customer">
-                <Tabs.List className="px-6 pt-4">
+                <Tabs.List className="px-6 pt-4 flex-wrap">
                     <Tabs.Trigger value="customer">
                         <span className="flex items-center gap-2">
                             📧 Email xác nhận đơn hàng
@@ -349,20 +377,39 @@ const EmailSettingsPage = () => {
                     </Tabs.Trigger>
                     <Tabs.Trigger value="internal">
                         <span className="flex items-center gap-2">
-                            🔔 Email thông báo nội bộ
+                            🔔 Thông báo đơn hàng (Nội bộ)
                             {internalSetting?.is_enabled && (
+                                <Badge color="green" size="2xsmall">ON</Badge>
+                            )}
+                        </span>
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="contact_notification">
+                        <span className="flex items-center gap-2">
+                            📬 Thông báo liên hệ mới (Nội bộ)
+                            {contactNotificationSetting?.is_enabled && (
+                                <Badge color="green" size="2xsmall">ON</Badge>
+                            )}
+                        </span>
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value="contact_confirmation">
+                        <span className="flex items-center gap-2">
+                            ✉️ Xác nhận liên hệ (Khách hàng)
+                            {contactConfirmationSetting?.is_enabled && (
                                 <Badge color="green" size="2xsmall">ON</Badge>
                             )}
                         </span>
                     </Tabs.Trigger>
                 </Tabs.List>
 
+                {/* 1. Customer Order Confirmation */}
                 <Tabs.Content value="customer">
                     {customerSetting ? (
                         <EmailSettingForm
                             setting={customerSetting}
                             onSave={handleSave}
                             isSaving={updateMutation.isPending}
+                            variables={ORDER_TEMPLATE_VARIABLES}
+                            description="Email sẽ được gửi tự động tới khách hàng khi có đơn hàng mới"
                         />
                     ) : (
                         <div className="p-8 text-center">
@@ -373,12 +420,53 @@ const EmailSettingsPage = () => {
                     )}
                 </Tabs.Content>
 
+                {/* 2. Internal Order Notification */}
                 <Tabs.Content value="internal">
                     {internalSetting ? (
                         <EmailSettingForm
                             setting={internalSetting}
                             onSave={handleSave}
                             isSaving={updateMutation.isPending}
+                            variables={ORDER_TEMPLATE_VARIABLES}
+                            description="Email sẽ được gửi tự động tới danh sách người nhận khi có đơn hàng mới"
+                        />
+                    ) : (
+                        <div className="p-8 text-center">
+                            <Text className="text-ui-fg-subtle">
+                                Đang tạo cấu hình mặc định...
+                            </Text>
+                        </div>
+                    )}
+                </Tabs.Content>
+
+                {/* 3. Contact Us Notification (Internal) */}
+                <Tabs.Content value="contact_notification">
+                    {contactNotificationSetting ? (
+                        <EmailSettingForm
+                            setting={contactNotificationSetting}
+                            onSave={handleSave}
+                            isSaving={updateMutation.isPending}
+                            variables={CONTACT_TEMPLATE_VARIABLES}
+                            description="Email thông báo sẽ được gửi tới danh sách người nhận khi có khách gửi liên hệ mới qua form Contact Us"
+                        />
+                    ) : (
+                        <div className="p-8 text-center">
+                            <Text className="text-ui-fg-subtle">
+                                Đang tạo cấu hình mặc định...
+                            </Text>
+                        </div>
+                    )}
+                </Tabs.Content>
+
+                {/* 4. Contact Us Confirmation (Customer) */}
+                <Tabs.Content value="contact_confirmation">
+                    {contactConfirmationSetting ? (
+                        <EmailSettingForm
+                            setting={contactConfirmationSetting}
+                            onSave={handleSave}
+                            isSaving={updateMutation.isPending}
+                            variables={CONTACT_TEMPLATE_VARIABLES}
+                            description="Email phản hồi sẽ được gửi tự động tới email của khách hàng sau khi họ gửi form Contact Us"
                         />
                     ) : (
                         <div className="p-8 text-center">

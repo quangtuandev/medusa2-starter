@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { send } from "@emailjs/browser";
 import { Container } from "../common/container/Container";
 import { useI18n } from "@app/hooks/useI18n";
 
@@ -37,22 +36,25 @@ export default function ContactForm({ onSubmitSuccess }: { onSubmitSuccess: () =
         setError(null);
 
         try {
-            await send(
-                "service_a1uegfr",
-                "template_kh8252q",
-                {
-                    from_name: data.name,
-                    from_email: data.email,
-                    to_name: "Kira Parfum Team",
-                    message: data.message,
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                "PxWigR7xt2Jg86A-K"
-            );
+                body: JSON.stringify(data),
+            });
+
+            const resJson = await res.json().catch(() => ({}));
+
+            if (!res.ok || resJson.success === false) {
+                throw new Error(resJson.message || t('contact.error'));
+            }
+
             reset();
             onSubmitSuccess();
-        } catch (error) {
-            console.error("EmailJS error:", error);
-            setError(t('contact.error'));
+        } catch (err: any) {
+            console.error("Contact form error:", err);
+            setError(err.message || t('contact.error'));
         } finally {
             setIsSubmitting(false);
         }
