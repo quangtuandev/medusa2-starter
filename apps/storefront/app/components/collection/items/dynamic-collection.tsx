@@ -39,6 +39,10 @@ export const DynamicCollection: React.FC<DynamicCollectionProps> = ({
       {image ? (
         <img
           src={image}
+          onError={(event) => {
+            // A broken admin image must not paint the alt text over the card.
+            event.currentTarget.style.visibility = "hidden";
+          }}
           className={clsx(
             "scale-110 object-cover w-full h-full select-none pointer-events-none transition-opacity duration-300 ease-in-out",
             showActiveDirectly
@@ -54,6 +58,9 @@ export const DynamicCollection: React.FC<DynamicCollectionProps> = ({
       {imageActive ? (
         <img
           src={imageActive}
+          onError={(event) => {
+            event.currentTarget.style.visibility = "hidden";
+          }}
           className={clsx(
             "scale-110 object-cover w-full h-full select-none pointer-events-none absolute inset-0 transition-opacity duration-300 ease-in-out",
             showActiveDirectly

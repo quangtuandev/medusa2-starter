@@ -1,6 +1,7 @@
 import { Container } from "@app/components/common/container";
 import { ProductListWithPagination } from "@app/components/product/ProductListWithPagination";
 import { HalfFanSlider } from "@app/components/product/HalfFanSlider";
+import { PRODUCTS_SCROLL_TARGET_ID, useScrollToProducts } from "@app/hooks/useScrollToProducts";
 import { fetchCollections } from "@libs/util/server/data/collections.server";
 import { fetchProducts } from "@libs/util/server/products.server";
 import { fetchSliderCards } from "@libs/util/server/slider-cards.server";
@@ -47,6 +48,8 @@ export default function ProductCollectionRoute() {
 
   const { products, count, limit, offset, collection, slider_cards, collectionHandles } = data;
   const description = (collection.metadata?.description as string) || "";
+  // Jump to the products when the fan deck opened this collection.
+  useScrollToProducts();
 
   return (
     <div className="min-h-[max(calc(100vh-144px),_900px)] flex flex-col items-center w-full">
@@ -56,7 +59,7 @@ export default function ProductCollectionRoute() {
         collectionHandles={collectionHandles}
       />
 
-      <Container className="w-full pb-16 mt-8 xl:mt-16">
+      <Container id={PRODUCTS_SCROLL_TARGET_ID} className="w-full pb-16 mt-8 xl:mt-16 scroll-mt-28 xl:scroll-mt-32">
 
         <div className="relative mb-2 lg:mb-14 flex flex-col xl:flex-row items-center xl:items-end text-4xl xl:text-[110px] leading-normal xl:leading-[114px] text-[#321D14] mt-12 after:hidden xl:after:block after:content-[''] after:block after:w-1/2 after:h-[1px] after:bg-[#000000] after:absolute after:bottom-[32px] after:left-0">
           <p className="flex-1 font-title font-bold uppercase leading-none relative lg:top-[-18px] top-0">

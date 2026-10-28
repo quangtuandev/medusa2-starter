@@ -7,6 +7,7 @@ import { fetchSliderCards } from "@libs/util/server/slider-cards.server";
 import { Container } from "@app/components/common/container";
 import { ProductGrid } from "@app/components/product/ProductGrid";
 import { HalfFanSlider, SliderCardItem } from "@app/components/product/HalfFanSlider";
+import { PRODUCTS_SCROLL_TARGET_ID, useScrollToProducts } from "@app/hooks/useScrollToProducts";
 
 export type { SliderCardItem };
 
@@ -33,6 +34,8 @@ export default function ProductsPage() {
   const { t } = useI18n();
   const { collectionsWithProducts, slider_cards } = useLoaderData<typeof loader>();
   const [displayCard, setDisplayCard] = useState<SliderCardItem | null>(null);
+  // The fan deck asks for this when a card is opened with a second click.
+  useScrollToProducts();
 
   return (
     <div className="min-h-[max(calc(100vh-144px),_900px)] flex flex-col items-center">
@@ -44,7 +47,7 @@ export default function ProductsPage() {
       />
 
       {/* Product List Grid Area */}
-      <Container className="w-full pb-32 mt-12 xl:mt-24">
+      <Container id={PRODUCTS_SCROLL_TARGET_ID} className="w-full pb-32 mt-12 xl:mt-24 scroll-mt-28 xl:scroll-mt-32">
         {displayCard?.handle === "coming" ? (
           <div className="flex flex-col items-center justify-center py-20 text-center animate-fade-in w-full">
             <h3 className="font-centuryBook italic text-3xl xl:text-5xl text-[#000] mb-4">
