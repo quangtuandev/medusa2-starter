@@ -7,14 +7,14 @@ import { createReadableStreamFromReadable } from "@react-router/node";
 import * as Sentry from "@sentry/remix";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { ServerRouter, createCookie, data, useMatches, useFetchers, useFetcher, useNavigate, Link, NavLink, useLocation, UNSAFE_withComponentProps, UNSAFE_withErrorBoundaryProps, useRouteError, Meta, Links, Scripts, Outlet, ScrollRestoration, useNavigation, useLoaderData, redirect, useParams, useRouteLoaderData } from "react-router";
+import { ServerRouter, createCookie, data, useMatches, useFetchers, useFetcher, useNavigate, useLocation, Link as Link$1, NavLink, UNSAFE_withComponentProps, UNSAFE_withErrorBoundaryProps, useRouteError, Meta, Links, Scripts, Outlet, ScrollRestoration, useNavigation, useLoaderData, redirect, useParams, useRouteLoaderData } from "react-router";
 import dotenv from "dotenv";
 import cachified, { totalTtl } from "@epic-web/cachified";
 import { events } from "fetch-event-stream";
 import { stringify } from "qs";
 import LRUCache from "lru-cache";
 import omit from "lodash.omit";
-import { forwardRef, useReducer, createContext, useContext, useState, useRef, useCallback, useEffect, useMemo, memo, Fragment as Fragment$1, lazy, Suspense } from "react";
+import { forwardRef, useReducer, createContext, useContext, useState, useRef, useCallback, useEffect, useMemo, memo, Fragment as Fragment$1 } from "react";
 import clsx, { clsx as clsx$1 } from "clsx";
 import merge from "lodash/merge.js";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Transition, TabList as TabList$1, Tab, TabGroup, TabPanels, TabPanel, RadioGroup, Radio, Label } from "@headlessui/react";
@@ -31,11 +31,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { useTranslation, initReactI18next, I18nextProvider } from "react-i18next";
 import { animate, spring } from "animejs";
-import { useDebounce } from "use-debounce";
-import { motion } from "motion/react";
-import { Link as Link$1, useNavigate as useNavigate$1, useFetcher as useFetcher$1 } from "react-router-dom";
-import { AnimatePresence, motion as motion$1, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X, ChevronDown, ChevronLeft, ChevronRight, HelpCircle, Droplet, Snowflake } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Link, useNavigate as useNavigate$1, useFetcher as useFetcher$1 } from "react-router-dom";
+import { useDebounce } from "use-debounce";
+import { motion as motion$1, useReducedMotion as useReducedMotion$1 } from "motion/react";
 import i18n, { t } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import ChevronLeftIcon from "@heroicons/react/24/solid/ChevronLeftIcon";
@@ -134,6 +135,15 @@ const entryServer = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineP
   default: handleRequest,
   handleError
 }, Symbol.toStringTag, { value: "Module" }));
+const getValidHttpOrigin = (value) => {
+  if (!value) return void 0;
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === "http:" || url.protocol === "https:" ? url.origin : void 0;
+  } catch {
+    return void 0;
+  }
+};
 const filterEmptyMeta = (meta2) => meta2.filter(
   (meta22) => "title" in meta22 && !!meta22.title || "name" in meta22 && !!meta22.content || "property" in meta22 && !!meta22.content
 );
@@ -162,9 +172,9 @@ const getCommonMeta = ({ matches }) => {
   const currentMatch = matches == null ? void 0 : matches[(matches == null ? void 0 : matches.length) - 1];
   const siteDetails = (_a = rootMatch.data) == null ? void 0 : _a.siteDetails;
   if (!siteDetails) return [];
-  const configuredUrl = siteDetails.settings.storefront_url;
-  const requestOrigin = (_b = rootMatch.data) == null ? void 0 : _b.requestOrigin;
-  const storefrontOrigin = configuredUrl || requestOrigin;
+  const configuredOrigin = getValidHttpOrigin(siteDetails.settings.storefront_url);
+  const requestOrigin = getValidHttpOrigin((_b = rootMatch.data) == null ? void 0 : _b.requestOrigin);
+  const storefrontOrigin = configuredOrigin || requestOrigin;
   const canonicalUrl = storefrontOrigin ? new URL(currentMatch.pathname, storefrontOrigin).toString() : void 0;
   return [
     { charset: "utf-8" },
@@ -172,10 +182,7 @@ const getCommonMeta = ({ matches }) => {
       name: "viewport",
       content: "width=device-width, initial-scale=1.0, height=device-height"
     },
-    ...canonicalUrl ? [
-      { property: "og:url", content: canonicalUrl },
-      { name: "canonical", content: canonicalUrl }
-    ] : [],
+    ...canonicalUrl ? [{ property: "og:url", content: canonicalUrl }] : [],
     { property: "og:type", content: "website" },
     { property: "og:site_name", content: siteDetails.store.name }
   ];
@@ -6854,7 +6861,7 @@ var __asyncGenerator = function(thisArg, _arguments, generator) {
 };
 const PUBLISHABLE_KEY_HEADER = "x-publishable-api-key";
 const LOCALE_STORAGE_KEY = "medusa_locale";
-const getBaseUrl = (passedBaseUrl) => {
+const getBaseUrl$2 = (passedBaseUrl) => {
   if (typeof window === "undefined") {
     return passedBaseUrl;
   }
@@ -6950,7 +6957,7 @@ class Client {
         storageKey
       };
     };
-    this.config = Object.assign(Object.assign({}, config2), { baseUrl: getBaseUrl(config2.baseUrl) });
+    this.config = Object.assign(Object.assign({}, config2), { baseUrl: getBaseUrl$2(config2.baseUrl) });
     const logger = config2.logger || {
       error: console.error,
       warn: console.warn,
@@ -19469,6 +19476,1091 @@ const CartDrawer = () => {
     ) }) }) })
   ] });
 };
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768;
+      setIsMobile(isMobileDevice);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  return isMobile;
+}
+const useRegions = () => {
+  const data2 = useRootLoaderData();
+  return { regions: data2 == null ? void 0 : data2.regions };
+};
+const convertToFormData = (data2, formData = new FormData(), parentKey = "") => {
+  if (data2 === null || data2 === void 0) return formData;
+  if (typeof data2 === "object" && !(data2 instanceof Date) && !(data2 instanceof File)) {
+    Object.entries(data2).forEach(([key, value]) => {
+      convertToFormData(
+        value,
+        formData,
+        !parentKey ? key : data2[key] instanceof File ? parentKey : `${parentKey}.${key}`
+      );
+    });
+    return formData;
+  }
+  if (Array.isArray(data2)) {
+    data2.forEach((value, index) => {
+      convertToFormData(value, formData, `${parentKey}.${index}`);
+    });
+    return formData;
+  }
+  formData.append(parentKey, data2);
+  return formData;
+};
+const CountryRegionModal = ({
+  isOpen,
+  onClose,
+  autoShowOnFirstVisit = false
+}) => {
+  const { regions } = useRegions();
+  const { region } = useRegion();
+  const { currentLanguage, changeLanguage } = useI18n();
+  const fetcher = useFetcher();
+  const [internalOpen, setInternalOpen] = useState(false);
+  useEffect(() => {
+    if (autoShowOnFirstVisit && typeof localStorage !== "undefined") {
+      const hasChosen = localStorage.getItem("kira_country_selected");
+      if (!hasChosen) {
+        const timer = setTimeout(() => setInternalOpen(true), 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [autoShowOnFirstVisit]);
+  useEffect(() => {
+    const handler = () => setInternalOpen(true);
+    window.addEventListener("open-country-modal", handler);
+    return () => window.removeEventListener("open-country-modal", handler);
+  }, []);
+  const showModal = isOpen !== void 0 ? isOpen : internalOpen;
+  const handleModalClose = () => {
+    setInternalOpen(false);
+    if (onClose) onClose();
+  };
+  const countryOptions = useMemo(() => {
+    if (!regions || regions.length === 0) {
+      return [
+        {
+          regionId: (region == null ? void 0 : region.id) || "",
+          countryCode: "vn",
+          displayName: "Vietnam",
+          currency: "VND",
+          label: "Vietnam (VND)"
+        }
+      ];
+    }
+    const list = [];
+    regions.forEach((reg) => {
+      const currency = (reg.currency_code || "").toUpperCase();
+      if (reg.countries && reg.countries.length > 0) {
+        reg.countries.forEach((c) => {
+          list.push({
+            regionId: reg.id,
+            countryCode: c.iso_2,
+            displayName: c.display_name || c.iso_2.toUpperCase(),
+            currency,
+            label: `${c.display_name || c.iso_2.toUpperCase()} (${currency})`
+          });
+        });
+      } else {
+        list.push({
+          regionId: reg.id,
+          countryCode: reg.name,
+          displayName: reg.name,
+          currency,
+          label: `${reg.name} (${currency})`
+        });
+      }
+    });
+    return list;
+  }, [regions, region]);
+  const defaultOption = useMemo(() => {
+    if (region && countryOptions.length > 0) {
+      return countryOptions.find((opt) => opt.regionId === region.id) || countryOptions[0];
+    }
+    return countryOptions[0];
+  }, [region, countryOptions]);
+  const [selectedRegionId, setSelectedRegionId2] = useState(
+    (defaultOption == null ? void 0 : defaultOption.regionId) || ""
+  );
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    currentLanguage || "en"
+  );
+  useEffect(() => {
+    if ((defaultOption == null ? void 0 : defaultOption.regionId) && !selectedRegionId) {
+      setSelectedRegionId2(defaultOption.regionId);
+    }
+    if (currentLanguage) {
+      setSelectedLanguage(currentLanguage);
+    }
+  }, [defaultOption, currentLanguage, selectedRegionId]);
+  const handleConfirm = () => {
+    if (!selectedRegionId) return;
+    changeLanguage(selectedLanguage);
+    fetcher.submit(
+      convertToFormData({
+        regionId: selectedRegionId,
+        language: selectedLanguage
+      }),
+      { method: "post", action: "/api/region" }
+    );
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("kira_country_selected", "true");
+    }
+    handleModalClose();
+  };
+  const isVi = currentLanguage === "vi";
+  return /* @__PURE__ */ jsx(AnimatePresence, { children: showModal && /* @__PURE__ */ jsxs("div", { className: "fixed inset-0 z-[999999] flex items-center justify-center p-4", children: [
+    /* @__PURE__ */ jsx(
+      motion.div,
+      {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        onClick: handleModalClose,
+        className: "fixed inset-0 bg-black/60 backdrop-blur-sm"
+      }
+    ),
+    /* @__PURE__ */ jsxs(
+      motion.div,
+      {
+        initial: { opacity: 0, scale: 0.92, y: 15 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.92, y: 15 },
+        transition: { type: "spring", stiffness: 350, damping: 25 },
+        className: "relative w-full max-w-lg overflow-hidden rounded-xl bg-white p-6 sm:p-8 shadow-2xl z-10 font-sans",
+        children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: handleModalClose,
+              className: "absolute top-6 right-6 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 text-gray-700 transition-colors",
+              "aria-label": "Close modal",
+              children: /* @__PURE__ */ jsx(X, { size: 20 })
+            }
+          ),
+          /* @__PURE__ */ jsx("h2", { className: "text-xl sm:text-2xl font-bold text-gray-900 pr-8 leading-snug", children: isVi ? "Chọn quốc gia / khu vực" : "Choose your country / region" }),
+          /* @__PURE__ */ jsxs("div", { className: "mt-4 space-y-2 text-sm text-gray-700 leading-relaxed", children: [
+            /* @__PURE__ */ jsx("p", { className: "font-semibold text-gray-900", children: isVi ? "Chọn điểm đến giao hàng của bạn." : "Select your shipping destination." }),
+            /* @__PURE__ */ jsx("p", { className: "text-gray-600 text-xs sm:text-sm", children: isVi ? "Mua sắm từ quốc gia bạn chọn. Lưu ý rằng chúng tôi chỉ có thể giao hàng đến các địa chỉ thuộc quốc gia đã chọn." : "Buy from the country of your choice. Remember that we can only ship your order to addresses located in the chosen country." })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-2 gap-4", children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-1.5", children: [
+              /* @__PURE__ */ jsx("label", { className: "block text-xs font-semibold text-gray-500 uppercase tracking-wider", children: isVi ? "Quốc gia" : "Country" }),
+              /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+                /* @__PURE__ */ jsx(
+                  "select",
+                  {
+                    value: selectedRegionId,
+                    onChange: (e) => setSelectedRegionId2(e.target.value),
+                    style: { backgroundImage: "none", WebkitAppearance: "none", MozAppearance: "none" },
+                    className: "w-full appearance-none bg-none border-0 border-b border-gray-300 pb-2 pt-1 pr-6 pl-0 text-sm font-medium text-gray-900 bg-transparent focus:border-black focus:ring-0 focus:outline-none transition-colors cursor-pointer",
+                    children: countryOptions.map((opt) => /* @__PURE__ */ jsx("option", { value: opt.regionId, children: opt.label }, `${opt.regionId}-${opt.countryCode}`))
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  ChevronDown,
+                  {
+                    size: 16,
+                    className: "pointer-events-none absolute right-0 top-2.5 text-gray-600"
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-1.5", children: [
+              /* @__PURE__ */ jsx("label", { className: "block text-xs font-semibold text-gray-500 uppercase tracking-wider", children: isVi ? "Ngôn ngữ" : "Language" }),
+              /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+                /* @__PURE__ */ jsxs(
+                  "select",
+                  {
+                    value: selectedLanguage,
+                    onChange: (e) => setSelectedLanguage(e.target.value),
+                    style: { backgroundImage: "none", WebkitAppearance: "none", MozAppearance: "none" },
+                    className: "w-full appearance-none bg-none border-0 border-b border-gray-300 pb-2 pt-1 pr-6 pl-0 text-sm font-medium text-gray-900 bg-transparent focus:border-black focus:ring-0 focus:outline-none transition-colors cursor-pointer",
+                    children: [
+                      /* @__PURE__ */ jsx("option", { value: "en", children: "English" }),
+                      /* @__PURE__ */ jsx("option", { value: "vi", children: "Tiếng Việt" })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  ChevronDown,
+                  {
+                    size: 16,
+                    className: "pointer-events-none absolute right-0 top-2.5 text-gray-600"
+                  }
+                )
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "mt-8 flex justify-center", children: /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: handleConfirm,
+              className: "w-40 py-3 rounded-xl bg-black hover:bg-gray-800 text-white font-semibold text-sm tracking-wide transition-colors shadow-md active:scale-95 duration-150",
+              children: isVi ? "Xác nhận" : "Confirm"
+            }
+          ) })
+        ]
+      }
+    )
+  ] }) });
+};
+const cursorImg = "/assets/images/cursor.svg";
+const Cursor = () => {
+  const cursorRef = useRef(null);
+  const shadowRef = useRef(null);
+  const rippleRef = useRef(null);
+  const isMobile = useIsMobile();
+  const mousePosition = useRef({ x: 0, y: 0 });
+  const cursorPosition = useRef({ x: 0, y: 0 });
+  const shadowPosition = useRef({ x: 0, y: 0 });
+  const isHovering = useRef(false);
+  const animationFrameId = useRef();
+  const hoverAnimationId = useRef();
+  const lerp = (start, end, factor) => {
+    return start + (end - start) * factor;
+  };
+  const animateCursor = useCallback(() => {
+    if (cursorRef.current && shadowRef.current) {
+      cursorPosition.current.x = lerp(cursorPosition.current.x, mousePosition.current.x, 0.9);
+      cursorPosition.current.y = lerp(cursorPosition.current.y, mousePosition.current.y, 0.9);
+      shadowPosition.current.x = lerp(shadowPosition.current.x, mousePosition.current.x, 0.25);
+      shadowPosition.current.y = lerp(shadowPosition.current.y, mousePosition.current.y, 0.25);
+      const offsetX = isHovering.current ? 20 : 16;
+      const offsetY = isHovering.current ? 20 : 16;
+      const scale = isHovering.current ? 1.2 : 1;
+      cursorRef.current.style.transform = `translate3d(${cursorPosition.current.x - offsetX}px, ${cursorPosition.current.y - offsetY}px, 0) scale(${scale})`;
+      const shadowScale = isHovering.current ? 1.5 : 1;
+      shadowRef.current.style.transform = `translate3d(${shadowPosition.current.x - offsetX}px, ${shadowPosition.current.y - offsetY}px, 0) scale(${shadowScale})`;
+    }
+    animationFrameId.current = requestAnimationFrame(animateCursor);
+  }, []);
+  const animateHover = useCallback(() => {
+    if (cursorRef.current && shadowRef.current) {
+      if (isHovering.current) {
+        cursorRef.current.style.filter = "brightness(1.2) contrast(1.1)";
+        shadowRef.current.style.opacity = "0.6";
+        shadowRef.current.style.filter = "blur(12px)";
+      } else {
+        cursorRef.current.style.filter = "none";
+        shadowRef.current.style.opacity = "0.8";
+        shadowRef.current.style.filter = "blur(8px)";
+      }
+    }
+  }, []);
+  useEffect(() => {
+    if (isMobile) return;
+    const moveCursor = (e) => {
+      mousePosition.current.x = e.clientX;
+      mousePosition.current.y = e.clientY;
+    };
+    const handleMouseOver = (e) => {
+      const target = e.target;
+      const computedStyle = window.getComputedStyle(target);
+      const cursor = computedStyle.cursor;
+      const shouldBeHovering = cursor === "pointer" || target.tagName === "A" || target.tagName === "BUTTON" || target.tagName === "SELECT" || target.tagName === "OPTION" || target.tagName === "INPUT" || typeof target.onclick === "function" || target.getAttribute("role") === "button" || target.closest("a") !== null || target.closest("button") !== null || target.closest("select") !== null;
+      if (shouldBeHovering !== isHovering.current) {
+        isHovering.current = shouldBeHovering;
+        animateHover();
+      }
+    };
+    const handleClick = (e) => {
+      if (rippleRef.current) {
+        rippleRef.current.style.left = `${e.clientX}px`;
+        rippleRef.current.style.top = `${e.clientY}px`;
+        rippleRef.current.classList.remove("show");
+        void rippleRef.current.offsetWidth;
+        rippleRef.current.classList.add("show");
+      }
+      if (shadowRef.current) {
+        const currentTransform = shadowRef.current.style.transform;
+        const scale = isHovering.current ? 1.5 : 1;
+        const offsetX = isHovering.current ? 20 : 16;
+        const offsetY = isHovering.current ? 20 : 16;
+        shadowRef.current.style.transform = `translate3d(${mousePosition.current.x - offsetX}px, ${mousePosition.current.y - offsetY}px, 0) scale(${scale * 2})`;
+        shadowRef.current.style.opacity = "0.6";
+        setTimeout(() => {
+          if (shadowRef.current) {
+            shadowRef.current.style.transform = currentTransform;
+            shadowRef.current.style.opacity = isHovering.current ? "0.6" : "0.8";
+          }
+        }, 200);
+      }
+    };
+    document.addEventListener("mousemove", moveCursor);
+    document.addEventListener("mousemove", handleMouseOver);
+    document.addEventListener("mousedown", handleClick);
+    animationFrameId.current = requestAnimationFrame(animateCursor);
+    document.body.style.cursor = "none";
+    return () => {
+      document.removeEventListener("mousemove", moveCursor);
+      document.removeEventListener("mousemove", handleMouseOver);
+      document.removeEventListener("mousedown", handleClick);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      if (hoverAnimationId.current) {
+        cancelAnimationFrame(hoverAnimationId.current);
+      }
+      document.body.style.cursor = "";
+    };
+  }, [animateCursor, animateHover, isMobile]);
+  if (isMobile) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        ref: shadowRef,
+        style: {
+          position: "fixed",
+          left: 0,
+          top: 0,
+          pointerEvents: "none",
+          width: 32,
+          height: 32,
+          transform: "translate3d(-100px, -100px, 0) scale(1)",
+          willChange: "transform, opacity, filter",
+          zIndex: 2147483646,
+          opacity: 0.8,
+          filter: "blur(8px)",
+          transition: "opacity 0.3s cubic-bezier(.25,.46,.45,.94), filter 0.2s ease-out"
+        },
+        children: /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: cursorImg,
+            width: 32,
+            height: 32,
+            style: {
+              display: "block",
+              width: "100%",
+              height: "100%",
+              mixBlendMode: "multiply"
+            },
+            draggable: false,
+            alt: "cursor shadow"
+          }
+        )
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        ref: cursorRef,
+        style: {
+          position: "fixed",
+          left: 0,
+          top: 0,
+          pointerEvents: "none",
+          width: 32,
+          height: 32,
+          transform: "translate3d(-100px, -100px, 0) scale(1)",
+          willChange: "transform, filter",
+          zIndex: 2147483647,
+          transition: "filter 0.2s ease-out"
+        },
+        children: /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: cursorImg,
+            width: 32,
+            height: 32,
+            style: {
+              display: "block",
+              width: "100%",
+              height: "100%",
+              mixBlendMode: "normal"
+            },
+            draggable: false,
+            alt: "cursor"
+          }
+        )
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        ref: rippleRef,
+        style: {
+          position: "fixed",
+          left: 0,
+          top: 0,
+          pointerEvents: "none",
+          width: 0,
+          height: 0,
+          zIndex: 2147483645
+        },
+        className: "cursor-ripple"
+      }
+    ),
+    /* @__PURE__ */ jsx("style", { children: `
+        .cursor-ripple {
+          position: fixed;
+          border-radius: 50%;
+          pointer-events: none;
+          width: 0;
+          height: 0;
+          transform: translate(-50%, -50%);
+        }
+        .cursor-ripple.show {
+          animation: cursor-ripple-burst 0.6s cubic-bezier(.25,.46,.45,.94);
+        }
+        @keyframes cursor-ripple-burst {
+          0% {
+            width: 0px;
+            height: 0px;
+            border: 2px solid rgba(0,0,0,0.3);
+            opacity: 1;
+          }
+          50% {
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgba(0,0,0,0.2);
+            opacity: 0.5;
+          }
+          100% {
+            width: 120px;
+            height: 120px;
+            border: 0.5px solid rgba(0,0,0,0);
+            opacity: 0;
+          }
+        }
+      ` })
+  ] });
+};
+const MenuToggle = ({
+  isOpen,
+  onClick,
+  className = "",
+  variant = "default",
+  "aria-expanded": ariaExpanded,
+  "aria-controls": ariaControls
+}) => {
+  return /* @__PURE__ */ jsx(
+    "button",
+    {
+      type: "button",
+      onClick,
+      className: clsx(
+        "inline-flex items-center justify-center w-[55px] h-[55px] rounded-full transition-all text-[#000000]",
+        "duration-300 ease-in-out",
+        variant === "brand" ? "bg-white text-[#3B2314] hover:bg-[#F4F0EC]" : {
+          "lg:bg-[#FDCEF8] bg-[#FFE977]": isOpen,
+          "bg-[#FFFF00]": !isOpen
+        },
+        className
+      ),
+      "aria-label": isOpen ? "Close menu" : "Open menu",
+      "aria-expanded": ariaExpanded,
+      "aria-controls": ariaControls,
+      children: isOpen ? /* @__PURE__ */ jsx("img", { src: "/assets/images/icons/close.svg", alt: "" }) : /* @__PURE__ */ jsx("img", { src: "/assets/images/icons/menu.svg", alt: "" })
+    }
+  );
+};
+const PopupDialog = () => {
+  const { currentLanguage } = useI18n();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [activePopup, setActivePopup] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
+  useEffect(() => {
+    let isMounted = true;
+    let timer = null;
+    const fetchPopups = async () => {
+      var _a, _b;
+      try {
+        let res;
+        try {
+          res = await fetch("/api/popups");
+        } catch {
+          const baseUrl = typeof window !== "undefined" && ((_a = window.ENV) == null ? void 0 : _a.PUBLIC_MEDUSA_API_URL) || "http://localhost:7901";
+          const publishableKey = typeof window !== "undefined" && ((_b = window.ENV) == null ? void 0 : _b.MEDUSA_PUBLISHABLE_KEY) || "";
+          res = await fetch(`${baseUrl}/store/popups`, {
+            headers: {
+              "x-publishable-api-key": publishableKey
+            }
+          });
+        }
+        if (!res.ok) return;
+        const data2 = await res.json();
+        const popups = data2.popups || [];
+        if (!popups.length || !isMounted) {
+          return;
+        }
+        const currentPath = location.pathname;
+        const matched = popups.find((p) => {
+          if (!p.is_active && p.is_active !== void 0) return false;
+          const target = (p.target_page || "all").trim();
+          if (target === "all" || target === "" || target === currentPath) return true;
+          if (target.endsWith("*") && currentPath.startsWith(target.slice(0, -1)))
+            return true;
+          return false;
+        });
+        if (!matched) {
+          return;
+        }
+        const sessionKey = `popup_shown_session_${matched.id}`;
+        const dayKey = `popup_shown_day_${matched.id}`;
+        if (matched.display_frequency === "once_per_session") {
+          if (sessionStorage.getItem(sessionKey)) return;
+        } else if (matched.display_frequency === "once_per_day") {
+          const lastShown = localStorage.getItem(dayKey);
+          if (lastShown) {
+            const timeDiff = Date.now() - parseInt(lastShown, 10);
+            if (timeDiff < 24 * 60 * 60 * 1e3) return;
+          }
+        }
+        const delay = (matched.delay_seconds || 0) * 1e3;
+        timer = setTimeout(() => {
+          if (isMounted) {
+            setImageFailed(false);
+            setActivePopup(matched);
+            setIsVisible(true);
+            if (matched.display_frequency === "once_per_session") {
+              sessionStorage.setItem(sessionKey, "true");
+            } else if (matched.display_frequency === "once_per_day") {
+              localStorage.setItem(dayKey, Date.now().toString());
+            }
+          }
+        }, delay);
+      } catch (err) {
+        console.error("Failed to fetch popups:", err);
+      }
+    };
+    fetchPopups();
+    return () => {
+      isMounted = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [location.pathname]);
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+  const handleCtaClick = (link) => {
+    handleClose();
+    if (!link) return;
+    if (link.startsWith("http://") || link.startsWith("https://")) {
+      window.open(link, "_blank", "noopener,noreferrer");
+    } else {
+      navigate(link);
+    }
+  };
+  if (!activePopup) return null;
+  const title = currentLanguage === "vi" ? activePopup.title_vi : activePopup.title_en;
+  const description = currentLanguage === "vi" ? activePopup.description_vi || activePopup.description_en : activePopup.description_en || activePopup.description_vi;
+  const ctaText = currentLanguage === "vi" ? activePopup.cta_text_vi || activePopup.cta_text_en : activePopup.cta_text_en || activePopup.cta_text_vi;
+  const secondaryCtaText = currentLanguage === "vi" ? activePopup.secondary_cta_text_vi || activePopup.secondary_cta_text_en : activePopup.secondary_cta_text_en || activePopup.secondary_cta_text_vi;
+  return /* @__PURE__ */ jsx(AnimatePresence, { children: isVisible && /* @__PURE__ */ jsxs("div", { className: "fixed inset-0 z-[99999] flex items-center justify-center p-4", children: [
+    /* @__PURE__ */ jsx(
+      motion.div,
+      {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        onClick: handleClose,
+        className: "fixed inset-0 bg-black/60 backdrop-blur-sm"
+      }
+    ),
+    /* @__PURE__ */ jsxs(
+      motion.div,
+      {
+        initial: { opacity: 0, scale: 0.9, y: 20 },
+        animate: { opacity: 1, scale: 1, y: 0 },
+        exit: { opacity: 0, scale: 0.9, y: 20 },
+        transition: { type: "spring", stiffness: 350, damping: 25 },
+        className: "relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white shadow-2xl",
+        children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: handleClose,
+              className: "absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-gray-700 transition-colors",
+              "aria-label": "Close popup",
+              children: /* @__PURE__ */ jsx(X, { size: 18 })
+            }
+          ),
+          activePopup.image && !imageFailed && /* @__PURE__ */ jsx("div", { className: "relative flex w-full shrink-0 items-center justify-center overflow-hidden bg-gray-100", children: /* @__PURE__ */ jsx(
+            "img",
+            {
+              src: activePopup.image,
+              alt: title,
+              onError: () => setImageFailed(true),
+              className: "max-h-[45vh] w-full object-contain"
+            }
+          ) }),
+          /* @__PURE__ */ jsxs("div", { className: "min-h-0 flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-4", children: [
+            /* @__PURE__ */ jsx("h2", { className: "font-title font-extrabold text-2xl sm:text-3xl text-gray-900 leading-tight", children: title }),
+            description && /* @__PURE__ */ jsx("p", { className: "font-montserrat text-sm sm:text-base text-gray-600 leading-relaxed max-w-md mx-auto whitespace-pre-line", children: description }),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2.5 pt-4", children: [
+              ctaText && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => handleCtaClick(activePopup.cta_link),
+                  className: "w-full py-3.5 px-6 rounded-2xl bg-[#FFE977] hover:bg-yellow-400 text-black font-title font-bold text-base uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]",
+                  children: ctaText
+                }
+              ),
+              secondaryCtaText && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => activePopup.secondary_cta_link ? handleCtaClick(activePopup.secondary_cta_link) : handleClose(),
+                  className: "w-full py-2 text-gray-500 hover:text-gray-900 font-medium text-xs sm:text-sm transition-colors",
+                  children: secondaryCtaText
+                }
+              )
+            ] })
+          ] })
+        ]
+      }
+    )
+  ] }) });
+};
+function FancyText({ id, text, className }) {
+  return /* @__PURE__ */ jsxs(
+    "p",
+    {
+      id,
+      className: clsx(
+        "font-centuryBook font-bold uppercase desk:hidden block pointer-events-none absolute bottom-0",
+        className
+      ),
+      children: [
+        /* @__PURE__ */ jsx("span", { className: "italic desk:text-[100px] text-[50px]", children: text.slice(0, 1) }),
+        /* @__PURE__ */ jsx("span", { className: "font-title desk:text-[65px] text-[40px]", children: text.slice(1) })
+      ]
+    }
+  );
+}
+const CANVAS_WIDTH = 1840;
+const CONTENT_WIDTH = 1520;
+const CANVAS_HEIGHT = 900;
+const EDGE_GAP = 24;
+const VERTICAL_PAD = 12;
+const MAX_SCALE = 1.12;
+const DESKTOP_MIN_WIDTH = 769;
+const DEFAULT_CATEGORY_ITEMS = [
+  {
+    id: "blog",
+    defaultLabelKey: "menu.blog",
+    image: "/assets/images/menu/frame2.webp",
+    imageInFrame: "/assets/images/menu/blog.webp",
+    url: "/blogs",
+    left: 160,
+    top: 315,
+    imageWidth: 234,
+    imageClass: "",
+    positionTitleClass: "right-0 -top-[85px]",
+    position: { x: "110%", y: "-122px" },
+    positionImage: { x: "20%", y: "-20%" }
+  },
+  {
+    id: "product",
+    defaultLabelKey: "menu.product",
+    image: "/assets/images/menu/frame3.webp",
+    imageInFrame: "/assets/images/menu/product.webp",
+    url: "/products",
+    left: 460,
+    top: 81,
+    imageWidth: 270,
+    imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] [rotate:-15deg]',
+    positionTitleClass: "left-1/2 top-[calc(100%+30px)]",
+    position: { x: "200px", y: "75px" },
+    positionImage: { x: "10%", y: "10%" }
+  },
+  {
+    id: "story",
+    defaultLabelKey: "menu.story",
+    image: "/assets/images/menu/frame2.webp",
+    imageInFrame: "/assets/images/menu/story.webp",
+    url: "/stories",
+    left: 860,
+    top: 189,
+    imageWidth: 225,
+    imageClass: "",
+    positionTitleClass: "left-1/2 top-[calc(100%+30px)] translate-x-[-50%]",
+    position: { x: "0", y: "80px" },
+    positionImage: { x: "0", y: "-10%" }
+  },
+  {
+    id: "contact",
+    defaultLabelKey: "menu.contact",
+    image: "/assets/images/menu/frame1.webp",
+    imageInFrame: "/assets/images/menu/contact.webp",
+    url: "/contact",
+    left: 1130,
+    top: 360,
+    imageWidth: 342,
+    imageClass: "",
+    positionTitleClass: "left-1/2 top-[calc(100%+30px)] translate-x-[-50%]",
+    position: { x: "-10%", y: "-220px" },
+    positionImage: { x: "-10%", y: "10%" }
+  },
+  {
+    id: "store",
+    defaultLabelKey: "menu.store",
+    image: "/assets/images/menu/frame2.webp",
+    imageInFrame: "/assets/images/menu/store.webp",
+    url: "/store",
+    right: 160,
+    top: 153,
+    imageWidth: 162,
+    imageClass: "",
+    positionTitleClass: "-left-full bottom-0",
+    position: { x: "-90%", y: 0 },
+    positionImage: { x: "-20%", y: "0" }
+  }
+];
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const MainMenu = ({ handleMenuToggle }) => {
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+  const { t: t2, currentLanguage } = useI18n();
+  const rootData = useRootLoaderData();
+  const [isHovering, setIsHovering] = useState(false);
+  const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [mounted, setMounted] = useState(false);
+  const [viewport, setViewport] = useState({ width: 0, height: 0 });
+  const dialogRef = useRef(null);
+  const closeRef = useRef(handleMenuToggle);
+  closeRef.current = handleMenuToggle;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  useEffect(() => {
+    const update = () => setViewport({ width: window.innerWidth, height: window.innerHeight });
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
+  useEffect(() => {
+    const { body, documentElement } = document;
+    const scrollbar = window.innerWidth - documentElement.clientWidth;
+    const previous = {
+      bodyOverflow: body.style.overflow,
+      bodyPaddingRight: body.style.paddingRight,
+      htmlOverflow: documentElement.style.overflow
+    };
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+    return () => {
+      body.style.overflow = previous.bodyOverflow;
+      body.style.paddingRight = previous.bodyPaddingRight;
+      documentElement.style.overflow = previous.htmlOverflow;
+    };
+  }, []);
+  useEffect(() => {
+    var _a2;
+    const node = dialogRef.current;
+    const previouslyFocused = document.activeElement;
+    const focusables = () => Array.from((node == null ? void 0 : node.querySelectorAll(FOCUSABLE)) ?? []).filter(
+      (element) => element.offsetParent !== null
+    );
+    (_a2 = focusables()[0]) == null ? void 0 : _a2.focus();
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeRef.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusables();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      var _a3;
+      document.removeEventListener("keydown", onKeyDown);
+      (_a3 = previouslyFocused == null ? void 0 : previouslyFocused.focus) == null ? void 0 : _a3.call(previouslyFocused);
+    };
+  }, [mounted]);
+  const isDesktopMenu = !viewport.width || viewport.width >= DESKTOP_MIN_WIDTH;
+  const scale = viewport.width ? Math.min(
+    MAX_SCALE,
+    (viewport.width - EDGE_GAP * 2) / CONTENT_WIDTH,
+    (viewport.height - VERTICAL_PAD * 2) / CANVAS_HEIGHT
+  ) : 1;
+  const menuThisIs = currentLanguage === "vi" ? ((_b = (_a = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _a.settings) == null ? void 0 : _b.menu_this_is_vi) || t2("home.thisIs") : ((_d = (_c = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _c.settings) == null ? void 0 : _d.menu_this_is_en) || t2("home.thisIs");
+  const menuOur = currentLanguage === "vi" ? ((_f = (_e = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _e.settings) == null ? void 0 : _f.menu_our_vi) || t2("home.our") : ((_h = (_g = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _g.settings) == null ? void 0 : _h.menu_our_en) || t2("home.our");
+  const configuredItems = (_j = (_i = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _i.settings) == null ? void 0 : _j.menu_category_items;
+  const hasConfig = Array.isArray(configuredItems) && configuredItems.length > 0;
+  const categoryItems = DEFAULT_CATEGORY_ITEMS.map((defaultItem) => {
+    var _a2, _b2, _c2, _d2, _e2, _f2;
+    const defaultLabel = t2(defaultItem.defaultLabelKey);
+    if (!hasConfig) {
+      return { ...defaultItem, label: defaultLabel };
+    }
+    const config2 = configuredItems.find((ci) => ci.id === defaultItem.id);
+    if (!config2) {
+      return { ...defaultItem, label: defaultLabel };
+    }
+    if (config2.enabled === false) return null;
+    const label = currentLanguage === "vi" ? ((_a2 = config2.label_vi) == null ? void 0 : _a2.trim()) || ((_b2 = config2.label_en) == null ? void 0 : _b2.trim()) || defaultLabel : ((_c2 = config2.label_en) == null ? void 0 : _c2.trim()) || defaultLabel;
+    return {
+      ...defaultItem,
+      label,
+      url: ((_d2 = config2.url) == null ? void 0 : _d2.trim()) || defaultItem.url,
+      image: ((_e2 = config2.image) == null ? void 0 : _e2.trim()) || defaultItem.image,
+      imageInFrame: ((_f2 = config2.imageInFrame) == null ? void 0 : _f2.trim()) || defaultItem.imageInFrame
+    };
+  }).filter(Boolean);
+  const handleMouseEnter = useCallback((item) => {
+    var _a2, _b2, _c2, _d2;
+    const el = document.getElementById(`fancy-text-${item.id}`);
+    if (!el) return;
+    el.style.display = "block";
+    const image = document.getElementById(`menu-image-${item.id}`);
+    if (image) image.style.zIndex = "2";
+    setIsHovering(true);
+    setHoveredItemId(item.id);
+    document.querySelectorAll(".menu-background").forEach((backdrop) => {
+      backdrop.style.opacity = "1";
+    });
+    animate(`#fancy-text-${item.id}`, {
+      opacity: [0, 1],
+      ...((_a2 = item.position) == null ? void 0 : _a2.y) ? { y: item.position.y } : {},
+      ...((_b2 = item.position) == null ? void 0 : _b2.x) ? { x: item.position.x } : {},
+      ease: spring({ bounce: 0.65, duration: 400 })
+    });
+    animate(`#menu-image-${item.id}`, {
+      scale: 1.15,
+      ...((_c2 = item.positionImage) == null ? void 0 : _c2.y) ? { y: item.positionImage.y } : { y: 0 },
+      ...((_d2 = item.positionImage) == null ? void 0 : _d2.x) ? { x: item.positionImage.x } : { x: 0 },
+      ease: spring({ bounce: 0.65, duration: 400 })
+    });
+  }, []);
+  const handleMouseLeave = useCallback((item) => {
+    animate(`#fancy-text-${item.id}`, {
+      opacity: [1, 0],
+      x: 0,
+      y: 0,
+      ease: spring({ bounce: 0.65, duration: 400 })
+    });
+    animate(`#menu-image-${item.id}`, {
+      x: 0,
+      y: 0,
+      scale: 1,
+      ease: spring({ bounce: 0.65, duration: 400 })
+    });
+    document.querySelectorAll(".menu-background").forEach((backdrop) => {
+      backdrop.style.opacity = "0";
+    });
+    const image = document.getElementById(`menu-image-${item.id}`);
+    if (image) image.style.zIndex = "-2";
+    setIsHovering(false);
+    setHoveredItemId(null);
+  }, []);
+  if (!mounted) return null;
+  const overlay = /* @__PURE__ */ jsxs(
+    "div",
+    {
+      ref: dialogRef,
+      id: "main-menu",
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-label": t2("menu.title", { defaultValue: "Main menu" }),
+      "data-menu-overlay": true,
+      className: "fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto]",
+      children: [
+        /* @__PURE__ */ jsx("div", { className: "menu-background pointer-events-none absolute inset-0 z-[1] bg-[#00000099] opacity-0 transition-opacity duration-300" }),
+        isDesktopMenu ? /* @__PURE__ */ jsx("div", { className: "absolute inset-0 z-[2] flex items-center justify-center", children: /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "relative shrink-0",
+            style: {
+              width: CANVAS_WIDTH,
+              height: CANVAS_HEIGHT,
+              transform: `scale(${scale})`,
+              transformOrigin: "center"
+            },
+            children: categoryItems.map((item) => /* @__PURE__ */ jsxs(
+              Link,
+              {
+                id: item.id,
+                to: item.url,
+                onClick: handleMenuToggle,
+                onMouseEnter: () => handleMouseEnter(item),
+                onMouseLeave: () => handleMouseLeave(item),
+                className: clsx("absolute", isHovering && hoveredItemId !== item.id && "[filter:brightness(0.5)]"),
+                style: item.right != null ? { right: item.right, top: item.top } : { left: item.left, top: item.top },
+                children: [
+                  /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      className: clsx(
+                        "pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]",
+                        item.positionTitleClass,
+                        isHovering && hoveredItemId === item.id && "hidden"
+                      ),
+                      children: /* @__PURE__ */ jsx("span", { className: "relative z-[2]", children: item.label })
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs("div", { className: "flex flex-col-reverse desk:flex-col items-center justify-center z-[9999]", children: [
+                    /* @__PURE__ */ jsxs(
+                      "div",
+                      {
+                        id: `menu-image-${item.id}`,
+                        style: { width: item.imageWidth },
+                        className: clsx("object-contain menu-image z-[-2] hidden desk:block relative", item.imageClass),
+                        children: [
+                          /* @__PURE__ */ jsx("img", { className: "", src: item.image, alt: item.label }),
+                          /* @__PURE__ */ jsx(
+                            "img",
+                            {
+                              src: item.imageInFrame,
+                              alt: item.label,
+                              className: "shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]"
+                            }
+                          )
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(
+                      FancyText,
+                      {
+                        id: `fancy-text-${item.id}`,
+                        className: "text-center desk:absolute text-black desk:text-[#FFE977] desk:text-white desk:leading-[0] z-[9]",
+                        text: item.label
+                      }
+                    )
+                  ] })
+                ]
+              },
+              item.id
+            ))
+          }
+        ) }) : /* @__PURE__ */ jsxs("div", { className: "relative z-[2] flex h-full flex-col gap-6 overflow-y-auto px-6 pb-24 pt-24", children: [
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsxs("span", { className: "font-title text-4xl font-bold uppercase text-black", children: [
+              menuThisIs,
+              " "
+            ] }),
+            /* @__PURE__ */ jsx("span", { className: "font-centuryBook text-4xl italic text-[#FFE977]", children: menuOur })
+          ] }),
+          categoryItems.map((item) => /* @__PURE__ */ jsx(
+            Link,
+            {
+              id: item.id,
+              to: item.url,
+              onClick: handleMenuToggle,
+              className: "font-title text-3xl font-bold uppercase text-black",
+              children: item.label
+            },
+            item.id
+          ))
+        ] }),
+        /* @__PURE__ */ jsxs(
+          "p",
+          {
+            className: "pointer-events-none absolute bottom-[14vh] z-[3] w-full text-center",
+            style: { transform: `scale(${scale})`, transformOrigin: "bottom center" },
+            children: [
+              /* @__PURE__ */ jsx("span", { className: "relative z-[2] font-title text-[90px] font-bold uppercase text-black", children: menuThisIs }),
+              /* @__PURE__ */ jsx("span", { className: "-ml-[100px] font-centuryBook text-[180px] italic text-[#FFE977]", children: menuOur })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          MenuToggle,
+          {
+            isOpen: true,
+            onClick: handleMenuToggle,
+            "aria-controls": "main-menu",
+            className: "absolute right-4 top-8 z-[10000] shadow-[0px_4px_10px_0px_#00000040] desk:right-11"
+          }
+        )
+      ]
+    }
+  );
+  return createPortal(overlay, document.body);
+};
+const DEFAULT_CONFIG = {
+  facebook: "https://www.facebook.com/kiraparfum",
+  instagram: "https://www.instagram.com/bykiraparfum"
+};
+const LiveChatIcon = memo(({
+  config: config2 = DEFAULT_CONFIG,
+  className = ""
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const mergedConfig = { ...DEFAULT_CONFIG, ...config2 };
+  const handleToggle = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+  const handleSocialClick = useCallback((url) => {
+    if (url) {
+      window.open(url, "_blank", "noreferrer");
+    }
+  }, []);
+  const handleClickOutside = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+  return /* @__PURE__ */ jsxs("div", { className: `fixed bottom-6 left-6 z-50 ${className}`, children: [
+    isOpen && /* @__PURE__ */ jsxs("div", { className: "absolute bottom-24 right-0 flex flex-col gap-3 mb-2 z-50", children: [
+      mergedConfig.instagram && /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: () => handleSocialClick(mergedConfig.instagram),
+          className: "transition-all duration-300 transform hover:scale-110 flex items-center justify-center",
+          "aria-label": "Chat on Instagram",
+          title: "Chat on Instagram",
+          children: /* @__PURE__ */ jsx("img", { src: "/assets/images/instagram.svg", alt: "Instagram", className: "w-16 h-16" })
+        }
+      ),
+      mergedConfig.facebook && /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: () => handleSocialClick(mergedConfig.facebook),
+          className: "transition-all duration-300 transform hover:scale-110 flex items-center justify-center",
+          "aria-label": "Chat on Facebook",
+          title: "Chat on Facebook",
+          children: /* @__PURE__ */ jsx("img", { src: "/assets/images/facebook.svg", alt: "Facebook", className: "w-16 h-16" })
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: handleToggle,
+        className: "bg-primary hover:bg-primary/80 text-white rounded-tl-full rounded-br-full rounded-tr-full p-2 shadow-lg transition-all duration-300 transform hover:scale-110 flex items-center justify-center relative",
+        "aria-label": "Open chat",
+        title: "Open chat",
+        children: /* @__PURE__ */ jsx("span", { children: /* @__PURE__ */ jsx("img", { src: "/assets/images/livechat.gif", alt: "Chat", className: "xl:w-14 xl:h-14 w-10 h-10" }) })
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "fixed inset-0 z-40 bg-black bg-opacity-50",
+        onClick: handleClickOutside
+      }
+    )
+  ] });
+});
+LiveChatIcon.displayName = "LiveChatIcon";
 const useSiteDetails = () => {
   const data2 = useRootLoaderData();
   return (data2 == null ? void 0 : data2.siteDetails) || {};
@@ -19483,7 +20575,7 @@ const LogoStoreName = ({
   if (!store2 || !settings) return null;
   const logoSrc = theme === "light" ? "/logo.svg" : "/logo-dark.svg";
   return /* @__PURE__ */ jsx(
-    Link,
+    Link$1,
     {
       viewTransition: true,
       to: "/",
@@ -19606,13 +20698,13 @@ const Footer = () => {
   const { t: t2 } = useI18n();
   return /* @__PURE__ */ jsx("footer", { className: "bg-black min-h-[140px] py-8 text-white", children: /* @__PURE__ */ jsxs(Container, { className: "flex flex-col lg:gap-[72px] gap-12", children: [
     /* @__PURE__ */ jsx(LogoStoreName, { theme: "dark" }),
-    /* @__PURE__ */ jsx("div", { className: "flex justify-center gap-4 xl:gap-[72px] flex-wrap", children: footerNavigationItems == null ? void 0 : footerNavigationItems.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link, { to: item.url, className: "hover:underline text-white text-base xl:text-[24px] font-alexandria font-regular leading-[145%] tracking-normal", children: t2(item.label, item.label) }) }, item.id)) }),
+    /* @__PURE__ */ jsx("div", { className: "flex justify-center gap-4 xl:gap-[72px] flex-wrap", children: footerNavigationItems == null ? void 0 : footerNavigationItems.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link$1, { to: item.url, className: "hover:underline text-white text-base xl:text-[24px] font-alexandria font-regular leading-[145%] tracking-normal", children: t2(item.label, item.label) }) }, item.id)) }),
     /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
       /* @__PURE__ */ jsx("span", { className: "lg:text-[18.56px] text-base font-alexandria font-regular leading-[145%] tracking-normal flex-1", children: "© 2025 KIRA" }),
       /* @__PURE__ */ jsx("div", { className: "flex-1 flex justify-center", children: /* @__PURE__ */ jsx(SocialIcons, { siteSettings: settings }) }),
       /* @__PURE__ */ jsxs("p", { className: "text-end flex-1 lg:text-[18.56px] text-base font-alexandria font-regular leading-[145%] tracking-normal inline-block", children: [
         "Designed by ",
-        /* @__PURE__ */ jsx(Link, { to: "https://mayday-creative.com", target: "_blank", className: "hover:underline text-white lg:text-[24px] text-base font-alexandria font-regular leading-[145%] tracking-normal", children: "Mayday" })
+        /* @__PURE__ */ jsx(Link$1, { to: "https://mayday-creative.com", target: "_blank", className: "hover:underline text-white lg:text-[24px] text-base font-alexandria font-regular leading-[145%] tracking-normal", children: "Mayday" })
       ] })
     ] })
   ] }) });
@@ -19853,7 +20945,7 @@ const ProductSearch = ({
   const currencyCode = region.currency_code;
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(
-      motion.div,
+      motion$1.div,
       {
         className: clsx("z-1", open ? "fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" : "hidden"),
         initial: { opacity: 0 },
@@ -19862,7 +20954,7 @@ const ProductSearch = ({
       }
     ),
     /* @__PURE__ */ jsx(Container, { className: "relative", children: /* @__PURE__ */ jsx("div", { className: "xl:px-[96px] max-w-[1268px] relative mx-auto", children: /* @__PURE__ */ jsxs(
-      motion.div,
+      motion$1.div,
       {
         ref: searchContainerRef,
         className: clsx("absolute w-full xl:w-[400px] z-10 right-0 top-4", open ? "opacity-100" : "hidden !z-[-1000]"),
@@ -19973,7 +21065,7 @@ const CollectionMenuList = ({ open, setOpen }) => {
   }, []);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(
-      motion.div,
+      motion$1.div,
       {
         className: clsx("z-1", open ? "fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity" : "hidden"),
         initial: { opacity: 0 },
@@ -19982,7 +21074,7 @@ const CollectionMenuList = ({ open, setOpen }) => {
       }
     ),
     /* @__PURE__ */ jsx(Container, { className: "relative", children: /* @__PURE__ */ jsx("div", { className: "xl:px-[96px] max-w-[1268px] relative mx-auto", children: /* @__PURE__ */ jsxs(
-      motion.div,
+      motion$1.div,
       {
         ref: collectionMenuListRef,
         className: clsx("absolute w-full xl:w-[400px] z-10 lg:left-[180px] bg-white top-0 rounded-lg py-2 border border-primary", open ? "opacity-100" : "hidden !opacity-0 !z-[-1000]"),
@@ -19991,7 +21083,7 @@ const CollectionMenuList = ({ open, setOpen }) => {
         transition: { duration: 0.3, ease: "easeOut", delay: 0.3 },
         children: [
           /* @__PURE__ */ jsx(IconButton, { icon: XMarkIcon$1, className: "absolute top-2 right-2 hover:!bg-transparent hover:text-gray-700 focus:text-gray-700 z-10 !text-primary", onClick: () => setOpen(false) }),
-          /* @__PURE__ */ jsx("div", { className: "relative flex-col hidden xl:flex", children: collections.map((collection) => /* @__PURE__ */ jsx("div", { className: "flex items-center p-2 rounded-md last:font-bold", children: /* @__PURE__ */ jsx(Link, { to: `/collections/${collection.handle}`, className: "flex-1", onClick: () => setOpen(false), children: collection.title }) }, collection.id)) })
+          /* @__PURE__ */ jsx("div", { className: "relative flex-col hidden xl:flex", children: collections.map((collection) => /* @__PURE__ */ jsx("div", { className: "flex items-center p-2 rounded-md last:font-bold", children: /* @__PURE__ */ jsx(Link$1, { to: `/collections/${collection.handle}`, className: "flex-1", onClick: () => setOpen(false), children: collection.title }) }, collection.id)) })
         ]
       }
     ) }) })
@@ -20115,992 +21207,6 @@ const Header = () => {
     /* @__PURE__ */ jsx(CollectionMenuList, { open: submenuOpen, setOpen: setSubmenuOpen })
   ] });
 };
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => {
-      const isMobileDevice = window.innerWidth <= 768;
-      setIsMobile(isMobileDevice);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-  return isMobile;
-}
-const cursorImg = "/assets/images/cursor.svg";
-const Cursor = () => {
-  const cursorRef = useRef(null);
-  const shadowRef = useRef(null);
-  const rippleRef = useRef(null);
-  const isMobile = useIsMobile();
-  const mousePosition = useRef({ x: 0, y: 0 });
-  const cursorPosition = useRef({ x: 0, y: 0 });
-  const shadowPosition = useRef({ x: 0, y: 0 });
-  const isHovering = useRef(false);
-  const animationFrameId = useRef();
-  const hoverAnimationId = useRef();
-  const lerp = (start, end, factor) => {
-    return start + (end - start) * factor;
-  };
-  const animateCursor = useCallback(() => {
-    if (cursorRef.current && shadowRef.current) {
-      cursorPosition.current.x = lerp(cursorPosition.current.x, mousePosition.current.x, 0.9);
-      cursorPosition.current.y = lerp(cursorPosition.current.y, mousePosition.current.y, 0.9);
-      shadowPosition.current.x = lerp(shadowPosition.current.x, mousePosition.current.x, 0.25);
-      shadowPosition.current.y = lerp(shadowPosition.current.y, mousePosition.current.y, 0.25);
-      const offsetX = isHovering.current ? 20 : 16;
-      const offsetY = isHovering.current ? 20 : 16;
-      const scale = isHovering.current ? 1.2 : 1;
-      cursorRef.current.style.transform = `translate3d(${cursorPosition.current.x - offsetX}px, ${cursorPosition.current.y - offsetY}px, 0) scale(${scale})`;
-      const shadowScale = isHovering.current ? 1.5 : 1;
-      shadowRef.current.style.transform = `translate3d(${shadowPosition.current.x - offsetX}px, ${shadowPosition.current.y - offsetY}px, 0) scale(${shadowScale})`;
-    }
-    animationFrameId.current = requestAnimationFrame(animateCursor);
-  }, []);
-  const animateHover = useCallback(() => {
-    if (cursorRef.current && shadowRef.current) {
-      if (isHovering.current) {
-        cursorRef.current.style.filter = "brightness(1.2) contrast(1.1)";
-        shadowRef.current.style.opacity = "0.6";
-        shadowRef.current.style.filter = "blur(12px)";
-      } else {
-        cursorRef.current.style.filter = "none";
-        shadowRef.current.style.opacity = "0.8";
-        shadowRef.current.style.filter = "blur(8px)";
-      }
-    }
-  }, []);
-  useEffect(() => {
-    if (isMobile) return;
-    const moveCursor = (e) => {
-      mousePosition.current.x = e.clientX;
-      mousePosition.current.y = e.clientY;
-    };
-    const handleMouseOver = (e) => {
-      const target = e.target;
-      const computedStyle = window.getComputedStyle(target);
-      const cursor = computedStyle.cursor;
-      const shouldBeHovering = cursor === "pointer" || target.tagName === "A" || target.tagName === "BUTTON" || target.tagName === "SELECT" || target.tagName === "OPTION" || target.tagName === "INPUT" || typeof target.onclick === "function" || target.getAttribute("role") === "button" || target.closest("a") !== null || target.closest("button") !== null || target.closest("select") !== null;
-      if (shouldBeHovering !== isHovering.current) {
-        isHovering.current = shouldBeHovering;
-        animateHover();
-      }
-    };
-    const handleClick = (e) => {
-      if (rippleRef.current) {
-        rippleRef.current.style.left = `${e.clientX}px`;
-        rippleRef.current.style.top = `${e.clientY}px`;
-        rippleRef.current.classList.remove("show");
-        void rippleRef.current.offsetWidth;
-        rippleRef.current.classList.add("show");
-      }
-      if (shadowRef.current) {
-        const currentTransform = shadowRef.current.style.transform;
-        const scale = isHovering.current ? 1.5 : 1;
-        const offsetX = isHovering.current ? 20 : 16;
-        const offsetY = isHovering.current ? 20 : 16;
-        shadowRef.current.style.transform = `translate3d(${mousePosition.current.x - offsetX}px, ${mousePosition.current.y - offsetY}px, 0) scale(${scale * 2})`;
-        shadowRef.current.style.opacity = "0.6";
-        setTimeout(() => {
-          if (shadowRef.current) {
-            shadowRef.current.style.transform = currentTransform;
-            shadowRef.current.style.opacity = isHovering.current ? "0.6" : "0.8";
-          }
-        }, 200);
-      }
-    };
-    document.addEventListener("mousemove", moveCursor);
-    document.addEventListener("mousemove", handleMouseOver);
-    document.addEventListener("mousedown", handleClick);
-    animationFrameId.current = requestAnimationFrame(animateCursor);
-    document.body.style.cursor = "none";
-    return () => {
-      document.removeEventListener("mousemove", moveCursor);
-      document.removeEventListener("mousemove", handleMouseOver);
-      document.removeEventListener("mousedown", handleClick);
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
-      if (hoverAnimationId.current) {
-        cancelAnimationFrame(hoverAnimationId.current);
-      }
-      document.body.style.cursor = "";
-    };
-  }, [animateCursor, animateHover, isMobile]);
-  if (isMobile) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(
-      "div",
-      {
-        ref: shadowRef,
-        style: {
-          position: "fixed",
-          left: 0,
-          top: 0,
-          pointerEvents: "none",
-          width: 32,
-          height: 32,
-          transform: "translate3d(-100px, -100px, 0) scale(1)",
-          willChange: "transform, opacity, filter",
-          zIndex: 2147483646,
-          opacity: 0.8,
-          filter: "blur(8px)",
-          transition: "opacity 0.3s cubic-bezier(.25,.46,.45,.94), filter 0.2s ease-out"
-        },
-        children: /* @__PURE__ */ jsx(
-          "img",
-          {
-            src: cursorImg,
-            width: 32,
-            height: 32,
-            style: {
-              display: "block",
-              width: "100%",
-              height: "100%",
-              mixBlendMode: "multiply"
-            },
-            draggable: false,
-            alt: "cursor shadow"
-          }
-        )
-      }
-    ),
-    /* @__PURE__ */ jsx(
-      "div",
-      {
-        ref: cursorRef,
-        style: {
-          position: "fixed",
-          left: 0,
-          top: 0,
-          pointerEvents: "none",
-          width: 32,
-          height: 32,
-          transform: "translate3d(-100px, -100px, 0) scale(1)",
-          willChange: "transform, filter",
-          zIndex: 2147483647,
-          transition: "filter 0.2s ease-out"
-        },
-        children: /* @__PURE__ */ jsx(
-          "img",
-          {
-            src: cursorImg,
-            width: 32,
-            height: 32,
-            style: {
-              display: "block",
-              width: "100%",
-              height: "100%",
-              mixBlendMode: "normal"
-            },
-            draggable: false,
-            alt: "cursor"
-          }
-        )
-      }
-    ),
-    /* @__PURE__ */ jsx(
-      "div",
-      {
-        ref: rippleRef,
-        style: {
-          position: "fixed",
-          left: 0,
-          top: 0,
-          pointerEvents: "none",
-          width: 0,
-          height: 0,
-          zIndex: 2147483645
-        },
-        className: "cursor-ripple"
-      }
-    ),
-    /* @__PURE__ */ jsx("style", { children: `
-        .cursor-ripple {
-          position: fixed;
-          border-radius: 50%;
-          pointer-events: none;
-          width: 0;
-          height: 0;
-          transform: translate(-50%, -50%);
-        }
-        .cursor-ripple.show {
-          animation: cursor-ripple-burst 0.6s cubic-bezier(.25,.46,.45,.94);
-        }
-        @keyframes cursor-ripple-burst {
-          0% {
-            width: 0px;
-            height: 0px;
-            border: 2px solid rgba(0,0,0,0.3);
-            opacity: 1;
-          }
-          50% {
-            width: 60px;
-            height: 60px;
-            border: 1px solid rgba(0,0,0,0.2);
-            opacity: 0.5;
-          }
-          100% {
-            width: 120px;
-            height: 120px;
-            border: 0.5px solid rgba(0,0,0,0);
-            opacity: 0;
-          }
-        }
-      ` })
-  ] });
-};
-const DEFAULT_CONFIG = {
-  facebook: "https://www.facebook.com/kiraparfum",
-  instagram: "https://www.instagram.com/bykiraparfum"
-};
-const LiveChatIcon = memo(({
-  config: config2 = DEFAULT_CONFIG,
-  className = ""
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config2 };
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-  const handleSocialClick = useCallback((url) => {
-    if (url) {
-      window.open(url, "_blank", "noreferrer");
-    }
-  }, []);
-  const handleClickOutside = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-  return /* @__PURE__ */ jsxs("div", { className: `fixed bottom-6 left-6 z-50 ${className}`, children: [
-    isOpen && /* @__PURE__ */ jsxs("div", { className: "absolute bottom-24 right-0 flex flex-col gap-3 mb-2 z-50", children: [
-      mergedConfig.instagram && /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => handleSocialClick(mergedConfig.instagram),
-          className: "transition-all duration-300 transform hover:scale-110 flex items-center justify-center",
-          "aria-label": "Chat on Instagram",
-          title: "Chat on Instagram",
-          children: /* @__PURE__ */ jsx("img", { src: "/assets/images/instagram.svg", alt: "Instagram", className: "w-16 h-16" })
-        }
-      ),
-      mergedConfig.facebook && /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => handleSocialClick(mergedConfig.facebook),
-          className: "transition-all duration-300 transform hover:scale-110 flex items-center justify-center",
-          "aria-label": "Chat on Facebook",
-          title: "Chat on Facebook",
-          children: /* @__PURE__ */ jsx("img", { src: "/assets/images/facebook.svg", alt: "Facebook", className: "w-16 h-16" })
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsx(
-      "button",
-      {
-        onClick: handleToggle,
-        className: "bg-primary hover:bg-primary/80 text-white rounded-tl-full rounded-br-full rounded-tr-full p-2 shadow-lg transition-all duration-300 transform hover:scale-110 flex items-center justify-center relative",
-        "aria-label": "Open chat",
-        title: "Open chat",
-        children: /* @__PURE__ */ jsx("span", { children: /* @__PURE__ */ jsx("img", { src: "/assets/images/livechat.gif", alt: "Chat", className: "xl:w-14 xl:h-14 w-10 h-10" }) })
-      }
-    ),
-    isOpen && /* @__PURE__ */ jsx(
-      "div",
-      {
-        className: "fixed inset-0 z-40 bg-black bg-opacity-50",
-        onClick: handleClickOutside
-      }
-    )
-  ] });
-});
-LiveChatIcon.displayName = "LiveChatIcon";
-const MenuToggle = ({
-  isOpen,
-  onClick,
-  className = "",
-  variant = "default"
-}) => {
-  return /* @__PURE__ */ jsx(
-    "button",
-    {
-      type: "button",
-      onClick,
-      className: clsx(
-        "inline-flex items-center justify-center w-[55px] h-[55px] rounded-full transition-all text-[#000000]",
-        "duration-300 ease-in-out",
-        variant === "brand" ? "bg-white text-[#3B2314] hover:bg-[#F4F0EC]" : {
-          "lg:bg-[#FDCEF8] bg-[#FFE977]": isOpen,
-          "bg-[#FFFF00]": !isOpen
-        },
-        className
-      ),
-      "aria-label": isOpen ? "Close menu" : "Open menu",
-      children: isOpen ? /* @__PURE__ */ jsx("img", { src: "/assets/images/icons/close.svg", alt: "" }) : /* @__PURE__ */ jsx("img", { src: "/assets/images/icons/menu.svg", alt: "" })
-    }
-  );
-};
-function FancyText({ id, text, className }) {
-  return /* @__PURE__ */ jsxs("p", { id, className: clsx("font-centuryBook font-bold uppercase desk:hidden block pointer-events-none absolute bottom-0", className), children: [
-    /* @__PURE__ */ jsx("span", { className: "italic desk:text-[100px] text-[50px]", children: text.slice(0, 1) }),
-    /* @__PURE__ */ jsx("span", { className: "font-title desk:text-[65px] text-[40px]", children: text.slice(1) })
-  ] });
-}
-const MENU_ARTBOARD_WIDTH = 1840;
-const MENU_CONTENT_WIDTH = 1520;
-const MENU_EDGE_GAP = 24;
-const MENU_MAX_SCALE = 1.12;
-const MENU_DESKTOP_MIN_WIDTH = 769;
-const DEFAULT_CATEGORY_ITEMS = [
-  {
-    id: "blog",
-    defaultLabelKey: "menu.blog",
-    image: "/assets/images/menu/frame2.webp",
-    imageInFrame: "/assets/images/menu/blog.webp",
-    url: "/blogs",
-    className: "left-[160px] top-[35vh]",
-    imageClass: "w-[26vh]",
-    positionTitleClass: "right-0 -top-[85px]",
-    position: {
-      x: "110%",
-      y: "-122px"
-    },
-    positionImage: {
-      x: "20%",
-      y: "-20%"
-    }
-  },
-  {
-    id: "product",
-    defaultLabelKey: "menu.product",
-    image: "/assets/images/menu/frame3.webp",
-    imageInFrame: "/assets/images/menu/product.webp",
-    url: "/products",
-    className: "left-[460px] top-[9vh]",
-    imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] w-[30vh] [rotate:-15deg]',
-    positionTitleClass: "left-1/2 top-[calc(100%+30px)]",
-    position: {
-      x: "200px",
-      y: "75px"
-    },
-    positionImage: {
-      x: "10%",
-      y: "10%"
-    }
-  },
-  {
-    id: "story",
-    defaultLabelKey: "menu.story",
-    image: "/assets/images/menu/frame2.webp",
-    imageInFrame: "/assets/images/menu/story.webp",
-    url: "/stories",
-    className: "left-[860px] top-[21vh]",
-    imageClass: "w-[25vh]",
-    positionTitleClass: "left-1/2 top-[calc(100%+30px)] translate-x-[-50%]",
-    position: {
-      x: "0",
-      y: "80px"
-    },
-    positionImage: {
-      x: "0",
-      y: "10%"
-    }
-  },
-  {
-    id: "contact",
-    defaultLabelKey: "menu.contact",
-    image: "/assets/images/menu/frame1.webp",
-    imageInFrame: "/assets/images/menu/contact.webp",
-    url: "/contact",
-    className: "left-[1130px] top-[40vh]",
-    imageClass: "w-[38vh]",
-    positionTitleClass: "left-1/2 top-[calc(100%+30px)] translate-x-[-50%]",
-    position: {
-      x: "-10%",
-      y: "-220px"
-    },
-    positionImage: {
-      x: "-10%",
-      y: "-10%"
-    }
-  },
-  {
-    id: "store",
-    defaultLabelKey: "menu.store",
-    image: "/assets/images/menu/frame2.webp",
-    imageInFrame: "/assets/images/menu/store.webp",
-    url: "/store",
-    className: "right-[160px] top-[17vh]",
-    imageClass: "w-[18vh]",
-    positionTitleClass: "-left-full bottom-0",
-    position: {
-      x: "-90%",
-      y: 0
-    },
-    positionImage: {
-      x: "-20%",
-      y: "0"
-    }
-  }
-];
-const MainMenu = ({ handleMenuToggle }) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
-  const { t: t2, currentLanguage } = useI18n();
-  const rootData = useRootLoaderData();
-  const [isHovering, setIsHovering] = useState(false);
-  const [hoveredItemId, setHoveredItemId] = useState(null);
-  const [viewportWidth, setViewportWidth] = useState(
-    () => typeof document === "undefined" ? 0 : document.documentElement.clientWidth || window.innerWidth
-  );
-  useEffect(() => {
-    const updateViewportWidth = () => setViewportWidth(document.documentElement.clientWidth || window.innerWidth);
-    updateViewportWidth();
-    window.addEventListener("resize", updateViewportWidth);
-    return () => window.removeEventListener("resize", updateViewportWidth);
-  }, []);
-  const isDesktopMenu = !viewportWidth || viewportWidth >= MENU_DESKTOP_MIN_WIDTH;
-  const menuZoom = viewportWidth ? Math.min(MENU_MAX_SCALE, (viewportWidth - MENU_EDGE_GAP * 2) / MENU_CONTENT_WIDTH) : 1;
-  const menuThisIs = currentLanguage === "vi" ? ((_b = (_a = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _a.settings) == null ? void 0 : _b.menu_this_is_vi) || t2("home.thisIs") : ((_d = (_c = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _c.settings) == null ? void 0 : _d.menu_this_is_en) || t2("home.thisIs");
-  const menuOur = currentLanguage === "vi" ? ((_f = (_e = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _e.settings) == null ? void 0 : _f.menu_our_vi) || t2("home.our") : ((_h = (_g = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _g.settings) == null ? void 0 : _h.menu_our_en) || t2("home.our");
-  const configuredItems = (_j = (_i = rootData == null ? void 0 : rootData.siteDetails) == null ? void 0 : _i.settings) == null ? void 0 : _j.menu_category_items;
-  const hasConfig = Array.isArray(configuredItems) && configuredItems.length > 0;
-  const categoryItems = DEFAULT_CATEGORY_ITEMS.map((defaultItem) => {
-    var _a2, _b2, _c2, _d2, _e2, _f2;
-    const defaultLabel = t2(defaultItem.defaultLabelKey);
-    if (!hasConfig) {
-      return {
-        ...defaultItem,
-        label: defaultLabel
-      };
-    }
-    const config2 = configuredItems.find((ci) => ci.id === defaultItem.id);
-    if (!config2) {
-      return {
-        ...defaultItem,
-        label: defaultLabel
-      };
-    }
-    if (config2.enabled === false) {
-      return null;
-    }
-    const label = currentLanguage === "vi" ? ((_a2 = config2.label_vi) == null ? void 0 : _a2.trim()) || ((_b2 = config2.label_en) == null ? void 0 : _b2.trim()) || defaultLabel : ((_c2 = config2.label_en) == null ? void 0 : _c2.trim()) || defaultLabel;
-    return {
-      ...defaultItem,
-      label,
-      url: ((_d2 = config2.url) == null ? void 0 : _d2.trim()) || defaultItem.url,
-      image: ((_e2 = config2.image) == null ? void 0 : _e2.trim()) || defaultItem.image,
-      imageInFrame: ((_f2 = config2.imageInFrame) == null ? void 0 : _f2.trim()) || defaultItem.imageInFrame
-    };
-  }).filter(Boolean);
-  const handleMouseEnter = (item) => {
-    var _a2, _b2, _c2, _d2;
-    const el = document.getElementById(`fancy-text-${item.id}`);
-    if (!el) return;
-    el.style.display = "block";
-    const image = document.getElementById(`menu-image-${item.id}`);
-    if (image) {
-      image.style.zIndex = "2";
-    }
-    setIsHovering(true);
-    setHoveredItemId(item.id);
-    const backdrop = document.querySelectorAll(".menu-background");
-    backdrop.forEach((backdrop2) => {
-      backdrop2.style.opacity = "1";
-    });
-    animate(`#fancy-text-${item.id}`, {
-      opacity: [0, 1],
-      ...((_a2 = item.position) == null ? void 0 : _a2.y) ? { y: item.position.y } : {},
-      ...((_b2 = item.position) == null ? void 0 : _b2.x) ? { x: item.position.x } : {},
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      })
-    });
-    animate(`#menu-image-${item.id}`, {
-      scale: 1.15,
-      ...((_c2 = item.positionImage) == null ? void 0 : _c2.y) ? { y: item.positionImage.y } : { y: 0 },
-      ...((_d2 = item.positionImage) == null ? void 0 : _d2.x) ? { x: item.positionImage.x } : { x: 0 },
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      })
-    });
-  };
-  const handleMouseLeave = (item) => {
-    animate(`#fancy-text-${item.id}`, {
-      opacity: [1, 0],
-      x: 0,
-      y: 0,
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      })
-    });
-    animate(`#menu-image-${item.id}`, {
-      x: 0,
-      y: 0,
-      scale: 1,
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      })
-    });
-    const backdrop = document.querySelectorAll(".menu-background");
-    backdrop.forEach((backdrop2) => {
-      backdrop2.style.opacity = "0";
-    });
-    const image = document.getElementById(`menu-image-${item.id}`);
-    if (image) {
-      image.style.zIndex = "-2";
-    }
-    setIsHovering(false);
-    setHoveredItemId(null);
-  };
-  return /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 z-[9999] bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] desk:overflow-hidden", children: [
-    /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-[#00000099] z-[9999] opacity-0 menu-background pointer-events-none" }),
-    /* @__PURE__ */ jsxs("div", { className: "h-full w-full overflow-x-scroll desk:overflow-x-hidden", children: [
-      /* @__PURE__ */ jsxs("div", { className: "desk:hidden block flex-1 overflow-y-auto px-4 py-6 sm:px-6", children: [
-        /* @__PURE__ */ jsxs("span", { className: "font-title font-bold text-4xl uppercase text-black", children: [
-          menuThisIs,
-          " "
-        ] }),
-        /* @__PURE__ */ jsx("span", { className: "flex gap-2", children: /* @__PURE__ */ jsx("span", { className: "font-centuryBook italic font-normal text-4xl text-white leading-none mt-1", children: menuOur }) })
-      ] }),
-      /* @__PURE__ */ jsx(
-        "div",
-        {
-          className: "z-[9999] h-full justify-center desk:absolute flex flex-col desk:flex-row items-center overflow-x-scroll desk:overflow-hidden desk:left-1/2 desk:top-1/2",
-          style: isDesktopMenu ? { width: MENU_ARTBOARD_WIDTH, transform: `translate(-50%, -50%) scale(${menuZoom})` } : void 0,
-          children: categoryItems.map((item) => /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsxs(
-            Link$1,
-            {
-              to: item.url,
-              className: clsx("absolute", item.className, isHovering && hoveredItemId !== item.id && "[filter:brightness(0.5)]"),
-              onClick: handleMenuToggle,
-              id: item.id,
-              onMouseEnter: () => {
-                handleMouseEnter(item);
-              },
-              onMouseLeave: () => {
-                handleMouseLeave(item);
-              },
-              children: [
-                /* @__PURE__ */ jsx("div", { className: clsx("pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]", item.positionTitleClass, isHovering && hoveredItemId === item.id && "hidden"), children: /* @__PURE__ */ jsx("span", { className: "relative z-[2]", children: item.label }) }),
-                /* @__PURE__ */ jsxs("div", { className: "flex flex-col-reverse desk:flex-col items-center justify-center z-[9999]", children: [
-                  /* @__PURE__ */ jsxs("div", { id: `menu-image-${item.id}`, className: clsx("object-contain menu-image z-[-2] hidden desk:block relative", item.imageClass), children: [
-                    /* @__PURE__ */ jsx("img", { className: "", src: item.image, alt: item.label }),
-                    /* @__PURE__ */ jsx("img", { src: item.imageInFrame, alt: item.label, className: "shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]" })
-                  ] }),
-                  /* @__PURE__ */ jsx(FancyText, { id: `fancy-text-${item.id}`, className: "text-center desk:absolute text-black desk:text-[#FFE977] desk:text-white desk:leading-[0] z-[9]", text: item.label })
-                ] })
-              ]
-            },
-            item.id
-          ) }, item.id))
-        }
-      ),
-      /* @__PURE__ */ jsx(MenuToggle, { isOpen: true, onClick: handleMenuToggle, className: clsx("shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 desk:right-11", !isHovering && "z-[9999]") })
-    ] }),
-    /* @__PURE__ */ jsxs(
-      "p",
-      {
-        className: clsx(
-          "absolute bottom-[14vh] w-full text-center z-[9999] pointer-events-none hidden desk:block transition-all duration-300 ease-in-out",
-          "opacity-100 translate-y-0"
-        ),
-        style: isDesktopMenu ? { transform: `scale(${menuZoom})`, transformOrigin: "bottom center" } : void 0,
-        children: [
-          /* @__PURE__ */ jsx("span", { className: "font-title font-bold text-[90px] uppercase z-[2] relative", children: menuThisIs }),
-          /* @__PURE__ */ jsx("span", { className: "font-centuryBook font-italic text-[180px] italic text-[#FFE977] -ml-[100px] z-[1]", children: menuOur })
-        ]
-      }
-    )
-  ] });
-};
-const PopupDialog = () => {
-  const { currentLanguage } = useI18n();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [activePopup, setActivePopup] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const [imageFailed, setImageFailed] = useState(false);
-  useEffect(() => {
-    let isMounted = true;
-    let timer = null;
-    const fetchPopups = async () => {
-      var _a, _b;
-      try {
-        let res;
-        try {
-          res = await fetch("/api/popups");
-        } catch {
-          const baseUrl = typeof window !== "undefined" && ((_a = window.ENV) == null ? void 0 : _a.PUBLIC_MEDUSA_API_URL) || "http://localhost:7901";
-          const publishableKey = typeof window !== "undefined" && ((_b = window.ENV) == null ? void 0 : _b.MEDUSA_PUBLISHABLE_KEY) || "";
-          res = await fetch(`${baseUrl}/store/popups`, {
-            headers: {
-              "x-publishable-api-key": publishableKey
-            }
-          });
-        }
-        if (!res.ok) return;
-        const data2 = await res.json();
-        const popups = data2.popups || [];
-        if (!popups.length || !isMounted) {
-          return;
-        }
-        const currentPath = location.pathname;
-        const matched = popups.find((p) => {
-          if (!p.is_active && p.is_active !== void 0) return false;
-          const target = (p.target_page || "all").trim();
-          if (target === "all" || target === "" || target === currentPath) return true;
-          if (target.endsWith("*") && currentPath.startsWith(target.slice(0, -1)))
-            return true;
-          return false;
-        });
-        if (!matched) {
-          return;
-        }
-        const sessionKey = `popup_shown_session_${matched.id}`;
-        const dayKey = `popup_shown_day_${matched.id}`;
-        if (matched.display_frequency === "once_per_session") {
-          if (sessionStorage.getItem(sessionKey)) return;
-        } else if (matched.display_frequency === "once_per_day") {
-          const lastShown = localStorage.getItem(dayKey);
-          if (lastShown) {
-            const timeDiff = Date.now() - parseInt(lastShown, 10);
-            if (timeDiff < 24 * 60 * 60 * 1e3) return;
-          }
-        }
-        const delay = (matched.delay_seconds || 0) * 1e3;
-        timer = setTimeout(() => {
-          if (isMounted) {
-            setImageFailed(false);
-            setActivePopup(matched);
-            setIsVisible(true);
-            if (matched.display_frequency === "once_per_session") {
-              sessionStorage.setItem(sessionKey, "true");
-            } else if (matched.display_frequency === "once_per_day") {
-              localStorage.setItem(dayKey, Date.now().toString());
-            }
-          }
-        }, delay);
-      } catch (err) {
-        console.error("Failed to fetch popups:", err);
-      }
-    };
-    fetchPopups();
-    return () => {
-      isMounted = false;
-      if (timer) clearTimeout(timer);
-    };
-  }, [location.pathname]);
-  const handleClose = () => {
-    setIsVisible(false);
-  };
-  const handleCtaClick = (link) => {
-    handleClose();
-    if (!link) return;
-    if (link.startsWith("http://") || link.startsWith("https://")) {
-      window.open(link, "_blank", "noopener,noreferrer");
-    } else {
-      navigate(link);
-    }
-  };
-  if (!activePopup) return null;
-  const title = currentLanguage === "vi" ? activePopup.title_vi : activePopup.title_en;
-  const description = currentLanguage === "vi" ? activePopup.description_vi || activePopup.description_en : activePopup.description_en || activePopup.description_vi;
-  const ctaText = currentLanguage === "vi" ? activePopup.cta_text_vi || activePopup.cta_text_en : activePopup.cta_text_en || activePopup.cta_text_vi;
-  const secondaryCtaText = currentLanguage === "vi" ? activePopup.secondary_cta_text_vi || activePopup.secondary_cta_text_en : activePopup.secondary_cta_text_en || activePopup.secondary_cta_text_vi;
-  return /* @__PURE__ */ jsx(AnimatePresence, { children: isVisible && /* @__PURE__ */ jsxs("div", { className: "fixed inset-0 z-[99999] flex items-center justify-center p-4", children: [
-    /* @__PURE__ */ jsx(
-      motion$1.div,
-      {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        onClick: handleClose,
-        className: "fixed inset-0 bg-black/60 backdrop-blur-sm"
-      }
-    ),
-    /* @__PURE__ */ jsxs(
-      motion$1.div,
-      {
-        initial: { opacity: 0, scale: 0.9, y: 20 },
-        animate: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.9, y: 20 },
-        transition: { type: "spring", stiffness: 350, damping: 25 },
-        className: "relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-hidden rounded-3xl bg-white shadow-2xl",
-        children: [
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              onClick: handleClose,
-              className: "absolute top-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/10 hover:bg-black/20 text-gray-700 transition-colors",
-              "aria-label": "Close popup",
-              children: /* @__PURE__ */ jsx(X, { size: 18 })
-            }
-          ),
-          activePopup.image && !imageFailed && /* @__PURE__ */ jsx("div", { className: "relative flex w-full shrink-0 items-center justify-center overflow-hidden bg-gray-100", children: /* @__PURE__ */ jsx(
-            "img",
-            {
-              src: activePopup.image,
-              alt: title,
-              onError: () => setImageFailed(true),
-              className: "max-h-[45vh] w-full object-contain"
-            }
-          ) }),
-          /* @__PURE__ */ jsxs("div", { className: "min-h-0 flex-1 overflow-y-auto p-6 sm:p-8 text-center space-y-4", children: [
-            /* @__PURE__ */ jsx("h2", { className: "font-title font-extrabold text-2xl sm:text-3xl text-gray-900 leading-tight", children: title }),
-            description && /* @__PURE__ */ jsx("p", { className: "font-montserrat text-sm sm:text-base text-gray-600 leading-relaxed max-w-md mx-auto whitespace-pre-line", children: description }),
-            /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2.5 pt-4", children: [
-              ctaText && /* @__PURE__ */ jsx(
-                "button",
-                {
-                  onClick: () => handleCtaClick(activePopup.cta_link),
-                  className: "w-full py-3.5 px-6 rounded-2xl bg-[#FFE977] hover:bg-yellow-400 text-black font-title font-bold text-base uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]",
-                  children: ctaText
-                }
-              ),
-              secondaryCtaText && /* @__PURE__ */ jsx(
-                "button",
-                {
-                  onClick: () => activePopup.secondary_cta_link ? handleCtaClick(activePopup.secondary_cta_link) : handleClose(),
-                  className: "w-full py-2 text-gray-500 hover:text-gray-900 font-medium text-xs sm:text-sm transition-colors",
-                  children: secondaryCtaText
-                }
-              )
-            ] })
-          ] })
-        ]
-      }
-    )
-  ] }) });
-};
-const useRegions = () => {
-  const data2 = useRootLoaderData();
-  return { regions: data2 == null ? void 0 : data2.regions };
-};
-const convertToFormData = (data2, formData = new FormData(), parentKey = "") => {
-  if (data2 === null || data2 === void 0) return formData;
-  if (typeof data2 === "object" && !(data2 instanceof Date) && !(data2 instanceof File)) {
-    Object.entries(data2).forEach(([key, value]) => {
-      convertToFormData(
-        value,
-        formData,
-        !parentKey ? key : data2[key] instanceof File ? parentKey : `${parentKey}.${key}`
-      );
-    });
-    return formData;
-  }
-  if (Array.isArray(data2)) {
-    data2.forEach((value, index) => {
-      convertToFormData(value, formData, `${parentKey}.${index}`);
-    });
-    return formData;
-  }
-  formData.append(parentKey, data2);
-  return formData;
-};
-const CountryRegionModal = ({
-  isOpen,
-  onClose,
-  autoShowOnFirstVisit = false
-}) => {
-  const { regions } = useRegions();
-  const { region } = useRegion();
-  const { currentLanguage, changeLanguage } = useI18n();
-  const fetcher = useFetcher();
-  const [internalOpen, setInternalOpen] = useState(false);
-  useEffect(() => {
-    if (autoShowOnFirstVisit && typeof localStorage !== "undefined") {
-      const hasChosen = localStorage.getItem("kira_country_selected");
-      if (!hasChosen) {
-        const timer = setTimeout(() => setInternalOpen(true), 500);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [autoShowOnFirstVisit]);
-  useEffect(() => {
-    const handler = () => setInternalOpen(true);
-    window.addEventListener("open-country-modal", handler);
-    return () => window.removeEventListener("open-country-modal", handler);
-  }, []);
-  const showModal = isOpen !== void 0 ? isOpen : internalOpen;
-  const handleModalClose = () => {
-    setInternalOpen(false);
-    if (onClose) onClose();
-  };
-  const countryOptions = useMemo(() => {
-    if (!regions || regions.length === 0) {
-      return [
-        {
-          regionId: (region == null ? void 0 : region.id) || "",
-          countryCode: "vn",
-          displayName: "Vietnam",
-          currency: "VND",
-          label: "Vietnam (VND)"
-        }
-      ];
-    }
-    const list = [];
-    regions.forEach((reg) => {
-      const currency = (reg.currency_code || "").toUpperCase();
-      if (reg.countries && reg.countries.length > 0) {
-        reg.countries.forEach((c) => {
-          list.push({
-            regionId: reg.id,
-            countryCode: c.iso_2,
-            displayName: c.display_name || c.iso_2.toUpperCase(),
-            currency,
-            label: `${c.display_name || c.iso_2.toUpperCase()} (${currency})`
-          });
-        });
-      } else {
-        list.push({
-          regionId: reg.id,
-          countryCode: reg.name,
-          displayName: reg.name,
-          currency,
-          label: `${reg.name} (${currency})`
-        });
-      }
-    });
-    return list;
-  }, [regions, region]);
-  const defaultOption = useMemo(() => {
-    if (region && countryOptions.length > 0) {
-      return countryOptions.find((opt) => opt.regionId === region.id) || countryOptions[0];
-    }
-    return countryOptions[0];
-  }, [region, countryOptions]);
-  const [selectedRegionId, setSelectedRegionId2] = useState(
-    (defaultOption == null ? void 0 : defaultOption.regionId) || ""
-  );
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    currentLanguage || "en"
-  );
-  useEffect(() => {
-    if ((defaultOption == null ? void 0 : defaultOption.regionId) && !selectedRegionId) {
-      setSelectedRegionId2(defaultOption.regionId);
-    }
-    if (currentLanguage) {
-      setSelectedLanguage(currentLanguage);
-    }
-  }, [defaultOption, currentLanguage, selectedRegionId]);
-  const handleConfirm = () => {
-    if (!selectedRegionId) return;
-    changeLanguage(selectedLanguage);
-    fetcher.submit(
-      convertToFormData({
-        regionId: selectedRegionId,
-        language: selectedLanguage
-      }),
-      { method: "post", action: "/api/region" }
-    );
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem("kira_country_selected", "true");
-    }
-    handleModalClose();
-  };
-  const isVi = currentLanguage === "vi";
-  return /* @__PURE__ */ jsx(AnimatePresence, { children: showModal && /* @__PURE__ */ jsxs("div", { className: "fixed inset-0 z-[999999] flex items-center justify-center p-4", children: [
-    /* @__PURE__ */ jsx(
-      motion$1.div,
-      {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        onClick: handleModalClose,
-        className: "fixed inset-0 bg-black/60 backdrop-blur-sm"
-      }
-    ),
-    /* @__PURE__ */ jsxs(
-      motion$1.div,
-      {
-        initial: { opacity: 0, scale: 0.92, y: 15 },
-        animate: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.92, y: 15 },
-        transition: { type: "spring", stiffness: 350, damping: 25 },
-        className: "relative w-full max-w-lg overflow-hidden rounded-xl bg-white p-6 sm:p-8 shadow-2xl z-10 font-sans",
-        children: [
-          /* @__PURE__ */ jsx(
-            "button",
-            {
-              onClick: handleModalClose,
-              className: "absolute top-6 right-6 flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100 text-gray-700 transition-colors",
-              "aria-label": "Close modal",
-              children: /* @__PURE__ */ jsx(X, { size: 20 })
-            }
-          ),
-          /* @__PURE__ */ jsx("h2", { className: "text-xl sm:text-2xl font-bold text-gray-900 pr-8 leading-snug", children: isVi ? "Chọn quốc gia / khu vực" : "Choose your country / region" }),
-          /* @__PURE__ */ jsxs("div", { className: "mt-4 space-y-2 text-sm text-gray-700 leading-relaxed", children: [
-            /* @__PURE__ */ jsx("p", { className: "font-semibold text-gray-900", children: isVi ? "Chọn điểm đến giao hàng của bạn." : "Select your shipping destination." }),
-            /* @__PURE__ */ jsx("p", { className: "text-gray-600 text-xs sm:text-sm", children: isVi ? "Mua sắm từ quốc gia bạn chọn. Lưu ý rằng chúng tôi chỉ có thể giao hàng đến các địa chỉ thuộc quốc gia đã chọn." : "Buy from the country of your choice. Remember that we can only ship your order to addresses located in the chosen country." })
-          ] }),
-          /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-2 gap-4", children: [
-            /* @__PURE__ */ jsxs("div", { className: "space-y-1.5", children: [
-              /* @__PURE__ */ jsx("label", { className: "block text-xs font-semibold text-gray-500 uppercase tracking-wider", children: isVi ? "Quốc gia" : "Country" }),
-              /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                /* @__PURE__ */ jsx(
-                  "select",
-                  {
-                    value: selectedRegionId,
-                    onChange: (e) => setSelectedRegionId2(e.target.value),
-                    style: { backgroundImage: "none", WebkitAppearance: "none", MozAppearance: "none" },
-                    className: "w-full appearance-none bg-none border-0 border-b border-gray-300 pb-2 pt-1 pr-6 pl-0 text-sm font-medium text-gray-900 bg-transparent focus:border-black focus:ring-0 focus:outline-none transition-colors cursor-pointer",
-                    children: countryOptions.map((opt) => /* @__PURE__ */ jsx("option", { value: opt.regionId, children: opt.label }, `${opt.regionId}-${opt.countryCode}`))
-                  }
-                ),
-                /* @__PURE__ */ jsx(
-                  ChevronDown,
-                  {
-                    size: 16,
-                    className: "pointer-events-none absolute right-0 top-2.5 text-gray-600"
-                  }
-                )
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxs("div", { className: "space-y-1.5", children: [
-              /* @__PURE__ */ jsx("label", { className: "block text-xs font-semibold text-gray-500 uppercase tracking-wider", children: isVi ? "Ngôn ngữ" : "Language" }),
-              /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-                /* @__PURE__ */ jsxs(
-                  "select",
-                  {
-                    value: selectedLanguage,
-                    onChange: (e) => setSelectedLanguage(e.target.value),
-                    style: { backgroundImage: "none", WebkitAppearance: "none", MozAppearance: "none" },
-                    className: "w-full appearance-none bg-none border-0 border-b border-gray-300 pb-2 pt-1 pr-6 pl-0 text-sm font-medium text-gray-900 bg-transparent focus:border-black focus:ring-0 focus:outline-none transition-colors cursor-pointer",
-                    children: [
-                      /* @__PURE__ */ jsx("option", { value: "en", children: "English" }),
-                      /* @__PURE__ */ jsx("option", { value: "vi", children: "Tiếng Việt" })
-                    ]
-                  }
-                ),
-                /* @__PURE__ */ jsx(
-                  ChevronDown,
-                  {
-                    size: 16,
-                    className: "pointer-events-none absolute right-0 top-2.5 text-gray-600"
-                  }
-                )
-              ] })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsx("div", { className: "mt-8 flex justify-center", children: /* @__PURE__ */ jsx(
-            "button",
-            {
-              onClick: handleConfirm,
-              className: "w-40 py-3 rounded-xl bg-black hover:bg-gray-800 text-white font-semibold text-sm tracking-wide transition-colors shadow-md active:scale-95 duration-150",
-              children: isVi ? "Xác nhận" : "Confirm"
-            }
-          ) })
-        ]
-      }
-    )
-  ] }) });
-};
 const Page = ({ className, children }) => {
   const hiddenHeaderPaths = ["/"];
   const hiddenFooterPaths = ["/", "/stories", "/products"];
@@ -21134,7 +21240,9 @@ const Page = ({ className, children }) => {
             {
               isOpen,
               onClick: () => setIsOpen(!isOpen),
-              className: "fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040] hidden lg:inline-flex"
+              className: "fixed top-4 lg:top-8 right-4 lg:right-11 z-[9999] shadow-[0px_4px_10px_0px_#00000040] hidden lg:inline-flex",
+              "aria-expanded": isOpen,
+              "aria-controls": "main-menu"
             }
           ),
           isOpen && !isMobile && /* @__PURE__ */ jsx(MainMenu, { handleMenuToggle: () => setIsOpen(false) }),
@@ -21143,15 +21251,7 @@ const Page = ({ className, children }) => {
         /* @__PURE__ */ jsx("main", { className: clsx(isSingleScreenPage ? "relative min-h-0 flex-auto" : "flex-auto", isOpen && "hidden"), children: /* @__PURE__ */ jsx("div", { className: "w-full", children }) }),
         !isHiddenFooter && /* @__PURE__ */ jsx(Footer, {}),
         !isHiddenHeader && /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx(
-            LiveChatIcon,
-            {
-              config: {
-                facebook: "https://m.me/@kiraparfum",
-                zalo: "https://zalo.me/your-phone-number"
-              }
-            }
-          ),
+          /* @__PURE__ */ jsx(LiveChatIcon, { config: { facebook: "https://m.me/@kiraparfum" } }),
           /* @__PURE__ */ jsx("div", { className: "fixed bottom-6 right-6 z-50", children: /* @__PURE__ */ jsx(
             "button",
             {
@@ -21847,16 +21947,28 @@ const shouldRevalidate = ({
   return defaultShouldRevalidate;
 };
 function App() {
-  var _a;
+  var _a, _b;
   const headRef = useRef(null);
   const data2 = useRootLoaderData();
+  const location = useLocation();
   const {
     currentLanguage
   } = useI18n();
   const {
     env = {},
-    siteDetails
+    siteDetails,
+    requestOrigin
   } = data2 || {};
+  const configuredUrl = (_a = siteDetails == null ? void 0 : siteDetails.settings) == null ? void 0 : _a.storefront_url;
+  let canonicalUrl;
+  try {
+    const originUrl = new URL((configuredUrl || requestOrigin || "").trim());
+    if (originUrl.protocol === "http:" || originUrl.protocol === "https:") {
+      canonicalUrl = new URL(location.pathname, originUrl.origin).toString();
+    }
+  } catch {
+    canonicalUrl = void 0;
+  }
   return /* @__PURE__ */ jsx(RootProviders, {
     children: /* @__PURE__ */ jsxs("html", {
       lang: currentLanguage,
@@ -21865,7 +21977,10 @@ function App() {
         ref: headRef,
         children: [/* @__PURE__ */ jsx("meta", {
           charSet: "UTF-8"
-        }), /* @__PURE__ */ jsx(Meta, {}), /* @__PURE__ */ jsx("link", {
+        }), /* @__PURE__ */ jsx(Meta, {}), canonicalUrl ? /* @__PURE__ */ jsx("link", {
+          rel: "canonical",
+          href: canonicalUrl
+        }) : null, /* @__PURE__ */ jsx("link", {
           rel: "preconnect",
           href: "https://fonts.googleapis.com"
         }), /* @__PURE__ */ jsx("link", {
@@ -21878,7 +21993,7 @@ function App() {
         }), /* @__PURE__ */ jsx("link", {
           href: "https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap",
           rel: "stylesheet"
-        }), /* @__PURE__ */ jsx(Links, {}), ((_a = siteDetails == null ? void 0 : siteDetails.settings) == null ? void 0 : _a.description) && /* @__PURE__ */ jsx("meta", {
+        }), /* @__PURE__ */ jsx(Links, {}), ((_b = siteDetails == null ? void 0 : siteDetails.settings) == null ? void 0 : _b.description) && /* @__PURE__ */ jsx("meta", {
           name: "description",
           content: siteDetails.settings.description
         })]
@@ -22135,7 +22250,7 @@ const PaginationItem = ({ className, currentPage, page, ...props }) => {
   const defaultClasses = "text-gray-500 hover:bg-gray-50";
   const isCurrent = page === currentPage;
   return /* @__PURE__ */ jsx(
-    Link,
+    Link$1,
     {
       viewTransition: true,
       className: clsx(
@@ -22165,7 +22280,7 @@ const PaginationButton = ({
   if (isDisabled)
     return /* @__PURE__ */ jsx("button", { "aria-disabled": isDisabled, disabled: true, className, children });
   return /* @__PURE__ */ jsx(
-    Link,
+    Link$1,
     {
       viewTransition: true,
       "aria-disabled": isDisabled,
@@ -22600,190 +22715,56 @@ const AllCollection = ({ className, isActive }) => {
     }
   );
 };
-const ThirstyCollection = ({ className, isActive }) => {
-  const collectionItemRef = useRef(null);
-  const hoverActiveRef = useRef(null);
-  const handleMouseEnter = () => {
-    if (!isActive) return;
-    animate(".main-image", {
-      opacity: [1, 0],
-      width: "0%",
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".second-image", {
-      opacity: [0, 1],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".hover-active-1", {
-      x: "-50%",
-      y: "-20%",
-      skewX: "-4deg",
-      rotate: "-27deg",
-      opacity: [0, 1],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".hover-active-2", {
-      x: "40%",
-      y: "80%",
-      skewX: "-4deg",
-      rotate: "43deg",
-      opacity: [0, 1],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-  };
-  const handleMouseLeave = () => {
-    if (!isActive) return;
-    animate(".main-image", {
-      opacity: [0, 1],
-      width: "100%",
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".second-image", {
-      opacity: [1, 0],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".hover-active-1", {
-      x: "0%",
-      y: "0%",
-      skewX: "0deg",
-      rotate: "0deg",
-      opacity: [1, 0],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-    animate(".hover-active-2", {
-      x: "0%",
-      y: "0%",
-      skewX: "0deg",
-      rotate: "0deg",
-      opacity: [1, 0],
-      ease: spring({
-        bounce: 0.65,
-        duration: 400
-      }),
-      duration: 300,
-      alternate: true
-    });
-  };
-  const navigate = useNavigate();
-  const handleClick = () => {
-    if (!isActive) return;
-    navigate("/collections/thirsty");
-  };
-  return /* @__PURE__ */ jsxs(
-    "div",
-    {
-      ref: collectionItemRef,
-      onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave,
-      onClick: handleClick,
-      className: clsx("collection-item flex overflow-hidden w-full h-full", className),
-      to: "/collections",
-      children: [
-        /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty-collection.gif", className: "scale-110 object-cover main-image", alt: "Thirsty Collection" }),
-        /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty-collection.webp", className: "scale-110 object-cover second-image opacity-0", alt: "Thirsty Collection Text" }),
-        /* @__PURE__ */ jsxs("div", { ref: hoverActiveRef, children: [
-          /* @__PURE__ */ jsx("div", { className: "absolute top-0 left-0 w-full opacity-0 hover-active-1", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty1.webp", className: "w-full h-full object-cover", alt: "Thirsty Collection Text" }) }),
-          /* @__PURE__ */ jsx("div", { className: "absolute top-0 left-0 w-full opacity-0 hover-active-2", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty2.webp", className: "w-full h-full object-cover", alt: "Thirsty Collection Text" }) })
-        ] })
-      ]
-    }
-  );
+const ComingCollection = ({ className, isActive }) => {
+  return /* @__PURE__ */ jsx("div", { className: clsx("flex overflow-hidden w-full h-full", className), to: "/collections", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/coming-collection.gif", className: "scale-110 object-cover", alt: "Coming Collection" }) });
 };
-const SavouringCollection = ({ className, isActive }) => {
-  const collectionItemRef = useRef(null);
-  const handleMouseEnter = () => {
-    if (!isActive) return;
-    animate(".savouring-main-image", {
-      opacity: [1, 0],
-      width: "0%",
-      ease: spring({ bounce: 0.65, duration: 400 }),
-      duration: 300
-    });
-    animate(".savouring-second-image", {
-      opacity: [0, 1],
-      ease: spring({ bounce: 0.65, duration: 400 }),
-      duration: 300
-    });
-  };
-  const handleMouseLeave = () => {
-    if (!isActive) return;
-    animate(".savouring-main-image", {
-      opacity: [0, 1],
-      width: "100%",
-      ease: spring({ bounce: 0.65, duration: 400 }),
-      duration: 300
-    });
-    animate(".savouring-second-image", {
-      opacity: [1, 0],
-      ease: spring({ bounce: 0.65, duration: 400 }),
-      duration: 300
-    });
-  };
-  const navigate = useNavigate();
-  const handleClick = () => {
-    if (!isActive) return;
-    navigate("/collections/savouring");
-  };
+const DynamicCollection = ({
+  image,
+  imageActive,
+  title,
+  isActive,
+  isAnyActive,
+  className
+}) => {
+  const showActiveDirectly = Boolean(imageActive) && isActive;
+  const isHoverEnabled = Boolean(imageActive) && !isActive && !isAnyActive;
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      ref: collectionItemRef,
-      onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave,
-      onClick: handleClick,
-      className: clsx("collection-item flex overflow-hidden w-full h-full cursor-pointer relative", className),
+      className: clsx(
+        "group relative flex overflow-hidden w-full h-full select-none",
+        isActive ? "cursor-pointer" : "",
+        className
+      ),
       children: [
-        /* @__PURE__ */ jsx(
+        image ? /* @__PURE__ */ jsx(
           "img",
           {
-            src: "/assets/images/home/savouring-collection.png",
-            className: "scale-110 object-cover savouring-main-image w-full h-full",
-            alt: "Savouring Collection"
+            src: image,
+            onError: (event) => {
+              event.currentTarget.style.visibility = "hidden";
+            },
+            className: clsx(
+              "scale-110 object-cover w-full h-full select-none pointer-events-none transition-opacity duration-300 ease-in-out",
+              showActiveDirectly ? "opacity-0" : isHoverEnabled ? "opacity-100 group-hover:opacity-0" : "opacity-100"
+            ),
+            alt: title
           }
-        ),
-        /* @__PURE__ */ jsx(
+        ) : null,
+        imageActive ? /* @__PURE__ */ jsx(
           "img",
           {
-            src: "/assets/images/home/savouring-collection.webp",
-            className: "scale-110 object-cover savouring-second-image opacity-0 absolute top-0 left-0 w-full h-full",
-            alt: "Savouring Collection Detail"
+            src: imageActive,
+            onError: (event) => {
+              event.currentTarget.style.visibility = "hidden";
+            },
+            className: clsx(
+              "scale-110 object-cover w-full h-full select-none pointer-events-none absolute inset-0 transition-opacity duration-300 ease-in-out",
+              showActiveDirectly ? "opacity-100" : isHoverEnabled ? "opacity-0 group-hover:opacity-100" : "opacity-0 pointer-events-none"
+            ),
+            alt: `${title} Active`
           }
-        )
+        ) : null
       ]
     }
   );
@@ -22912,63 +22893,194 @@ const IcyCollection = ({ className, isActive }) => {
     }
   );
 };
-const ComingCollection = ({ className, isActive }) => {
-  return /* @__PURE__ */ jsx("div", { className: clsx("flex overflow-hidden w-full h-full", className), to: "/collections", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/coming-collection.gif", className: "scale-110 object-cover", alt: "Coming Collection" }) });
-};
-const DynamicCollection = ({
-  image,
-  imageActive,
-  title,
-  isActive,
-  isAnyActive,
-  className
-}) => {
-  const showActiveDirectly = Boolean(imageActive) && isActive;
-  const isHoverEnabled = Boolean(imageActive) && !isActive && !isAnyActive;
+const SavouringCollection = ({ className, isActive }) => {
+  const collectionItemRef = useRef(null);
+  const handleMouseEnter = () => {
+    if (!isActive) return;
+    animate(".savouring-main-image", {
+      opacity: [1, 0],
+      width: "0%",
+      ease: spring({ bounce: 0.65, duration: 400 }),
+      duration: 300
+    });
+    animate(".savouring-second-image", {
+      opacity: [0, 1],
+      ease: spring({ bounce: 0.65, duration: 400 }),
+      duration: 300
+    });
+  };
+  const handleMouseLeave = () => {
+    if (!isActive) return;
+    animate(".savouring-main-image", {
+      opacity: [0, 1],
+      width: "100%",
+      ease: spring({ bounce: 0.65, duration: 400 }),
+      duration: 300
+    });
+    animate(".savouring-second-image", {
+      opacity: [1, 0],
+      ease: spring({ bounce: 0.65, duration: 400 }),
+      duration: 300
+    });
+  };
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (!isActive) return;
+    navigate("/collections/savouring");
+  };
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: clsx(
-        "group relative flex overflow-hidden w-full h-full select-none",
-        isActive ? "cursor-pointer" : "",
-        className
-      ),
+      ref: collectionItemRef,
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+      onClick: handleClick,
+      className: clsx("collection-item flex overflow-hidden w-full h-full cursor-pointer relative", className),
       children: [
-        image ? /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx(
           "img",
           {
-            src: image,
-            onError: (event) => {
-              event.currentTarget.style.visibility = "hidden";
-            },
-            className: clsx(
-              "scale-110 object-cover w-full h-full select-none pointer-events-none transition-opacity duration-300 ease-in-out",
-              showActiveDirectly ? "opacity-0" : isHoverEnabled ? "opacity-100 group-hover:opacity-0" : "opacity-100"
-            ),
-            alt: title
+            src: "/assets/images/home/savouring-collection.png",
+            className: "scale-110 object-cover savouring-main-image w-full h-full",
+            alt: "Savouring Collection"
           }
-        ) : null,
-        imageActive ? /* @__PURE__ */ jsx(
+        ),
+        /* @__PURE__ */ jsx(
           "img",
           {
-            src: imageActive,
-            onError: (event) => {
-              event.currentTarget.style.visibility = "hidden";
-            },
-            className: clsx(
-              "scale-110 object-cover w-full h-full select-none pointer-events-none absolute inset-0 transition-opacity duration-300 ease-in-out",
-              showActiveDirectly ? "opacity-100" : isHoverEnabled ? "opacity-0 group-hover:opacity-100" : "opacity-0 pointer-events-none"
-            ),
-            alt: `${title} Active`
+            src: "/assets/images/home/savouring-collection.webp",
+            className: "scale-110 object-cover savouring-second-image opacity-0 absolute top-0 left-0 w-full h-full",
+            alt: "Savouring Collection Detail"
           }
-        ) : null
+        )
       ]
     }
   );
 };
-function isOutsideElement(element, target) {
-  return element !== null && target instanceof Node && !element.contains(target);
-}
+const ThirstyCollection = ({ className, isActive }) => {
+  const collectionItemRef = useRef(null);
+  const hoverActiveRef = useRef(null);
+  const handleMouseEnter = () => {
+    if (!isActive) return;
+    animate(".main-image", {
+      opacity: [1, 0],
+      width: "0%",
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".second-image", {
+      opacity: [0, 1],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".hover-active-1", {
+      x: "-50%",
+      y: "-20%",
+      skewX: "-4deg",
+      rotate: "-27deg",
+      opacity: [0, 1],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".hover-active-2", {
+      x: "40%",
+      y: "80%",
+      skewX: "-4deg",
+      rotate: "43deg",
+      opacity: [0, 1],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+  };
+  const handleMouseLeave = () => {
+    if (!isActive) return;
+    animate(".main-image", {
+      opacity: [0, 1],
+      width: "100%",
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".second-image", {
+      opacity: [1, 0],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".hover-active-1", {
+      x: "0%",
+      y: "0%",
+      skewX: "0deg",
+      rotate: "0deg",
+      opacity: [1, 0],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+    animate(".hover-active-2", {
+      x: "0%",
+      y: "0%",
+      skewX: "0deg",
+      rotate: "0deg",
+      opacity: [1, 0],
+      ease: spring({
+        bounce: 0.65,
+        duration: 400
+      }),
+      duration: 300,
+      alternate: true
+    });
+  };
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (!isActive) return;
+    navigate("/collections/thirsty");
+  };
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      ref: collectionItemRef,
+      onMouseEnter: handleMouseEnter,
+      onMouseLeave: handleMouseLeave,
+      onClick: handleClick,
+      className: clsx("collection-item flex overflow-hidden w-full h-full", className),
+      to: "/collections",
+      children: [
+        /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty-collection.gif", className: "scale-110 object-cover main-image", alt: "Thirsty Collection" }),
+        /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty-collection.webp", className: "scale-110 object-cover second-image opacity-0", alt: "Thirsty Collection Text" }),
+        /* @__PURE__ */ jsxs("div", { ref: hoverActiveRef, children: [
+          /* @__PURE__ */ jsx("div", { className: "absolute top-0 left-0 w-full opacity-0 hover-active-1", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty1.webp", className: "w-full h-full object-cover", alt: "Thirsty Collection Text" }) }),
+          /* @__PURE__ */ jsx("div", { className: "absolute top-0 left-0 w-full opacity-0 hover-active-2", children: /* @__PURE__ */ jsx("img", { src: "/assets/images/home/thirsty2.webp", className: "w-full h-full object-cover", alt: "Thirsty Collection Text" }) })
+        ] })
+      ]
+    }
+  );
+};
 const FAN_SCROLL_STATE_KEY = "fanScrollToProducts";
 const PRODUCTS_SCROLL_TARGET_ID = "collection-products";
 function scrollToProducts() {
@@ -23001,6 +23113,9 @@ function useScrollToProducts() {
     handledKey.current = location.key;
     scrollToProducts();
   }, [location.key]);
+}
+function isOutsideElement(element, target) {
+  return element !== null && target instanceof Node && !element.contains(target);
 }
 const CARD_RADIUS = 18;
 const CARD_BORDER = 4;
@@ -23082,8 +23197,10 @@ const HalfFanSlider = ({
   collectionHandles,
   onDisplayCardChange,
   className,
-  showInfoPanel = true
+  showInfoPanel = true,
+  heading
 }) => {
+  var _a, _b;
   const { t: t2, currentLanguage } = useI18n();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -23195,12 +23312,10 @@ const HalfFanSlider = ({
   const hasFocus = focusIndex !== null;
   const isAllCard = (card) => (card.handle || "").toLowerCase() === "all" || /^all$/i.test((card.linkto || "").trim()) || (card.linkto || "").trim().toLowerCase() === "/collections";
   const defaultCard = useMemo(
-    () => initialCards.find(
-      (card) => {
-        var _a;
-        return !!activeHandle && ((_a = card.handle) == null ? void 0 : _a.toLowerCase()) === activeHandle.toLowerCase();
-      }
-    ) ?? initialCards.find(isAllCard) ?? initialCards[0],
+    () => initialCards.find((card) => {
+      var _a2;
+      return !!activeHandle && ((_a2 = card.handle) == null ? void 0 : _a2.toLowerCase()) === activeHandle.toLowerCase();
+    }) ?? initialCards.find(isAllCard) ?? initialCards[0],
     [initialCards, activeHandle]
   );
   const focusCard = focusIndex !== null ? initialCards[focusIndex] : null;
@@ -23245,14 +23360,14 @@ const HalfFanSlider = ({
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [activeIndex]);
   const resolveCardTarget = (card) => {
-    var _a;
+    var _a2;
     const linkto = (card.linkto || "").trim();
     const handle = (card.handle || "").toLowerCase();
     if (!linkto) return {};
     if (/^https?:\/\//i.test(linkto)) return { href: linkto, external: true };
     if (handle === "all" || /^all$/i.test(linkto)) return { href: "/collections" };
     const isPath = linkto.startsWith("/");
-    const target = ((_a = /^\/collections\/([^/?#]+)/.exec(linkto)) == null ? void 0 : _a[1]) ?? (isPath ? null : linkto);
+    const target = ((_a2 = /^\/collections\/([^/?#]+)/.exec(linkto)) == null ? void 0 : _a2[1]) ?? (isPath ? null : linkto);
     if (target) {
       if (Array.isArray(collectionHandles) && !collectionHandles.includes(target)) {
         return { comingSoon: true };
@@ -23310,246 +23425,267 @@ const HalfFanSlider = ({
   const subtitleColor = isComingSoonCard(displayCard) || isAllCard(displayCard) ? COLOR_YELLOW : COLOR_BLUE;
   const iconColor = subtitleColor;
   const firstAngle = angleOf(0);
+  const activeTitle = (heading == null ? void 0 : heading.followActive) !== false && focusIndex !== null ? (_b = (_a = initialCards[focusIndex]) == null ? void 0 : _a.title) == null ? void 0 : _b.trim() : null;
+  const headingText = heading ? activeTitle || heading.idle : "";
+  const headingKey = heading ? activeTitle ? `heading-card-${focusIndex}` : "heading-idle" : "heading";
   return /* @__PURE__ */ jsxs("div", { className: clsx("flex flex-col items-center w-full", className), children: [
-    /* @__PURE__ */ jsx(
+    heading && /* @__PURE__ */ jsxs("div", { className: "relative w-full mb-2 md:mb-4 text-center [font-size:clamp(2.25rem,4.5vw,4rem)]", children: [
+      /* @__PURE__ */ jsxs("div", { "aria-hidden": "true", className: "invisible leading-[1.05]", children: [
+        /* @__PURE__ */ jsx("span", { className: "block", children: " " }),
+        /* @__PURE__ */ jsx("span", { className: "block", children: " " })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center px-4", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsxs(
+        motion.h2,
+        {
+          initial: { opacity: 0, y: 14, filter: "blur(10px)" },
+          animate: {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            transition: { duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }
+          },
+          exit: {
+            opacity: 0,
+            y: -10,
+            filter: "blur(8px)",
+            transition: { duration: 0, ease: "easeIn" }
+          },
+          className: "w-full whitespace-pre-line text-center font-display font-semibold uppercase leading-[1.05] text-kira-brand",
+          children: [
+            headingText,
+            /* @__PURE__ */ jsx("br", {}),
+            " ",
+            subtitle
+          ]
+        },
+        headingKey
+      ) }) })
+    ] }),
+    /* @__PURE__ */ jsx("div", { className: "relative z-0 flex w-full justify-center mt-6 xl:mt-8", style: { height: geo.stageH * stageScale }, children: /* @__PURE__ */ jsx(
       "div",
       {
-        className: "relative z-0 flex w-full justify-center mt-6 xl:mt-8",
-        style: { height: geo.stageH * stageScale },
+        style: {
+          width: stageW,
+          height: geo.stageH,
+          transform: `scale(${stageScale})`,
+          transformOrigin: "top center"
+        },
         children: /* @__PURE__ */ jsx(
-          "div",
+          motion.div,
           {
-            style: {
-              width: stageW,
-              height: geo.stageH,
-              transform: `scale(${stageScale})`,
-              transformOrigin: "top center"
-            },
-            children: /* @__PURE__ */ jsx(
-              motion$1.div,
-              {
-                ref: stageRef,
-                className: "relative w-full h-full",
-                drag: isMobile ? "x" : false,
-                dragConstraints: { left: 0, right: 0 },
-                dragElastic: 0.2,
-                onDragEnd: handleSwipe,
-                children: initialCards.map((card, i) => {
-                  const angle = angleOf(i);
-                  const isFocused = focusIndex === i;
-                  const isDimmed = hasFocus && !isFocused;
-                  const cardIsComingSoon = isComingSoonCard(card);
-                  return /* @__PURE__ */ jsx(
-                    motion$1.div,
+            ref: stageRef,
+            className: "relative w-full h-full",
+            drag: isMobile ? "x" : false,
+            dragConstraints: { left: 0, right: 0 },
+            dragElastic: 0.2,
+            onDragEnd: handleSwipe,
+            children: initialCards.map((card, i) => {
+              const angle = angleOf(i);
+              const isFocused = focusIndex === i;
+              const isDimmed = hasFocus && !isFocused;
+              const cardIsComingSoon = isComingSoonCard(card);
+              return /* @__PURE__ */ jsx(
+                motion.div,
+                {
+                  ref: (element) => {
+                    cardRefs.current[i] = element;
+                  },
+                  onClick: () => handleCardClick(i),
+                  onKeyDown: (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handleCardClick(i);
+                    }
+                  },
+                  role: "button",
+                  tabIndex: 0,
+                  "aria-label": `${t2("products.collection")}: ${card.title}`,
+                  className: "absolute left-1/2 bottom-0 collection-card-item cursor-pointer outline-none",
+                  style: {
+                    width: geo.cardW,
+                    height: geo.cardH,
+                    marginLeft: -geo.cardW / 2,
+                    transformOrigin: `50% ${geo.pivotY}px`,
+                    zIndex: isFocused ? 50 : 10 + i,
+                    willChange: "transform"
+                  },
+                  initial: reduceMotion ? false : { rotate: firstAngle },
+                  animate: {
+                    rotate: isFocused && !reduceMotion ? 0 : isDimmed ? angle * DIM_SCALE : angle
+                  },
+                  transition: dealt ? {
+                    rotate: {
+                      duration: isFocused ? FOCUS_A : isDimmed ? DIM_DURATION : RETURN_DURATION,
+                      delay: isFocused ? 0 : 0.05,
+                      ease: EASE_GLIDE
+                    }
+                  } : {
+                    rotate: {
+                      duration: DEAL_DURATION,
+                      delay: reduceMotion ? 0 : i * DEAL_STAGGER,
+                      ease: EASE_OUT
+                    }
+                  },
+                  children: /* @__PURE__ */ jsx(
+                    motion.div,
                     {
-                      ref: (element) => {
-                        cardRefs.current[i] = element;
-                      },
-                      onClick: () => handleCardClick(i),
-                      onKeyDown: (event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          handleCardClick(i);
-                        }
-                      },
-                      role: "button",
-                      tabIndex: 0,
-                      "aria-label": `${t2("products.collection")}: ${card.title}`,
-                      className: "absolute left-1/2 bottom-0 collection-card-item cursor-pointer outline-none",
+                      className: "w-full h-full",
                       style: {
-                        width: geo.cardW,
-                        height: geo.cardH,
-                        marginLeft: -geo.cardW / 2,
-                        transformOrigin: `50% ${geo.pivotY}px`,
-                        zIndex: isFocused ? 50 : 10 + i,
-                        willChange: "transform"
+                        transformOrigin: "center",
+                        transformPerspective: 1200,
+                        // keep both card faces in 3D so backface-visibility works
+                        transformStyle: "preserve-3d"
+                        // NOTE: no `will-change` here — it promotes the flipper to its own
+                        // compositor layer and Chrome then stops culling the hidden face,
+                        // which makes a 180° flip land on the mirrored back face.
+                        // (The parent card already hints `will-change: transform`.)
                       },
-                      initial: reduceMotion ? false : { rotate: firstAngle },
-                      animate: {
-                        rotate: isFocused && !reduceMotion ? 0 : isDimmed ? angle * DIM_SCALE : angle
-                      },
-                      transition: dealt ? {
-                        rotate: {
-                          duration: isFocused ? FOCUS_A : isDimmed ? DIM_DURATION : RETURN_DURATION,
-                          delay: isFocused ? 0 : 0.05,
-                          ease: EASE_GLIDE
-                        }
+                      animate: reduceMotion ? { scale: 1, y: 0, opacity: 1, rotateY: 0 } : isFocused ? {
+                        scale: FOCUS_SCALE,
+                        y: focusLift,
+                        opacity: 1,
+                        rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
+                      } : isDimmed ? {
+                        scale: DIM_SCALE,
+                        y: DIM_Y,
+                        opacity: DIM_OPACITY,
+                        rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
                       } : {
-                        rotate: {
-                          duration: DEAL_DURATION,
-                          delay: reduceMotion ? 0 : i * DEAL_STAGGER,
-                          ease: EASE_OUT
-                        }
+                        scale: 1,
+                        y: 0,
+                        opacity: 1,
+                        rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
                       },
-                      children: /* @__PURE__ */ jsx(
-                        motion$1.div,
+                      transition: isFocused ? {
+                        scale: { duration: FOCUS_B, delay: FOCUS_B_DELAY, ease: EASE_GLIDE },
+                        y: { duration: FOCUS_B, delay: FOCUS_B_DELAY, ease: EASE_GLIDE },
+                        rotateY: {
+                          duration: FLIP_DURATION,
+                          delay: FLIP_DELAY,
+                          ease: EASE_GLIDE
+                        },
+                        opacity: { duration: FOCUS_A }
+                      } : isDimmed ? {
+                        scale: { duration: DIM_DURATION, delay: 0.06, ease: EASE_GLIDE },
+                        y: { duration: DIM_DURATION, delay: 0.06, ease: EASE_GLIDE },
+                        opacity: { duration: DIM_DURATION, delay: 0.06 },
+                        rotateY: { duration: FLIP_DURATION, ease: EASE_GLIDE }
+                      } : {
+                        scale: { duration: RETURN_DURATION, ease: EASE_GLIDE },
+                        y: { duration: RETURN_DURATION, ease: EASE_GLIDE },
+                        opacity: { duration: 0.3, ease: EASE_GLIDE },
+                        rotateY: { duration: FLIP_DURATION, ease: EASE_GLIDE }
+                      },
+                      children: [0, 1].map((face) => /* @__PURE__ */ jsxs(
+                        "div",
                         {
-                          className: "w-full h-full",
+                          className: "absolute inset-0 overflow-hidden bg-white",
                           style: {
-                            transformOrigin: "center",
-                            transformPerspective: 1200,
-                            // keep both card faces in 3D so backface-visibility works
-                            transformStyle: "preserve-3d"
-                            // NOTE: no `will-change` here — it promotes the flipper to its own
-                            // compositor layer and Chrome then stops culling the hidden face,
-                            // which makes a 180° flip land on the mirrored back face.
-                            // (The parent card already hints `will-change: transform`.)
+                            borderRadius: CARD_RADIUS,
+                            border: `${CARD_BORDER}px solid #fff`,
+                            boxShadow: isFocused ? FOCUS_SHADOW : CARD_SHADOW,
+                            backfaceVisibility: "hidden",
+                            // Both faces need an explicit transform, otherwise Chrome
+                            // does not cull the back face of the un-transformed one.
+                            transform: `rotateY(${face === 1 ? 180 : 0}deg)`
                           },
-                          animate: reduceMotion ? { scale: 1, y: 0, opacity: 1, rotateY: 0 } : isFocused ? {
-                            scale: FOCUS_SCALE,
-                            y: focusLift,
-                            opacity: 1,
-                            rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
-                          } : isDimmed ? {
-                            scale: DIM_SCALE,
-                            y: DIM_Y,
-                            opacity: DIM_OPACITY,
-                            rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
-                          } : {
-                            scale: 1,
-                            y: 0,
-                            opacity: 1,
-                            rotateY: (flipTurns[card.id] ?? 0) * FOCUS_FLIP_DEG
-                          },
-                          transition: isFocused ? {
-                            scale: { duration: FOCUS_B, delay: FOCUS_B_DELAY, ease: EASE_GLIDE },
-                            y: { duration: FOCUS_B, delay: FOCUS_B_DELAY, ease: EASE_GLIDE },
-                            rotateY: {
-                              duration: FLIP_DURATION,
-                              delay: FLIP_DELAY,
-                              ease: EASE_GLIDE
-                            },
-                            opacity: { duration: FOCUS_A }
-                          } : isDimmed ? {
-                            scale: { duration: DIM_DURATION, delay: 0.06, ease: EASE_GLIDE },
-                            y: { duration: DIM_DURATION, delay: 0.06, ease: EASE_GLIDE },
-                            opacity: { duration: DIM_DURATION, delay: 0.06 },
-                            rotateY: { duration: FLIP_DURATION, ease: EASE_GLIDE }
-                          } : {
-                            scale: { duration: RETURN_DURATION, ease: EASE_GLIDE },
-                            y: { duration: RETURN_DURATION, ease: EASE_GLIDE },
-                            opacity: { duration: 0.3, ease: EASE_GLIDE },
-                            rotateY: { duration: FLIP_DURATION, ease: EASE_GLIDE }
-                          },
-                          children: [0, 1].map((face) => /* @__PURE__ */ jsxs(
-                            "div",
-                            {
-                              className: "absolute inset-0 overflow-hidden bg-white",
-                              style: {
-                                borderRadius: CARD_RADIUS,
-                                border: `${CARD_BORDER}px solid #fff`,
-                                boxShadow: isFocused ? FOCUS_SHADOW : CARD_SHADOW,
-                                backfaceVisibility: "hidden",
-                                // Both faces need an explicit transform, otherwise Chrome
-                                // does not cull the back face of the un-transformed one.
-                                transform: `rotateY(${face === 1 ? 180 : 0}deg)`
-                              },
-                              children: [
-                                /* @__PURE__ */ jsx(
-                                  "div",
-                                  {
-                                    className: "pointer-events-none absolute inset-0",
-                                    style: {
-                                      background: cardIsComingSoon || isAllCard(card) ? `linear-gradient(160deg, ${COLOR_YELLOW}55, #ffffff 70%)` : `linear-gradient(160deg, ${COLOR_BLUE}55, #ffffff 70%)`
-                                    }
-                                  }
-                                ),
-                                /* @__PURE__ */ jsx("div", { className: "relative w-full h-full", children: card.component(isFocused, hasFocus) }),
-                                cardIsComingSoon && /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-3", children: /* @__PURE__ */ jsx("span", { className: "rounded-full bg-black/70 px-3 py-1 font-title text-[10px] xl:text-xs font-bold uppercase tracking-wider text-white", children: t2("products.coming") }) })
-                              ]
-                            },
-                            `face-${face}`
-                          ))
-                        }
-                      )
-                    },
-                    card.id
-                  );
-                })
-              }
-            )
+                          children: [
+                            /* @__PURE__ */ jsx(
+                              "div",
+                              {
+                                className: "pointer-events-none absolute inset-0",
+                                style: {
+                                  background: cardIsComingSoon || isAllCard(card) ? `linear-gradient(160deg, ${COLOR_YELLOW}55, #ffffff 70%)` : `linear-gradient(160deg, ${COLOR_BLUE}55, #ffffff 70%)`
+                                }
+                              }
+                            ),
+                            /* @__PURE__ */ jsx("div", { className: "relative w-full h-full", children: card.component(isFocused, hasFocus) }),
+                            cardIsComingSoon && /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-x-0 bottom-0 flex justify-center pb-3", children: /* @__PURE__ */ jsx("span", { className: "rounded-full bg-black/70 px-3 py-1 font-title text-[10px] xl:text-xs font-bold uppercase tracking-wider text-white", children: t2("products.coming") }) })
+                          ]
+                        },
+                        `face-${face}`
+                      ))
+                    }
+                  )
+                },
+                card.id
+              );
+            })
           }
         )
       }
-    ),
-    showInfoPanel && /* @__PURE__ */ jsxs(
-      "div",
-      {
-        ref: infoRef,
-        className: "relative z-20 flex flex-col items-center justify-center w-full px-6 mt-2 xl:mt-4",
-        children: [
-          /* @__PURE__ */ jsx("div", { className: "relative flex h-12 xl:h-14 w-full items-center justify-center mb-2 xl:mb-3", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
-            motion$1.div,
+    ) }),
+    showInfoPanel && /* @__PURE__ */ jsxs("div", { ref: infoRef, className: "relative z-20 flex flex-col items-center justify-center w-full px-6 mt-2 xl:mt-4", children: [
+      /* @__PURE__ */ jsx("div", { className: "relative flex h-12 xl:h-14 w-full items-center justify-center mb-2 xl:mb-3", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
+        motion.div,
+        {
+          className: "absolute inset-0 flex items-center justify-center",
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          exit: { opacity: 0 },
+          transition: { duration: TEXT_FADE, ease: "linear" },
+          children: /* @__PURE__ */ jsx(CardIcon, { icon: displayCard.icon, color: iconColor })
+        },
+        `icon-${displayCard.id}`
+      ) }) }),
+      /* @__PURE__ */ jsx("div", { className: "relative w-full h-[46px] xl:h-[96px]", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
+        motion.div,
+        {
+          className: "absolute inset-0 flex items-center justify-center",
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          exit: { opacity: 0 },
+          transition: { duration: TEXT_FADE, ease: "linear" },
+          children: /* @__PURE__ */ jsx(
+            "h2",
             {
-              className: "absolute inset-0 flex items-center justify-center",
-              initial: { opacity: 0 },
-              animate: { opacity: 1 },
-              exit: { opacity: 0 },
-              transition: { duration: TEXT_FADE, ease: "linear" },
-              children: /* @__PURE__ */ jsx(CardIcon, { icon: displayCard.icon, color: iconColor })
-            },
-            `icon-${displayCard.id}`
-          ) }) }),
-          /* @__PURE__ */ jsx("div", { className: "relative w-full h-[46px] xl:h-[96px]", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
-            motion$1.div,
-            {
-              className: "absolute inset-0 flex items-center justify-center",
-              initial: { opacity: 0 },
-              animate: { opacity: 1 },
-              exit: { opacity: 0 },
-              transition: { duration: TEXT_FADE, ease: "linear" },
-              children: /* @__PURE__ */ jsx(
-                "h2",
-                {
-                  className: "max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-centuryBook italic text-[40px] leading-none xl:text-[90px]",
-                  dangerouslySetInnerHTML: { __html: displayCard.title }
-                }
-              )
-            },
-            `title-${displayCard.id}`
-          ) }) }),
-          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4 xl:gap-6 mt-2", children: [
-            /* @__PURE__ */ jsx(
-              "button",
+              className: "max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-centuryBook italic text-[40px] leading-none xl:text-[90px]",
+              dangerouslySetInnerHTML: { __html: displayCard.title }
+            }
+          )
+        },
+        `title-${displayCard.id}`
+      ) }) }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4 xl:gap-6 mt-2", children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: prev,
+            "aria-label": "Previous collection",
+            className: "p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform",
+            children: /* @__PURE__ */ jsx(ChevronLeft, { size: isMobile ? 18 : 24 })
+          }
+        ),
+        /* @__PURE__ */ jsx("div", { className: "relative h-[34px] xl:h-[68px] w-[220px] xl:w-[520px]", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
+          motion.div,
+          {
+            className: "absolute inset-0 flex items-center justify-center",
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            exit: { opacity: 0 },
+            transition: { duration: TEXT_FADE, ease: "linear" },
+            children: /* @__PURE__ */ jsx(
+              "p",
               {
-                onClick: prev,
-                "aria-label": "Previous collection",
-                className: "p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform",
-                children: /* @__PURE__ */ jsx(ChevronLeft, { size: isMobile ? 18 : 24 })
-              }
-            ),
-            /* @__PURE__ */ jsx("div", { className: "relative h-[34px] xl:h-[68px] w-[220px] xl:w-[520px]", children: /* @__PURE__ */ jsx(AnimatePresence, { mode: "sync", initial: false, children: /* @__PURE__ */ jsx(
-              motion$1.div,
-              {
-                className: "absolute inset-0 flex items-center justify-center",
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                exit: { opacity: 0 },
-                transition: { duration: TEXT_FADE, ease: "linear" },
-                children: /* @__PURE__ */ jsx(
-                  "p",
-                  {
-                    className: "max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-title font-bold text-[26px] leading-tight xl:text-[64px]",
-                    style: { color: subtitleColor },
-                    children: subtitle
-                  }
-                )
-              },
-              `subtitle-${displayCard.id}`
-            ) }) }),
-            /* @__PURE__ */ jsx(
-              "button",
-              {
-                onClick: next,
-                "aria-label": "Next collection",
-                className: "p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform",
-                children: /* @__PURE__ */ jsx(ChevronRight, { size: isMobile ? 18 : 24 })
+                className: "max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-title font-bold text-[26px] leading-tight xl:text-[64px]",
+                style: { color: subtitleColor },
+                children: subtitle
               }
             )
-          ] })
-        ]
-      }
-    )
+          },
+          `subtitle-${displayCard.id}`
+        ) }) }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: next,
+            "aria-label": "Next collection",
+            className: "p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform",
+            children: /* @__PURE__ */ jsx(ChevronRight, { size: isMobile ? 18 : 24 })
+          }
+        )
+      ] })
+    ] })
   ] });
 };
 const fetchSliderCards = async function() {
@@ -24678,7 +24814,7 @@ const ProductReviewForm = ({
     /* @__PURE__ */ jsx(FormError, { className: "mt-0" }),
     /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap justify-between gap-4", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("h3", { className: "text-base text-gray-900", children: /* @__PURE__ */ jsx(Link, { to: `/products/${(_c = (_b = lineItem.variant) == null ? void 0 : _b.product) == null ? void 0 : _c.handle}`, children: lineItem.title }) }),
+        /* @__PURE__ */ jsx("h3", { className: "text-base text-gray-900", children: /* @__PURE__ */ jsx(Link$1, { to: `/products/${(_c = (_b = lineItem.variant) == null ? void 0 : _b.product) == null ? void 0 : _c.handle}`, children: lineItem.title }) }),
         /* @__PURE__ */ jsx("p", { className: "text-sm font-normal text-gray-500", children: (_d = lineItem.variant) == null ? void 0 : _d.title })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
@@ -24933,7 +25069,7 @@ const ProductReviewView = ({
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap justify-between space-y-2", children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("h3", { className: "text-base text-gray-900", children: /* @__PURE__ */ jsx(Link, { to: `/products/${(_b = (_a = lineItem.variant) == null ? void 0 : _a.product) == null ? void 0 : _b.handle}`, children: lineItem.title }) }),
+        /* @__PURE__ */ jsx("h3", { className: "text-base text-gray-900", children: /* @__PURE__ */ jsx(Link$1, { to: `/products/${(_b = (_a = lineItem.variant) == null ? void 0 : _a.product) == null ? void 0 : _b.handle}`, children: lineItem.title }) }),
         /* @__PURE__ */ jsx("p", { className: "text-sm font-normal text-gray-500", children: (_c = lineItem.variant) == null ? void 0 : _c.title })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
@@ -25072,7 +25208,7 @@ const orders__$orderId_reviews = UNSAFE_withComponentProps(function OrderReviews
             })
           }), /* @__PURE__ */ jsx("div", {
             className: "mt-16 border-t border-gray-200 pt-6 text-right",
-            children: /* @__PURE__ */ jsx(Link, {
+            children: /* @__PURE__ */ jsx(Link$1, {
               to: "/products",
               children: /* @__PURE__ */ jsxs(ButtonLink, {
                 className: "font-bold no-underline",
@@ -26759,7 +26895,7 @@ const blogs_$slugHandle = UNSAFE_withComponentProps(function BlogsIndexRoute() {
           src: "/assets/images/blog-btn.webp",
           className: "max-w-[500px]",
           alt: "explore more thought"
-        }), /* @__PURE__ */ jsx(Link, {
+        }), /* @__PURE__ */ jsx(Link$1, {
           to: "/blogs",
           className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hover:text-white px-6 rounded-full border border-primary text-primary bg-outline-primary hover:bg-primary-800 focus:border-primary-500 py-2 whitespace-nowrap !font-bold transition-colors duration-200 justify-center items-center flex",
           children: "explore more thought"
@@ -27359,7 +27495,7 @@ const CheckoutOrderSummaryItem = ({ item, name }) => {
     /* @__PURE__ */ jsxs("div", { className: "ml-6 flex flex-1 flex-col", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex", children: [
         /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
-          /* @__PURE__ */ jsx("h4", { className: "text-base", children: /* @__PURE__ */ jsx(Link, { to: `/products/${item.product_handle}`, className: "font-bold text-gray-700 hover:text-gray-800", children: item.product_title }) }),
+          /* @__PURE__ */ jsx("h4", { className: "text-base", children: /* @__PURE__ */ jsx(Link$1, { to: `/products/${item.product_handle}`, className: "font-bold text-gray-700 hover:text-gray-800", children: item.product_title }) }),
           /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-sm text-gray-500", children: item.variant_title })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "ml-4 flow-root flex-shrink-0", children: /* @__PURE__ */ jsx(Button, { variant: "link", onClick: handleRemoveFromCart, disabled: isRemovingFromCart, className: "text-sm", children: isRemovingFromCart ? "Removing" : "Remove" }) })
@@ -28290,7 +28426,7 @@ const checkout__index = UNSAFE_withComponentProps(function CheckoutIndexRoute() 
     description: "Add items to your cart",
     action: /* @__PURE__ */ jsx(Button, {
       variant: "primary",
-      as: (buttonProps) => /* @__PURE__ */ jsx(Link, {
+      as: (buttonProps) => /* @__PURE__ */ jsx(Link$1, {
         to: "/products",
         ...buttonProps
       }),
@@ -28411,10 +28547,18 @@ const route31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader: loader$b
 }, Symbol.toStringTag, { value: "Module" }));
+const getBaseUrl$1 = (request) => {
+  try {
+    const configuredUrl = new URL((config.STOREFRONT_URL || "").trim());
+    if (configuredUrl.protocol === "http:" || configuredUrl.protocol === "https:") return configuredUrl.origin;
+  } catch {
+  }
+  return new URL(request.url).origin;
+};
 const loader$a = async ({
   request
 }) => {
-  const baseUrl = new URL(request.url).origin;
+  const baseUrl = getBaseUrl$1(request);
   const urls = [{
     loc: `${baseUrl}/sitemap-products.xml`
   }, {
@@ -28523,10 +28667,18 @@ const route34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader: loader$8
 }, Symbol.toStringTag, { value: "Module" }));
+const getBaseUrl = (request) => {
+  try {
+    const configuredUrl = new URL((config.STOREFRONT_URL || "").trim());
+    if (configuredUrl.protocol === "http:" || configuredUrl.protocol === "https:") return configuredUrl.origin;
+  } catch {
+  }
+  return new URL(request.url).origin;
+};
 const loader$7 = ({
   request
 }) => {
-  const baseUrl = new URL(request.url).origin;
+  const baseUrl = getBaseUrl(request);
   const robotText = `
 User-agent: *
 Disallow: /orders
@@ -28605,7 +28757,7 @@ const blogs__index = UNSAFE_withComponentProps(function BlogsIndexRoute2() {
             dangerouslySetInnerHTML: {
               __html: post.description
             }
-          }), /* @__PURE__ */ jsx(Link, {
+          }), /* @__PURE__ */ jsx(Link$1, {
             to: `/blogs/${post.slug}`,
             className: "button--primary w-[155px] text-white bg-primary hover:bg-primary-800 focus:border-primary-500 !h-12 mt-4 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed !rounded-2xl justify-center items-center flex",
             children: "Read More"
@@ -29393,7 +29545,7 @@ const stories = UNSAFE_withComponentProps(function Stories() {
       })]
     }), /* @__PURE__ */ jsxs("div", {
       className: "relative min-h-0 flex-1 overflow-hidden",
-      children: [/* @__PURE__ */ jsx(motion.div, {
+      children: [/* @__PURE__ */ jsx(motion$1.div, {
         className: "flex h-full bg-[url('/assets/images/stories/background.webp')] bg-cover bg-center",
         style: {
           width: `${total * 100}%`
@@ -29419,7 +29571,7 @@ const stories = UNSAFE_withComponentProps(function Stories() {
           }), /* @__PURE__ */ jsx("p", {
             className: clsx(TEXT_CARD_CLASS, item.classNameText, `bg-${item.id}`),
             children: item.text
-          }), item.items.map((icon) => /* @__PURE__ */ jsx(motion.img, {
+          }), item.items.map((icon) => /* @__PURE__ */ jsx(motion$1.img, {
             animate: {
               y: [0, 50, 0]
             },
@@ -29455,52 +29607,206 @@ const route44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   default: stories
 }, Symbol.toStringTag, { value: "Module" }));
-const Card = ({ item }) => /* @__PURE__ */ jsx(
-  Link,
+const EASE$1 = [0.22, 1, 0.36, 1];
+const cardVariants = (reduceMotion) => ({
+  hidden: { opacity: 0, y: reduceMotion ? 0 : 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: reduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE$1 }
+  }
+});
+const prefersReducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const Card = ({ item, reduceMotion }) => /* @__PURE__ */ jsx(
+  motion$1.div,
   {
-    to: item.link || "/products",
-    viewTransition: true,
-    className: "group block aspect-[4/5] w-full overflow-hidden rounded-[16px] bg-[#F3F1EE]",
+    whileHover: reduceMotion ? void 0 : { y: -6 },
+    transition: { type: "spring", stiffness: 260, damping: 24 },
+    className: "h-full",
     children: /* @__PURE__ */ jsx(
-      "img",
+      Link$1,
       {
-        src: item.image_url,
-        alt: item.alt,
-        loading: "lazy",
-        decoding: "async",
-        className: "h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        to: item.link || "/products",
+        viewTransition: true,
+        className: "group block aspect-[4/5] w-full overflow-hidden rounded-[16px] bg-[#F3F1EE]",
+        children: /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: item.image_url,
+            alt: item.alt,
+            loading: "lazy",
+            decoding: "async",
+            className: "h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          }
+        )
       }
     )
   }
 );
 const BestSellerSection = ({ bestSeller }) => {
   const items = bestSeller.items ?? [];
+  const reduceMotion = useReducedMotion$1() ?? false;
+  const trackRef = useRef(null);
+  const [pageCount, setPageCount] = useState(1);
+  const [activePage, setActivePage] = useState(0);
+  const measure = useCallback(() => {
+    const track = trackRef.current;
+    const card = track == null ? void 0 : track.querySelector("[data-card]");
+    if (!track || !card) return;
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+    const step = card.offsetWidth + gap;
+    if (step <= 0) return;
+    const perView = Math.max(1, Math.round((track.clientWidth + gap) / step));
+    setPageCount(Math.max(1, Math.ceil(items.length / perView)));
+  }, [items.length]);
+  useEffect(() => {
+    measure();
+    const track = trackRef.current;
+    if (!track || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(track);
+    return () => observer.disconnect();
+  }, [measure]);
+  const handleScroll = () => {
+    const track = trackRef.current;
+    if (!track || track.clientWidth <= 0) return;
+    const next = Math.round(track.scrollLeft / track.clientWidth);
+    setActivePage(Math.min(pageCount - 1, Math.max(0, next)));
+  };
+  const goTo = (next) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const clamped = Math.min(pageCount - 1, Math.max(0, next));
+    track.scrollTo({
+      left: clamped * track.clientWidth,
+      behavior: prefersReducedMotion() ? "auto" : "smooth"
+    });
+    setActivePage(clamped);
+  };
   if (!items.length) return null;
-  return /* @__PURE__ */ jsx("section", { id: "best-seller", className: "w-full scroll-mt-20 bg-white py-16 md:py-24 xl:py-28", children: /* @__PURE__ */ jsxs("div", { className: "mx-auto w-full max-w-[1280px] px-4 sm:px-8", children: [
-    /* @__PURE__ */ jsx("h2", { className: "text-center font-display font-extrabold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]", children: bestSeller.heading }),
-    bestSeller.description && /* @__PURE__ */ jsx("p", { className: "mx-auto mt-4 max-w-[1000px] font-body text-sm leading-relaxed text-kira-body md:mt-6 md:text-base", children: bestSeller.description }),
-    /* @__PURE__ */ jsx("div", { className: "-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 sm:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden", children: items.map((item) => /* @__PURE__ */ jsx("div", { className: "w-[80vw] max-w-[340px] shrink-0 snap-center", children: /* @__PURE__ */ jsx(Card, { item }) }, `${item.rank}-${item.image_url}`)) }),
-    /* @__PURE__ */ jsx("div", { className: "mt-10 hidden gap-5 sm:grid sm:grid-cols-3 lg:gap-8 xl:mt-16 xl:gap-10", children: items.map((item) => /* @__PURE__ */ jsx(Card, { item }, `${item.rank}-${item.image_url}`)) })
+  const hasSlider = pageCount > 1;
+  return /* @__PURE__ */ jsx("section", { id: "best-seller", className: "w-full scroll-mt-20 bg-white py-16 md:pt-24", children: /* @__PURE__ */ jsxs("div", { className: "mx-auto w-full max-w-[1280px] px-4 sm:px-8", children: [
+    /* @__PURE__ */ jsxs("div", { className: "relative flex flex-col items-center", children: [
+      /* @__PURE__ */ jsx("h2", { className: "text-center font-display font-semibold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]", children: bestSeller.heading }),
+      hasSlider && /* @__PURE__ */ jsxs("div", { className: "mt-5 hidden items-center gap-2 md:absolute md:right-0 md:top-1/2 md:mt-0 md:flex md:-translate-y-1/2", children: [
+        /* @__PURE__ */ jsx(
+          motion$1.button,
+          {
+            type: "button",
+            onClick: () => goTo(activePage - 1),
+            disabled: activePage === 0,
+            "aria-label": "Previous best sellers",
+            whileTap: reduceMotion ? void 0 : { scale: 0.94 },
+            className: "flex h-11 w-11 items-center justify-center rounded-full border border-kira-brand/25 text-kira-brand transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand",
+            children: /* @__PURE__ */ jsx("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx(
+              "path",
+              {
+                d: "M15 5l-7 7 7 7",
+                stroke: "currentColor",
+                strokeWidth: "1.7",
+                strokeLinecap: "round",
+                strokeLinejoin: "round"
+              }
+            ) })
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          motion$1.button,
+          {
+            type: "button",
+            onClick: () => goTo(activePage + 1),
+            disabled: activePage >= pageCount - 1,
+            "aria-label": "Next best sellers",
+            whileTap: reduceMotion ? void 0 : { scale: 0.94 },
+            className: "flex h-11 w-11 items-center justify-center rounded-full border border-kira-brand/25 text-kira-brand transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand",
+            children: /* @__PURE__ */ jsx("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx(
+              "path",
+              {
+                d: "M9 5l7 7-7 7",
+                stroke: "currentColor",
+                strokeWidth: "1.7",
+                strokeLinecap: "round",
+                strokeLinejoin: "round"
+              }
+            ) })
+          }
+        )
+      ] })
+    ] }),
+    bestSeller.description && /* @__PURE__ */ jsx("p", { className: "font-alexandria font-extralight mx-auto mt-4 max-w-[1000px] text-center text-sm leading-relaxed text-kira-body md:mt-6 md:text-base", children: bestSeller.description }),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        ref: trackRef,
+        onScroll: handleScroll,
+        onKeyDown: (event) => {
+          if (!hasSlider) return;
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            goTo(activePage + 1);
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            goTo(activePage - 1);
+          }
+        },
+        tabIndex: hasSlider ? 0 : -1,
+        role: "group",
+        "aria-roledescription": hasSlider ? "carousel" : void 0,
+        "aria-label": "Best sellers",
+        className: "mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden pt-2 pb-2 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6 lg:gap-8 xl:mt-16",
+        children: items.map((item, index) => /* @__PURE__ */ jsx(
+          motion$1.div,
+          {
+            "data-card": true,
+            initial: "hidden",
+            whileInView: "visible",
+            viewport: { once: true, amount: 0.15 },
+            variants: cardVariants(reduceMotion),
+            transition: { delay: reduceMotion ? 0 : index * 0.06 },
+            className: "w-[80vw] max-w-[340px] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] sm:max-w-none lg:w-[calc((100%-4rem)/3)]",
+            children: /* @__PURE__ */ jsx(Card, { item, reduceMotion })
+          },
+          `${item.rank}-${item.image_url}`
+        ))
+      }
+    ),
+    hasSlider && /* @__PURE__ */ jsx("div", { className: "mt-6 flex items-center justify-center gap-2", children: Array.from({ length: pageCount }).map((_, page) => /* @__PURE__ */ jsx(
+      "button",
+      {
+        type: "button",
+        onClick: () => goTo(page),
+        "aria-label": `Go to best sellers page ${page + 1}`,
+        "aria-current": page === activePage,
+        className: "relative flex h-2 items-center px-0.5",
+        children: /* @__PURE__ */ jsx(
+          motion$1.span,
+          {
+            layout: !reduceMotion,
+            transition: reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 32 },
+            className: `block h-2 rounded-full ${page === activePage ? "w-7 bg-kira-brand" : "w-2 bg-kira-brand/30"}`
+          }
+        )
+      },
+      `page-${page}`
+    )) })
   ] }) });
 };
 const CollectionsSection = ({
   sliderCards,
   collectionHandles
-}) => /* @__PURE__ */ jsxs("section", { className: "w-full overflow-hidden bg-white pb-24 pt-8 md:pb-36 md:pt-12", children: [
-  /* @__PURE__ */ jsxs("h2", { className: "text-center font-display font-extrabold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]", children: [
-    /* @__PURE__ */ jsx("span", { className: "block", children: "ALL" }),
-    /* @__PURE__ */ jsx("span", { className: "block", children: "COLLECTIONS" })
-  ] }),
-  /* @__PURE__ */ jsx(
+}) => {
+  const { t: t2 } = useI18n();
+  return /* @__PURE__ */ jsx("section", { className: "w-full overflow-hidden bg-white pb-24 pt-8 md:pt-12", children: /* @__PURE__ */ jsx(
     HalfFanSlider,
     {
       sliderCards,
       collectionHandles,
       showInfoPanel: false,
-      className: "mt-4"
+      heading: { idle: t2("products.all") }
     }
-  )
-] });
+  ) });
+};
 const FloatingActions = () => {
   var _a;
   const { cart: cart2, toggleCartDrawer } = useCart();
@@ -29513,107 +29819,322 @@ const FloatingActions = () => {
         type: "button",
         onClick: () => toggleCartDrawer(true),
         "aria-label": `Open cart (${itemCount} items)`,
-        className: "relative flex h-14 w-14 items-center justify-center rounded-full bg-kira-accent transition-transform duration-300 hover:scale-105 sm:h-16 sm:w-16",
+        className: "transition-all duration-300 transform hover:scale-110 flex items-center justify-center",
         children: [
-          /* @__PURE__ */ jsx("img", { src: "/assets/images/cart.svg", alt: "", className: "h-14 w-14 sm:h-16 sm:w-16" }),
+          /* @__PURE__ */ jsx("img", { src: "/assets/images/cart.svg", alt: "", className: "xl:w-32 xl:h-32 w-20 h-20" }),
           itemCount > 0 && /* @__PURE__ */ jsx("span", { className: "absolute -right-1 -top-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-kira-brand px-1.5 font-body text-xs font-bold text-white", children: itemCount > 99 ? "99+" : itemCount })
         ]
       }
     ) })
   ] });
 };
-const LiquidGlassLens = lazy(() => import("./assets/LiquidGlassLens-BA49zs63.js"));
-const CTA_CLASSES = {
-  primary: "bg-kira-brand text-white hover:bg-[#2A190E]",
-  outline: "border border-white/90 text-white hover:bg-white/10",
-  glass: "bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
-};
-const HeroBanner = ({ hero: hero2 }) => {
-  const sectionRef = useRef(null);
-  const [lensEnabled, setLensEnabled] = useState(false);
-  useEffect(() => {
-    if (!hero2.liquid_glass_enabled) return;
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!finePointer || reduceMotion) return;
-    setLensEnabled(true);
-  }, [hero2.liquid_glass_enabled]);
-  const scrollToBestSeller = () => {
-    const target = document.getElementById("best-seller");
-    if (!target) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+const SCROLL_DURATION_MS = 800;
+const FIRST_RUN_MS = 1400;
+const easeInOutCubic = (t2) => t2 < 0.5 ? 4 * t2 * t2 * t2 : 1 - (-2 * t2 + 2) ** 3 / 2;
+const scrollToTarget = (target) => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    target.scrollIntoView();
+    return;
+  }
+  const startY = window.scrollY;
+  const distance = target.getBoundingClientRect().top;
+  const startedAt = performance.now();
+  const step = (now) => {
+    const progress = Math.min(1, (now - startedAt) / SCROLL_DURATION_MS);
+    window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+    if (progress < 1) requestAnimationFrame(step);
   };
-  const isCentered = hero2.text_align === "center";
-  const ctaClassName = `pointer-events-auto inline-flex w-[280px] max-w-full items-center justify-center rounded-full px-8 py-4 font-display text-sm font-bold uppercase tracking-[0.18em] transition-colors duration-300 xl:w-[340px] ${CTA_CLASSES[hero2.cta_variant]}`;
-  const cta = hero2.cta_href.startsWith("/") ? /* @__PURE__ */ jsx(Link, { to: hero2.cta_href, className: ctaClassName, children: hero2.cta_label }) : /* @__PURE__ */ jsx("a", { href: hero2.cta_href, className: ctaClassName, children: hero2.cta_label });
-  return /* @__PURE__ */ jsxs(
-    "section",
+  requestAnimationFrame(step);
+};
+const HeroScrollCue = () => {
+  const reduceMotion = useReducedMotion$1() ?? false;
+  const [hidden, setHidden] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const firstRunRef = useRef(true);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      firstRunRef.current = false;
+    }, FIRST_RUN_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+  useEffect(() => {
+    const handleScroll = () => setHidden(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  const pauseLoop = hovered || hidden || reduceMotion;
+  return /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute bottom-11 left-1/2 z-30 -translate-x-1/2 md:bottom-[52px]", children: /* @__PURE__ */ jsx(
+    motion$1.button,
     {
-      ref: sectionRef,
-      "data-hero": true,
-      className: "relative isolate h-[100svh] max-h-[1100px] min-h-[560px] w-full overflow-hidden bg-[#DCE6EE] md:h-[80vh] md:min-h-[600px] lg:h-screen lg:min-h-[760px]",
+      type: "button",
+      "aria-label": "Scroll to best sellers",
+      initial: { opacity: 0, y: reduceMotion ? 0 : -20 },
+      animate: {
+        opacity: hidden ? 0 : 1,
+        y: hidden ? reduceMotion ? 0 : 15 : 0,
+        scale: hovered && !reduceMotion ? 1.15 : 1
+      },
+      transition: {
+        duration: hidden ? 0.3 : hovered ? 0.2 : 0.5,
+        ease: "easeOut",
+        delay: !hidden && firstRunRef.current ? 0.8 : 0
+      },
+      onMouseEnter: () => setHovered(true),
+      onMouseLeave: () => setHovered(false),
+      onFocus: () => setHovered(true),
+      onBlur: () => setHovered(false),
+      onClick: () => {
+        const target = document.getElementById("best-seller");
+        if (target) scrollToTarget(target);
+      },
+      className: "pointer-events-auto flex h-14 w-14 items-center justify-center text-white/70 transition-colors duration-200 hover:text-white focus-visible:text-white focus-visible:outline-none",
+      children: /* @__PURE__ */ jsx(
+        motion$1.span,
+        {
+          initial: false,
+          animate: pauseLoop ? { y: 0, opacity: 1 } : { y: [0, 10, 0], opacity: [0.9, 0.6, 0.9] },
+          transition: pauseLoop ? { duration: 0.2, ease: "easeOut" } : { duration: 1.6, ease: "easeInOut", repeat: Number.POSITIVE_INFINITY, repeatType: "loop" },
+          className: "flex items-center justify-center",
+          children: /* @__PURE__ */ jsx(
+            "svg",
+            {
+              width: "34",
+              height: "36",
+              viewBox: "0 0 45 48",
+              fill: "none",
+              xmlns: "http://www.w3.org/2000/svg",
+              "aria-hidden": "true",
+              children: /* @__PURE__ */ jsx(
+                "path",
+                {
+                  d: "M22.5 2V46M2 25.2222L22.5 46L43 25.2222",
+                  stroke: "currentColor",
+                  strokeWidth: "4",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round"
+                }
+              )
+            }
+          )
+        }
+      )
+    }
+  ) });
+};
+const EASE = [0.22, 1, 0.36, 1];
+const CTA_CLASSES = {
+  // Hover is deliberately perceptible: the brown lifts + lightens + drops a shadow.
+  primary: "bg-kira-brand text-white hover:bg-[#5C3720] hover:shadow-[0_16px_36px_-14px_rgba(0,0,0,0.6)] focus-visible:bg-[#5C3720]",
+  outline: "border border-white/90 text-white hover:border-white hover:bg-white hover:text-kira-brand hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.45)] focus-visible:bg-white focus-visible:text-kira-brand",
+  glass: "border border-white/25 bg-white/20 text-white backdrop-blur-md hover:border-white/60 hover:bg-white/35 hover:shadow-[0_16px_36px_-16px_rgba(0,0,0,0.4)]"
+};
+const contentVariants = (reduceMotion) => ({
+  hidden: { opacity: 0, y: reduceMotion ? 0 : 26 },
+  center: {
+    opacity: 1,
+    y: 0,
+    transition: reduceMotion ? { duration: 0 } : { duration: 0.65, ease: EASE, staggerChildren: 0.08, delayChildren: 0.08 }
+  }
+});
+const itemVariants = (reduceMotion) => ({
+  hidden: { opacity: 0, y: reduceMotion ? 0 : 16 },
+  center: {
+    opacity: 1,
+    y: 0,
+    transition: reduceMotion ? { duration: 0 } : { duration: 0.55, ease: EASE }
+  }
+});
+const HeroSlide = ({
+  slide,
+  index,
+  total,
+  isActive,
+  priority
+}) => {
+  const reduceMotion = useReducedMotion$1() ?? false;
+  const isCentered = slide.text_align === "center";
+  const Heading = isActive ? "h1" : "p";
+  const ctaClassName = `pointer-events-auto inline-flex w-[280px] max-w-full items-center justify-center rounded-full border border-transparent px-8 py-4 font-display text-sm font-bold uppercase tracking-[0.18em] transition-[background-color,color,border-color,box-shadow,transform] duration-300 ease-out motion-safe:hover:-translate-y-[2px] motion-safe:active:translate-y-0 active:scale-[0.99] focus-visible:outline-none xl:w-[340px] ${CTA_CLASSES[slide.cta_variant]}`;
+  const cta = slide.cta_href.startsWith("/") ? /* @__PURE__ */ jsx(Link$1, { to: slide.cta_href, tabIndex: isActive ? 0 : -1, className: ctaClassName, children: slide.cta_label }) : /* @__PURE__ */ jsx("a", { href: slide.cta_href, tabIndex: isActive ? 0 : -1, className: ctaClassName, children: slide.cta_label });
+  return /* @__PURE__ */ jsxs(
+    motion$1.div,
+    {
+      role: "group",
+      "aria-roledescription": "slide",
+      "aria-label": `${index + 1} / ${total}`,
+      "aria-hidden": !isActive,
+      initial: false,
+      animate: { opacity: isActive ? 1 : 0 },
+      transition: { duration: reduceMotion ? 0 : 0.7, ease: "easeInOut" },
+      style: { zIndex: isActive ? 1 : 0 },
+      className: `absolute inset-0 ${isActive ? "" : "pointer-events-none"}`,
       children: [
         /* @__PURE__ */ jsxs("picture", { children: [
-          hero2.image_mobile_url && /* @__PURE__ */ jsx("source", { media: "(max-width: 767px)", srcSet: hero2.image_mobile_url }),
+          slide.image_mobile_url && /* @__PURE__ */ jsx("source", { media: "(max-width: 767px)", srcSet: slide.image_mobile_url }),
           /* @__PURE__ */ jsx(
-            "img",
+            motion$1.img,
             {
-              src: hero2.image_desktop_url,
+              src: slide.image_desktop_url,
               alt: "",
-              fetchPriority: "high",
-              loading: "eager",
+              fetchPriority: priority ? "high" : "auto",
+              loading: priority ? "eager" : "lazy",
               decoding: "async",
-              className: "absolute inset-0 z-0 h-full w-full object-cover object-center"
+              className: "absolute inset-0 z-0 h-full w-full object-cover object-center",
+              initial: false,
+              animate: { scale: isActive && !reduceMotion ? 1.06 : 1 },
+              transition: { duration: isActive && !reduceMotion ? 11 : 1.2, ease: "linear" }
             }
           )
         ] }),
         /* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-black/30 via-black/5 to-transparent" }),
         /* @__PURE__ */ jsxs(
-          "div",
+          motion$1.div,
           {
-            className: `absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-[5] flex w-full flex-col gap-3 px-6 sm:px-8 ${isCentered ? "items-center text-center md:left-1/2 md:w-auto md:-translate-x-1/2 xl:bottom-32" : "items-center text-center md:left-[5%] md:items-start md:text-left md:px-0 xl:bottom-32 xl:left-[80px]"}`,
-            style: { color: hero2.text_color },
+            initial: false,
+            animate: isActive ? "center" : "hidden",
+            variants: contentVariants(reduceMotion),
+            className: `absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-[5] flex flex-col gap-3 px-6 sm:px-8 ${isCentered ? "items-center text-center md:left-1/2 md:w-auto md:-translate-x-1/2 xl:bottom-32" : "items-center text-center md:left-[5%] md:items-start md:text-left md:px-0 xl:bottom-32 xl:left-[80px]"}`,
+            style: { color: slide.text_color },
             children: [
-              /* @__PURE__ */ jsxs("div", { className: "flex items-end gap-3 md:gap-4", children: [
-                /* @__PURE__ */ jsx("h1", { className: "font-display font-extrabold uppercase leading-[0.95] tracking-[-0.01em] [font-size:clamp(2.75rem,8.3vw,7.5rem)]", children: hero2.title }),
-                /* @__PURE__ */ jsx(
-                  "button",
-                  {
-                    type: "button",
-                    onClick: scrollToBestSeller,
-                    "aria-label": "Scroll to best sellers",
-                    className: "pointer-events-auto mb-2 hidden rounded-full border border-white/50 p-2 text-white/90 transition-colors hover:bg-white/15 md:inline-flex lg:mb-4",
-                    children: /* @__PURE__ */ jsx("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx(
-                      "path",
-                      {
-                        d: "M12 4v15m0 0 6-6m-6 6-6-6",
-                        stroke: "currentColor",
-                        strokeWidth: "1.6",
-                        strokeLinecap: "round",
-                        strokeLinejoin: "round"
-                      }
-                    ) })
-                  }
-                )
-              ] }),
-              /* @__PURE__ */ jsx("p", { className: "font-display font-light text-white/95 [font-size:clamp(1.05rem,2.1vw,1.875rem)]", children: hero2.subtitle }),
-              /* @__PURE__ */ jsx("div", { className: "mt-3 md:hidden", children: cta })
+              /* @__PURE__ */ jsx(motion$1.div, { variants: itemVariants(reduceMotion), children: /* @__PURE__ */ jsx(Heading, { className: "m-0 font-display font-extrabold leading-[0.95] tracking-[-0.01em] [font-size:clamp(2.75rem,8.3vw,7.5rem)]", children: slide.title }) }),
+              /* @__PURE__ */ jsx(
+                motion$1.p,
+                {
+                  variants: itemVariants(reduceMotion),
+                  className: "font-display font-light text-white/95 [font-size:clamp(1.05rem,2.1vw,1.875rem)] w-full text-end",
+                  children: slide.subtitle
+                }
+              ),
+              /* @__PURE__ */ jsx(motion$1.div, { variants: itemVariants(reduceMotion), className: "mt-3 md:hidden", children: cta })
             ]
           }
         ),
-        /* @__PURE__ */ jsx("div", { className: "absolute left-[5%] top-[46%] z-20 hidden -translate-y-1/2 md:block xl:left-[90px]", children: cta }),
-        lensEnabled && /* @__PURE__ */ jsx(Suspense, { fallback: null, children: /* @__PURE__ */ jsx(
-          LiquidGlassLens,
+        /* @__PURE__ */ jsx(
+          motion$1.div,
           {
-            imageSrc: hero2.image_desktop_url,
-            title: hero2.title,
-            subtitle: hero2.subtitle,
-            textColor: hero2.text_color,
-            textAlign: hero2.text_align,
-            config: hero2.liquid_glass_config
+            variants: itemVariants(reduceMotion),
+            initial: false,
+            animate: isActive ? "center" : "hidden",
+            className: "absolute left-[5%] top-[46%] z-20 hidden -translate-y-1/2 md:block xl:left-[90px]",
+            children: cta
           }
-        ) })
+        )
+      ]
+    }
+  );
+};
+const AUTOPLAY_MS = 6500;
+const HeroSlider = ({ slides }) => {
+  const total = slides.length;
+  const [index, setIndex] = useState(0);
+  const [pageHidden, setPageHidden] = useState(false);
+  const touchStartX = useRef(null);
+  const go = useCallback(
+    (next) => {
+      if (total === 0) return;
+      setIndex((next % total + total) % total);
+    },
+    [total]
+  );
+  useEffect(() => {
+    if (total < 2 || pageHidden) return;
+    const timer = window.setInterval(() => setIndex((current) => (current + 1) % total), AUTOPLAY_MS);
+    return () => window.clearInterval(timer);
+  }, [total, pageHidden, index]);
+  useEffect(() => {
+    const onVisibilityChange = () => setPageHidden(document.hidden);
+    onVisibilityChange();
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+  }, []);
+  if (!total) return null;
+  return /* @__PURE__ */ jsxs(
+    "section",
+    {
+      "aria-roledescription": "carousel",
+      "aria-label": "KIRA hero",
+      "data-hero": true,
+      className: "relative isolate h-[100svh] max-h-[1100px] min-h-[560px] w-full overflow-hidden bg-[#DCE6EE] md:h-[80vh] md:min-h-[600px] lg:h-screen lg:min-h-[760px]",
+      onKeyDown: (event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          go(index + 1);
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          go(index - 1);
+        }
+      },
+      onTouchStart: (event) => {
+        var _a;
+        touchStartX.current = ((_a = event.touches[0]) == null ? void 0 : _a.clientX) ?? null;
+      },
+      onTouchEnd: (event) => {
+        var _a;
+        const start = touchStartX.current;
+        const end = ((_a = event.changedTouches[0]) == null ? void 0 : _a.clientX) ?? null;
+        touchStartX.current = null;
+        if (start == null || end == null) return;
+        const delta = start - end;
+        if (Math.abs(delta) < 45) return;
+        go(delta > 0 ? index + 1 : index - 1);
+      },
+      children: [
+        slides.map((slide, slideIndex) => /* @__PURE__ */ jsx(
+          HeroSlide,
+          {
+            slide,
+            index: slideIndex,
+            total,
+            isActive: slideIndex === index,
+            priority: slideIndex === 0
+          },
+          `${slide.id ?? slide.title}-${slideIndex}`
+        )),
+        /* @__PURE__ */ jsx(HeroScrollCue, {}),
+        total > 1 && /* Arrows: mid-right so they never collide with the CTA or the corners.
+        No pagination dots on the hero (client preference). */
+        /* @__PURE__ */ jsxs("div", { className: "absolute right-4 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-2 md:flex lg:right-6", children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => go(index - 1),
+              "aria-label": "Previous slide",
+              className: "flex h-11 w-11 items-center justify-center rounded-full border border-white/50 bg-black/10 text-white backdrop-blur-sm transition-colors hover:bg-black/25",
+              children: /* @__PURE__ */ jsx("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx(
+                "path",
+                {
+                  d: "M15 5l-7 7 7 7",
+                  stroke: "currentColor",
+                  strokeWidth: "1.7",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round"
+                }
+              ) })
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => go(index + 1),
+              "aria-label": "Next slide",
+              className: "flex h-11 w-11 items-center justify-center rounded-full border border-white/50 bg-black/10 text-white backdrop-blur-sm transition-colors hover:bg-black/25",
+              children: /* @__PURE__ */ jsx("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", children: /* @__PURE__ */ jsx(
+                "path",
+                {
+                  d: "M9 5l7 7-7 7",
+                  stroke: "currentColor",
+                  strokeWidth: "1.7",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round"
+                }
+              ) })
+            }
+          )
+        ] })
       ]
     }
   );
@@ -29721,7 +30242,7 @@ const SiteHeader = () => {
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx("header", { className: "pointer-events-none absolute inset-x-0 top-0 z-40", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between px-4 py-4 sm:px-6 md:px-8 lg:px-12 lg:py-8", children: [
       /* @__PURE__ */ jsx(
-        Link,
+        Link$1,
         {
           viewTransition: true,
           to: "/",
@@ -29738,7 +30259,9 @@ const SiteHeader = () => {
             isOpen,
             onClick: () => setIsOpen((open) => !open),
             variant: "brand",
-            className: controlSize
+            className: controlSize,
+            "aria-expanded": isOpen,
+            "aria-controls": "main-menu"
           }
         ),
         /* @__PURE__ */ jsx(LanguageSwitcher, { variant: "brand", className: controlSize })
@@ -29748,25 +30271,37 @@ const SiteHeader = () => {
     isMobile && /* @__PURE__ */ jsx(HeaderSideNav, { open: isOpen, setOpen: setIsOpen })
   ] });
 };
-const HOMEPAGE_DEFAULTS = {
-  hero: {
-    title: "RiCE MILK",
-    subtitle: "eau de parfums | 50ML",
-    image_desktop_url: "/assets/images/home/hero-rice-milk.webp",
-    image_mobile_url: "/assets/images/home/hero-rice-milk.webp",
-    cta_label: "SHOP NOW",
-    cta_href: "/products",
-    cta_variant: "primary",
-    text_color: "#FFFFFF",
-    text_align: "left",
-    liquid_glass_enabled: true,
-    liquid_glass_config: {
-      lensRadius: 150,
-      magnification: 1.25,
-      refraction: 1,
-      frost: 0.35
-    }
+const DEFAULT_HERO = {
+  id: "default-rice-milk",
+  title: "RiCE MILK",
+  subtitle: "eau de parfums | 50ML",
+  image_desktop_url: "/assets/images/home/hero-rice-milk.webp",
+  image_mobile_url: "/assets/images/home/hero-rice-milk.webp",
+  cta_label: "SHOP NOW",
+  cta_href: "/products",
+  cta_variant: "primary",
+  text_color: "#FFFFFF",
+  text_align: "left"
+};
+const DEFAULT_SLIDES = [
+  DEFAULT_HERO,
+  {
+    ...DEFAULT_HERO,
+    id: "default-coffeeling",
+    title: "COFFEELING",
+    image_desktop_url: "/assets/images/menu/product.webp",
+    image_mobile_url: "/assets/images/menu/product.webp"
   },
+  {
+    ...DEFAULT_HERO,
+    id: "default-matcha",
+    title: "MATCHA LATTE",
+    image_desktop_url: "/assets/images/menu/contact.webp",
+    image_mobile_url: "/assets/images/menu/contact.webp"
+  }
+];
+const HOMEPAGE_DEFAULTS = {
+  heroes: DEFAULT_SLIDES,
   best_seller: {
     heading: "BEST SELLER",
     description: "Our most loved scents — hand-poured in small batches and loved the most by you.",
@@ -29788,16 +30323,34 @@ const HOMEPAGE_DEFAULTS = {
         link: "/products",
         alt: "Matcha Latte",
         rank: 2
+      },
+      {
+        image_url: "/assets/images/home/thirsty1.webp",
+        link: "/products",
+        alt: "Thirsty",
+        rank: 3
+      },
+      {
+        image_url: "/assets/images/home/icy1.webp",
+        link: "/products",
+        alt: "Icy",
+        rank: 4
+      },
+      {
+        image_url: "/assets/images/home/savouring-collection.webp",
+        link: "/products",
+        alt: "Savouring",
+        rank: 5
       }
     ]
   }
 };
 const VI_DEFAULTS = {
   ...HOMEPAGE_DEFAULTS,
-  hero: {
-    ...HOMEPAGE_DEFAULTS.hero,
-    cta_label: "MUA NGAY"
-  },
+  heroes: HOMEPAGE_DEFAULTS.heroes.map((slide) => ({
+    ...slide,
+    cta_label: slide.cta_label === "SHOP NOW" ? "MUA NGAY" : slide.cta_label
+  })),
   best_seller: {
     ...HOMEPAGE_DEFAULTS.best_seller,
     heading: "BÁN CHẠY NHẤT",
@@ -29805,10 +30358,12 @@ const VI_DEFAULTS = {
   }
 };
 const MAX_BEST_SELLER_ITEMS = 6;
+const MAX_HERO_SLIDES = 8;
 const withDefaults = (data2, lang) => {
   const fallback = lang === "vi" ? VI_DEFAULTS : HOMEPAGE_DEFAULTS;
   if (!data2) return fallback;
-  const hero2 = { ...fallback.hero, ...data2.hero || {} };
+  const fallbackSlide = fallback.heroes[0];
+  const heroes = (data2.heroes || []).filter((slide) => !!(slide == null ? void 0 : slide.image_desktop_url)).map((slide) => ({ ...fallbackSlide, ...slide })).slice(0, MAX_HERO_SLIDES);
   const bestSeller = { ...fallback.best_seller, ...data2.best_seller || {} };
   const items = (bestSeller.items || []).filter((item) => !!(item == null ? void 0 : item.image_url)).map((item, index) => ({
     ...item,
@@ -29817,13 +30372,7 @@ const withDefaults = (data2, lang) => {
     rank: typeof item.rank === "number" ? item.rank : index
   })).sort((a, b) => a.rank - b.rank).slice(0, MAX_BEST_SELLER_ITEMS);
   return {
-    hero: {
-      ...hero2,
-      liquid_glass_config: {
-        ...fallback.hero.liquid_glass_config,
-        ...hero2.liquid_glass_config || {}
-      }
-    },
+    heroes: heroes.length ? heroes : fallback.heroes,
     best_seller: {
       ...bestSeller,
       items: items.length ? items : fallback.best_seller.items
@@ -29845,7 +30394,8 @@ const requestHomepage = async (lang) => {
       return null;
     }
     const data2 = await response.json();
-    return withDefaults({ hero: data2.hero, best_seller: data2.best_seller }, lang);
+    const heroes = Array.isArray(data2.hero_slides) && data2.hero_slides.length ? data2.hero_slides : [data2.hero].filter(Boolean);
+    return withDefaults({ heroes, best_seller: data2.best_seller }, lang);
   } catch (error) {
     console.error("[homepage] could not reach the backend", error);
     return null;
@@ -29903,8 +30453,8 @@ const _index = UNSAFE_withComponentProps(function IndexRoute2() {
   } = useLoaderData();
   return /* @__PURE__ */ jsxs("div", {
     className: "relative w-full bg-white",
-    children: [/* @__PURE__ */ jsx(SiteHeader, {}), /* @__PURE__ */ jsx(HeroBanner, {
-      hero: homepage.hero
+    children: [/* @__PURE__ */ jsx(SiteHeader, {}), /* @__PURE__ */ jsx(HeroSlider, {
+      slides: homepage.heroes
     }), /* @__PURE__ */ jsx(BestSellerSection, {
       bestSeller: homepage.best_seller
     }), /* @__PURE__ */ jsx(CollectionsSection, {
@@ -30020,7 +30570,7 @@ const route47 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
   __proto__: null,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-CYMEGAp9.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/index-5vy5BfuQ.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": true, "module": "/assets/root-BcC9VrTV.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/index-5vy5BfuQ.js", "/assets/meta-yIjDt4bR.js", "/assets/Button-md8eSjyC.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/IconButton-BpEVL69g.js", "/assets/animation-CH0SckDJ.js", "/assets/useRegion-Cua-vN6-.js", "/assets/i18next-CJ4Ucvm-.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-DAEJoX98.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-Rv1uPsZm.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Main-DFUS5pW0.js", "/assets/Container-C6S-kEAk.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/react-w1GVGRj8.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/coerce-Ddpdzead.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/debounce-0v4EEXUb.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js"], "css": ["/assets/root-okTGfPG5.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-C7WxuiPD.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductListWithPagination-Oqe8FNnq.js", "/assets/HalfFanSlider-gOKWmr7r.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/createLucideIcon-DdgD3F2S.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-9imawbx4.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductListWithPagination-Oqe8FNnq.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-DzPGvRtd.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Button-md8eSjyC.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/Container-C6S-kEAk.js", "/assets/Image-DAEJoX98.js", "/assets/clsx-B-dksMZM.js", "/assets/FormError-CtRGlTe9.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/LightboxGallery-BuFb8zSh.js", "/assets/IconButton-BpEVL69g.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/index-5vy5BfuQ.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._productHandle-CD_bY8go.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/Button-md8eSjyC.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/coerce-Ddpdzead.js", "/assets/Image-DAEJoX98.js", "/assets/LightboxGallery-BuFb8zSh.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/tabs-BobOigMd.js", "/assets/ChevronLeftIcon-yll_4VUp.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js", "/assets/index-5vy5BfuQ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/index-ZCF7Bauf.js", "/assets/ProductPriceRange-Rv1uPsZm.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/animation-CH0SckDJ.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/zod-oV8McEF0.js", "/assets/useI18n-BNlFjs3b.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/IconButton-BpEVL69g.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/meta-yIjDt4bR.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._index-gkTCVGgM.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/useI18n-BNlFjs3b.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-XIbnmd9w.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout.success-D5wBkQav.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout._index-BXaMzZV_.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/FormError-CtRGlTe9.js", "/assets/useI18n-BNlFjs3b.js", "/assets/useRegion-Cua-vN6-.js", "/assets/Button-md8eSjyC.js", "/assets/clsx-B-dksMZM.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/i18next-CJ4Ucvm-.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/index-5vy5BfuQ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/tabs-BobOigMd.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/coerce-Ddpdzead.js", "/assets/debounce-0v4EEXUb.js", "/assets/use-is-mounted-B1cmrlfR.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._index-qYGj-Vwf.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/HalfFanSlider-gOKWmr7r.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/createLucideIcon-DdgD3F2S.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.locations": { "id": "routes/api.locations", "parentId": "root", "path": "api/locations", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.locations-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._index-CxXjm51Z.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.contact": { "id": "routes/api.contact", "parentId": "root", "path": "api/contact", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.contact-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/carts-empty-BlembubZ.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pages.$slug": { "id": "routes/pages.$slug", "parentId": "root", "path": "pages/:slug", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/pages._slug-Dau-hT-C.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.popups": { "id": "routes/api.popups", "parentId": "root", "path": "api/popups", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.popups-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/about-us-Bpt5TtfN.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/Button-md8eSjyC.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/clsx-B-dksMZM.js", "/assets/page-HCnQykoH.js", "/assets/meta-yIjDt4bR.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/contact-x4GlDXS2.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/zod-oV8McEF0.js", "/assets/Container-C6S-kEAk.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductList-B04dAA-f.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/stories-Bf1q1JgS.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/clsx-B-dksMZM.js", "/assets/react-w1GVGRj8.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ChevronLeftIcon-yll_4VUp.js", "/assets/proxy-DjVw9hWE.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/_index-tYFwyRTJ.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/HalfFanSlider-gOKWmr7r.js", "/assets/Main-DFUS5pW0.js", "/assets/animation-CH0SckDJ.js", "/assets/useI18n-BNlFjs3b.js", "/assets/clsx-B-dksMZM.js", "/assets/useRegion-Cua-vN6-.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/page-HCnQykoH.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js", "/assets/index-5vy5BfuQ.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/meta-yIjDt4bR.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/store": { "id": "routes/store", "parentId": "root", "path": "store", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/store-gxCRhxJ_.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/page-HCnQykoH.js", "/assets/clsx-B-dksMZM.js", "/assets/meta-yIjDt4bR.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-6d7e1252.js", "version": "6d7e1252", "sri": void 0 };
+const serverManifest = { "entry": { "module": "/assets/entry.client-CYMEGAp9.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/index-5vy5BfuQ.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": true, "module": "/assets/root-BNWh5P73.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/index-5vy5BfuQ.js", "/assets/meta-Cq-EG4Te.js", "/assets/Button-md8eSjyC.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/IconButton-BpEVL69g.js", "/assets/animation-CH0SckDJ.js", "/assets/useRegion-Cua-vN6-.js", "/assets/i18next-CJ4Ucvm-.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/clsx-B-dksMZM.js", "/assets/Image-DAEJoX98.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/ProductPriceRange-BsM2g1r5.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/useI18n-BNlFjs3b.js", "/assets/HeaderSideNav-BFhsv1jE.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/Container-C6S-kEAk.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/react-w1GVGRj8.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/coerce-Ddpdzead.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/debounce-0v4EEXUb.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js"], "css": ["/assets/root-QlRiRJGp.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[.well-known].apple-developer-merchantid-domain-association": { "id": "routes/[.well-known].apple-developer-merchantid-domain-association", "parentId": "root", "path": ".well-known/apple-developer-merchantid-domain-association", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_.well-known_.apple-developer-merchantid-domain-association-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.remove-discount-code": { "id": "routes/api.checkout.remove-discount-code", "parentId": "root", "path": "api/checkout/remove-discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.remove-discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.shipping-methods": { "id": "routes/api.checkout.shipping-methods", "parentId": "root", "path": "api/checkout/shipping-methods", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.shipping-methods-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections.$collectionHandle": { "id": "routes/collections.$collectionHandle", "parentId": "root", "path": "collections/:collectionHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._collectionHandle-Dl-_WXMS.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductListWithPagination-Oqe8FNnq.js", "/assets/HalfFanSlider-Cu10m-t3.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/createLucideIcon-DdgD3F2S.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.account-details": { "id": "routes/api.checkout.account-details", "parentId": "root", "path": "api/checkout/account-details", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.account-details-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.billing-address": { "id": "routes/api.checkout.billing-address", "parentId": "root", "path": "api/checkout/billing-address", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.billing-address-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.payment-session": { "id": "routes/api.checkout.payment-session", "parentId": "root", "path": "api/checkout/payment-session", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.payment-session-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.newsletter-subscriptions": { "id": "routes/api.newsletter-subscriptions", "parentId": "root", "path": "api/newsletter-subscriptions", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.newsletter-subscriptions-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.create": { "id": "routes/api.cart.line-items.create", "parentId": "root", "path": "api/cart/line-items/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.delete": { "id": "routes/api.cart.line-items.delete", "parentId": "root", "path": "api/cart/line-items/delete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.delete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.cart.line-items.update": { "id": "routes/api.cart.line-items.update", "parentId": "root", "path": "api/cart/line-items/update", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.cart.line-items.update-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.discount-code": { "id": "routes/api.checkout.discount-code", "parentId": "root", "path": "api/checkout/discount-code", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.discount-code-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.product-reviews.create": { "id": "routes/api.product-reviews.create", "parentId": "root", "path": "api/product-reviews/create", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.product-reviews.create-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/categories.$categoryHandle": { "id": "routes/categories.$categoryHandle", "parentId": "root", "path": "categories/:categoryHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/categories._categoryHandle-9imawbx4.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductListWithPagination-Oqe8FNnq.js", "/assets/clsx-B-dksMZM.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-collections.xml]": { "id": "routes/[sitemap-collections.xml]", "parentId": "root", "path": "sitemap-collections.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-collections.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.contact-info": { "id": "routes/api.checkout.contact-info", "parentId": "root", "path": "api/checkout/contact-info", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.contact-info-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/orders_.$orderId.reviews": { "id": "routes/orders_.$orderId.reviews", "parentId": "root", "path": "orders/:orderId/reviews", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/orders_._orderId.reviews-DzPGvRtd.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Button-md8eSjyC.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/Container-C6S-kEAk.js", "/assets/Image-DAEJoX98.js", "/assets/clsx-B-dksMZM.js", "/assets/FormError-CtRGlTe9.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/LightboxGallery-BuFb8zSh.js", "/assets/IconButton-BpEVL69g.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/index-5vy5BfuQ.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products.$productHandle": { "id": "routes/products.$productHandle", "parentId": "root", "path": "products/:productHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._productHandle-BZ8r4t5F.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/Button-md8eSjyC.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/coerce-Ddpdzead.js", "/assets/Image-DAEJoX98.js", "/assets/LightboxGallery-BuFb8zSh.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/tabs-BobOigMd.js", "/assets/ChevronLeftIcon-yll_4VUp.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js", "/assets/index-5vy5BfuQ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/index-ZCF7Bauf.js", "/assets/ProductPriceRange-BsM2g1r5.js", "/assets/pagination-with-context-EpsxavKy.js", "/assets/animation-CH0SckDJ.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/zod-oV8McEF0.js", "/assets/useI18n-BNlFjs3b.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/IconButton-BpEVL69g.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/meta-Cq-EG4Te.js"], "css": ["/assets/LightboxGallery-CmTMRrEE.css"], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-products.xml]": { "id": "routes/[sitemap-products.xml]", "parentId": "root", "path": "sitemap-products.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-products.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.complete": { "id": "routes/api.checkout.complete", "parentId": "root", "path": "api/checkout/complete", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.complete-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.checkout.express": { "id": "routes/api.checkout.express", "parentId": "root", "path": "api/checkout/express", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.checkout.express-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap-pages.xml]": { "id": "routes/[sitemap-pages.xml]", "parentId": "root", "path": "sitemap-pages.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap-pages.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.products.search": { "id": "routes/api.products.search", "parentId": "root", "path": "api/products/search", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.products.search-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/collections._index": { "id": "routes/collections._index", "parentId": "root", "path": "collections", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/collections._index-gkTCVGgM.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/useI18n-BNlFjs3b.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.bank-accounts": { "id": "routes/api.bank-accounts", "parentId": "root", "path": "api/bank-accounts", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.bank-accounts-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs.$slugHandle": { "id": "routes/blogs.$slugHandle", "parentId": "root", "path": "blogs/:slugHandle", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._slugHandle-XIbnmd9w.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout.success": { "id": "routes/checkout.success", "parentId": "root", "path": "checkout/success", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout.success-D5wBkQav.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.health.live": { "id": "routes/api.health.live", "parentId": "root", "path": "api/health/live", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.health.live-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/checkout._index": { "id": "routes/checkout._index", "parentId": "root", "path": "checkout", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/checkout._index-BXaMzZV_.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/FormError-CtRGlTe9.js", "/assets/useI18n-BNlFjs3b.js", "/assets/useRegion-Cua-vN6-.js", "/assets/Button-md8eSjyC.js", "/assets/clsx-B-dksMZM.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/i18next-CJ4Ucvm-.js", "/assets/zod-oV8McEF0.js", "/assets/index-ZCF7Bauf.js", "/assets/SubmitButton-Dxl5E_Z3.js", "/assets/index-5vy5BfuQ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/ButtonLink-DzbTtgOP.js", "/assets/tabs-BobOigMd.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/coerce-Ddpdzead.js", "/assets/debounce-0v4EEXUb.js", "/assets/use-is-mounted-B1cmrlfR.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/products._index": { "id": "routes/products._index", "parentId": "root", "path": "products", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/products._index-CA-ymgkn.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/ProductGrid-FQ0NgFfc.js", "/assets/HalfFanSlider-Cu10m-t3.js", "/assets/clsx-B-dksMZM.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/index-CEjvB7DU.js", "/assets/proxy-DjVw9hWE.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/createLucideIcon-DdgD3F2S.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[favicon.ico]": { "id": "routes/[favicon.ico]", "parentId": "root", "path": "favicon.ico", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_favicon.ico_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[sitemap.xml]": { "id": "routes/[sitemap.xml]", "parentId": "root", "path": "sitemap.xml", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_sitemap.xml_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.locations": { "id": "routes/api.locations", "parentId": "root", "path": "api/locations", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.locations-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.page-data": { "id": "routes/api.page-data", "parentId": "root", "path": "api/page-data", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.page-data-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/[robots.txt]": { "id": "routes/[robots.txt]", "parentId": "root", "path": "robots.txt", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_robots.txt_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/blogs._index": { "id": "routes/blogs._index", "parentId": "root", "path": "blogs", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/blogs._index-CxXjm51Z.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.contact": { "id": "routes/api.contact", "parentId": "root", "path": "api/contact", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.contact-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/carts-empty": { "id": "routes/carts-empty", "parentId": "root", "path": "carts-empty", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/carts-empty-BlembubZ.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/ProductList-B04dAA-f.js", "/assets/useI18n-BNlFjs3b.js", "/assets/Container-C6S-kEAk.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/clsx-B-dksMZM.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/pages.$slug": { "id": "routes/pages.$slug", "parentId": "root", "path": "pages/:slug", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/pages._slug-Dau-hT-C.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/clsx-B-dksMZM.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.popups": { "id": "routes/api.popups", "parentId": "root", "path": "api/popups", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.popups-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/api.region": { "id": "routes/api.region", "parentId": "root", "path": "api/region", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/api.region-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/about-us": { "id": "routes/about-us", "parentId": "root", "path": "about-us", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/about-us-I9-iNrhz.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/Button-md8eSjyC.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/clsx-B-dksMZM.js", "/assets/page-DK2knA59.js", "/assets/meta-Cq-EG4Te.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/contact": { "id": "routes/contact", "parentId": "root", "path": "contact", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/contact-x4GlDXS2.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/zod-oV8McEF0.js", "/assets/Container-C6S-kEAk.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ProductList-B04dAA-f.js", "/assets/clsx-B-dksMZM.js", "/assets/useScrollArrows-wx2D87xo.js", "/assets/ArrowRightIcon-CTjVDjWN.js", "/assets/IconButton-BpEVL69g.js", "/assets/Button-md8eSjyC.js", "/assets/debounce-0v4EEXUb.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/ProductListItem-Dk2hf-sO.js", "/assets/useRegion-Cua-vN6-.js", "/assets/ProductThumbnail-Ct0AcYfx.js", "/assets/animation-CH0SckDJ.js", "/assets/PlusIcon-DYEEF_m2.js", "/assets/Image-DAEJoX98.js", "/assets/tabs-BobOigMd.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/buildSearchParamsFromObject-CBTBPTA3.js", "/assets/useIsMobile-BtMYItEY.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/stories": { "id": "routes/stories", "parentId": "root", "path": "stories", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/stories-Bf1q1JgS.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/clsx-B-dksMZM.js", "/assets/react-w1GVGRj8.js", "/assets/useI18n-BNlFjs3b.js", "/assets/ChevronLeftIcon-yll_4VUp.js", "/assets/proxy-DjVw9hWE.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/_index-CDdczRB_.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/react-w1GVGRj8.js", "/assets/HalfFanSlider-Cu10m-t3.js", "/assets/useI18n-BNlFjs3b.js", "/assets/HeaderSideNav-BFhsv1jE.js", "/assets/animation-CH0SckDJ.js", "/assets/clsx-B-dksMZM.js", "/assets/useRegion-Cua-vN6-.js", "/assets/objectToFormData-CYbLOiad.js", "/assets/useIsMobile-BtMYItEY.js", "/assets/page-DK2knA59.js", "/assets/proxy-DjVw9hWE.js", "/assets/index-CEjvB7DU.js", "/assets/createLucideIcon-DdgD3F2S.js", "/assets/index-5vy5BfuQ.js", "/assets/URLAwareNavLink-BKp1lAao.js", "/assets/use-is-mounted-B1cmrlfR.js", "/assets/description-jAfERPqG.js", "/assets/isObjectLike-UdRi5cz5.js", "/assets/meta-Cq-EG4Te.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/store": { "id": "routes/store", "parentId": "root", "path": "store", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": true, "hasErrorBoundary": false, "module": "/assets/store-CCWat53u.js", "imports": ["/assets/chunk-62JRHF6Z-VVcf33bZ.js", "/assets/Container-C6S-kEAk.js", "/assets/page-DK2knA59.js", "/assets/clsx-B-dksMZM.js", "/assets/meta-Cq-EG4Te.js"], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasClientMiddleware": false, "hasDefaultExport": false, "hasErrorBoundary": false, "module": "/assets/_-l0sNRNKZ.js", "imports": [], "css": [], "clientActionModule": void 0, "clientLoaderModule": void 0, "clientMiddlewareModule": void 0, "hydrateFallbackModule": void 0 } }, "url": "/assets/manifest-e545a0aa.js", "version": "e545a0aa", "sri": void 0 };
 const assetsBuildDirectory = "build/client";
 const basename = "/";
 const future = { "unstable_optimizeDeps": false, "v8_passThroughRequests": false, "v8_trailingSlashAwareDataRequests": false, "unstable_previewServerPrerendering": false, "v8_middleware": false, "v8_splitRouteModules": false, "v8_viteEnvironmentApi": false };

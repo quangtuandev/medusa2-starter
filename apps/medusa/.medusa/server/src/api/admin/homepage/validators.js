@@ -1,0 +1,58 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bestSellerSchema = exports.bestSellerItemSchema = exports.heroBannerSchema = void 0;
+const zod_1 = require("zod");
+/**
+ * Hero banner payload. `title` / `subtitle` / `cta_label` are accepted as
+ * language-neutral aliases so the endpoint also matches the plain spec shape.
+ */
+exports.heroBannerSchema = zod_1.z.object({
+    id: zod_1.z.string().optional(),
+    is_active: zod_1.z.boolean().optional(),
+    /** Slide order in the hero carousel. */
+    rank: zod_1.z.number().int().min(0).optional(),
+    image_desktop_url: zod_1.z.string().min(1),
+    image_mobile_url: zod_1.z.string().nullish(),
+    title_en: zod_1.z.string().min(1).optional(),
+    title_vi: zod_1.z.string().min(1).optional(),
+    title: zod_1.z.string().min(1).optional(),
+    subtitle_en: zod_1.z.string().nullish(),
+    subtitle_vi: zod_1.z.string().nullish(),
+    subtitle: zod_1.z.string().nullish(),
+    cta_label_en: zod_1.z.string().min(1).optional(),
+    cta_label_vi: zod_1.z.string().min(1).optional(),
+    cta_label: zod_1.z.string().min(1).optional(),
+    cta_href: zod_1.z.string().min(1).optional(),
+    cta_variant: zod_1.z.enum(['primary', 'outline', 'glass']).optional(),
+    text_color: zod_1.z.string().optional(),
+    text_align: zod_1.z.enum(['left', 'center']).optional(),
+});
+/**
+ * Best seller card. Either `image_url` (hand-picked artwork) or `product_id`
+ * (catalogue product) must be present.
+ */
+exports.bestSellerItemSchema = zod_1.z
+    .object({
+    product_id: zod_1.z.string().nullish(),
+    image_url: zod_1.z.string().min(1).optional(),
+    link: zod_1.z.string().nullish(),
+    alt_en: zod_1.z.string().nullish(),
+    alt_vi: zod_1.z.string().nullish(),
+    rank: zod_1.z.number().int().min(0).optional(),
+})
+    .refine((item) => !!item.image_url || !!item.product_id, {
+    message: 'Each best seller item needs an image_url or a product_id',
+    path: ['image_url'],
+});
+exports.bestSellerSchema = zod_1.z.object({
+    id: zod_1.z.string().optional(),
+    is_active: zod_1.z.boolean().optional(),
+    heading_en: zod_1.z.string().min(1).optional(),
+    heading_vi: zod_1.z.string().min(1).optional(),
+    heading: zod_1.z.string().min(1).optional(),
+    description_en: zod_1.z.string().nullish(),
+    description_vi: zod_1.z.string().nullish(),
+    description: zod_1.z.string().nullish(),
+    items: zod_1.z.array(exports.bestSellerItemSchema).min(1).max(6),
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidmFsaWRhdG9ycy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL3NyYy9hcGkvYWRtaW4vaG9tZXBhZ2UvdmFsaWRhdG9ycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFBQSw2QkFBd0I7QUFFeEI7OztHQUdHO0FBQ1UsUUFBQSxnQkFBZ0IsR0FBRyxPQUFDLENBQUMsTUFBTSxDQUFDO0lBQ3ZDLEVBQUUsRUFBRSxPQUFDLENBQUMsTUFBTSxFQUFFLENBQUMsUUFBUSxFQUFFO0lBQ3pCLFNBQVMsRUFBRSxPQUFDLENBQUMsT0FBTyxFQUFFLENBQUMsUUFBUSxFQUFFO0lBQ2pDLHdDQUF3QztJQUN4QyxJQUFJLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLEdBQUcsRUFBRSxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUMsQ0FBQyxRQUFRLEVBQUU7SUFFeEMsaUJBQWlCLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUM7SUFDcEMsZ0JBQWdCLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLE9BQU8sRUFBRTtJQUV0QyxRQUFRLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUMsQ0FBQyxRQUFRLEVBQUU7SUFDdEMsUUFBUSxFQUFFLE9BQUMsQ0FBQyxNQUFNLEVBQUUsQ0FBQyxHQUFHLENBQUMsQ0FBQyxDQUFDLENBQUMsUUFBUSxFQUFFO0lBQ3RDLEtBQUssRUFBRSxPQUFDLENBQUMsTUFBTSxFQUFFLENBQUMsR0FBRyxDQUFDLENBQUMsQ0FBQyxDQUFDLFFBQVEsRUFBRTtJQUVuQyxXQUFXLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLE9BQU8sRUFBRTtJQUNqQyxXQUFXLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFBRSxDQUFDLE9BQU8sRUFBRTtJQUNqQyxRQUFRLEVBQUUsT0FBQyxDQUFDLE1BQU0sRUFB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
