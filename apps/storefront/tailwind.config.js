@@ -22,6 +22,7 @@ module.exports = {
         body: ['var(--font-body)'],
         title: ['var(--font-title)'],
         centuryBook: ['Century Book'],
+        alexandria: ['var(--font-title)'],
       },
       keyframes: {
         'rotate-bounce': {
@@ -51,6 +52,15 @@ module.exports = {
         'rotate-bounce': 'rotate-bounce 1.6s infinite',
       },
       colors: {
+        // KIRA homepage v2 design tokens
+        kira: {
+          brand: '#3B2314',
+          accent: '#FFE600',
+          ink: '#111111',
+          body: '#8A8A8A',
+          surface: '#FFFFFF',
+          onHero: '#FFFFFF',
+        },
         primary: {
           DEFAULT: 'rgb(var(--color-primary-DEFAULT) / <alpha-value>)',
           50: 'rgb(var(--color-primary-50) / <alpha-value>)',

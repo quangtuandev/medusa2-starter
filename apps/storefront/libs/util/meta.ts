@@ -2,6 +2,17 @@ import type { MetaDescriptor, MetaFunction } from 'react-router';
 import { UIMatch } from 'react-router';
 import type { RootLoaderResponse } from './server/root.server';
 
+const getValidHttpOrigin = (value?: string) => {
+  if (!value) return undefined;
+
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.origin : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const filterEmptyMeta = (meta: MetaDescriptor[]) =>
   meta.filter(
     (meta) =>
@@ -64,15 +75,18 @@ export const getCommonMeta: MetaFunction = ({ matches }) => {
 
   if (!siteDetails) return [];
 
-  const canonicalUrl = `${siteDetails.settings.storefront_url}${currentMatch.pathname}`;
+  const configuredOrigin = getValidHttpOrigin(siteDetails.settings.storefront_url);
+  const requestOrigin = getValidHttpOrigin(rootMatch.data?.requestOrigin);
+  const storefrontOrigin = configuredOrigin || requestOrigin;
+  const canonicalUrl = storefrontOrigin ? new URL(currentMatch.pathname, storefrontOrigin).toString() : undefined;
 
   return [
     { charset: 'utf-8' },
     {
       name: 'viewport',
-      content: 'width=device-width, initial-scale=1.0, height=device-height, user-scalable=0',
+      content: 'width=device-width, initial-scale=1.0, height=device-height',
     },
-    { property: 'og:url', content: canonicalUrl },
+    ...(canonicalUrl ? [{ property: 'og:url', content: canonicalUrl }] : []),
     { property: 'og:type', content: 'website' },
     { property: 'og:site_name', content: siteDetails.store.name },
   ];

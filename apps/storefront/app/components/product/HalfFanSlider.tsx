@@ -1,19 +1,19 @@
-import { motion, AnimatePresence, PanInfo, useReducedMotion } from "framer-motion";
-import { useState, useMemo, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
-import clsx from "clsx";
-import { ChevronLeft, ChevronRight, Snowflake, Droplet, HelpCircle } from "lucide-react";
-import { useI18n } from "@app/hooks/useI18n";
-import { useIsMobile } from "@app/hooks/useIsMobile";
 // Fallback collection items imports
-import { AllCollection } from "@app/components/collection/items/all-collection";
-import { ThirstyCollection } from "@app/components/collection/items/thirsty-collection";
-import { SavouringCollection } from "@app/components/collection/items/savouring-collection";
-import { IcyCollection } from "@app/components/collection/items/icy-collection";
-import { ComingCollection } from "@app/components/collection/items/coming-collection";
-import { DynamicCollection } from "@app/components/collection/items/dynamic-collection";
-import { isOutsideElement } from "@app/routes/products/active-card-pointer";
-import { FAN_SCROLL_STATE_KEY } from "@app/hooks/useScrollToProducts";
+import { AllCollection } from '@app/components/collection/items/all-collection';
+import { ComingCollection } from '@app/components/collection/items/coming-collection';
+import { DynamicCollection } from '@app/components/collection/items/dynamic-collection';
+import { IcyCollection } from '@app/components/collection/items/icy-collection';
+import { SavouringCollection } from '@app/components/collection/items/savouring-collection';
+import { ThirstyCollection } from '@app/components/collection/items/thirsty-collection';
+import { useI18n } from '@app/hooks/useI18n';
+import { useIsMobile } from '@app/hooks/useIsMobile';
+import { FAN_SCROLL_STATE_KEY } from '@app/hooks/useScrollToProducts';
+import { isOutsideElement } from '@app/routes/products/active-card-pointer';
+import clsx from 'clsx';
+import { AnimatePresence, PanInfo, motion, useReducedMotion } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Droplet, HelpCircle, Snowflake } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
 
 /* ────────────────────────────────────────────────────────────────────────────
  * "KIRA hero" fan-deck tokens.
@@ -23,9 +23,9 @@ import { FAN_SCROLL_STATE_KEY } from "@app/hooks/useScrollToProducts";
  * ──────────────────────────────────────────────────────────────────────────── */
 const CARD_RADIUS = 18;
 const CARD_BORDER = 4;
-const CARD_SHADOW = "0 20px 40px rgba(0,0,0,.18)";
+const CARD_SHADOW = '0 20px 40px rgba(0,0,0,.18)';
 /** Stronger shadow used to signal focus when motion is reduced. */
-const FOCUS_SHADOW = "0 28px 60px rgba(0,0,0,.30)";
+const FOCUS_SHADOW = '0 28px 60px rgba(0,0,0,.30)';
 
 /** Outer cards sit at ±FAN_SPREAD_DEG/2; intermediate cards are evenly spaced. */
 const FAN_SPREAD_DEG = 48;
@@ -38,8 +38,8 @@ const DIM_OPACITY = 0.3;
 /** A focused card is enlarged and lifted to FOCUS_TOP inside the stage. */
 const FOCUS_SCALE = 1.25;
 
-const COLOR_YELLOW = "#F5D33F";
-const COLOR_BLUE = "#5B8DEF";
+const COLOR_YELLOW = '#F5D33F';
+const COLOR_BLUE = '#5B8DEF';
 
 /**
  * How far the focused card flips around its vertical axis (0 = no flip).
@@ -119,6 +119,20 @@ export interface HalfFanSliderProps {
   collectionHandles?: string[];
   onDisplayCardChange?: (card: SliderCardItem) => void;
   className?: string;
+  /**
+   * Render the icon / title / arrows block under the fan. The homepage turns it
+   * off and keeps only the card deck.
+   */
+  showInfoPanel?: boolean;
+  /**
+   * Optional heading rendered above the fan. Use `\n` for multiple lines.
+   * With `followActive` (default) the heading swaps to the focused card's title,
+   * so the section always shows which collection is active.
+   */
+  heading?: {
+    idle: string;
+    followActive?: boolean;
+  };
 }
 
 /**
@@ -129,11 +143,11 @@ function usePointerFine() {
   const [capable, setCapable] = useState(false);
 
   useEffect(() => {
-    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)');
     const update = () => setCapable(query.matches);
     update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
   }, []);
 
   return capable;
@@ -146,9 +160,9 @@ const KEYWORD_ICONS = {
 } as const;
 
 const CardIcon = ({ icon, color }: { icon?: string; color: string }) => {
-  const raw = (icon || "").trim();
+  const raw = (icon || '').trim();
 
-  if (raw && (raw.startsWith("/") || /^https?:\/\//i.test(raw))) {
+  if (raw && (raw.startsWith('/') || /^https?:\/\//i.test(raw))) {
     return <img src={raw} alt="" className="w-10 h-10 object-contain" />;
   }
 
@@ -173,6 +187,8 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
   collectionHandles,
   onDisplayCardChange,
   className,
+  showInfoPanel = true,
+  heading,
 }) => {
   const { t, currentLanguage } = useI18n();
   const isMobile = useIsMobile();
@@ -185,18 +201,18 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
   const initialCards = useMemo((): SliderCardItem[] => {
     if (sliderCards && sliderCards.length > 0) {
       return sliderCards.map((card: any): SliderCardItem => {
-        const handle = card.linkto.split("/").pop() || "all";
+        const handle = card.linkto.split('/').pop() || 'all';
 
         // Localize title and subtitle
-        const title = currentLanguage === "vi" ? card.title_vi : card.title_en;
-        const subtitle = currentLanguage === "vi" ? (card.subtitle_vi || "") : (card.subtitle_en || "");
+        const title = currentLanguage === 'vi' ? card.title_vi : card.title_en;
+        const subtitle = currentLanguage === 'vi' ? card.subtitle_vi || '' : card.subtitle_en || '';
 
         // Determine dynamic H1 prefix
-        let h1 = currentLanguage === "vi" ? "ĐÂY LÀ BỘ SƯU TẬP" : "THIS IS OUR";
-        if (handle === "all") {
-          h1 = currentLanguage === "vi" ? "ĐÂY LÀ" : "THIS IS";
-        } else if (handle === "coming") {
-          h1 = currentLanguage === "vi" ? "PHÉP THUẬT MỚI" : "NEW MAGIC";
+        let h1 = currentLanguage === 'vi' ? 'ĐÂY LÀ BỘ SƯU TẬP' : 'THIS IS OUR';
+        if (handle === 'all') {
+          h1 = currentLanguage === 'vi' ? 'ĐÂY LÀ' : 'THIS IS';
+        } else if (handle === 'coming') {
+          h1 = currentLanguage === 'vi' ? 'PHÉP THUẬT MỚI' : 'NEW MAGIC';
         }
 
         return {
@@ -217,7 +233,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
               isActive={isActive}
               isAnyActive={isAnyActive}
             />
-          )
+          ),
         };
       });
     }
@@ -225,49 +241,49 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     // Resilient Fallback to hardcoded collection slider cards
     return [
       {
-        id: "all",
-        handle: "all",
+        id: 'all',
+        handle: 'all',
         h1: t('products.thisIs'),
         title: t('products.allOfOur'),
-        subtitle: "",
-        linkto: "/collections",
-        component: (isActive: boolean) => <AllCollection isActive={isActive} />
+        subtitle: '',
+        linkto: '/collections',
+        component: (isActive: boolean) => <AllCollection isActive={isActive} />,
       },
       {
-        id: "thirsty",
-        handle: "thirsty",
+        id: 'thirsty',
+        handle: 'thirsty',
         h1: t('products.thisIsOur'),
         title: t('products.thirsty'),
         subtitle: t('products.thirstyDescription'),
-        linkto: "/collections/thirsty",
-        component: (isActive: boolean) => <ThirstyCollection isActive={isActive} />
+        linkto: '/collections/thirsty',
+        component: (isActive: boolean) => <ThirstyCollection isActive={isActive} />,
       },
       {
-        id: "savouring",
-        handle: "savouring",
+        id: 'savouring',
+        handle: 'savouring',
         h1: t('products.thisIsOur'),
         title: t('products.savouring'),
         subtitle: t('products.savouringDescription'),
-        linkto: "/collections/savouring",
-        component: (isActive: boolean) => <SavouringCollection isActive={isActive} />
+        linkto: '/collections/savouring',
+        component: (isActive: boolean) => <SavouringCollection isActive={isActive} />,
       },
       {
-        id: "icy",
-        handle: "icy",
+        id: 'icy',
+        handle: 'icy',
         h1: t('products.thisIsOur'),
         title: t('products.icy'),
         subtitle: t('products.icyDescription'),
-        linkto: "/collections/icy",
-        component: (isActive: boolean) => <IcyCollection isActive={isActive} />
+        linkto: '/collections/icy',
+        component: (isActive: boolean) => <IcyCollection isActive={isActive} />,
       },
       {
-        id: "coming",
-        handle: "coming",
+        id: 'coming',
+        handle: 'coming',
         h1: t('products.newMagic'),
         title: t('products.comingSoon'),
-        subtitle: "",
-        linkto: "/collections",
-        component: (isActive: boolean) => <ComingCollection isActive={isActive} />
+        subtitle: '',
+        linkto: '/collections',
+        component: (isActive: boolean) => <ComingCollection isActive={isActive} />,
       },
     ];
   }, [sliderCards, currentLanguage, t]);
@@ -291,7 +307,6 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     (geo.cardH / 2) * Math.sin(maxAngleRad) +
     fanRadius * Math.sin(maxAngleRad);
   const stageW = Math.ceil(stageHalfWidth * 2 + 48);
-
 
   /**
    * Vertical offset that puts the *scaled* focused card's top edge at geo.focusTop.
@@ -318,19 +333,17 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
 
   /** Cards standing for "all collections" (keyword ALL, or a link to the index). */
   const isAllCard = (card: SliderCardItem) =>
-    (card.handle || "").toLowerCase() === "all" ||
-    /^all$/i.test((card.linkto || "").trim()) ||
-    (card.linkto || "").trim().toLowerCase() === "/collections";
+    (card.handle || '').toLowerCase() === 'all' ||
+    /^all$/i.test((card.linkto || '').trim()) ||
+    (card.linkto || '').trim().toLowerCase() === '/collections';
 
   // Rest state shows the collection you are on (collection pages) or the "all" card.
   const defaultCard = useMemo(
     () =>
-      initialCards.find(
-        (card) => !!activeHandle && card.handle?.toLowerCase() === activeHandle.toLowerCase()
-      ) ??
+      initialCards.find((card) => !!activeHandle && card.handle?.toLowerCase() === activeHandle.toLowerCase()) ??
       initialCards.find(isAllCard) ??
       initialCards[0],
-    [initialCards, activeHandle]
+    [initialCards, activeHandle],
   );
 
   const focusCard = focusIndex !== null ? initialCards[focusIndex] : null;
@@ -357,7 +370,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     }
     const timer = window.setTimeout(
       () => setDealt(true),
-      (DEAL_DURATION + DEAL_STAGGER * Math.max(totalCards - 1, 0)) * 1000 + 120
+      (DEAL_DURATION + DEAL_STAGGER * Math.max(totalCards - 1, 0)) * 1000 + 120,
     );
     return () => window.clearTimeout(timer);
   }, [reduceMotion, totalCards]);
@@ -369,8 +382,8 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
       setStageScale(Math.min(1, Math.max(available, 240) / stageW));
     };
     update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, [stageW]);
 
   // Clicking outside the stage releases a sticky selection.
@@ -379,15 +392,13 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     const handlePointerDown = (event: PointerEvent) => {
       // The fan and the arrow row both belong to the widget: clicking an arrow must
       // step the focus instead of clearing it first.
-      if (
-        isOutsideElement(stageRef.current, event.target) &&
-        isOutsideElement(infoRef.current, event.target)
-      ) {
+      const outsideInfo = infoRef.current ? isOutsideElement(infoRef.current, event.target) : true;
+      if (isOutsideElement(stageRef.current, event.target) && outsideInfo) {
         setActiveIndex(null);
       }
     };
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, [activeIndex]);
 
   /* ── collection targets ────────────────────────────────────────────────── */
@@ -397,18 +408,16 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
    * Returns where the card should lead, or flags it as coming soon when the
    * collection it advertises does not exist on the backend yet.
    */
-  const resolveCardTarget = (
-    card: SliderCardItem
-  ): { href?: string; external?: boolean; comingSoon?: boolean } => {
-    const linkto = (card.linkto || "").trim();
-    const handle = (card.handle || "").toLowerCase();
+  const resolveCardTarget = (card: SliderCardItem): { href?: string; external?: boolean; comingSoon?: boolean } => {
+    const linkto = (card.linkto || '').trim();
+    const handle = (card.handle || '').toLowerCase();
 
     if (!linkto) return {};
     if (/^https?:\/\//i.test(linkto)) return { href: linkto, external: true };
     // "ALL" (or the built-in all card) means the complete collection list.
-    if (handle === "all" || /^all$/i.test(linkto)) return { href: "/collections" };
+    if (handle === 'all' || /^all$/i.test(linkto)) return { href: '/collections' };
 
-    const isPath = linkto.startsWith("/");
+    const isPath = linkto.startsWith('/');
     const target = /^\/collections\/([^/?#]+)/.exec(linkto)?.[1] ?? (isPath ? null : linkto);
 
     if (target) {
@@ -422,8 +431,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     return isPath ? { href: linkto } : {};
   };
 
-  const isComingSoonCard = (card: SliderCardItem) =>
-    card.handle === "coming" || !!resolveCardTarget(card).comingSoon;
+  const isComingSoonCard = (card: SliderCardItem) => card.handle === 'coming' || !!resolveCardTarget(card).comingSoon;
 
   const handleCardClick = (index: number) => {
     const card = initialCards[index];
@@ -487,31 +495,68 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     : displayCard.subtitle
       ? displayCard.subtitle
       : t('products.collection');
-  const subtitleColor =
-    isComingSoonCard(displayCard) || isAllCard(displayCard) ? COLOR_YELLOW : COLOR_BLUE;
+  const subtitleColor = isComingSoonCard(displayCard) || isAllCard(displayCard) ? COLOR_YELLOW : COLOR_BLUE;
   const iconColor = subtitleColor;
 
   const firstAngle = angleOf(0);
 
+  /* ── optional heading (active card title) ──────────────────────────────── */
+  const activeTitle =
+    heading?.followActive !== false && focusIndex !== null ? initialCards[focusIndex]?.title?.trim() : null;
+  const headingText = heading ? activeTitle || heading.idle : '';
+  const headingKey = heading ? (activeTitle ? `heading-card-${focusIndex}` : 'heading-idle') : 'heading';
+
   return (
-    <div className={clsx("flex flex-col items-center w-full", className)}>
+    <div className={clsx('flex flex-col items-center w-full', className)}>
+      {heading && (
+        <div className="relative w-full mb-2 md:mb-4 text-center [font-size:clamp(2.25rem,4.5vw,4rem)]">
+          {/* Reserves exactly two heading lines so the swap never moves the deck. */}
+          <div aria-hidden="true" className="invisible leading-[1.05]">
+            <span className="block">&nbsp;</span>
+            <span className="block">&nbsp;</span>
+          </div>
+
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <AnimatePresence mode="sync" initial={false}>
+              <motion.h2
+                key={headingKey}
+                initial={{ opacity: 0, y: 14, filter: 'blur(10px)' }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  filter: 'blur(0px)',
+                  transition: { duration: reduceMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] },
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -10,
+                  filter: 'blur(8px)',
+                  transition: { duration: 0, ease: 'easeIn' },
+                }}
+                className="w-full whitespace-pre-line text-center font-display font-semibold uppercase leading-[1.05] text-kira-brand"
+              >
+                {headingText}
+                <br /> {subtitle}
+              </motion.h2>
+            </AnimatePresence>
+          </div>
+        </div>
+      )}
+
       {/* Stage: fixed-size canvas, uniformly scaled to fit smaller viewports */}
-      <div
-        className="relative z-0 flex w-full justify-center mt-6 xl:mt-8"
-        style={{ height: geo.stageH * stageScale }}
-      >
+      <div className="relative z-0 flex w-full justify-center mt-6 xl:mt-8" style={{ height: geo.stageH * stageScale }}>
         <div
           style={{
             width: stageW,
             height: geo.stageH,
             transform: `scale(${stageScale})`,
-            transformOrigin: "top center",
+            transformOrigin: 'top center',
           }}
         >
           <motion.div
             ref={stageRef}
             className="relative w-full h-full"
-            drag={isMobile ? "x" : false}
+            drag={isMobile ? 'x' : false}
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
             onDragEnd={handleSwipe}
@@ -530,7 +575,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                   }}
                   onClick={() => handleCardClick(i)}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    if (event.key === 'Enter' || event.key === ' ') {
                       event.preventDefault();
                       handleCardClick(i);
                     }
@@ -545,7 +590,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                     marginLeft: -geo.cardW / 2,
                     transformOrigin: `50% ${geo.pivotY}px`,
                     zIndex: isFocused ? 50 : 10 + i,
-                    willChange: "transform",
+                    willChange: 'transform',
                   }}
                   initial={reduceMotion ? false : { rotate: firstAngle }}
                   animate={{
@@ -555,11 +600,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                     dealt
                       ? {
                         rotate: {
-                          duration: isFocused
-                            ? FOCUS_A
-                            : isDimmed
-                              ? DIM_DURATION
-                              : RETURN_DURATION,
+                          duration: isFocused ? FOCUS_A : isDimmed ? DIM_DURATION : RETURN_DURATION,
                           delay: isFocused ? 0 : 0.05,
                           ease: EASE_GLIDE,
                         },
@@ -576,10 +617,10 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                   <motion.div
                     className="w-full h-full"
                     style={{
-                      transformOrigin: "center",
+                      transformOrigin: 'center',
                       transformPerspective: 1200,
                       // keep both card faces in 3D so backface-visibility works
-                      transformStyle: "preserve-3d",
+                      transformStyle: 'preserve-3d',
                       // NOTE: no `will-change` here — it promotes the flipper to its own
                       // compositor layer and Chrome then stops culling the hidden face,
                       // which makes a 180° flip land on the mirrored back face.
@@ -646,7 +687,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                           borderRadius: CARD_RADIUS,
                           border: `${CARD_BORDER}px solid #fff`,
                           boxShadow: isFocused ? FOCUS_SHADOW : CARD_SHADOW,
-                          backfaceVisibility: "hidden",
+                          backfaceVisibility: 'hidden',
                           // Both faces need an explicit transform, otherwise Chrome
                           // does not cull the back face of the un-transformed one.
                           transform: `rotateY(${face === 1 ? 180 : 0}deg)`,
@@ -683,82 +724,81 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
       </div>
 
       {/* Info block: fixed-height rows so the crossfade never shifts the layout */}
-      <div
-        ref={infoRef}
-        className="relative z-20 flex flex-col items-center justify-center w-full px-6 mt-2 xl:mt-4"
-      >
-        <div className="relative flex h-12 xl:h-14 w-full items-center justify-center mb-2 xl:mb-3">
-          <AnimatePresence mode="sync" initial={false}>
-            <motion.div
-              key={`icon-${displayCard.id}`}
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: TEXT_FADE, ease: "linear" }}
-            >
-              <CardIcon icon={displayCard.icon} color={iconColor} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        <div className="relative w-full h-[46px] xl:h-[96px]">
-          <AnimatePresence mode="sync" initial={false}>
-            <motion.div
-              key={`title-${displayCard.id}`}
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: TEXT_FADE, ease: "linear" }}
-            >
-              <h2
-                className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-centuryBook italic text-[40px] leading-none xl:text-[90px]"
-                dangerouslySetInnerHTML={{ __html: displayCard.title }}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Navigation arrows flank the subtitle */}
-        <div className="flex items-center gap-4 xl:gap-6 mt-2">
-          <button
-            onClick={prev}
-            aria-label="Previous collection"
-            className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
-          >
-            <ChevronLeft size={isMobile ? 18 : 24} />
-          </button>
-
-          <div className="relative h-[34px] xl:h-[68px] w-[220px] xl:w-[520px]">
+      {showInfoPanel && (
+        <div ref={infoRef} className="relative z-20 flex flex-col items-center justify-center w-full px-6 mt-2 xl:mt-4">
+          <div className="relative flex h-12 xl:h-14 w-full items-center justify-center mb-2 xl:mb-3">
             <AnimatePresence mode="sync" initial={false}>
               <motion.div
-                key={`subtitle-${displayCard.id}`}
+                key={`icon-${displayCard.id}`}
                 className="absolute inset-0 flex items-center justify-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: TEXT_FADE, ease: "linear" }}
+                transition={{ duration: TEXT_FADE, ease: 'linear' }}
               >
-                <p
-                  className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-title font-bold text-[26px] leading-tight xl:text-[64px]"
-                  style={{ color: subtitleColor }}
-                >
-                  {subtitle}
-                </p>
+                <CardIcon icon={displayCard.icon} color={iconColor} />
               </motion.div>
             </AnimatePresence>
           </div>
 
-          <button
-            onClick={next}
-            aria-label="Next collection"
-            className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
-          >
-            <ChevronRight size={isMobile ? 18 : 24} />
-          </button>
+          <div className="relative w-full h-[46px] xl:h-[96px]">
+            <AnimatePresence mode="sync" initial={false}>
+              <motion.div
+                key={`title-${displayCard.id}`}
+                className="absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: TEXT_FADE, ease: 'linear' }}
+              >
+                <h2
+                  className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-centuryBook italic text-[40px] leading-none xl:text-[90px]"
+                  dangerouslySetInnerHTML={{ __html: displayCard.title }}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation arrows flank the subtitle */}
+          <div className="flex items-center gap-4 xl:gap-6 mt-2">
+            <button
+              onClick={prev}
+              aria-label="Previous collection"
+              className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
+            >
+              <ChevronLeft size={isMobile ? 18 : 24} />
+            </button>
+
+            <div className="relative h-[34px] xl:h-[68px] w-[220px] xl:w-[520px]">
+              <AnimatePresence mode="sync" initial={false}>
+                <motion.div
+                  key={`subtitle-${displayCard.id}`}
+                  className="absolute inset-0 flex items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: TEXT_FADE, ease: 'linear' }}
+                >
+                  <p
+                    className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-title font-bold text-[26px] leading-tight xl:text-[64px]"
+                    style={{ color: subtitleColor }}
+                  >
+                    {subtitle}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <button
+              onClick={next}
+              aria-label="Next collection"
+              className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
+            >
+              <ChevronRight size={isMobile ? 18 : 24} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

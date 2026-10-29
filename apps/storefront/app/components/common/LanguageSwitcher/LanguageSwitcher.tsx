@@ -12,7 +12,10 @@ const languages = [
   { value: 'en', label: 'E' },
 ] as const;
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({
+  variant = 'default',
+  className,
+}: { variant?: 'default' | 'brand'; className?: string } = {}) => {
   const { regions } = useRegions();
   const { region } = useRegion();
 
@@ -71,14 +74,18 @@ export const LanguageSwitcher = () => {
   return (
     <div ref={containerRef} className="relative">
       <button
+        type="button"
         onClick={handleToggle}
         className={clsx(
           'inline-flex items-center justify-center w-[55px] h-[55px] rounded-full font-black transition-all font-title text-4xl',
           'duration-300 ease-in-out',
-          {
-            'bg-[#FFFF00] text-[#000000]': currentLanguage === 'en',
-            'bg-[#000000] text-[#EC98BA]': currentLanguage === 'vi',
-          },
+          variant === 'brand'
+            ? 'bg-[#3B2314] text-white hover:bg-[#2A190E]'
+            : {
+              'bg-[#FFFF00] text-[#000000]': currentLanguage === 'en',
+              'bg-[#000000] text-[#EC98BA]': currentLanguage === 'vi',
+            },
+          className,
         )}
         aria-label="Select language"
         aria-expanded={isOpen}
@@ -91,6 +98,7 @@ export const LanguageSwitcher = () => {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden text-base min-w-[125px]">
             {regionOptions?.map((lang) => (
               <button
+                type="button"
                 key={lang.value}
                 onClick={() => handleSelect(lang)}
                 className={clsx(

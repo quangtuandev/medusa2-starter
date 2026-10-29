@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   ShouldRevalidateFunction,
+  useLocation,
   useLoaderData,
   useRouteError,
 } from "react-router";
@@ -70,9 +71,21 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 function App() {
   const headRef = useRef<HTMLHeadElement>(null);
   const data = useRootLoaderData();
+  const location = useLocation();
   const { currentLanguage } = useI18n();
 
-  const { env = {}, siteDetails } = data || {};
+  const { env = {}, siteDetails, requestOrigin } = data || {};
+  const configuredUrl = siteDetails?.settings?.storefront_url;
+  let canonicalUrl: string | undefined;
+
+  try {
+    const originUrl = new URL((configuredUrl || requestOrigin || '').trim());
+    if (originUrl.protocol === 'http:' || originUrl.protocol === 'https:') {
+      canonicalUrl = new URL(location.pathname, originUrl.origin).toString();
+    }
+  } catch {
+    canonicalUrl = undefined;
+  }
 
   return (
     <RootProviders>
@@ -80,6 +93,7 @@ function App() {
         <head ref={headRef}>
           <meta charSet="UTF-8" />
           <Meta />
+          {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : null}
 
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link

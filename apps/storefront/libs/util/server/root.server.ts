@@ -85,6 +85,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
       customer,
       regions,
       region,
+      requestOrigin: new URL(request.url).origin,
       siteDetails: {
         store: {
           name: 'KIRAPARFUMS',
