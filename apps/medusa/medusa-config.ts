@@ -105,6 +105,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/popup",
     },
     {
+      resolve: "./src/modules/homepage",
+    },
+    {
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [

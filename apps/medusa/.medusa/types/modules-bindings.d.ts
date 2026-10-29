@@ -33,6 +33,7 @@ import type EmailSettings from '../../src/modules/email-settings'
 import type PageModuleService from '../../src/modules/page'
 import type ProductSliderModuleService from '../../src/modules/product-slider'
 import type PopupModuleService from '../../src/modules/popup'
+import type HomepageModuleService from '../../src/modules/homepage'
 
 declare module '@medusajs/framework/types' {
   interface ModuleImplementations {
@@ -70,6 +71,7 @@ declare module '@medusajs/framework/types' {
     'emailSettings': InstanceType<(typeof EmailSettings)['service']>,
     'pageModuleService': InstanceType<(typeof PageModuleService)['service']>,
     'productSliderModuleService': InstanceType<(typeof ProductSliderModuleService)['service']>,
-    'popupModuleService': InstanceType<(typeof PopupModuleService)['service']>
+    'popupModuleService': InstanceType<(typeof PopupModuleService)['service']>,
+    'homepageModuleService': InstanceType<(typeof HomepageModuleService)['service']>
   }
 }
