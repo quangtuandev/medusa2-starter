@@ -30,6 +30,13 @@ export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, is
     );
   };
 
+  const thumbnailSrc =
+    item.thumbnail ||
+    (item.variant as any)?.thumbnail ||
+    item.variant?.product?.thumbnail ||
+    (item.variant?.product as any)?.images?.[0]?.url ||
+    '';
+
   return (
     <li
       key={item.id}
@@ -39,7 +46,7 @@ export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, is
     >
       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
         <Image
-          src={item.variant?.product?.thumbnail || ''}
+          src={thumbnailSrc}
           alt={item.product_title || 'product thumbnail'}
           className="h-full w-full object-cover object-center"
         />

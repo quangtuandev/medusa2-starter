@@ -44,8 +44,22 @@ export const _listPosts = async function (language: string = 'en'): Promise<{ po
   return { posts: [] };
 };
 
+export const normalizePostSlug = (slug?: string | null, fallbackId?: string): string => {
+  const cleaned = (slug || '')
+    .trim()
+    .replace(/^https?:\/\/[^/]+/i, '')
+    .replace(/^\/+|\/+$/g, '')
+    .split('/')
+    .filter(Boolean)
+    .pop();
+  return cleaned || fallbackId || '';
+};
+
 export const getPostBySlug = async function (slug: string): Promise<BlogPost | null> {
-  const response = await sdk.client.fetch<any>(`/store/post/${slug}`, {
+  const cleanSlug = normalizePostSlug(slug);
+  if (!cleanSlug) return null;
+
+  const response = await sdk.client.fetch<any>(`/store/post/${encodeURIComponent(cleanSlug)}`, {
     query: {
       limit: 1,
       offset: 0,

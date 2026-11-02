@@ -23,7 +23,7 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
   return (
     <figure
       className={clsx(
-        'product-thumbnail',
+        'product-thumbnail relative isolate',
         !isRemoveStyleDefault && 'aspect-w-1 aspect-h-1 w-full',
         className,
       )}
@@ -32,20 +32,22 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
       }}
       {...props}
     >
-      <MorphingShape {...getProductMorphingShape(product)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
+      <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
+        <MorphingShape {...getProductMorphingShape(product)} zoom={forcedZoom} classNameWrapper={clsx(isRemoveStyleDefault && '!h-auto')} />
+      </div>
       {thumbnailImage ? (
         <Image
           key={thumbnailImage}
           loading="lazy"
           src={thumbnailImage}
           alt={product.title}
-          className={clsx('h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
+          className={clsx('relative z-10 h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
             'group-hover/product-card:opacity-75': !hoverImage,
-            'relative top-[-200px]': isRemoveStyleDefault,
+            'top-[-200px]': isRemoveStyleDefault,
           }, classNameImage,)}
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center object-cover object-center group-hover/product-card:opacity-75">
+        <div className="relative z-10 flex h-full w-full items-center justify-center object-cover object-center group-hover/product-card:opacity-75">
           No Image
         </div>
       )}

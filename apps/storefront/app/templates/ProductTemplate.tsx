@@ -359,17 +359,12 @@ export const ProductTemplate = ({ product, productContent }: ProductTemplateProp
             <Container className="px-0 sm:px-6 md:px-8">
               <Grid className="!gap-0 overflow-visible">
                 <GridColumn className="mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]">
-                  <h2 className="text-4xl xl:text-[100px] font-bold text-gray-900 leading-tight">
-                    {customizationTitles[0]}
-                  </h2>
+                  <h1 className="text-3xl sm:text-4xl xl:text-[64px] 2xl:text-[80px] font-bold text-gray-900 !leading-none mb-4 break-words">
+                    {product.title}
+                  </h1>
                   <ProductImageGallery key={product.id} product={product} variantImage={variantImage} />
                   <div className='flex gap-4 items-end justify-between'>
                     <div className='flex flex-col gap-2'>
-                      {customizationTitles[1] && (
-                        <h2 className="text-4xl xl:text-[65px] font-bold text-gray-900 leading-tight">
-                          {customizationTitles[1]}
-                        </h2>
-                      )}
                       <p className="text-gray-900 font-bold flex gap-3">
                         <span className="text-2xl xl:text-4xl">
                           {selectedVariant ? (

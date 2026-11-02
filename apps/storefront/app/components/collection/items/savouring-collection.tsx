@@ -52,12 +52,12 @@ export const SavouringCollection = ({ className, isActive }: { className?: strin
     >
       <img
         src="/assets/images/home/savouring-collection.png"
-        className="scale-110 object-cover savouring-main-image w-full h-full"
+        className="object-cover savouring-main-image w-full h-full"
         alt="Savouring Collection"
       />
       <img
         src="/assets/images/home/savouring-collection.webp"
-        className="scale-110 object-cover savouring-second-image opacity-0 absolute top-0 left-0 w-full h-full"
+        className="object-cover savouring-second-image opacity-0 absolute top-0 left-0 w-full h-full"
         alt="Savouring Collection Detail"
       />
     </div>

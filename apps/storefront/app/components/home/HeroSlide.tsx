@@ -107,9 +107,9 @@ export const HeroSlide = ({
         initial={false}
         animate={isActive ? 'center' : 'hidden'}
         variants={contentVariants(reduceMotion)}
-        className={`absolute bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-[5] flex flex-col gap-3 px-6 sm:px-8 ${
+        className={`absolute inset-x-0 bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-[5] flex w-full flex-col gap-3 px-6 sm:px-8 md:inset-x-auto md:w-auto ${
           isCentered
-            ? 'items-center text-center md:left-1/2 md:w-auto md:-translate-x-1/2 xl:bottom-32'
+            ? 'items-center text-center md:left-1/2 md:-translate-x-1/2 xl:bottom-32'
             : 'items-center text-center md:left-[5%] md:items-start md:text-left md:px-0 xl:bottom-32 xl:left-[80px]'
         }`}
         style={{ color: slide.text_color }}
@@ -122,12 +122,14 @@ export const HeroSlide = ({
 
         <motion.p
           variants={itemVariants(reduceMotion)}
-          className="font-display font-light text-white/95 [font-size:clamp(1.05rem,2.1vw,1.875rem)] w-full text-end"
+          className={`font-display font-light text-white/95 [font-size:clamp(1.05rem,2.1vw,1.875rem)] w-full ${
+            isCentered ? 'text-center' : 'text-center md:text-end'
+          }`}
         >
           {slide.subtitle}
         </motion.p>
 
-        <motion.div variants={itemVariants(reduceMotion)} className="mt-3 md:hidden">
+        <motion.div variants={itemVariants(reduceMotion)} className="mt-3 flex justify-center md:hidden">
           {cta}
         </motion.div>
       </motion.div>

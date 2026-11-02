@@ -6,7 +6,7 @@ import { CheckoutProvider } from '@app/providers/checkout-provider';
 import ShoppingCartIcon from '@heroicons/react/24/outline/ShoppingCartIcon';
 import { sdk } from '@libs/util/server/client.server';
 import { getCartId, removeCartId } from '@libs/util/server/cookies.server';
-import { initiatePaymentSession, retrieveCart, setShippingMethod } from '@libs/util/server/data/cart.server';
+import { enrichLineItems, initiatePaymentSession, retrieveCart, setShippingMethod } from '@libs/util/server/data/cart.server';
 import { listCartPaymentProviders } from '@libs/util/server/data/payment.server';
 import { CartDTO, StoreCart, StoreCartShippingOption, StorePaymentProvider } from '@medusajs/types';
 import { BasePaymentSession } from '@medusajs/types/dist/http/payment/common';
@@ -111,6 +111,10 @@ export const loader = async ({
   ]);
 
   const updatedCart = await retrieveCart(request);
+
+  if (updatedCart?.items?.length && updatedCart.region_id) {
+    updatedCart.items = await enrichLineItems(updatedCart.items, updatedCart.region_id);
+  }
 
   return {
     cart: updatedCart,

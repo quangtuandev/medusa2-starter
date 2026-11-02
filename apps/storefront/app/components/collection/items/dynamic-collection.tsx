@@ -44,7 +44,7 @@ export const DynamicCollection: React.FC<DynamicCollectionProps> = ({
             event.currentTarget.style.visibility = "hidden";
           }}
           className={clsx(
-            "scale-110 object-cover w-full h-full select-none pointer-events-none transition-opacity duration-300 ease-in-out",
+            "object-cover w-full h-full select-none pointer-events-none transition-opacity duration-300 ease-in-out",
             showActiveDirectly
               ? "opacity-0"
               : isHoverEnabled
@@ -62,7 +62,7 @@ export const DynamicCollection: React.FC<DynamicCollectionProps> = ({
             event.currentTarget.style.visibility = "hidden";
           }}
           className={clsx(
-            "scale-110 object-cover w-full h-full select-none pointer-events-none absolute inset-0 transition-opacity duration-300 ease-in-out",
+            "object-cover w-full h-full select-none pointer-events-none absolute inset-0 transition-opacity duration-300 ease-in-out",
             showActiveDirectly
               ? "opacity-100"
               : isHoverEnabled

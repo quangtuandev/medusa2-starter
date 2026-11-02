@@ -44,8 +44,8 @@ const MorphingShape: React.FC<MorphingShapeProps> = ({ className, classNameWrapp
     }, []);
 
     return (
-        <div className={clsx(className)}>
-            <div className={clsx("flex h-screen", classNameWrapper)}>
+        <div className={clsx("pointer-events-none", className)}>
+            <div className={clsx("flex h-full items-center justify-center pointer-events-none", classNameWrapper)}>
                 <svg style={{ filter: `blur(${blur}px)`, zoom }}
                     width='643' height='836' viewBox="0 0 643 836">
                     <linearGradient id={`PSgrad_${id}`} x1="70.711%" x2="0%" y1="70.711%" y2="0%">

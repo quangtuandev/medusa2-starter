@@ -83,7 +83,14 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
     const track = trackRef.current;
     if (!track || track.clientWidth <= 0) return;
 
-    const next = Math.round(track.scrollLeft / track.clientWidth);
+    const maxScrollLeft = track.scrollWidth - track.clientWidth;
+    if (maxScrollLeft <= 0 || pageCount <= 1) {
+      setActivePage(0);
+      return;
+    }
+
+    const progress = Math.min(1, Math.max(0, track.scrollLeft / maxScrollLeft));
+    const next = Math.round(progress * (pageCount - 1));
     setActivePage(Math.min(pageCount - 1, Math.max(0, next)));
   };
 
@@ -92,8 +99,11 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
     if (!track) return;
 
     const clamped = Math.min(pageCount - 1, Math.max(0, next));
+    const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
+    const targetLeft = pageCount > 1 ? (clamped / (pageCount - 1)) * maxScrollLeft : 0;
+
     track.scrollTo({
-      left: clamped * track.clientWidth,
+      left: targetLeft,
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',
     });
     setActivePage(clamped);
@@ -107,7 +117,7 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
     <section id="best-seller" className="w-full scroll-mt-20 bg-white py-16 md:pt-24">
       <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-8">
         <div className="relative flex flex-col items-center">
-          <h2 className="text-center font-display font-semibold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]">
+          <h2 className="text-center font-title font-extrabold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]">
             {bestSeller.heading}
           </h2>
 
@@ -189,7 +199,7 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
               viewport={{ once: true, amount: 0.15 }}
               variants={cardVariants(reduceMotion)}
               transition={{ delay: reduceMotion ? 0 : index * 0.06 }}
-              className="w-[80vw] max-w-[340px] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] sm:max-w-none lg:w-[calc((100%-4rem)/3)]"
+              className="w-full shrink-0 snap-center sm:w-[calc((100%-1.5rem)/2)] sm:snap-start sm:max-w-none lg:w-[calc((100%-4rem)/3)]"
             >
               <Card item={item} reduceMotion={reduceMotion} />
             </motion.div>

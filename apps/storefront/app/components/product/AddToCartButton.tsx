@@ -32,6 +32,7 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     addToCart({
       productId: product.id,
       options: selectedOptions,
@@ -77,8 +78,8 @@ export const AddToCartButton: FC<AddToCartButtonProps> = ({
       })}
       aria-label={`${t("common.addToCart")} ${product.title}`}
     >
-      <i hidden={isFullText} className="w-4">
-        <PlusIcon className="size-1" />
+      <i hidden={isFullText} className="w-4 flex items-center justify-center">
+        <PlusIcon className="size-4" />
       </i>
       <span className={clsx(
         "text-nowrap btn-add text-xs lg:text-base",

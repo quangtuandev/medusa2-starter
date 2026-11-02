@@ -13,7 +13,7 @@ export const getProductsById = ({
     .list({
       id: ids,
       region_id: regionId,
-      fields: '*variants.calculated_price,+variants.inventory_quantity',
+      fields: '*variants.calculated_price,+variants.inventory_quantity,*images',
     })
     .then(({ products }) => products);
 };

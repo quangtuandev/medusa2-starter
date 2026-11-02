@@ -116,8 +116,8 @@ export const ThirstyCollection = ({ className, isActive }: { className?: string,
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
             className={clsx("collection-item flex overflow-hidden w-full h-full", className)} to="/collections">
-            <img src="/assets/images/home/thirsty-collection.gif" className="scale-110 object-cover main-image" alt="Thirsty Collection" />
-            <img src="/assets/images/home/thirsty-collection.webp" className="scale-110 object-cover second-image opacity-0" alt="Thirsty Collection Text" />
+            <img src="/assets/images/home/thirsty-collection.gif" className="object-cover w-full h-full main-image" alt="Thirsty Collection" />
+            <img src="/assets/images/home/thirsty-collection.webp" className="object-cover w-full h-full second-image opacity-0" alt="Thirsty Collection Text" />
             <div ref={hoverActiveRef}>
                 <div className="absolute top-0 left-0 w-full opacity-0 hover-active-1">
                     <img src="/assets/images/home/thirsty1.webp" className="w-full h-full object-cover" alt="Thirsty Collection Text" />

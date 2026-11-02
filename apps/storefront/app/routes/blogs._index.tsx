@@ -1,4 +1,3 @@
-import { Button, ButtonBase } from "@app/components/common/buttons";
 import { Container } from "@app/components/common/container"
 import { listPosts } from "@libs/util/server/posts.server";
 import { withPaginationParams } from "@libs/util/withPaginationParams";
@@ -6,6 +5,17 @@ import clsx from "clsx";
 import { Link } from "react-router";
 import { LoaderFunctionArgs, useLoaderData } from "react-router";
 import { getCookie } from "@libs/util/server/cookies.server";
+
+const normalizePostSlug = (slug?: string | null, fallbackId?: string): string => {
+  const cleaned = (slug || "")
+    .trim()
+    .replace(/^https?:\/\/[^/]+/i, "")
+    .replace(/^\/+|\/+$/g, "")
+    .split("/")
+    .filter(Boolean)
+    .pop();
+  return cleaned || fallbackId || "";
+};
 interface BlogPost {
   id: string;
   title: string;
@@ -49,23 +59,26 @@ export default function BlogsIndexRoute() {
         <p className="text-base font-montserrat font-normal text-sm xl:text-[15px] leading-normal xl:leading-[26px] text-center max-w-3xl mx-auto">Brings you to a cozy café on a sun-drenched morning. The scent blends rich, freshly brewed coffee with a hint of creamy vanilla and warm spices.</p>
       </div>
       <div className="flex flex-col gap-6 xl:gap-12">
-        {data.posts && data.posts.map((post, index) => (
-          <div key={post.id} className={clsx("flex gap-4 flex-col", index % 2 === 0 ? "xl:flex-row" : "xl:flex-row-reverse")}>
-            <div className="w-full xl:w-[65%] h-full aspect-[2/1] overflow-hidden rounded-lg mb-4">
-              <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
-            </div>
-            <div className="w-full xl:w-[35%] flex flex-col gap-2 xl:gap-6 items-start justify-center">
-              <h3 className="font-alexandria font-extrabold text-2xl xl:text-[30px] leading-normal xl:leading-[35px] tracking-0%">{post.title}</h3>
-              <div dangerouslySetInnerHTML={{ __html: post.description }}></div>
-              <Link
-                to={`/blogs/${post.slug}`}
-                className="button--primary w-[155px] text-white bg-primary hover:bg-primary-800 focus:border-primary-500 !h-12 mt-4 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed !rounded-2xl justify-center items-center flex"
-              >
-                Read More
+        {data.posts && data.posts.map((post, index) => {
+          const cleanSlug = normalizePostSlug(post.slug, post.id);
+          return (
+            <div key={post.id} className={clsx("flex gap-4 flex-col", index % 2 === 0 ? "xl:flex-row" : "xl:flex-row-reverse")}>
+              <Link to={`/blogs/${encodeURIComponent(cleanSlug)}`} className="w-full xl:w-[65%] h-full aspect-[2/1] overflow-hidden rounded-lg mb-4 block">
+                <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
               </Link>
+              <div className="w-full xl:w-[35%] flex flex-col gap-2 xl:gap-6 items-start justify-center">
+                <h3 className="font-alexandria font-extrabold text-2xl xl:text-[30px] leading-normal xl:leading-[35px] tracking-0%">{post.title}</h3>
+                <div dangerouslySetInnerHTML={{ __html: post.description }}></div>
+                <Link
+                  to={`/blogs/${encodeURIComponent(cleanSlug)}`}
+                  className="button--primary w-[155px] text-white bg-primary hover:bg-primary-800 focus:border-primary-500 !h-12 mt-4 whitespace-nowrap !text-base !font-bold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed !rounded-2xl justify-center items-center flex"
+                >
+                  Read More
+                </Link>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </Container>
 

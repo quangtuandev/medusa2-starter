@@ -48,20 +48,47 @@ export default function BlogsIndexRoute() {
 
   return (
     <section>
-      <Container className="flex flex-col gap-12">
-        {post && (
+      <Container className="flex flex-col gap-10 xl:gap-12 pt-6 pb-12">
+        {post ? (
           <>
             <div className="flex flex-col gap-4">
-              <h1 className="text-[40px] xl:text-[90px] font-bold xl:leading-[95px] tracking-0% text-center">{post.title}</h1>
-              <p className="font-centuryBook italic text-[30px] xl:text-[85px] xl:leading-[90px] text-center">{post.sub_title}</p>
-              <p className="text-lg font-montserrat font-normal text-sm xl:text-[15px] xl:leading-[26px] text-center max-w-3xl mx-auto">
-                {post.description}
-              </p>
+              <h1 className="text-[36px] xl:text-[72px] font-title font-extrabold leading-tight xl:leading-[80px] tracking-0% text-center">
+                {post.title}
+              </h1>
+              {post.sub_title && (
+                <p className="font-centuryBook italic text-[28px] xl:text-[64px] leading-tight xl:leading-[72px] text-center">
+                  {post.sub_title}
+                </p>
+              )}
+              {post.description && (
+                <div
+                  className="font-montserrat font-normal text-sm xl:text-[16px] leading-relaxed xl:leading-[28px] text-center max-w-3xl mx-auto text-gray-700"
+                  dangerouslySetInnerHTML={{ __html: post.description }}
+                />
+              )}
             </div>
-            <div className="flex flex-col gap-12">
-              <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
+            {post.thumbnail && (
+              <div className="w-full max-w-5xl mx-auto aspect-[2/1] overflow-hidden rounded-2xl shadow-sm">
+                <img src={post.thumbnail} alt={post.title} className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex flex-col gap-8 max-w-4xl mx-auto w-full">
+              <div
+                className="prose prose-lg max-w-none font-montserrat leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: post.content || "" }}
+              />
             </div>
           </>
+        ) : (
+          <div className="py-16 text-center flex flex-col items-center gap-4">
+            <h1 className="text-2xl xl:text-4xl font-title font-bold text-gray-900">Blog post not found</h1>
+            <Link
+              to="/blogs"
+              className="button--primary px-6 py-3 rounded-2xl bg-primary text-white font-bold hover:bg-primary-800 transition-colors"
+            >
+              Back to Blogs
+            </Link>
+          </div>
         )}
         <div className="flex justify-center items-center relative mb-[100px]">
           <img src="/assets/images/blog-btn.webp" className="max-w-[500px]" alt="explore more thought" />

@@ -3,7 +3,7 @@ export const ComingCollection = ({ className, isActive }: { className?: string, 
 
     return (
         <div className={clsx("flex overflow-hidden w-full h-full", className)} to="/collections">
-            <img src="/assets/images/home/coming-collection.gif" className="scale-110 object-cover" alt="Coming Collection" />
+            <img src="/assets/images/home/coming-collection.gif" className="object-cover w-full h-full" alt="Coming Collection" />
         </div>
     );
 };

@@ -15,7 +15,7 @@ export const CollectionsSection = ({
   const { t } = useI18n();
 
   return (
-    <section className="w-full overflow-hidden bg-white pb-24 pt-8 md:pt-12">
+    <section className="w-full overflow-hidden bg-white pb-16 pt-6 md:pt-10">
       <HalfFanSlider
         sliderCards={sliderCards}
         collectionHandles={collectionHandles}

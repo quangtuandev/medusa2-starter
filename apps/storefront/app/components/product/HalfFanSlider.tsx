@@ -36,7 +36,7 @@ const DIM_SCALE = 0.7;
 const DIM_Y = 80;
 const DIM_OPACITY = 0.3;
 /** A focused card is enlarged and lifted to FOCUS_TOP inside the stage. */
-const FOCUS_SCALE = 1.25;
+const FOCUS_SCALE = 1.2;
 
 const COLOR_YELLOW = '#F5D33F';
 const COLOR_BLUE = '#5B8DEF';
@@ -70,6 +70,7 @@ const EASE_GLIDE = [0.65, 0, 0.35, 1] as const;
 type StageGeometry = {
   cardW: number;
   cardH: number;
+  cardBottom: number;
   pivotY: number;
   /** Rotation step between neighbouring cards, in degrees. */
   step: number;
@@ -78,21 +79,23 @@ type StageGeometry = {
 };
 
 const DESKTOP_GEO: StageGeometry = {
-  cardW: 200,
-  cardH: 340,
-  pivotY: 900,
+  cardW: 180,
+  cardH: 290,
+  cardBottom: 36,
+  pivotY: 780,
   step: FAN_STEP_DEG,
-  stageH: 470,
-  focusTop: 40,
+  stageH: 360,
+  focusTop: 6,
 };
 
 const MOBILE_GEO: StageGeometry = {
-  cardW: 150,
-  cardH: 230,
-  pivotY: 800,
+  cardW: 140,
+  cardH: 215,
+  cardBottom: 24,
+  pivotY: 720,
   step: 7,
-  stageH: 330,
-  focusTop: 30,
+  stageH: 290,
+  focusTop: 12,
 };
 
 export interface SliderCardItem {
@@ -312,7 +315,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
    * Vertical offset that puts the *scaled* focused card's top edge at geo.focusTop.
    * Scaling happens around the card centre, so the lift is fairly small.
    */
-  const focusLift = geo.focusTop - (geo.stageH - geo.cardH / 2) + (geo.cardH * FOCUS_SCALE) / 2;
+  const focusLift = geo.focusTop - (geo.stageH - geo.cardBottom - geo.cardH / 2) + (geo.cardH * FOCUS_SCALE) / 2;
 
   /* ── state ─────────────────────────────────────────────────────────────── */
   // Clicking a card brings it to the front (zoom + flip); clicking the focused
@@ -375,16 +378,20 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     return () => window.clearTimeout(timer);
   }, [reduceMotion, totalCards]);
 
-  // Scale the fixed-size stage down so it never overflows narrow viewports.
+  // Scale the fixed-size stage down so it never overflows narrow or short laptop viewports.
   useEffect(() => {
     const update = () => {
-      const available = (document.documentElement.clientWidth || window.innerWidth) - 32;
-      setStageScale(Math.min(1, Math.max(available, 240) / stageW));
+      const availableW = (document.documentElement.clientWidth || window.innerWidth) - 32;
+      const widthScale = Math.max(availableW, 240) / stageW;
+      const vh = window.innerHeight || 800;
+      const reservedH = showInfoPanel ? 290 : heading ? 180 : 120;
+      const heightScale = isMobile ? 1 : Math.max(0.72, (vh - reservedH) / geo.stageH);
+      setStageScale(Math.min(1, widthScale, heightScale));
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [stageW]);
+  }, [stageW, isMobile, showInfoPanel, heading, geo.stageH]);
 
   // Clicking outside the stage releases a sticky selection.
   useEffect(() => {
@@ -437,9 +444,9 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
     const card = initialCards[index];
     if (!card || !dealt) return;
 
-    // Mouse / trackpad: the first click focuses the card (zoom + flip), a second
-    // click on the already focused card follows its link.
-    if (pointerFine && activeIndex !== index) {
+    // First click/tap focuses the card (zoom + flip), a second click/tap on the
+    // already focused card follows its link.
+    if (activeIndex !== index) {
       setActiveIndex(index);
       return;
     }
@@ -533,7 +540,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                   filter: 'blur(8px)',
                   transition: { duration: 0, ease: 'easeIn' },
                 }}
-                className="w-full whitespace-pre-line text-center font-display font-semibold uppercase leading-[1.05] text-kira-brand"
+                className="w-full whitespace-pre-line text-center font-title font-extrabold uppercase leading-[1.05] text-kira-brand"
               >
                 {headingText}
                 <br /> {subtitle}
@@ -544,7 +551,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
       )}
 
       {/* Stage: fixed-size canvas, uniformly scaled to fit smaller viewports */}
-      <div className="relative z-0 flex w-full justify-center mt-6 xl:mt-8" style={{ height: geo.stageH * stageScale }}>
+      <div className="relative z-0 flex w-full justify-center mt-2 xl:mt-4" style={{ height: geo.stageH * stageScale }}>
         <div
           style={{
             width: stageW,
@@ -583,8 +590,9 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                   role="button"
                   tabIndex={0}
                   aria-label={`${t('products.collection')}: ${card.title}`}
-                  className="absolute left-1/2 bottom-0 collection-card-item cursor-pointer outline-none"
+                  className="absolute left-1/2 collection-card-item cursor-pointer outline-none"
                   style={{
+                    bottom: geo.cardBottom,
                     width: geo.cardW,
                     height: geo.cardH,
                     marginLeft: -geo.cardW / 2,
@@ -725,8 +733,8 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
 
       {/* Info block: fixed-height rows so the crossfade never shifts the layout */}
       {showInfoPanel && (
-        <div ref={infoRef} className="relative z-20 flex flex-col items-center justify-center w-full px-6 mt-2 xl:mt-4">
-          <div className="relative flex h-12 xl:h-14 w-full items-center justify-center mb-2 xl:mb-3">
+        <div ref={infoRef} className="relative z-20 flex flex-col items-center justify-center w-full px-6 mt-1 xl:mt-2">
+          <div className="relative flex h-10 xl:h-12 w-full items-center justify-center mb-1 xl:mb-2">
             <AnimatePresence mode="sync" initial={false}>
               <motion.div
                 key={`icon-${displayCard.id}`}
@@ -741,7 +749,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
             </AnimatePresence>
           </div>
 
-          <div className="relative w-full h-[46px] xl:h-[96px]">
+          <div className="relative w-full min-h-[48px] xl:min-h-[72px] py-1">
             <AnimatePresence mode="sync" initial={false}>
               <motion.div
                 key={`title-${displayCard.id}`}
@@ -752,7 +760,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                 transition={{ duration: TEXT_FADE, ease: 'linear' }}
               >
                 <h2
-                  className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-centuryBook italic text-[40px] leading-none xl:text-[90px]"
+                  className="max-w-full px-4 text-center font-centuryBook italic text-[36px] leading-[1.2] xl:text-[64px] 2xl:text-[76px]"
                   dangerouslySetInnerHTML={{ __html: displayCard.title }}
                 />
               </motion.div>
@@ -760,7 +768,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
           </div>
 
           {/* Navigation arrows flank the subtitle */}
-          <div className="flex items-center gap-4 xl:gap-6 mt-2">
+          <div className="flex items-center gap-4 xl:gap-6 mt-1">
             <button
               onClick={prev}
               aria-label="Previous collection"
@@ -769,7 +777,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
               <ChevronLeft size={isMobile ? 18 : 24} />
             </button>
 
-            <div className="relative h-[34px] xl:h-[68px] w-[220px] xl:w-[520px]">
+            <div className="relative min-h-[34px] xl:min-h-[52px] min-w-[200px] max-w-[70vw] xl:min-w-[340px] xl:max-w-[560px] px-2">
               <AnimatePresence mode="sync" initial={false}>
                 <motion.div
                   key={`subtitle-${displayCard.id}`}
@@ -780,7 +788,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                   transition={{ duration: TEXT_FADE, ease: 'linear' }}
                 >
                   <p
-                    className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-center font-title font-bold text-[26px] leading-tight xl:text-[64px]"
+                    className="max-w-full text-center font-title font-bold text-[22px] leading-[1.25] xl:text-[42px] 2xl:text-[52px]"
                     style={{ color: subtitleColor }}
                   >
                     {subtitle}

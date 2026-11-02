@@ -26,11 +26,18 @@ export const CheckoutOrderSummaryItem: FC<CheckoutOrderSummaryItemProps> = ({ it
 
   if (!cart) return null;
 
+  const thumbnailSrc =
+    item.thumbnail ||
+    (item.variant as any)?.thumbnail ||
+    item.variant?.product?.thumbnail ||
+    (item.variant?.product as any)?.images?.[0]?.url ||
+    '';
+
   return (
     <li className="flex px-4 py-6 sm:px-6">
       <div className="flex-shrink-0">
         <Image
-          src={item.variant?.product?.thumbnail || ''}
+          src={thumbnailSrc}
           alt={item.product_title || 'product thumbnail'}
           className="w-20 rounded-md"
         />

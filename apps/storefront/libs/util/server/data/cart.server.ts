@@ -197,12 +197,23 @@ export async function enrichLineItems(
       return item;
     }
 
+    const resolvedThumbnail =
+      item.thumbnail ||
+      (variant as any).thumbnail ||
+      product.thumbnail ||
+      product.images?.[0]?.url ||
+      '';
+
     // If product and variant are found, enrich the item
     return {
       ...item,
+      thumbnail: resolvedThumbnail,
       variant: {
         ...variant,
-        product: omit(product, 'variants'),
+        product: {
+          ...omit(product, 'variants'),
+          thumbnail: product.thumbnail || product.images?.[0]?.url || '',
+        },
       },
     };
   }) as HttpTypes.StoreCartLineItem[];

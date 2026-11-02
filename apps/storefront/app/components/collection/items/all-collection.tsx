@@ -117,8 +117,8 @@ export const AllCollection = ({ className, isActive }: { className?: string, isA
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
             className={clsx("flex all-collection cursor-pointer overflow-hidden w-full h-full", className)} to="/collections">
-            <img src="/assets/images/home/all-collection.gif" className="scale-110 object-cover all-main-image" alt="All Collection" />
-            <img src="/assets/images/home/all-collection.webp" className="scale-110 object-cover all-second-image opacity-0" alt="All Collection Text" />
+            <img src="/assets/images/home/all-collection.gif" className="object-cover w-full h-full all-main-image" alt="All Collection" />
+            <img src="/assets/images/home/all-collection.webp" className="object-cover w-full h-full all-second-image opacity-0" alt="All Collection Text" />
             <div>
                 <div className="absolute top-0 left-0 w-full opacity-0 all-active-1">
                     <img src="/assets/images/home/all.webp" className="w-1/2 object-cover" alt="All Collection Text" />
