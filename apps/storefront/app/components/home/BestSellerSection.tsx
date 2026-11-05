@@ -41,6 +41,43 @@ const Card = ({ item, reduceMotion }: { item: HomepageBestSellerItem; reduceMoti
 );
 
 /**
+ * Slider arrow. Sits fully outside the left/right edge of the track, inside the
+ * section gutter, so it never overlaps a product image.
+ */
+const NavArrow = ({
+  direction,
+  onClick,
+  disabled,
+  reduceMotion,
+}: {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  disabled: boolean;
+  reduceMotion: boolean;
+}) => (
+  <motion.button
+    type="button"
+    onClick={onClick}
+    disabled={disabled}
+    aria-label={direction === 'prev' ? 'Previous best sellers' : 'Next best sellers'}
+    whileTap={reduceMotion ? undefined : { scale: 0.94 }}
+    className={`absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-kira-brand/25 bg-white/95 text-kira-brand backdrop-blur-sm transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand md:flex ${
+      direction === 'prev' ? 'left-0 -translate-x-[calc(100%+0.5rem)]' : 'right-0 translate-x-[calc(100%+0.5rem)]'
+    }`}
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d={direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </motion.button>
+);
+
+/**
  * Homepage v2 "Best Seller" block: heading, description and a card slider.
  * The track uses native scroll-snap (drag/scroll on touch, arrows/dots/keyboard
  * otherwise), so it works with any number of cards — 1 to 6 from the CMS.
@@ -120,47 +157,6 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
           <h2 className="text-center font-title font-extrabold uppercase leading-[1.05] text-kira-brand [font-size:clamp(2.25rem,4.5vw,4rem)]">
             {bestSeller.heading}
           </h2>
-
-          {hasSlider && (
-            <div className="mt-5 hidden items-center gap-2 md:absolute md:right-0 md:top-1/2 md:mt-0 md:flex md:-translate-y-1/2">
-              <motion.button
-                type="button"
-                onClick={() => goTo(activePage - 1)}
-                disabled={activePage === 0}
-                aria-label="Previous best sellers"
-                whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-kira-brand/25 text-kira-brand transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M15 5l-7 7 7 7"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </motion.button>
-              <motion.button
-                type="button"
-                onClick={() => goTo(activePage + 1)}
-                disabled={activePage >= pageCount - 1}
-                aria-label="Next best sellers"
-                whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-kira-brand/25 text-kira-brand transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M9 5l7 7-7 7"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </motion.button>
-            </div>
-          )}
         </div>
 
         {bestSeller.description && (
@@ -169,41 +165,62 @@ export const BestSellerSection = ({ bestSeller }: { bestSeller: HomepageBestSell
           </p>
         )}
 
-        {/* Slider track: snap pages, draggable on touch, arrow keys on desktop */}
-        <div
-          ref={trackRef}
-          onScroll={handleScroll}
-          onKeyDown={(event) => {
-            if (!hasSlider) return;
-            if (event.key === 'ArrowRight') {
-              event.preventDefault();
-              goTo(activePage + 1);
-            }
-            if (event.key === 'ArrowLeft') {
-              event.preventDefault();
-              goTo(activePage - 1);
-            }
-          }}
-          tabIndex={hasSlider ? 0 : -1}
-          role="group"
-          aria-roledescription={hasSlider ? 'carousel' : undefined}
-          aria-label="Best sellers"
-          className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden pt-2 pb-2 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6 lg:gap-8 xl:mt-16"
-        >
-          {items.map((item, index) => (
-            <motion.div
-              key={`${item.rank}-${item.image_url}`}
-              data-card
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              variants={cardVariants(reduceMotion)}
-              transition={{ delay: reduceMotion ? 0 : index * 0.06 }}
-              className="w-full shrink-0 snap-center sm:w-[calc((100%-1.5rem)/2)] sm:snap-start sm:max-w-none lg:w-[calc((100%-4rem)/3)]"
-            >
-              <Card item={item} reduceMotion={reduceMotion} />
-            </motion.div>
-          ))}
+        {/* Slider track: snap pages, draggable on touch, arrow keys on desktop.
+            The arrows live at the left/right edge of this wrapper, centred on the
+            card row. */}
+        <div className="relative mt-10 xl:mt-16">
+          {hasSlider && (
+            <>
+              <NavArrow
+                direction="prev"
+                onClick={() => goTo(activePage - 1)}
+                disabled={activePage === 0}
+                reduceMotion={reduceMotion}
+              />
+              <NavArrow
+                direction="next"
+                onClick={() => goTo(activePage + 1)}
+                disabled={activePage >= pageCount - 1}
+                reduceMotion={reduceMotion}
+              />
+            </>
+          )}
+
+          <div
+            ref={trackRef}
+            onScroll={handleScroll}
+            onKeyDown={(event) => {
+              if (!hasSlider) return;
+              if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                goTo(activePage + 1);
+              }
+              if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                goTo(activePage - 1);
+              }
+            }}
+            tabIndex={hasSlider ? 0 : -1}
+            role="group"
+            aria-roledescription={hasSlider ? 'carousel' : undefined}
+            aria-label="Best sellers"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden pt-2 pb-2 outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6 lg:gap-8"
+          >
+            {items.map((item, index) => (
+              <motion.div
+                key={`${item.rank}-${item.image_url}`}
+                data-card
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.15 }}
+                variants={cardVariants(reduceMotion)}
+                transition={{ delay: reduceMotion ? 0 : index * 0.06 }}
+                className="w-full shrink-0 snap-center sm:w-[calc((100%-1.5rem)/2)] sm:snap-start sm:max-w-none lg:w-[calc((100%-4rem)/3)]"
+              >
+                <Card item={item} reduceMotion={reduceMotion} />
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {hasSlider && (

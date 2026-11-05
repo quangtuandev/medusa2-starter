@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useI18n } from "@app/hooks/useI18n";
+import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 
 export interface PopupData {
   id: string;
@@ -23,16 +24,88 @@ export interface PopupData {
   target_page: string;
 }
 
+/**
+ * One popup per "visit".
+ *
+ * A visit is one browser tab session: `sessionStorage` survives client-side route
+ * changes AND reloads, so a popup can never appear twice while somebody keeps
+ * browsing (e.g. popup on `/` -> click CTA -> `/phin` must not pop up again).
+ * The in-memory flag closes the tiny window where two fetches resolve before the
+ * storage write lands.
+ */
+const VISIT_KEY = "popup_shown_visit";
+
+let visitMarkedInMemory = false;
+
+// Storage can throw (private mode, partitioned iframe, quota). A read failure must
+// never swallow the popup, so it degrades to "not shown yet".
+const readStorage = (area: "session" | "local", key: string): string | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    return (area === "session" ? window.sessionStorage : window.localStorage).getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const writeStorage = (area: "session" | "local", key: string, value: string) => {
+  if (typeof window === "undefined") return;
+  try {
+    (area === "session" ? window.sessionStorage : window.localStorage).setItem(key, value);
+  } catch {
+    /* ignore */
+  }
+};
+
+const hasPopupShownThisVisit = (): boolean => {
+  if (typeof window === "undefined") return true; // never decide during SSR
+  if (visitMarkedInMemory) return true;
+  return readStorage("session", VISIT_KEY) === "1";
+};
+
+const markPopupShownThisVisit = () => {
+  visitMarkedInMemory = true;
+  writeStorage("session", VISIT_KEY, "1");
+};
+
+/**
+ * CTA links are often typed as absolute URLs (`https://shop.com/products/x`) even
+ * for pages of this very store. Anything pointing at the current origin — or at the
+ * configured storefront domain while running on e.g. localhost — must stay an
+ * in-app navigation, because a new tab starts a new visit and would show the popup
+ * all over again.
+ */
+const isOwnStoreUrl = (url: URL, configuredUrl?: string): boolean => {
+  if (typeof window === "undefined") return false;
+  if (url.origin === window.location.origin) return true;
+  const candidates = [configuredUrl, (window as any).ENV?.STOREFRONT_URL as string | undefined];
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      if (new URL(candidate.trim()).origin === url.origin) return true;
+    } catch {
+      /* not a valid URL — skip */
+    }
+  }
+  return false;
+};
+
 export const PopupDialog = () => {
   const { currentLanguage } = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
+  const { siteDetails } = useRootLoaderData() || {};
 
   const [activePopup, setActivePopup] = useState<PopupData | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
+    // This effect re-runs on every client-side navigation. Once a popup has been
+    // shown in this visit, stop here — otherwise the next route change fetches the
+    // popups again and pops one up on the page the CTA just sent the user to.
+    if (hasPopupShownThisVisit()) return;
+
     let isMounted = true;
     let timer: NodeJS.Timeout | null = null;
 
@@ -84,9 +157,9 @@ export const PopupDialog = () => {
         const dayKey = `popup_shown_day_${matched.id}`;
 
         if (matched.display_frequency === "once_per_session") {
-          if (sessionStorage.getItem(sessionKey)) return;
+          if (readStorage("session", sessionKey)) return;
         } else if (matched.display_frequency === "once_per_day") {
-          const lastShown = localStorage.getItem(dayKey);
+          const lastShown = readStorage("local", dayKey);
           if (lastShown) {
             const timeDiff = Date.now() - parseInt(lastShown, 10);
             if (timeDiff < 24 * 60 * 60 * 1000) return; // Shown within last 24 hours
@@ -96,18 +169,22 @@ export const PopupDialog = () => {
         // Delay trigger
         const delay = (matched.delay_seconds || 0) * 1000;
         timer = setTimeout(() => {
-          if (isMounted) {
-            setImageFailed(false);
-            setActivePopup(matched);
-            setIsVisible(true);
+          // Re-check: the user may have navigated (or another popup may have won
+          // the race) while the delay was running.
+          if (!isMounted || hasPopupShownThisVisit()) return;
 
-            // Record display
-            if (matched.display_frequency === "once_per_session") {
-              sessionStorage.setItem(sessionKey, "true");
-            } else if (matched.display_frequency === "once_per_day") {
-              localStorage.setItem(dayKey, Date.now().toString());
-            }
+          // Record the display *before* rendering so a route change triggered by
+          // the CTA can never schedule a second popup for this visit.
+          markPopupShownThisVisit();
+          if (matched.display_frequency === "once_per_session") {
+            writeStorage("session", sessionKey, "true");
+          } else if (matched.display_frequency === "once_per_day") {
+            writeStorage("local", dayKey, Date.now().toString());
           }
+
+          setImageFailed(false);
+          setActivePopup(matched);
+          setIsVisible(true);
         }, delay);
       } catch (err) {
         console.error("Failed to fetch popups:", err);
@@ -131,6 +208,18 @@ export const PopupDialog = () => {
     if (!link) return;
 
     if (link.startsWith("http://") || link.startsWith("https://")) {
+      // A full URL pointing at this very store is still the same visit — navigate
+      // in place. Opening it in a new tab would start a fresh session (empty
+      // sessionStorage) and the popup would show again there.
+      try {
+        const url = new URL(link, window.location.href);
+        if (isOwnStoreUrl(url, siteDetails?.settings?.storefront_url)) {
+          navigate(`${url.pathname}${url.search}${url.hash}`);
+          return;
+        }
+      } catch {
+        /* malformed URL — fall through to window.open */
+      }
       window.open(link, "_blank", "noopener,noreferrer");
     } else {
       navigate(link);

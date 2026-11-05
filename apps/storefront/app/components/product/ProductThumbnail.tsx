@@ -42,12 +42,11 @@ export const ProductThumbnail: FC<ProductThumbnailProps> = ({ product, className
           src={thumbnailImage}
           alt={product.title}
           className={clsx('relative z-10 h-full w-full object-cover object-center transition-all duration-300 -rotate-[14deg]', {
-            'group-hover/product-card:opacity-75': !hoverImage,
             'top-[-200px]': isRemoveStyleDefault,
           }, classNameImage,)}
         />
       ) : (
-        <div className="relative z-10 flex h-full w-full items-center justify-center object-cover object-center group-hover/product-card:opacity-75">
+        <div className="relative z-10 flex h-full w-full items-center justify-center object-cover object-center">
           No Image
         </div>
       )}
