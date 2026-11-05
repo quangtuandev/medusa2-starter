@@ -1,4 +1,4 @@
-# HalfFanSlider — fan-deck hero (deal-in + click-to-focus)
+# HalfFanSlider — fan-deck hero (deal-in + hover-to-focus)
 
 Implementation of the "KIRA hero — fanned card deck" prototype in
 `apps/storefront/app/components/product/HalfFanSlider.tsx`.
@@ -68,12 +68,13 @@ Implementation notes:
   re-applies once after mount, because `<ScrollRestoration>` resets the page right
   after the route paints. Reduced motion switches it to an instant jump, and a
   direct visit (no flag) never scrolls.
-- Focus is driven by **click**, not hover: hovering never moves the fan. A click on
-  a card sets `activeIndex`; the same click on an already focused card follows its
-  link. The focus is released by clicking outside the widget — the check treats the
-  fan stage **and** the arrow row as "inside", so stepping with `‹ ›` does not reset
-  it. Keyboard: `Enter` / `Space` behave exactly like a click (first focuses, second
-  follows). Touch devices (`hover: none`) skip the focus step and navigate on tap.
+- On fine pointers (mouse / trackpad), **hover** drives focus through a transparent,
+  non-animated hit-area deck that keeps the resting fan geometry. The visible cards
+  can therefore move/flip without moving the pointer target (especially on the two
+  edge cards). Entering a hit area sets `activeIndex`, leaving the fan clears it, and
+  one click follows the focused card's link. No debounce or throttle is used.
+  Keyboard `Enter` / `Space` keeps the focus-then-open flow. Touch devices
+  (`hover: none`) keep the existing two-tap flow: first focus, second open.
 - The flip runs **exactly one turn per hover**: the component keeps a per-card turn
   counter and the `rotateY` target is always `turns × FOCUS_FLIP_DEG` (180, 360,
   540…), so leaving never spins back and a slow flip is never cut short by a hard
@@ -87,15 +88,14 @@ Implementation notes:
   accelerates and settles softly instead of front-loading like an ease-out.
 - `prefers-reduced-motion`: no deal, no flip, no scale/lift/dim — the focused card
   is signalled by `z-index` + `FOCUS_SHADOW`, and only the text crossfades.
-- Touch (`hover: none`): hover-focus is disabled; arrows / swipe still browse and a
-  tap keeps the previous behaviour (navigate to the collection, or select a
-  not-yet-live card).
+- Touch (`hover: none`): hover-focus is disabled; arrows / swipe still browse and
+  taps keep the two-step focus-then-open behaviour.
 
 ## Verification (headless Chrome, 1440×900)
 
-- Click-driven flow: hovering a card leaves every `z-index` at `10..14`; one click
-  sets the clicked card to `z-index: 50` and keeps the route; a second click follows
-  the link; clicking empty space returns to `10..14`; `‹ ›` step `1 → 2 → 3`.
+- Fine-pointer flow: hovering a card sets it to `z-index: 50`; moving directly to
+  another card transfers focus; leaving the stage returns all cards to `10..14`;
+  one click follows the hovered card's link; `‹ ›` step `1 → 2 → 3`.
 - 3 cards (real API data): rotations `-9.6 / 0 / +9.6`, z `10/11/12`; focused card
   `250×425` at `x 595..845`, top `196`, others opacity `0.3`; hero bottom `882`
   (fits 900); `scrollWidth === innerWidth`.

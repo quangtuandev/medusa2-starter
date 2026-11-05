@@ -60,12 +60,18 @@ const NavArrow = ({
     onClick={onClick}
     disabled={disabled}
     aria-label={direction === 'prev' ? 'Previous best sellers' : 'Next best sellers'}
-    whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-    className={`absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-kira-brand/25 bg-white/95 text-kira-brand backdrop-blur-sm transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand md:flex ${
+    className={`group absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-kira-brand/25 bg-white/95 text-kira-brand backdrop-blur-sm transition-colors hover:bg-kira-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-kira-brand md:flex ${
       direction === 'prev' ? 'left-0 -translate-x-[calc(100%+0.5rem)]' : 'right-0 translate-x-[calc(100%+0.5rem)]'
     }`}
   >
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <motion.svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      whileTap={reduceMotion ? undefined : { scale: 0.82 }}
+    >
       <path
         d={direction === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}
         stroke="currentColor"
@@ -73,7 +79,7 @@ const NavArrow = ({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-    </svg>
+    </motion.svg>
   </motion.button>
 );
 

@@ -140,7 +140,7 @@ export interface HalfFanSliderProps {
 
 /**
  * True on devices with a precise pointer (mouse / trackpad), false on touch.
- * Cards focus on click for these devices; on touch a tap navigates right away.
+ * These devices focus cards on hover; touch keeps the existing two-tap flow.
  */
 function usePointerFine() {
   const [capable, setCapable] = useState(false);
@@ -318,8 +318,8 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
   const focusLift = geo.focusTop - (geo.stageH - geo.cardBottom - geo.cardH / 2) + (geo.cardH * FOCUS_SCALE) / 2;
 
   /* ── state ─────────────────────────────────────────────────────────────── */
-  // Clicking a card brings it to the front (zoom + flip); clicking the focused
-  // card again follows its link. The arrows simply step this index.
+  // Fine pointers bring a card forward on hover and open it on click. Touch keeps
+  // the original two-tap flow. The arrows simply step this index.
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [dealt, setDealt] = useState(false);
   /** Completed half/full turns per card: each focus adds one, nothing ever rewinds. */
@@ -327,6 +327,11 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
   const [stageScale, setStageScale] = useState(1);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
+  /**
+   * Stable, non-animated hover hit areas. The visible cards move when focused, so
+   * using those cards as hover targets makes edge cards repeatedly enter/leave.
+   */
+  const hoverAreaRefs = useRef<(HTMLDivElement | null)[]>([]);
   /** Info panel (title / arrows) — part of the widget, so clicks there keep focus. */
   const infoRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -440,35 +445,62 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
 
   const isComingSoonCard = (card: SliderCardItem) => card.handle === 'coming' || !!resolveCardTarget(card).comingSoon;
 
+  const navigateToCard = (card: SliderCardItem) => {
+    // Not live yet: keep it in front and let the info panel explain it.
+    if (isComingSoonCard(card)) return false;
+
+    const { href, external } = resolveCardTarget(card);
+    if (!href) return false;
+
+    if (external) {
+      window.location.href = href;
+    } else {
+      // Ask the destination page to jump past the hero to the product grid.
+      navigate(href, { state: { [FAN_SCROLL_STATE_KEY]: true } });
+    }
+    return true;
+  };
+
   const handleCardClick = (index: number) => {
     const card = initialCards[index];
     if (!card || !dealt) return;
 
-    // First click/tap focuses the card (zoom + flip), a second click/tap on the
-    // already focused card follows its link.
+    // Desktop focus is already driven by hover, so one click opens the card.
+    if (pointerFine) {
+      if (!navigateToCard(card)) setActiveIndex(index);
+      return;
+    }
+
+    // Touch and keyboard keep the existing two-step interaction: first focus,
+    // then open. Keyboard must not accidentally use desktop's hover shortcut.
     if (activeIndex !== index) {
       setActiveIndex(index);
       return;
     }
 
-    // Not live yet: keep it in front and let the info panel explain it.
-    if (isComingSoonCard(card)) {
+    if (!navigateToCard(card)) setActiveIndex(index);
+  };
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+
+    const card = initialCards[index];
+    if (!card || !dealt) return;
+    if (activeIndex !== index) {
       setActiveIndex(index);
       return;
     }
+    if (!navigateToCard(card)) setActiveIndex(index);
+  };
 
-    const { href, external } = resolveCardTarget(card);
-    if (href) {
-      if (external) {
-        window.location.href = href;
-      } else {
-        // Ask the destination page to jump past the hero to the product grid.
-        navigate(href, { state: { [FAN_SCROLL_STATE_KEY]: true } });
-      }
-      return;
-    }
+  const handleHoverAreaPointerEnter = (index: number) => {
+    if (!pointerFine || !dealt || activeIndex === index) return;
+    setActiveIndex(index);
+  };
 
-    setActiveIndex((prev) => (prev === index ? null : index));
+  const handleStagePointerLeave = () => {
+    if (pointerFine) setActiveIndex(null);
   };
 
   const next = () => {
@@ -567,7 +599,34 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
             onDragEnd={handleSwipe}
+            onPointerLeave={handleStagePointerLeave}
           >
+            {/* Static hit areas preserve the resting fan geometry. They never move
+                with focus, so edge-card hover cannot collapse under the pointer. */}
+            {pointerFine &&
+              initialCards.map((card, i) => (
+                <div
+                  key={`hover-area-${card.id}`}
+                  ref={(element) => {
+                    hoverAreaRefs.current[i] = element;
+                  }}
+                  onPointerEnter={() => handleHoverAreaPointerEnter(i)}
+                  onClick={() => handleCardClick(i)}
+                  className="absolute left-1/2 cursor-pointer"
+                  style={{
+                    bottom: geo.cardBottom,
+                    width: geo.cardW,
+                    height: geo.cardH,
+                    marginLeft: -geo.cardW / 2,
+                    transformOrigin: `50% ${geo.pivotY}px`,
+                    transform: `rotate(${angleOf(i)}deg)`,
+                    zIndex: 100 + i,
+                  }}
+                  role="presentation"
+                  aria-hidden="true"
+                />
+              ))}
+
             {initialCards.map((card, i) => {
               const angle = angleOf(i);
               const isFocused = focusIndex === i;
@@ -581,12 +640,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
                     cardRefs.current[i] = element;
                   }}
                   onClick={() => handleCardClick(i)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      handleCardClick(i);
-                    }
-                  }}
+                  onKeyDown={(event) => handleCardKeyDown(event, i)}
                   role="button"
                   tabIndex={0}
                   aria-label={`${t('products.collection')}: ${card.title}`}
