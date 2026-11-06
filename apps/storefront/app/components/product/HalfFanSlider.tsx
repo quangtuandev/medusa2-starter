@@ -826,7 +826,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
             <button
               onClick={prev}
               aria-label="Previous collection"
-              className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
+              className="p-2 xl:p-3 bg-highlight rounded-full hover:scale-105 active:scale-95 transition-transform"
             >
               <ChevronLeft size={isMobile ? 18 : 24} />
             </button>
@@ -854,7 +854,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
             <button
               onClick={next}
               aria-label="Next collection"
-              className="p-2 xl:p-3 bg-[#FFE977] rounded-full hover:scale-105 active:scale-95 transition-transform"
+              className="p-2 xl:p-3 bg-highlight rounded-full hover:scale-105 active:scale-95 transition-transform"
             >
               <ChevronRight size={isMobile ? 18 : 24} />
             </button>

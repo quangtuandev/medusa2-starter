@@ -77,7 +77,7 @@ export const Header: FC<HeaderProps> = () => {
             <Container>
               <div
                 className={clsx(
-                  "flex flex-nowrap items-center justify-between gap-2 py-2 px-4 bg-white border-[4px] border-[#FFE977] rounded-full xl:px-[96px]"
+                  "flex flex-nowrap items-center justify-between gap-2 py-2 px-4 bg-white border-[4px] border-highlight rounded-full xl:px-[96px]"
                 )}
               >
                 <div className="flex flex-wrap-reverse justify-between w-full items-center">
@@ -132,7 +132,7 @@ export const Header: FC<HeaderProps> = () => {
                     <IconButton
                       aria-label="search"
                       onClick={() => setSearchOpen(true)}
-                      className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FFE977] rounded-full p-2"
+                      className="hover:!bg-primary-50 focus:!bg-primary-50 !text-[#8F9192] bg-[#FF0] rounded-full p-2"
                       icon={MagnifyingGlassIcon}
                     />
                   </div>

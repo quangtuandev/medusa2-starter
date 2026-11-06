@@ -37,7 +37,7 @@ const Collasape: React.FC<CollasapeProps> = ({
                 {open ?
                     <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g filter="url(#filter0_d_276_82)">
-                            <circle cx="21" cy="17" r="13" transform="rotate(-90 21 17)" fill="#FFE977" />
+                            <circle cx="21" cy="17" r="13" transform="rotate(-90 21 17)" fill="#FF0" />
                             <path d="M21.7071 12.2929C21.3166 11.9024 20.6834 11.9024 20.2929 12.2929L13.9289 18.6569C13.5384 19.0474 13.5384 19.6805 13.9289 20.0711C14.3195 20.4616 14.9526 20.4616 15.3431 20.0711L21 14.4142L26.6569 20.0711C27.0474 20.4616 27.6805 20.4616 28.0711 20.0711C28.4616 19.6805 28.4616 19.0474 28.0711 18.6569L21.7071 12.2929ZM21 14L22 14L22 13L21 13L20 13L20 14L21 14Z" fill="black" />
                         </g>
                         <defs>

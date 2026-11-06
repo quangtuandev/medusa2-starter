@@ -302,7 +302,7 @@ export const PopupDialog = () => {
                 {ctaText && (
                   <button
                     onClick={() => handleCtaClick(activePopup.cta_link)}
-                    className="w-full py-3.5 px-6 rounded-2xl bg-[#FFE977] hover:bg-yellow-400 text-black font-title font-bold text-base uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full py-3.5 px-6 rounded-2xl bg-[#FF0] hover:bg-yellow-400 text-black font-title font-bold text-base uppercase tracking-wider shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
                   >
                     {ctaText}
                   </button>

@@ -230,8 +230,8 @@ export default function Stories() {
               className={clsx(
                 "font-title font-bold text-2xl lg:text-[min(2.8vw,40px)] rounded-full border border-black mx-6 py-2 text-center cursor-pointer transition-all duration-300 ease-in-out whitespace-nowrap compact:mx-0 compact:px-3 compact:py-1 compact:text-base",
                 activeIndex === index
-                  ? "bg-[#FFE977] border-[#FFE977]"
-                  : "hover:bg-[#FFE977] hover:border-[#FFE977]"
+                  ? "bg-highlight border-highlight"
+                  : "hover:bg-highlight hover:border-highlight"
               )}
             >
               {item.label}

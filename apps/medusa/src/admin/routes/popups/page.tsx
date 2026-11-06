@@ -658,7 +658,7 @@ const PopupsPage = () => {
                     {formData.cta_text_en && (
                       <button
                         type="button"
-                        className="w-full py-3 bg-[#FFE977] text-black font-bold rounded-xl text-sm shadow hover:bg-yellow-300 transition-colors"
+                        className="w-full py-3 bg-highlight text-black font-bold rounded-xl text-sm shadow hover:bg-yellow-300 transition-colors"
                       >
                         {formData.cta_text_en}
                       </button>

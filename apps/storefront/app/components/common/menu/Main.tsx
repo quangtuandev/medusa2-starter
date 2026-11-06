@@ -397,7 +397,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                     </div>
                                     <FancyText
                                         id={`fancy-text-${item.id}`}
-                                        className="text-center desk:absolute text-black desk:text-[#FFE977] desk:text-white desk:leading-[0] z-[9]"
+                                        className="text-center desk:absolute text-black desk:text-[#FF0] desk:text-white desk:leading-[0] z-[9]"
                                         text={item.label}
                                     />
                                 </div>
@@ -409,7 +409,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 <div className="relative z-[2] flex h-full flex-col gap-6 overflow-y-auto px-6 pb-24 pt-24">
                     <div>
                         <span className="font-title text-4xl font-bold uppercase text-black">{menuThisIs} </span>
-                        <span className="font-centuryBook text-4xl italic text-[#FFE977]">{menuOur}</span>
+                        <span className="font-centuryBook text-4xl italic text-[#FF0]">{menuOur}</span>
                     </div>
                     {categoryItems.map((item) => (
                         <Link
@@ -431,7 +431,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 style={{ transform: `scale(${scale})`, transformOrigin: 'bottom center' }}
             >
                 <span className="relative z-[2] font-title text-[90px] font-bold uppercase text-black">{menuThisIs}</span>
-                <span className="-ml-[100px] font-centuryBook text-[180px] italic text-[#FFE977]">{menuOur}</span>
+                <span className="-ml-[100px] font-centuryBook text-[180px] italic text-[#FF0]">{menuOur}</span>
             </p>
 
             <MenuToggle

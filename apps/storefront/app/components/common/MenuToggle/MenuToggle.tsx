@@ -31,9 +31,9 @@ export const MenuToggle: FC<MenuToggleProps> = ({
         variant === 'brand'
           ? 'bg-white text-[#3B2314] hover:bg-[#F4F0EC]'
           : {
-              'lg:bg-[#FDCEF8] bg-[#FFE977]': isOpen,
-              'bg-[#FFFF00]': !isOpen,
-            },
+            'lg:bg-[#FDCEF8] bg-highlight': isOpen,
+            'bg-[#FFFF00]': !isOpen,
+          },
         className,
       )}
       aria-label={isOpen ? 'Close menu' : 'Open menu'}

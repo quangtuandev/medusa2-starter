@@ -46,7 +46,11 @@ const MorphingShape: React.FC<MorphingShapeProps> = ({ className, classNameWrapp
     return (
         <div className={clsx("pointer-events-none", className)}>
             <div className={clsx("flex h-full items-center justify-center pointer-events-none", classNameWrapper)}>
-                <svg style={{ filter: `blur(${blur}px)`, zoom }}
+                {/* `overflow: visible` is required: an <svg> root clips to its viewport by
+                    default, and the morphing paths reach/pass the viewBox border, which cut
+                    the blurred blob off with a straight edge (it looked like a square frame
+                    behind the product). */}
+                <svg style={{ filter: `blur(${blur}px)`, zoom, overflow: "visible" }}
                     width='643' height='836' viewBox="0 0 643 836">
                     <linearGradient id={`PSgrad_${id}`} x1="70.711%" x2="0%" y1="70.711%" y2="0%">
                         <stop offset={`${offsetStart}%`} stopColor={colorStart} stopOpacity="1" />

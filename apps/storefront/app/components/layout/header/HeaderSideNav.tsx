@@ -58,7 +58,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                           <button
                             onClick={() => setOpen(false)}
                             className={clsx(
-                              'inline-flex items-center justify-center w-[55px] h-[55px] rounded-full transition-all text-[#000000] duration-300 ease-in-out lg:bg-[#FDCEF8] bg-[#FFE977] shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11 z-[9999]'
+                              'inline-flex items-center justify-center w-[55px] h-[55px] rounded-full transition-all text-[#000000] duration-300 ease-in-out lg:bg-[#FDCEF8] bg-highlight shadow-[0px_4px_10px_0px_#00000040] absolute top-8 right-4 lg:right-11 z-[9999]'
                             )}
                           >
                             <img src="/assets/images/icons/close.svg" alt="Close" />
@@ -89,7 +89,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                                   }
                                   prefetch="viewport"
                                 >
-                                  <span className="font-title m-auto lg:text-[95px] text-[40px] font-bold uppercase lg:hidden block pointer-events-none text-center lg:absolute text-black lg:text-[#FFE977] lg:text-white lg:leading-[0] z-[9]">{t(navItemProps.label)}</span>
+                                  <span className="font-title m-auto lg:text-[95px] text-[40px] font-bold uppercase lg:hidden block pointer-events-none text-center lg:absolute text-black lg:text-[#FF0] lg:text-white lg:leading-[0] z-[9]">{t(navItemProps.label)}</span>
                                 </URLAwareNavLink>
                               ))}
                             </nav>
