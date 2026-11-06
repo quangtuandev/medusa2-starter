@@ -359,7 +359,7 @@ export const ProductTemplate = ({ product, productContent }: ProductTemplateProp
             <Container className="px-0 sm:px-6 md:px-8">
               <Grid className="!gap-0 overflow-visible">
                 <GridColumn className="mb-8 md:col-span-6 xl:sticky xl:top-[144px] [height:min-content]">
-                  <h1 className="text-3xl sm:text-4xl xl:text-[64px] 2xl:text-[80px] font-bold text-gray-900 !leading-none mb-4 break-words">
+                  <h1 className="text-3xl sm:text-4xl xl:text-[64px] 2xl:text-[80px] font-bold text-gray-900 !leading-none mb-4 break-words relative z-10">
                     {product.title}
                   </h1>
                   <ProductImageGallery key={product.id} product={product} variantImage={variantImage} />
