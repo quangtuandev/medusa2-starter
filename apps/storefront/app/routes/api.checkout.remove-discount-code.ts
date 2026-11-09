@@ -1,7 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { sdk } from '@libs/util/server/client.server';
-import { retrieveCart } from '@libs/util/server/data/cart.server';
-import type { PromotionDTO } from '@medusajs/types';
 import type { ActionFunctionArgs } from 'react-router';
 import { data as remixData } from 'react-router';
 import { getValidatedFormData } from 'remix-hook-form';
@@ -24,18 +22,18 @@ export async function action(actionArgs: ActionFunctionArgs) {
     return remixData({ errors }, { status: 400 });
   }
 
-  const cart = await retrieveCart(actionArgs.request);
-  const promoCodes = (cart as any)?.promotions
-    ?.filter((promo: PromotionDTO) => promo.code !== data.code)
-    .map((promo: PromotionDTO) => promo.code) as string[];
+  try {
+    const { cart: updatedCart } = await sdk.store.cart.removePromotions(data.cartId, {
+      promo_codes: [data.code],
+    });
 
-  const { cart: updatedCart } = await sdk.store.cart.update(data.cartId, {
-    promo_codes: promoCodes || [],
-  });
+    if (!updatedCart) {
+      return remixData({ errors: { root: { message: 'Could not remove promo code.' } } }, { status: 400 });
+    }
 
-  if (!updatedCart) {
+    return remixData({ cart: updatedCart });
+  } catch (error) {
+    console.error(error);
     return remixData({ errors: { root: { message: 'Could not remove promo code.' } } }, { status: 400 });
   }
-
-  return remixData({ cart: updatedCart });
 }

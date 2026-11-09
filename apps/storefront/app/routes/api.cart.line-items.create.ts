@@ -57,12 +57,20 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const responseHeaders = new Headers();
 
-  const { cart } = await addToCart(request, {
-    variantId: variant.id!,
-    quantity,
-  });
+  try {
+    const { cart } = await addToCart(request, {
+      variantId: variant.id!,
+      quantity,
+    });
 
-  await setCartId(responseHeaders, cart.id);
+    await setCartId(responseHeaders, cart.id);
 
-  return data({ cart }, { headers: responseHeaders });
+    return data({ cart }, { headers: responseHeaders });
+  } catch (error) {
+    console.error('Add to cart failed:', error);
+    return data(
+      { errors: { root: { message: 'Could not add this item to your cart. Please try again.' } } as FieldErrors },
+      { status: 400 },
+    );
+  }
 }

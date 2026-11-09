@@ -20,7 +20,7 @@ export const CheckoutOrderSummaryDiscountCode: FC<CheckoutOrderSummaryDiscountCo
   const fetcher = useFetcher<{
     errors?: { [key: string]: string };
   }>();
-  const [isFormVisible, setIsFormVisible] = useState<boolean>(!!(cart.promotions as PromotionDTO[]).length);
+  const [isFormVisible, setIsFormVisible] = useState<boolean>(!!cart.promotions?.length);
   const hasDiscounts = !!cart.promotions?.length;
   const hasErrors = Object.keys(fetcher.data?.errors || {}).length > 0;
   const isSubmitting = ['submitting', 'loading'].includes(fetcher.state);

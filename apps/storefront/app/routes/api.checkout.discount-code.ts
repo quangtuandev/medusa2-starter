@@ -23,21 +23,28 @@ export async function action(actionArgs: ActionFunctionArgs) {
   }
 
   try {
-    const { cart } = await sdk.store.cart.update(data.cartId, {
+    const { cart } = await sdk.store.cart.addPromotions(data.cartId, {
       promo_codes: [data.code],
     });
 
-    if (cart.promotions.length)
-      if (!cart) {
-        return remixData(
-          { errors: { root: { message: 'Cart could not be updated. Please try again.' } } },
-          { status: 400 },
-        );
-      }
+    if (!cart) {
+      return remixData(
+        { errors: { root: { message: 'Cart could not be updated. Please try again.' } } },
+        { status: 400 },
+      );
+    }
 
     return remixData({ cart });
   } catch (error) {
     console.error(error);
+    const message = error instanceof Error ? error.message : '';
+    // Promotion misconfiguration (e.g. per-customer budget on a guest cart), not a bad code
+    if (message.includes('required by promotion campaing budget')) {
+      return remixData(
+        { errors: { root: { message: 'This discount cannot be applied right now. Please try again later.' } } },
+        { status: 400 },
+      );
+    }
     return remixData({ errors: { root: { message: 'Discount code is invalid.' } } }, { status: 400 });
   }
 }
