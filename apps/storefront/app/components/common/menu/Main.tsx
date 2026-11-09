@@ -50,6 +50,7 @@ type MenuItem = {
     defaultLabelKey: string;
     image: string;
     imageInFrame: string;
+    hideImage?: boolean;
     url: string;
     /** Canvas coordinates (px on the 1840 × 1040 design canvas). */
     left?: number;
@@ -280,6 +281,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             url: config.url?.trim() || defaultItem.url,
             image: config.image?.trim() || defaultItem.image,
             imageInFrame: config.imageInFrame?.trim() || defaultItem.imageInFrame,
+            hideImage: config.hideImage === true,
         };
     }).filter(Boolean) as (MenuItem & { label: string })[];
 
@@ -388,7 +390,12 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                         style={{ width: item.imageWidth }}
                                         className={clsx('object-contain menu-image z-[-2] hidden desk:block relative', item.imageClass)}
                                     >
-                                        <img className="" src={item.image} alt={item.label} />
+                                        <img
+                                            className=""
+                                            src={item.image}
+                                            alt={item.label}
+                                            style={item.hideImage ? { opacity: 0 } : undefined}
+                                        />
                                         <img
                                             src={item.imageInFrame}
                                             alt={item.label}

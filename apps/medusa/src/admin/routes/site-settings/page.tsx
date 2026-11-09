@@ -23,6 +23,7 @@ export interface FormCategoryItem {
   url: string
   imageInFrame: string
   image: string
+  hideImage: boolean
   enabled: boolean
 }
 
@@ -115,6 +116,7 @@ const SiteSettingsPage = () => {
       url: "",
       imageInFrame: "",
       image: "",
+      hideImage: false,
       enabled: true,
     })) as FormCategoryItem[],
   })
@@ -134,6 +136,7 @@ const SiteSettingsPage = () => {
           url: found?.url || "",
           imageInFrame: found?.imageInFrame || "",
           image: found?.image || "",
+          hideImage: found?.hideImage === true,
           enabled: found?.enabled !== false,
         }
       })
@@ -147,6 +150,7 @@ const SiteSettingsPage = () => {
             url: ci.url || "",
             imageInFrame: ci.imageInFrame || "",
             image: ci.image || "",
+            hideImage: ci.hideImage === true,
             enabled: ci.enabled !== false,
           })
         }
@@ -179,6 +183,7 @@ const SiteSettingsPage = () => {
   }, [data])
 
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null)
+  const [uploadingField, setUploadingField] = useState<"imageInFrame" | "image">("imageInFrame")
 
   const handleCategoryItemChange = (
     index: number,
@@ -198,15 +203,20 @@ const SiteSettingsPage = () => {
     })
   }
 
-  const handleFileUpload = async (index: number, file: File) => {
+  const handleFileUpload = async (
+    index: number,
+    file: File,
+    field: "imageInFrame" | "image" = "imageInFrame"
+  ) => {
     setUploadingIndex(index)
+    setUploadingField(field)
     try {
       const response = await sdk.admin.upload.create({
         files: [file],
       })
       const fileUrl = response.files[0]?.url
       if (fileUrl) {
-        handleCategoryItemChange(index, "imageInFrame", fileUrl)
+        handleCategoryItemChange(index, field, fileUrl)
         toast.success("Tải ảnh lên thành công!")
       }
     } catch (error: any) {
@@ -439,7 +449,7 @@ const SiteSettingsPage = () => {
                           type="button"
                           variant="secondary"
                           size="small"
-                          isLoading={uploadingIndex === idx}
+                          isLoading={uploadingIndex === idx && uploadingField === "imageInFrame"}
                           onClick={() => {
                             document.getElementById(`upload-file-${catItem.id}`)?.click()
                           }}
@@ -477,6 +487,83 @@ const SiteSettingsPage = () => {
                           {catItem.imageInFrame
                             ? "Đang dùng ảnh tùy chỉnh (upload hoặc URL)"
                             : `Đang dùng ảnh mặc định (${defaultMeta?.defaultImageInFrame || ""})`}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label className="text-xs font-semibold">
+                        Ảnh khung (Default image / Frame image)
+                      </Label>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id={`use-frame-${catItem.id}`}
+                          checked={!catItem.hideImage}
+                          onCheckedChange={(checked) =>
+                            handleCategoryItemChange(idx, "hideImage", !checked)
+                          }
+                        />
+                        <Label htmlFor={`use-frame-${catItem.id}`} className="text-xs cursor-pointer">
+                          {catItem.hideImage
+                            ? "Không dùng ảnh khung (opacity 0 trên storefront)"
+                            : "Dùng ảnh khung"}
+                        </Label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          id={`upload-frame-file-${catItem.id}`}
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              handleFileUpload(idx, file, "image")
+                            }
+                            e.target.value = ""
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="small"
+                          isLoading={uploadingIndex === idx && uploadingField === "image"}
+                          onClick={() => {
+                            document.getElementById(`upload-frame-file-${catItem.id}`)?.click()
+                          }}
+                          className="shrink-0"
+                        >
+                          Upload ảnh
+                        </Button>
+                        <Input
+                          value={catItem.image}
+                          onChange={(e) =>
+                            handleCategoryItemChange(idx, "image", e.target.value)
+                          }
+                          placeholder={`Hoặc điền URL / đường dẫn ảnh (Mặc định: ${defaultMeta?.defaultImage || ""})`}
+                        />
+                        {catItem.image && (
+                          <Button
+                            type="button"
+                            variant="transparent"
+                            size="small"
+                            onClick={() => handleCategoryItemChange(idx, "image", "")}
+                            className="text-xs text-ui-fg-muted hover:text-ui-fg-danger shrink-0"
+                          >
+                            Xóa tùy chỉnh
+                          </Button>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 pt-1">
+                        <img
+                          src={catItem.image || defaultMeta?.defaultImage}
+                          alt={`${catItem.id} frame`}
+                          className="w-12 h-12 object-contain bg-ui-bg-subtle border border-ui-border-base rounded p-1"
+                        />
+                        <span className="text-[11px] text-ui-fg-muted">
+                          {catItem.image
+                            ? "Đang dùng ảnh tùy chỉnh (upload hoặc URL)"
+                            : `Đang dùng ảnh mặc định (${defaultMeta?.defaultImage || ""})`}
                         </span>
                       </div>
                     </div>

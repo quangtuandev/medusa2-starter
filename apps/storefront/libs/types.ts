@@ -119,6 +119,7 @@ export interface CategoryMenuItemConfig {
   url?: string;
   image?: string;
   imageInFrame?: string;
+  hideImage?: boolean;
   enabled?: boolean;
   className?: string;
   imageClass?: string;
