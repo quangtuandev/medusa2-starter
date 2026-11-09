@@ -35,7 +35,7 @@ const DEFAULT_MENU_CATEGORY_ITEMS = [
     defaultLabelVi: "Bài viết",
     defaultUrl: "/blogs",
     defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/blog.webp",
-    defaultImage: "/assets/images/menu/frame2.webp",
+    defaultImage: "https://kiraparfums.com/assets/images/menu/frame2.webp",
   },
   {
     id: "product",
@@ -44,7 +44,7 @@ const DEFAULT_MENU_CATEGORY_ITEMS = [
     defaultLabelVi: "Sản phẩm",
     defaultUrl: "/products",
     defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/product.webp",
-    defaultImage: "/assets/images/menu/frame3.webp",
+    defaultImage: "https://kiraparfums.com/assets/images/menu/frame3.webp",
   },
   {
     id: "story",
@@ -53,7 +53,7 @@ const DEFAULT_MENU_CATEGORY_ITEMS = [
     defaultLabelVi: "Câu chuyện",
     defaultUrl: "/stories",
     defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/story.webp",
-    defaultImage: "/assets/images/menu/frame2.webp",
+    defaultImage: "https://kiraparfums.com/assets/images/menu/frame2.webp",
   },
   {
     id: "contact",
@@ -62,7 +62,7 @@ const DEFAULT_MENU_CATEGORY_ITEMS = [
     defaultLabelVi: "Liên hệ",
     defaultUrl: "/contact",
     defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/contact.webp",
-    defaultImage: "/assets/images/menu/frame1.webp",
+    defaultImage: "https://kiraparfums.com/assets/images/menu/frame1.webp",
   },
   {
     id: "store",
@@ -71,7 +71,7 @@ const DEFAULT_MENU_CATEGORY_ITEMS = [
     defaultLabelVi: "Cửa hàng",
     defaultUrl: "/store",
     defaultImageInFrame: "https://kiraparfums.com/assets/images/menu/store.webp",
-    defaultImage: "/assets/images/menu/frame2.webp",
+    defaultImage: "https://kiraparfums.com/assets/images/menu/frame2.webp",
   },
 ]
 
