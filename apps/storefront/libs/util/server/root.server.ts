@@ -31,8 +31,10 @@ const fetchSiteSettings = async (): Promise<Record<string, any>> => {
       const data = await res.json();
       return data.settings || {};
     }
+    console.error(`Failed to fetch site settings: ${res.status} ${baseUrl}/store/site-settings`);
   } catch (e) {
     // Graceful fallback
+    console.error('Failed to fetch site settings:', e);
   }
   return {};
 };

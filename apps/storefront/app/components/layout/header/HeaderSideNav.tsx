@@ -43,7 +43,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen bg-[url('/assets/images/menu/bg-mobile.webp')]">
+                <Dialog.Panel className="pointer-events-auto w-screen !bg-[#fffcf2]">
                   <div className="flex h-full flex-col shadow-xl">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex justify-between">
@@ -51,7 +51,7 @@ export const HeaderSideNav: FC<HeaderSideNavProps> = ({ open, setOpen, activeSec
                           <span className="font-title font-bold text-4xl uppercase text-black">This </span>
                           <span className="flex gap-2">
                             <span className="font-title font-bold text-4xl uppercase text-black leading-none ml-1">Is </span>
-                            <span className="font-centuryBook italic font-normal text-4xl text-white leading-none mt-1">Our</span>
+                            <span className="font-centuryBook italic font-normal text-4xl leading-none mt-1">Our</span>
                           </span>
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">

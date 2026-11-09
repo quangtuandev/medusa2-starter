@@ -347,7 +347,8 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             aria-modal="true"
             aria-label={t('menu.title', { defaultValue: 'Main menu' })}
             data-menu-overlay
-            className="fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto]"
+            className="fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden !bg-[#fffcf2]"
+        // className="fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] desk:!bg-[#fffcf2] !bg-[#fffcf2]"
         >
             {/* Hover backdrop */}
             <div className="menu-background pointer-events-none absolute inset-0 z-[1] bg-[#00000099] opacity-0 transition-opacity duration-300" />
@@ -399,7 +400,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                         <img
                                             src={item.imageInFrame}
                                             alt={item.label}
-                                            className="shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)]"
+                                            className="shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-[20px]"
                                         />
                                     </div>
                                     <FancyText
@@ -438,7 +439,8 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 style={{ transform: `scale(${scale})`, transformOrigin: 'bottom center' }}
             >
                 <span className="relative z-[2] font-title text-[90px] font-bold uppercase text-black">{menuThisIs}</span>
-                <span className="-ml-[100px] font-centuryBook text-[180px] italic text-[#FF0]">{menuOur}</span>
+                <span className="-ml-[100px] font-centuryBook text-[150px] italic text-[#FF0] drop-shadow-[0_4px_10px_#00000040]">{menuOur}</span>
+                {/* <span className="-ml-[100px] font-centuryBook text-[180px] italic text-[#FF0]">{menuOur}</span> */}
             </p>
 
             <MenuToggle
