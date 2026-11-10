@@ -16,13 +16,11 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useMemo, useState, useRef, useCallback } from "react"
 import { useNavigate, useParams } from "react-router-dom"
+import BlockNoteEditor from "../../../components/BlockNoteEditor"
 import { sdk } from "../../../lib/sdk"
 import * as z from "zod"
 import slugify from "slugify"
 
-// Import ReactQuill and CSS
-import ReactQuill from "react-quill"
-import "react-quill/dist/quill.snow.css"
 
 // Define the Post type
 type Post = {
@@ -50,16 +48,6 @@ const PostFormSchema = z.object({
 })
 
 
-// Define formats for ReactQuill
-const formats = [
-  'header',
-  'bold', 'italic', 'underline', 'strike',
-  'list', 'bullet',
-  'indent',
-  'link',
-  'image'
-]
-
 const languages = [
   { label: "English", value: "en" },
   { label: "Tiếng Việt", value: "vi" },
@@ -69,8 +57,6 @@ const CreateEditPostPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
-  const quillRef = useRef<ReactQuill>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const thumbnailInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
@@ -128,7 +114,7 @@ const CreateEditPostPage = () => {
     setFormData(prev => ({ ...prev, content: value }))
   }
 
-  // Custom image handler for ReactQuill
+  // Image upload helper (used for the thumbnail)
   const handleImageUpload = async (file: File): Promise<string> => {
     const formData = new FormData()
     formData.append("file", file)
@@ -143,53 +129,6 @@ const CreateEditPostPage = () => {
       throw new Error("Failed to upload image")
     }
   }
-
-  const imageHandler = useCallback(() => {
-    fileInputRef.current?.click()
-  }, [])
-
-  // Handler for content image upload
-  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file")
-      return
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB")
-      return
-    }
-
-    const quill = quillRef.current?.getEditor()
-    if (!quill) return
-
-    const range = quill.getSelection(true)
-    if (!range) return
-
-    try {
-      quill.insertText(range.index, "Uploading image...", "user")
-      quill.setSelection(range.index + 19, 0)
-
-      const imageUrl = await handleImageUpload(file)
-
-      quill.deleteText(range.index, 19)
-      quill.insertEmbed(range.index, "image", imageUrl, "user")
-      quill.setSelection(range.index + 1, 0)
-
-      toast.success("Image uploaded successfully")
-    } catch (error) {
-      quill.deleteText(range.index, 19)
-      toast.error("Failed to upload image. Please try again.")
-    } finally {
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""
-      }
-    }
-  }, [])
-
   const handleThumbnailUpload = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
@@ -218,30 +157,6 @@ const CreateEditPostPage = () => {
       }
     },
     [handleImageUpload]
-  )
-
-  // Configure Quill modules
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ font: [] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }, { background: [] }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          [{ indent: "-1" }, { indent: "+1" }],
-          ["direction", { align: [] }],
-          ["link"],
-          ["image"],
-          ["clean"],
-        ],
-        handlers: {
-          image: imageHandler,
-        },
-      },
-    }),
-    [imageHandler]
   )
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -393,26 +308,11 @@ const CreateEditPostPage = () => {
                 Content *
               </Label>
               <div className="space-y-3">
-                <div className="border rounded-lg overflow-hidden">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                  />
-                  <ReactQuill
-                    ref={quillRef}
-                    id="content"
-                    value={formData.content}
+                <BlockNoteEditor
+                    key="content-editor"
+                    initialHtml={formData.content}
                     onChange={handleContentChange}
-                    modules={modules}
-                    formats={formats}
-                    theme="snow"
-                    placeholder="Write your post content here..."
-                    style={{ height: "400px" }}
-                  />
-                </div>
+                />
               </div>
             </div>
 
