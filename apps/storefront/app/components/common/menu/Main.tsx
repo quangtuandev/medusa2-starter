@@ -25,23 +25,19 @@ function FancyText({ id, text, className }: { id: string; text: string; classNam
 /**
  * The menu is drawn on a fixed design canvas and scaled uniformly to fit the
  * viewport on **both axes**, so the composition can never be clipped or pushed
- * off screen. Frames sit at absolute canvas coordinates (1840 × 1040).
+ * off screen. Frames sit at absolute canvas coordinates (1440 × 905, the Figma artboard).
  */
-const CANVAS_WIDTH = 1840;
-/** Horizontal span of the frames (x = 160 … 1680) — used for the width fit. */
-const CONTENT_WIDTH = 1520;
-/**
- * Canvas height: the design artboard is 1840 × 900 (the frames sit in its upper
- * two thirds, the "this is / our" title belongs to the overlay bottom, exactly
- * like the current site).
- */
-const CANVAS_HEIGHT = 900;
+const CANVAS_WIDTH = 1440;
+/** Horizontal span of the frames (x = 45 … 1396) — used for the width fit. */
+const CONTENT_WIDTH = 1351;
+/** Canvas height: the Figma artboard is 1440 × 905, including the "this is our" title. */
+const CANVAS_HEIGHT = 905;
 /** Gap kept between the outer frames and the screen edges. */
 const EDGE_GAP = 24;
 /** Vertical breathing room above and below the canvas. */
 const VERTICAL_PAD = 12;
 /** Never scale past this: on huge screens the composition simply stops growing. */
-const MAX_SCALE = 1.12;
+const MAX_SCALE = 2;
 /** Below this width the menu switches to the simple stacked layout. */
 const DESKTOP_MIN_WIDTH = 769;
 
@@ -52,7 +48,7 @@ type MenuItem = {
     imageInFrame: string;
     hideImage?: boolean;
     url: string;
-    /** Canvas coordinates (px on the 1840 × 1040 design canvas). */
+    /** Canvas coordinates (px on the 1440 × 905 design canvas). */
     left?: number;
     right?: number;
     top: number;
@@ -70,11 +66,11 @@ const DEFAULT_CATEGORY_ITEMS: MenuItem[] = [
         image: '/assets/images/menu/frame2.webp',
         imageInFrame: '/assets/images/menu/blog.webp',
         url: '/blogs',
-        left: 160,
-        top: 315,
-        imageWidth: 234,
+        left: 45,
+        top: 413,
+        imageWidth: 217,
         imageClass: '',
-        positionTitleClass: 'right-0 -top-[85px]',
+        positionTitleClass: 'left-[107px] top-[224px] -translate-x-1/2',
         position: { x: '110%', y: '-122px' },
         positionImage: { x: '20%', y: '-20%' },
     },
@@ -84,11 +80,11 @@ const DEFAULT_CATEGORY_ITEMS: MenuItem[] = [
         image: '/assets/images/menu/frame3.webp',
         imageInFrame: '/assets/images/menu/product.webp',
         url: '/products',
-        left: 460,
-        top: 81,
-        imageWidth: 270,
+        left: 281,
+        top: 143,
+        imageWidth: 250,
         imageClass: 'before:content-"" before:absolute before:inset-2 before:rotate-[-15deg] [rotate:-15deg]',
-        positionTitleClass: 'left-1/2 top-[calc(100%+30px)]',
+        positionTitleClass: 'left-[171px] top-[350px] -translate-x-1/2',
         position: { x: '200px', y: '75px' },
         positionImage: { x: '10%', y: '10%' },
     },
@@ -98,11 +94,11 @@ const DEFAULT_CATEGORY_ITEMS: MenuItem[] = [
         image: '/assets/images/menu/frame2.webp',
         imageInFrame: '/assets/images/menu/story.webp',
         url: '/stories',
-        left: 860,
-        top: 189,
-        imageWidth: 225,
+        left: 601,
+        top: 353,
+        imageWidth: 218,
         imageClass: '',
-        positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
+        positionTitleClass: 'left-[116px] top-[229px] -translate-x-1/2',
         position: { x: '0', y: '80px' },
         positionImage: { x: '0', y: '-10%' },
     },
@@ -112,11 +108,11 @@ const DEFAULT_CATEGORY_ITEMS: MenuItem[] = [
         image: '/assets/images/menu/frame1.webp',
         imageInFrame: '/assets/images/menu/contact.webp',
         url: '/contact',
-        left: 1130,
-        top: 360,
-        imageWidth: 342,
+        left: 873,
+        top: 407,
+        imageWidth: 330,
         imageClass: '',
-        positionTitleClass: 'left-1/2 top-[calc(100%+30px)] translate-x-[-50%]',
+        positionTitleClass: 'left-[164px] top-[221px] -translate-x-1/2',
         position: { x: '-10%', y: '-220px' },
         positionImage: { x: '-10%', y: '10%' },
     },
@@ -126,11 +122,11 @@ const DEFAULT_CATEGORY_ITEMS: MenuItem[] = [
         image: '/assets/images/menu/frame2.webp',
         imageInFrame: '/assets/images/menu/store.webp',
         url: '/store',
-        right: 160,
-        top: 153,
-        imageWidth: 162,
+        left: 1238,
+        top: 268,
+        imageWidth: 158,
         imageClass: '',
-        positionTitleClass: '-left-full bottom-0',
+        positionTitleClass: 'left-[79px] top-[165px] -translate-x-1/2',
         position: { x: '-90%', y: 0 },
         positionImage: { x: '-20%', y: '0' },
     },
@@ -348,6 +344,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
             aria-label={t('menu.title', { defaultValue: 'Main menu' })}
             data-menu-overlay
             className="fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden !bg-[#fffcf2]"
+            style={{ backgroundImage: 'linear-gradient(180deg, #fff 0%, #fffcf2 100%)' }}
         // className="fixed inset-0 z-[9999] h-[100dvh] w-screen overflow-hidden bg-white bg-[url('/assets/images/menu/bg-mobile.webp')] desk:bg-[url('/assets/images/menu/chair-bg.webp'),url('/assets/images/menu/bg.webp')] bg-no-repeat bg-bottom bg-[length:max(100vw,1800px)_auto] desk:!bg-[#fffcf2] !bg-[#fffcf2]"
         >
             {/* Hover backdrop */}
@@ -377,7 +374,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                             >
                                 <div
                                     className={clsx(
-                                        'pointer-events-none font-title font-bold text-2xl uppercase text-black txt-title-menu z-[-1]',
+                                        'pointer-events-none font-title font-semibold text-2xl uppercase text-black txt-title-menu z-[-1]',
                                         item.positionTitleClass,
                                         isHovering && hoveredItemId === item.id && 'hidden',
                                     )}
@@ -400,7 +397,7 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                         <img
                                             src={item.imageInFrame}
                                             alt={item.label}
-                                            className="shadow-frame absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-[20px]"
+                                            className="shadow-[8px_6px_8px_0_#14100D45] absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-[20px]"
                                         />
                                     </div>
                                     <FancyText
@@ -411,6 +408,10 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                 </div>
                             </Link>
                         ))}
+                        {/* "this is our" — Figma: 130px ExtraBold, black, glyphs centred at y ≈ 775 */}
+                        <p className="pointer-events-none absolute inset-x-0 top-[695px] text-center font-title text-[130px] font-extrabold uppercase leading-[normal] text-black">
+                            {menuThisIs} {menuOur}
+                        </p>
                     </div>
                 </div>
             ) : (
@@ -433,21 +434,11 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                 </div>
             )}
 
-            {/* "this is / our" — sits on the bench, anchored to the viewport bottom */}
-            <p
-                className="pointer-events-none absolute bottom-[14vh] z-[3] w-full text-center"
-                style={{ transform: `scale(${scale})`, transformOrigin: 'bottom center' }}
-            >
-                <span className="relative z-[2] font-title text-[90px] font-bold uppercase text-black">{menuThisIs}</span>
-                <span className="-ml-[100px] font-centuryBook text-[150px] italic text-[#FF0] drop-shadow-[0_4px_10px_#00000040]">{menuOur}</span>
-                {/* <span className="-ml-[100px] font-centuryBook text-[180px] italic text-[#FF0]">{menuOur}</span> */}
-            </p>
-
             <MenuToggle
                 isOpen
                 onClick={handleMenuToggle}
                 aria-controls="main-menu"
-                className="absolute right-4 top-8 z-[10000] shadow-[0px_4px_10px_0px_#00000040] desk:right-11"
+                className="absolute right-4 top-8 z-[10000] !bg-[#FFCD60] desk:right-[22px] desk:top-[30px] desk:!h-[50px] desk:!w-[50px]"
             />
         </div>
     );
