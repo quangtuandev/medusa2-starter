@@ -831,7 +831,7 @@ export const HalfFanSlider: React.FC<HalfFanSliderProps> = ({
               <ChevronLeft size={isMobile ? 18 : 24} />
             </button>
 
-            <div className="relative min-h-[34px] xl:min-h-[52px] min-w-[200px] max-w-[70vw] xl:min-w-[340px] xl:max-w-[560px] px-2">
+            <div className="relative min-h-[34px] xl:min-h-[52px] min-w-[200px] max-w-[70vw] xl:min-w-[390px] xl:max-w-[560px] px-2">
               <AnimatePresence mode="sync" initial={false}>
                 <motion.div
                   key={`subtitle-${displayCard.id}`}
