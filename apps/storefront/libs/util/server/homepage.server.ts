@@ -1,6 +1,7 @@
 import cachified from '@epic-web/cachified';
 import { sdkCache } from '@libs/util/server/client.server';
 import { MILLIS } from './cache-builder.server';
+import { getLanguage } from './cookies.server';
 
 export type HomepageHero = {
   /** Record id (used as the React key while slides swap). */
@@ -205,7 +206,9 @@ const requestHomepage = async (lang: string): Promise<HomepageConfig | null> => 
  */
 export const fetchHomepageConfig = async (request?: Request): Promise<HomepageConfig> => {
   const url = request ? new URL(request.url) : null;
-  const lang = (url?.searchParams.get('lang') === 'vi' ? 'vi' : null) ?? 'en';
+  // The language switch stores `lng` in a cookie; `?lang=` stays as an explicit override.
+  const queryLang = url?.searchParams.get('lang');
+  const lang = queryLang === 'vi' || queryLang === 'en' ? queryLang : request ? await getLanguage(request.headers) : 'en';
   const isPreview = url?.searchParams.get('preview') === '1';
 
   if (isPreview) {

@@ -26,7 +26,6 @@ export const Footer = () => {
           <div className='flex-1 flex justify-center'>
             <SocialIcons siteSettings={settings} />
           </div>
-          <p className='text-end flex-1 lg:text-[18.56px] text-base font-alexandria font-regular leading-[145%] tracking-normal inline-block'>Designed by <Link to="https://mayday-creative.com" target="_blank" className="hover:underline text-white lg:text-[24px] text-base font-alexandria font-regular leading-[145%] tracking-normal">Mayday</Link></p>
         </div>
       </Container>
     </footer>
