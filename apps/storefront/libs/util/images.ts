@@ -1,3 +1,5 @@
+import type { SyntheticEvent } from 'react';
+
 /**
  * Cloudflare Image Transformations (https://developers.cloudflare.com/images/transform-images/).
  * Only images served from these hosts under /static/ are rewritten; anything else is returned untouched.
@@ -35,4 +37,17 @@ export const getImageSrcSet = (src: string | undefined, maxWidth = DEFAULT_IMAGE
   if (!isTransformableImage(src)) return undefined;
   const widths = [...new Set([...DEFAULT_IMAGE_WIDTHS.filter((w) => w < maxWidth), maxWidth])];
   return widths.map((width) => `${getOptimizedImageUrl(src, { width })} ${width}w`).join(', ');
+};
+
+/**
+ * `onError` handler for images whose `src` is an optimized URL: the first failure retries with the
+ * original upload and returns true. Returns false when there is nothing left to try, so callers can
+ * hide or replace the image.
+ */
+export const retryWithOriginal = (original: string, event: SyntheticEvent<HTMLImageElement>) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallback === '1' || img.getAttribute('src') === original) return false;
+  img.dataset.fallback = '1';
+  img.src = original;
+  return true;
 };

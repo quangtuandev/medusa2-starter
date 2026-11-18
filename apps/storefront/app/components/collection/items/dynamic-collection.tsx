@@ -1,4 +1,4 @@
-import { getOptimizedImageUrl } from "@libs/util/images";
+import { getOptimizedImageUrl, retryWithOriginal } from "@libs/util/images";
 import clsx from "clsx";
 import React from "react";
 
@@ -14,18 +14,9 @@ export interface DynamicCollectionProps {
 /** Fan cards render at most ~216 CSS px wide (focused), so 720px covers 3x displays. */
 const CARD_IMAGE_WIDTH = 720;
 
-/**
- * Retry once with the original upload if the resized version fails; only a broken
- * original is hidden, so a broken admin image never paints the alt text over the card.
- */
+/** Retry with the original upload first; only a broken original is hidden (no alt text painted over the card). */
 const handleImageError = (original: string) => (event: React.SyntheticEvent<HTMLImageElement>) => {
-  const img = event.currentTarget;
-  if (img.dataset.fallback !== "1" && img.getAttribute("src") !== original) {
-    img.dataset.fallback = "1";
-    img.src = original;
-    return;
-  }
-  img.style.visibility = "hidden";
+  if (!retryWithOriginal(original, event)) event.currentTarget.style.visibility = "hidden";
 };
 
 /**

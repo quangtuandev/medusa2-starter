@@ -1,5 +1,6 @@
 import { useI18n } from '@app/hooks/useI18n';
 import { useRootLoaderData } from '@app/hooks/useRootLoaderData';
+import { getOptimizedImageUrl, retryWithOriginal } from '@libs/util/images';
 import { animate, spring } from 'animejs';
 import clsx from 'clsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -38,6 +39,11 @@ const EDGE_GAP = 24;
 const VERTICAL_PAD = 12;
 /** Never scale past this: on huge screens the composition simply stops growing. */
 const MAX_SCALE = 2;
+/**
+ * Menu images are drawn at `imageWidth` CSS px on the canvas, then scaled up to MAX_SCALE and
+ * hover-zoomed by 1.15, so request ~3x that width.
+ */
+const MENU_IMAGE_DPR = 3;
 /** Below this width the menu switches to the simple stacked layout. */
 const DESKTOP_MIN_WIDTH = 769;
 
@@ -390,12 +396,20 @@ export const MainMenu = ({ handleMenuToggle }: { handleMenuToggle: () => void })
                                     >
                                         <img
                                             className=""
-                                            src={item.image}
+                                            src={getOptimizedImageUrl(item.image, { width: item.imageWidth * MENU_IMAGE_DPR })}
+                                            onError={(event) => {
+                                                retryWithOriginal(item.image, event);
+                                            }}
                                             alt={item.label}
                                             style={item.hideImage ? { opacity: 0 } : undefined}
                                         />
                                         <img
-                                            src={item.imageInFrame}
+                                            src={getOptimizedImageUrl(item.imageInFrame, {
+                                                width: item.imageWidth * MENU_IMAGE_DPR,
+                                            })}
+                                            onError={(event) => {
+                                                retryWithOriginal(item.imageInFrame, event);
+                                            }}
                                             alt={item.label}
                                             className="shadow-[8px_6px_8px_0_#14100D45] absolute inset-[5px] z-[-1] object-fill w-[calc(100%-10px)] h-[calc(100%-10px)] rounded-[20px]"
                                         />
