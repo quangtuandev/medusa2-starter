@@ -9,6 +9,7 @@ import { useI18n } from '@app/hooks/useI18n';
 import { useIsMobile } from '@app/hooks/useIsMobile';
 import { FAN_SCROLL_STATE_KEY } from '@app/hooks/useScrollToProducts';
 import { isOutsideElement } from '@app/routes/products/active-card-pointer';
+import { getOptimizedImageUrl } from '@libs/util/images';
 import clsx from 'clsx';
 import { AnimatePresence, PanInfo, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Droplet, HelpCircle, Snowflake } from 'lucide-react';
@@ -166,7 +167,8 @@ const CardIcon = ({ icon, color }: { icon?: string; color: string }) => {
   const raw = (icon || '').trim();
 
   if (raw && (raw.startsWith('/') || /^https?:\/\//i.test(raw))) {
-    return <img src={raw} alt="" className="w-10 h-10 object-contain" />;
+    // Rendered at 40px, so 96px covers 2x displays.
+    return <img src={getOptimizedImageUrl(raw, { width: 96 })} alt="" className="w-10 h-10 object-contain" />;
   }
 
   const KeywordIcon = KEYWORD_ICONS[raw.toLowerCase() as keyof typeof KEYWORD_ICONS];
