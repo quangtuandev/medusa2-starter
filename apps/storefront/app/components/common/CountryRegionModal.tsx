@@ -5,6 +5,7 @@ import { useFetcher } from "react-router";
 import { useRegions } from "@app/hooks/useRegions";
 import { useRegion } from "@app/hooks/useRegion";
 import { useI18n } from "@app/hooks/useI18n";
+import { useRootLoaderData } from "@app/hooks/useRootLoaderData";
 import { StoreRegion } from "@medusajs/types";
 import { convertToFormData } from "@libs/util/forms";
 import clsx from "clsx";
@@ -15,6 +16,23 @@ export interface CountryRegionModalProps {
   autoShowOnFirstVisit?: boolean;
 }
 
+const SELECTED_KEY = "kira_country_selected";
+const DETECTED_COUNTRY_KEY = "kira_country_detected";
+
+const readStorage = (key: string) => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const writeStorage = (key: string, value: string) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {}
+};
+
 export const CountryRegionModal: FC<CountryRegionModalProps> = ({
   isOpen,
   onClose,
@@ -24,17 +42,24 @@ export const CountryRegionModal: FC<CountryRegionModalProps> = ({
   const { region } = useRegion();
   const { currentLanguage, changeLanguage } = useI18n();
   const fetcher = useFetcher();
+  const country = useRootLoaderData()?.country ?? null;
   const [internalOpen, setInternalOpen] = useState(false);
 
+  // Show on first visit, and again whenever the detected country differs from the last confirmed one
+  // (e.g. VPN toggled between VN and abroad), since the server may have switched the visitor's region.
   useEffect(() => {
-    if (autoShowOnFirstVisit && typeof localStorage !== "undefined") {
-      const hasChosen = localStorage.getItem("kira_country_selected");
-      if (!hasChosen) {
-        const timer = setTimeout(() => setInternalOpen(true), 500);
-        return () => clearTimeout(timer);
-      }
+    if (!autoShowOnFirstVisit) return;
+    const hasChosen = readStorage(SELECTED_KEY);
+    const lastCountry = readStorage(DETECTED_COUNTRY_KEY);
+    // Only VN vs. non-VN matters: it decides whether the VND region is available
+    const countryChanged = !!country && !!lastCountry && (lastCountry === "VN") !== (country === "VN");
+
+    if (!hasChosen || countryChanged) {
+      const timer = setTimeout(() => setInternalOpen(true), 500);
+      return () => clearTimeout(timer);
     }
-  }, [autoShowOnFirstVisit]);
+    if (country && !lastCountry) writeStorage(DETECTED_COUNTRY_KEY, country);
+  }, [autoShowOnFirstVisit, country]);
 
   useEffect(() => {
     const handler = () => setInternalOpen(true);
@@ -46,6 +71,7 @@ export const CountryRegionModal: FC<CountryRegionModalProps> = ({
 
   const handleModalClose = () => {
     setInternalOpen(false);
+    if (country) writeStorage(DETECTED_COUNTRY_KEY, country);
     if (onClose) onClose();
   };
 
@@ -113,6 +139,11 @@ export const CountryRegionModal: FC<CountryRegionModalProps> = ({
     }
   }, [defaultOption, currentLanguage, selectedRegionId]);
 
+  // Re-sync the selection with the current region each time the modal opens
+  useEffect(() => {
+    if (showModal && defaultOption?.regionId) setSelectedRegionId(defaultOption.regionId);
+  }, [showModal, defaultOption?.regionId]);
+
   const handleConfirm = () => {
     if (!selectedRegionId) return;
 
@@ -126,9 +157,7 @@ export const CountryRegionModal: FC<CountryRegionModalProps> = ({
     );
 
     // Save that user has chosen country/region
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem("kira_country_selected", "true");
-    }
+    writeStorage(SELECTED_KEY, "true");
 
     handleModalClose();
   };
