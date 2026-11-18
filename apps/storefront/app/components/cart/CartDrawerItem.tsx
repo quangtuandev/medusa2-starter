@@ -48,6 +48,7 @@ export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, is
         <Image
           src={thumbnailSrc}
           alt={item.product_title || 'product thumbnail'}
+          maxWidth={400}
           className="h-full w-full object-cover object-center"
         />
       </div>

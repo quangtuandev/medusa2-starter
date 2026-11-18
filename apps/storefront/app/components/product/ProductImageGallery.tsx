@@ -41,6 +41,7 @@ const GalleryImagesRow: FC<{ galleryImages: ProductGalleryImage[] }> = memo(({ g
                   key={image.id}
                   src={image.url}
                   alt={image.alt || 'tab for image gallery'}
+                  maxWidth={320}
                   className={'h-full w-full object-cover object-center transition-transform duration-200 hover:scale-105'}
                 />
               </span>

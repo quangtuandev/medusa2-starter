@@ -39,6 +39,7 @@ export const CheckoutOrderSummaryItem: FC<CheckoutOrderSummaryItemProps> = ({ it
         <Image
           src={thumbnailSrc}
           alt={item.product_title || 'product thumbnail'}
+          maxWidth={320}
           className="w-20 rounded-md"
         />
       </div>
