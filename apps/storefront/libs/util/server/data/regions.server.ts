@@ -3,6 +3,7 @@ import { medusaError } from '@libs/util/medusaError';
 import { sdk, sdkCache } from '@libs/util/server/client.server';
 import { StoreRegionCountry } from '@medusajs/types';
 import { getSelectedRegionId } from '../cookies.server';
+import { filterAllowedRegions, isRegionAllowed } from '../geo.server';
 
 const ONE_HOUR_IN_MS = 3_600_000;
 
@@ -48,12 +49,14 @@ export const retrieveRegion = async function (id: string) {
   });
 };
 
-export const getDefaultRegion = async function () {
+export const getDefaultRegion = async function (headers: Headers) {
   const regions = await listRegions().catch((err) => {
     console.error(err);
     return [];
   });
-  return regions.sort((r) => (r.countries?.some((c) => c.iso_2 === 'us') ? -1 : 1))[0];
+  return filterAllowedRegions(headers, [...regions]).sort((r) =>
+    r.countries?.some((c) => c.iso_2 === 'us') ? -1 : 1,
+  )[0];
 };
 
 export const getSelectedRegion = async (headers: Headers) => {
@@ -61,11 +64,12 @@ export const getSelectedRegion = async (headers: Headers) => {
 
   if (regionId) {
     try {
-      return await retrieveRegion(regionId);
+      const region = await retrieveRegion(regionId);
+      if (isRegionAllowed(headers, region)) return region;
     } catch (e) {
       console.warn('RegionId is not valid, using default region');
     }
   }
 
-  return await getDefaultRegion();
+  return await getDefaultRegion(headers);
 };

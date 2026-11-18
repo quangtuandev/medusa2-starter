@@ -51,17 +51,7 @@ export const CountryRegionModal: FC<CountryRegionModalProps> = ({
 
   // Flatten countries from all regions
   const countryOptions = useMemo(() => {
-    if (!regions || regions.length === 0) {
-      return [
-        {
-          regionId: region?.id || "",
-          countryCode: "vn",
-          displayName: "Vietnam",
-          currency: "VND",
-          label: "Vietnam (VND)",
-        },
-      ];
-    }
+    if (!regions || regions.length === 0) return [];
     const list: {
       regionId: string;
       countryCode: string;

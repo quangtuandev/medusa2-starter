@@ -13,6 +13,7 @@ import { enrichLineItems, retrieveCart } from './data/cart.server';
 import { fetchCollections } from './data/collections.server';
 import { getCustomer } from './data/customer.server';
 import { getSelectedRegion, listRegions } from './data/regions.server';
+import { filterAllowedRegions } from './geo.server';
 import { fetchProducts } from './products.server';
 
 const fetchHasProducts = async (request: Request) => {
@@ -85,7 +86,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
         EVENT_LOGGING: config.EVENT_LOGGING,
       },
       customer,
-      regions,
+      regions: filterAllowedRegions(request.headers, regions),
       region,
       requestOrigin: new URL(request.url).origin,
       siteDetails: {

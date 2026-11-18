@@ -15,4 +15,5 @@ export const config = {
   EVENT_LOGGING: process.env.EVENT_LOGGING,
   AUTH_COOKIE_NAME: process.env.AUTH_COOKIE_NAME ?? '_medusa_jwt',
   MEDUSA_PUBLISHABLE_KEY: process.env.MEDUSA_PUBLISHABLE_KEY,
+  DEV_FORCE_COUNTRY: process.env.DEV_FORCE_COUNTRY,
 };

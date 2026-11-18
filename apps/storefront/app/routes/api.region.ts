@@ -3,6 +3,7 @@ import { getCartId, setLanguage, setSelectedRegionId } from '@libs/util/server/c
 import { toMedusaLocale } from '@libs/util/locale';
 import { updateCart } from '@libs/util/server/data/cart.server';
 import { retrieveRegion } from '@libs/util/server/data/regions.server';
+import { isRegionAllowed } from '@libs/util/server/geo.server';
 import { ActionFunctionArgs, data } from 'react-router';
 import { getValidatedFormData } from 'remix-hook-form';
 import { z } from 'zod';
@@ -22,7 +23,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const { regionId, language } = formData;
 
-    await retrieveRegion(regionId);
+    const region = await retrieveRegion(regionId);
+
+    if (!isRegionAllowed(request.headers, region)) {
+      return data({ errors: { regionId: { message: 'Region is not available' } } }, { status: 403 });
+    }
 
     const headers = new Headers();
     await setSelectedRegionId(headers, regionId);
