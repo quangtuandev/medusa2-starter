@@ -193,7 +193,11 @@
       "instructions4": "Transfer the exact amount displayed",
       "instructions5": "The administrator will check the payment and update the order status of your order",
       "instructionsPendingNote": "Your order will be in a pending payment status until the administrator confirms the payment."
-    }
+    },
+    "addPromoCode": "Add promo code",
+    "discountCode": "Discount code",
+    "applyCode": "Apply",
+    "applyingCode": "Applying..."
   },
   "shop": "EAU DE PARFUM",
   "home": {

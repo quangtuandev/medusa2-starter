@@ -193,7 +193,11 @@
       "instructions4": "Chuyển chính xác số tiền hiển thị",
       "instructions5": "Quản trị viên sẽ kiểm tra thanh toán và cập nhật trạng thái đơn hàng của bạn",
       "instructionsPendingNote": "Đơn hàng của bạn sẽ ở trạng thái chờ thanh toán cho đến khi được quản trị viên xác nhận."
-    }
+    },
+    "addPromoCode": "Thêm mã giảm giá",
+    "discountCode": "Mã giảm giá",
+    "applyCode": "Áp dụng",
+    "applyingCode": "Đang áp dụng..."
   },
   "shop": "Cửa hàng nước hoa",
   "home": {

@@ -2,6 +2,7 @@ import { ButtonLink } from '@app/components/common/buttons/ButtonLink';
 import { SubmitButton } from '@app/components/common/remix-hook-form/buttons/SubmitButton';
 import { FormError } from '@app/components/common/remix-hook-form/forms/FormError';
 import { StyledTextField } from '@app/components/common/remix-hook-form/forms/fields/StyledTextField';
+import { useI18n } from '@app/hooks/useI18n';
 import { discountCodeSchema } from '@app/routes/api.checkout.discount-code';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HttpTypes, PromotionDTO } from '@medusajs/types';
@@ -15,6 +16,7 @@ export interface CheckoutOrderSummaryDiscountCodeProps {
 }
 
 export const CheckoutOrderSummaryDiscountCode: FC<CheckoutOrderSummaryDiscountCodeProps> = ({ cart }) => {
+  const { t } = useI18n();
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fetcher = useFetcher<{
@@ -56,7 +58,7 @@ export const CheckoutOrderSummaryDiscountCode: FC<CheckoutOrderSummaryDiscountCo
       {!isFormVisible && (
         <div>
           <ButtonLink size="sm" onClick={handleAddCodeClick}>
-            Add promo code
+            {t('checkout.addPromoCode')}
           </ButtonLink>
         </div>
       )}
@@ -70,11 +72,11 @@ export const CheckoutOrderSummaryDiscountCode: FC<CheckoutOrderSummaryDiscountCo
                 <StyledTextField
                   name="code"
                   className="flex-grow"
-                  placeholder="Discount code"
-                  aria-label="discount code"
+                  placeholder={t('checkout.discountCode')}
+                  aria-label={t('checkout.discountCode')}
                 />
                 <SubmitButton type="submit" className="flex-shrink-0 flex-grow-0" disabled={isSubmitting}>
-                  {isSubmitting ? 'Applying...' : 'Apply'}
+                  {isSubmitting ? t('checkout.applyingCode') : t('checkout.applyCode')}
                 </SubmitButton>
               </div>
               <FormError />
@@ -82,7 +84,7 @@ export const CheckoutOrderSummaryDiscountCode: FC<CheckoutOrderSummaryDiscountCo
           </RemixFormProvider>
 
           {hasDiscounts && (
-            <div className="mt-2">
+            <div className="flex gap-2 mt-2">
               {cart.promotions?.map((promotion) => (
                 <RemovePromotionCodeButton key={promotion.id} cart={cart} promotion={promotion} />
               ))}
