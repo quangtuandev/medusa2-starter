@@ -14,6 +14,7 @@ import { fetchCollections } from './data/collections.server';
 import { getCustomer } from './data/customer.server';
 import { getSelectedRegion, listRegions } from './data/regions.server';
 import { filterAllowedRegions, getRequestCountry } from './geo.server';
+import { fetchGiftConfig } from './gifts.server';
 import { fetchProducts } from './products.server';
 
 const fetchHasProducts = async (request: Request) => {
@@ -45,7 +46,8 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
 
   const language = await getCookie(request.headers, 'lng') || 'en';
 
-  const [cart, regions, customer, hasPublishedProducts, publishedPages, collectionsData, dynamicSettings] = await Promise.all([
+  const [cart, regions, customer, hasPublishedProducts, publishedPages, collectionsData, dynamicSettings, gift] =
+    await Promise.all([
     retrieveCart(request),
     listRegions(),
     getCustomer(request),
@@ -53,6 +55,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
     listPublishedPages(language),
     fetchCollections(request),
     fetchSiteSettings(),
+    fetchGiftConfig(),
   ]);
 
   const headers = new Headers();
@@ -88,6 +91,7 @@ export const getRootLoader = async ({ request }: LoaderFunctionArgs) => {
       customer,
       regions: filterAllowedRegions(request.headers, regions),
       region,
+      gift,
       country: getRequestCountry(request.headers),
       requestOrigin: new URL(request.url).origin,
       siteDetails: {

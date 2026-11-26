@@ -119,7 +119,13 @@
     "shippingTaxesCalculated": "Shipping and taxes calculated at checkout.",
     "preparingCheckout": "Preparing checkout...",
     "checkout": "Checkout",
-    "or": "or"
+    "or": "or",
+    "gift": {
+      "badge": "Free gift",
+      "free": "Free",
+      "progress": "Spend {{amount}} more to get a free gift",
+      "unlocked": "Congratulations! You have a free gift."
+    }
   },
   "checkout": {
     "title": "Checkout",
@@ -197,7 +203,8 @@
     "addPromoCode": "Add promo code",
     "discountCode": "Discount code",
     "applyCode": "Apply",
-    "applyingCode": "Applying..."
+    "applyingCode": "Applying...",
+    "estimatedShipping": "Estimated Shipping"
   },
   "shop": "EAU DE PARFUM",
   "home": {

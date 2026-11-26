@@ -1,11 +1,16 @@
 import { sdk } from '@libs/util/server/client.server';
+import { fetchGiftConfig } from '@libs/util/server/gifts.server';
 import { SitemapUrl, buildSitemapUrlSetXML } from '@libs/util/xml/sitemap-builder';
 import { LoaderFunctionArgs } from 'react-router';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { products } = await sdk.store.product.list({
-    limit: 1000,
-  });
+  const [{ products: allProducts }, gift] = await Promise.all([
+    sdk.store.product.list({
+      limit: 1000,
+    }),
+    fetchGiftConfig(),
+  ]);
+  const products = allProducts.filter((product) => !gift?.productIds.includes(product.id));
 
   const host = request.headers.get('host');
   const baseUrl = `https://${host}`;

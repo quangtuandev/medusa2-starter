@@ -1,4 +1,6 @@
+import { useI18n } from '@app/hooks/useI18n';
 import { calculateEstimatedShipping } from '@libs/util/carts';
+import { getGiftTotals } from '@libs/util/gifts';
 import { formatPrice } from '@libs/util/prices';
 import { PromotionDTO, StoreCart, StoreCartShippingOption, StoreRegion } from '@medusajs/types';
 import clsx from 'clsx';
@@ -29,10 +31,14 @@ const CheckoutOrderSummaryTotalsItem: FC<CheckoutOrderSummaryTotalsItemProps> = 
 );
 
 export const CheckoutOrderSummaryTotals: FC<CheckoutOrderSummaryTotalsProps> = ({ shippingOptions, cart }) => {
+  const { t } = useI18n();
   const shippingMethods = cart.shipping_methods || [];
   const hasShippingMethod = shippingMethods.length > 0;
   const estimatedShipping = calculateEstimatedShipping(shippingOptions);
-  const discountTotal = cart.discount_total ?? 0;
+  // The free gift is listed as a free item, so its price and its discount are left out of both lines
+  const giftTotals = getGiftTotals(cart.items);
+  const subtotal = (cart.item_subtotal ?? 0) - giftTotals.subtotal;
+  const discountTotal = (cart.discount_total ?? 0) - giftTotals.discount;
   const shippingAmount = cart.shipping_total ?? 0;
   const cartTotal = cart.total ?? 0;
   const total = hasShippingMethod ? cartTotal : cartTotal + estimatedShipping;
@@ -42,19 +48,19 @@ export const CheckoutOrderSummaryTotals: FC<CheckoutOrderSummaryTotalsProps> = (
       <CheckoutOrderSummaryDiscountCode cart={cart} />
 
       <dl className="flex flex-col gap-2">
-        <CheckoutOrderSummaryTotalsItem label="Subtotal" amount={cart.item_subtotal} region={cart.region!} />
+        <CheckoutOrderSummaryTotalsItem label={t('common.subtotal')} amount={subtotal} region={cart.region!} />
         {discountTotal > 0 && (
-          <CheckoutOrderSummaryTotalsItem label="Discount" amount={-discountTotal} region={cart.region!} />
+          <CheckoutOrderSummaryTotalsItem label={t('common.discount')} amount={-discountTotal} region={cart.region!} />
         )}
         {hasShippingMethod && (
-          <CheckoutOrderSummaryTotalsItem label="Shipping" amount={shippingAmount} region={cart.region!} />
+          <CheckoutOrderSummaryTotalsItem label={t('common.shipping')} amount={shippingAmount} region={cart.region!} />
         )}
         {!hasShippingMethod && (
-          <CheckoutOrderSummaryTotalsItem label="Estimated Shipping" amount={estimatedShipping} region={cart.region!} />
+          <CheckoutOrderSummaryTotalsItem label={t('checkout.estimatedShipping')} amount={estimatedShipping} region={cart.region!} />
         )}
-        <CheckoutOrderSummaryTotalsItem label="Taxes" amount={cart.tax_total} region={cart.region!} />
+        <CheckoutOrderSummaryTotalsItem label={t('common.tax')} amount={cart.tax_total} region={cart.region!} />
         <CheckoutOrderSummaryTotalsItem
-          label="Total"
+          label={t('common.total')}
           amount={total}
           className="border-t border-gray-200 pt-6 !text-xl"
           region={cart.region!}

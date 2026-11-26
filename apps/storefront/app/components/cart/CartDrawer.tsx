@@ -5,11 +5,13 @@ import { useCart } from '@app/hooks/useCart';
 import { useRegion } from '@app/hooks/useRegion';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
-import { formatCartSubtotal, formatPrice } from '@libs/util/prices';
+import { getGiftTotals } from '@libs/util/gifts';
+import { formatPrice } from '@libs/util/prices';
 import clsx from 'clsx';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useFetchers, useNavigate } from 'react-router';
 import { CartDrawerItem } from './CartDrawerItem';
+import { GiftProgress } from './GiftProgress';
 import { ProductSwiper } from '../sections/ProductSwiper';
 import { useI18n } from '@app/hooks/useI18n';
 
@@ -127,16 +129,16 @@ const CartDrawerFooter: FC<{
   onClose: () => void;
 }> = ({ cart, currencyCode, itemCount, navigatingToCheckout, onCheckout, onClose }) => {
   const { t } = useI18n();
+  // The free gift is not part of what the customer pays for
+  const subtotal = (cart?.item_subtotal || 0) - getGiftTotals(cart?.items).subtotal;
   return (
     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
       <div className="flex justify-between text-base font-bold text-gray-900">
         <p>{t('cart.subtotal')}</p>
         <p>
-          {cart
-            ? formatCartSubtotal(cart)
-            : formatPrice(0, {
-              currency: currencyCode,
-            })}
+          {formatPrice(cart ? subtotal : 0, {
+            currency: cart?.region?.currency_code ?? currencyCode,
+          })}
         </p>
       </div>
       <p className="mt-0.5 text-sm text-gray-500">{t('cart.shippingTaxesCalculated')}</p>
@@ -239,6 +241,8 @@ export const CartDrawer: FC = () => {
                     isRemovingLastItem={isRemovingLastItem}
                     currencyCode={region.currency_code}
                   />
+
+                  <GiftProgress />
                 </div>
 
                 {/* Footer */}

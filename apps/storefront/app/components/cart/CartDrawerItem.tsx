@@ -1,13 +1,16 @@
 import { Button } from '@app/components/common/buttons/Button';
 import { Image } from '@app/components/common/images/Image';
+import { useI18n } from '@app/hooks/useI18n';
 import { useRemoveCartItem } from '@app/hooks/useRemoveCartItem';
 import { QuantitySelector } from '@app/components/common/remix-hook-form/field-groups/QuantitySelector';
+import { isGiftItem } from '@libs/util/gifts';
 import { formatLineItemPrice } from '@libs/util/prices';
 import { StoreCartLineItem } from '@medusajs/types';
 import clsx from 'clsx';
 import type { FC } from 'react';
 import { FetcherKeys } from '@libs/util/fetcher-keys';
 import { useFetcher } from 'react-router';
+import { GiftBadge } from './GiftBadge';
 import { LineItemQuantitySelect } from './line-items/LineItemQuantitySelect';
 export interface CartDrawerItemProps {
   item: StoreCartLineItem;
@@ -17,6 +20,10 @@ export interface CartDrawerItemProps {
 
 export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, isRemoving }) => {
   const removeCartItem = useRemoveCartItem();
+  const { t } = useI18n();
+  // The gift is managed by the backend: it cannot be removed or resized here
+  const isGift = isGiftItem(item);
+  const isFreeGift = isGift && Number(item.total) === 0;
   const handleRemoveFromCart = () => removeCartItem.submit(item);
   const fetcher = useFetcher({ key: FetcherKeys.cart.updateLineItem });
 
@@ -59,19 +66,22 @@ export const CartDrawerItem: FC<CartDrawerItemProps> = ({ item, currencyCode, is
             <div>
               <h3 className="text-base font-bold text-gray-900">{item.product_title}</h3>
               <p className="mt-0.5 text-sm text-gray-500">{item.variant_title}</p>
+              {isGift && <GiftBadge />}
             </div>
-            <Button variant="link" onClick={handleRemoveFromCart} disabled={isRemoving} className="text-sm">
-              {isRemoving ? 'Removing' : 'Remove'}
-            </Button>
+            {!isGift && (
+              <Button variant="link" onClick={handleRemoveFromCart} disabled={isRemoving} className="text-sm">
+                {isRemoving ? 'Removing' : 'Remove'}
+              </Button>
+            )}
           </div>
         </div>
         <div className="flex-1" />
         <div className="flex items-center justify-between">
           <p className="text-sm  text-gray-500">
-            <LineItemQuantitySelect formId={`quantity-${item.id}`} item={item} />
+            {isGift ? `x${item.quantity}` : <LineItemQuantitySelect formId={`quantity-${item.id}`} item={item} />}
           </p>
           <div className="flex">
-            <p className="ml-4">{formatLineItemPrice(item, currencyCode)}</p>
+            <p className="ml-4">{isFreeGift ? t('cart.gift.free') : formatLineItemPrice(item, currencyCode)}</p>
           </div>
         </div>
       </div>

@@ -1,8 +1,11 @@
+import { GiftBadge } from '@app/components/cart/GiftBadge';
 import { LineItemQuantitySelect } from '@app/components/cart/line-items/LineItemQuantitySelect';
 import { Button } from '@app/components/common/buttons/Button';
 import { Image } from '@app/components/common/images/Image';
 import { useCheckout } from '@app/hooks/useCheckout';
+import { useI18n } from '@app/hooks/useI18n';
 import { useRemoveCartItem } from '@app/hooks/useRemoveCartItem';
+import { isGiftItem } from '@libs/util/gifts';
 import { formatPrice } from '@libs/util/prices';
 import { StoreCart, StoreCartLineItem } from '@medusajs/types';
 import { FC } from 'react';
@@ -21,6 +24,10 @@ export interface CheckoutOrderSummaryItemProps {
 export const CheckoutOrderSummaryItem: FC<CheckoutOrderSummaryItemProps> = ({ item, name }) => {
   const { cart } = useCheckout();
   const removeCartItem = useRemoveCartItem();
+  const { t } = useI18n();
+  // The gift is managed by the backend: it cannot be removed or resized here
+  const isGift = isGiftItem(item);
+  const isFreeGift = isGift && Number(item.total) === 0;
   const handleRemoveFromCart = () => removeCartItem.submit(item);
   const isRemovingFromCart = ['loading', 'submitting'].includes(removeCartItem.state);
 
@@ -53,25 +60,30 @@ export const CheckoutOrderSummaryItem: FC<CheckoutOrderSummaryItemProps> = ({ it
               </Link>
             </h4>
             <p className="mt-0.5 text-sm text-gray-500">{item.variant_title}</p>
+            {isGift && <GiftBadge />}
           </div>
 
-          <div className="ml-4 flow-root flex-shrink-0">
-            <Button variant="link" onClick={handleRemoveFromCart} disabled={isRemovingFromCart} className="text-sm">
-              {isRemovingFromCart ? 'Removing' : 'Remove'}
-            </Button>
-          </div>
+          {!isGift && (
+            <div className="ml-4 flow-root flex-shrink-0">
+              <Button variant="link" onClick={handleRemoveFromCart} disabled={isRemovingFromCart} className="text-sm">
+                {isRemovingFromCart ? 'Removing' : 'Remove'}
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-1 items-end justify-between pt-2">
           <div className="mr-4">
-            <LineItemQuantitySelect formId={`quantity-${name}-${item.id}`} item={item} />
+            {isGift ? `x${item.quantity}` : <LineItemQuantitySelect formId={`quantity-${name}-${item.id}`} item={item} />}
           </div>
 
           <p className="mt-1 text-lg">
             <span className="font-bold text-gray-900">
-              {formatPrice(item.unit_price, {
-                currency: cart.region?.currency_code,
-              })}
+              {isFreeGift
+                ? t('cart.gift.free')
+                : formatPrice(item.unit_price, {
+                    currency: cart.region?.currency_code,
+                  })}
             </span>
           </p>
         </div>

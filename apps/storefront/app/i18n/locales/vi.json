@@ -119,7 +119,13 @@
     "shippingTaxesCalculated": "Phí vận chuyển và thuế được tính khi thanh toán.",
     "preparingCheckout": "Đang chuẩn bị thanh toán...",
     "checkout": "Thanh toán",
-    "or": "hoặc"
+    "or": "hoặc",
+    "gift": {
+      "badge": "Quà tặng",
+      "free": "Miễn phí",
+      "progress": "Mua thêm {{amount}} để nhận quà tặng",
+      "unlocked": "Chúc mừng! Bạn đã nhận được quà tặng."
+    }
   },
   "checkout": {
     "title": "Thanh toán",
@@ -197,7 +203,8 @@
     "addPromoCode": "Thêm mã giảm giá",
     "discountCode": "Mã giảm giá",
     "applyCode": "Áp dụng",
-    "applyingCode": "Đang áp dụng..."
+    "applyingCode": "Đang áp dụng...",
+    "estimatedShipping": "Phí vận chuyển dự kiến"
   },
   "shop": "Cửa hàng nước hoa",
   "home": {
