@@ -16,9 +16,9 @@ export const ProductVariantPrice: FC<ProductVariantPriceProps> = ({ variant, cur
   return (
     <>
       {hasSale ? (
-        <span className="inline-flex items-center gap-1">
-          <span>{formatPrice(calculated, { currency: currencyCode })}</span>
+        <span className="inline-flex gap-1 flex-col">
           <s className="text-gray-400">{formatPrice(original || 0, { currency: currencyCode })}</s>
+          <span>{formatPrice(calculated, { currency: currencyCode })}</span>
         </span>
       ) : (
         formatPrice(original || 0, { currency: currencyCode })
